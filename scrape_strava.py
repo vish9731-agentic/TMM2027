@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 ==============================================================================
-ZERO-API STRAVA SCRAPER & SUPABASE SYNCHRONIZER (ENHANCED)
+ZERO-API STRAVA SCRAPER & SUPABASE SYNCHRONIZER (ULTRA-ROBUST)
 ==============================================================================
 Pulls recent runs from Strava using web session authentication, computes
 metric-by-metric variance against planned workouts, and updates Supabase.
@@ -66,6 +66,28 @@ def calculate_variance(planned_dist, actual_dist, target_pace, actual_pace_str):
 
     score_pct = max(0, min(100, round(100 - (dist_err_pct * 0.6 + pace_err_pct * 0.4))))
     return dist_delta, pace_delta_sec, score_pct
+
+def extract_date_str(act):
+    """Robustly extracts YYYY-MM-DD from various possible Strava date fields."""
+    for field in ["start_date_local", "start_date_local_raw", "start_date", "start_day", "start_time"]:
+        val = act.get(field)
+        if not val:
+            continue
+        # Check standard ISO YYYY-MM-DD
+        m = re.search(r"(\d{4}-\d{2}-\d{2})", str(val))
+        if m:
+            return m.group(1)
+        # Check timestamp
+        if isinstance(val, (int, float)) and val > 1000000000:
+            ts = val / 1000.0 if val > 1000000000000 else val
+            return datetime.fromtimestamp(ts, timezone.utc).strftime("%Y-%m-%d")
+        # Check month name format (e.g. Aug 19, 2026)
+        try:
+            parsed = datetime.strptime(str(val)[:20], "%b %d, %Y")
+            return parsed.strftime("%Y-%m-%d")
+        except Exception:
+            pass
+    return None
 
 def fetch_strava_activities():
     if not STRAVA_COOKIE:
@@ -166,10 +188,7 @@ def main():
         name = act.get("name", "Untitled")
         act_type = str(act.get("type") or act.get("activity_type") or act.get("display_type") or "").strip()
         
-        # Date parsing
-        date_raw = str(act.get("start_date_local_raw") or act.get("start_date_local") or act.get("start_date") or act.get("start_time") or "")
-        date_match = re.search(r"(\d{4}-\d{2}-\d{2})", date_raw)
-        date_str = date_match.group(1) if date_match else "Unknown Date"
+        date_str = extract_date_str(act) or "Unknown Date"
 
         # Distance parsing
         dist_val = act.get("distance_raw") if act.get("distance_raw") is not None else act.get("distance", 0)
@@ -199,7 +218,6 @@ def main():
 
         print(f"[{idx+1}] \"{name}\" • Type: {act_type} • Date: {date_str} • Distance: {dist_km} km • Pace: {pace_str}")
 
-        # Check if type is a run
         is_run = any(t in act_type.lower() for t in ["run", "jog", "treadmill"]) or act_type == ""
         if not is_run or dist_km <= 0 or date_str == "Unknown Date":
             continue
@@ -235,7 +253,7 @@ def main():
             else:
                 print(f"      ❌ Supabase write failed.")
         else:
-            print(f"   ℹ️ Date {date_str} is outside the 22-week plan dates (Aug 17, 2026 – Jan 17, 2027).")
+            print(f"   ℹ️ Date {date_str} is outside the 22-week plan dates in Supabase.")
 
     print(f"\n🏁 Finished! {synced_count} scheduled run(s) synced to Supabase.")
 
