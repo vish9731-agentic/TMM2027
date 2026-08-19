@@ -1269,50 +1269,57 @@ h1, h2, h3, h4, .brand-font {
 /* Workout Card Actuals & Variance Box */
 .workout-actuals-box {
   margin-top: 0.6rem;
-  padding: 0.5rem 0.65rem;
+  padding: 0.45rem 0.55rem;
   background: rgba(16, 185, 129, 0.06);
   border: 1px solid rgba(16, 185, 129, 0.25);
   border-radius: var(--radius-sm);
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.3rem;
   overflow: hidden;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .workout-actuals-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.25rem;
+  width: 100%;
 }
 
 .actuals-edit-btn {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(16, 185, 129, 0.35);
   color: var(--primary);
   font-size: 0.65rem;
   font-weight: 700;
-  padding: 0.15rem 0.45rem;
+  padding: 0.12rem 0.4rem;
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: var(--transition-fast);
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .actuals-edit-btn:hover {
-  background: rgba(16, 185, 129, 0.15);
+  background: rgba(16, 185, 129, 0.2);
   border-color: var(--primary);
 }
 
 .variance-pill {
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 800;
-  padding: 0.15rem 0.45rem;
+  padding: 0.12rem 0.4rem;
   border-radius: var(--radius-full);
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.2rem;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 75%;
 }
 
 .variance-pill.on-target {
@@ -1342,36 +1349,47 @@ h1, h2, h3, h4, .brand-font {
 .variance-metrics-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.35rem;
+  gap: 0.25rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .variance-metric-item {
   background: rgba(0, 0, 0, 0.35);
-  padding: 0.3rem 0.45rem;
+  padding: 0.25rem 0.35rem;
   border-radius: 4px;
   min-width: 0;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .variance-metric-label {
-  font-size: 0.6rem;
+  font-size: 0.58rem;
   color: var(--text-dim);
   text-transform: uppercase;
   font-weight: 700;
   letter-spacing: 0.02em;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .variance-metric-value {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--text-main);
-  margin-top: 0.1rem;
+  margin-top: 0.05rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.actuals-notes-line {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 0.05rem;
 }
 

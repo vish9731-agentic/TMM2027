@@ -2558,36 +2558,44 @@ function renderActualsBox(logData, plannedDist, targetPace, dateStr) {
   let pace = logData.actualPace || 'N/A';
   pace = pace.replace(' min/km', '/km').replace(' - ', '-');
 
-  const score = logData.scorePct !== undefined ? logData.scorePct : 100;
-  const distDelta = logData.distDelta !== undefined ? logData.distDelta : (dist - plannedDist);
-  const paceDeltaSec = logData.paceDeltaSec || 0;
+  // Dynamic variance recalculation to ensure accuracy
+  let score = logData.scorePct;
+  let distDelta = logData.distDelta;
+  let paceDeltaSec = logData.paceDeltaSec;
 
-  let pillClass = 'on-target';
-  let pillText = '🎯 On Target';
-
-  if (paceDeltaSec < -15) {
-    pillClass = 'too-fast';
-    pillText = `⚡ ${Math.abs(paceDeltaSec)}s Fast`;
-  } else if (paceDeltaSec > 25) {
-    pillClass = 'too-slow';
-    pillText = `🐢 ${paceDeltaSec}s Slow`;
-  } else if (distDelta < -1) {
-    pillClass = 'under-volume';
-    pillText = `⚠️ Under Dist`;
+  if (score === undefined || (score === 100 && paceDeltaSec === 0 && logData.actualPace !== logData.targetPace && targetPace !== 'N/A')) {
+    const v = calculateVariance(plannedDist, dist, targetPace, logData.actualPace);
+    score = v.scorePct;
+    distDelta = v.distDelta;
+    paceDeltaSec = v.paceDeltaSec;
   }
 
-  const scoreColor = score >= 90 ? 'var(--primary)' : score >= 75 ? 'var(--accent-orange)' : 'var(--accent-red)';
+  if (score === undefined) score = 100;
+  if (distDelta === undefined) distDelta = dist - plannedDist;
+  if (paceDeltaSec === undefined) paceDeltaSec = 0;
+
+  let pillClass = 'on-target';
+  let pillText = `🎯 ${score}% On Target`;
+
+  if (plannedDist === 0 && dist > 0) {
+    pillClass = 'on-target';
+    pillText = `🏃 Extra Run (${dist}k)`;
+  } else if (paceDeltaSec < -15) {
+    pillClass = 'too-fast';
+    pillText = `⚡ ${score}% • ${Math.abs(paceDeltaSec)}s Fast`;
+  } else if (paceDeltaSec > 25) {
+    pillClass = 'too-slow';
+    pillText = `🐢 ${score}% • ${paceDeltaSec}s Slow`;
+  } else if (distDelta < -1) {
+    pillClass = 'under-volume';
+    pillText = `⚠️ ${score}% • Under Dist`;
+  }
 
   return `
     <div class="workout-actuals-box">
       <div class="workout-actuals-header">
-        <div style="display: flex; align-items: center; gap: 0.35rem; min-width: 0;">
-          <span class="variance-pill ${pillClass}">${pillText}</span>
-          <span style="font-size: 0.7rem; font-weight: 800; color: ${scoreColor}; font-family: 'JetBrains Mono', monospace; white-space: nowrap;">
-            ${score}% ACC
-          </span>
-        </div>
-        ${dateStr && plannedDist > 0 ? `
+        <span class="variance-pill ${pillClass}">${pillText}</span>
+        ${dateStr ? `
           <button class="actuals-edit-btn" onclick="event.stopPropagation(); openManualLogForDate('${dateStr}', ${plannedDist})">
             ✏️ Edit
           </button>
@@ -2595,15 +2603,15 @@ function renderActualsBox(logData, plannedDist, targetPace, dateStr) {
       </div>
       <div class="variance-metrics-row">
         <div class="variance-metric-item">
-          <div class="variance-metric-label">Actual Dist</div>
+          <div class="variance-metric-label">Actual</div>
           <div class="variance-metric-value">${dist} km <span style="font-size: 0.65rem; color: ${distDelta >= 0 ? 'var(--primary)' : 'var(--accent-red)'}">(${distDelta >= 0 ? '+' : ''}${distDelta.toFixed(1)}k)</span></div>
         </div>
         <div class="variance-metric-item">
-          <div class="variance-metric-label">Actual Pace</div>
+          <div class="variance-metric-label">Pace</div>
           <div class="variance-metric-value">${pace}</div>
         </div>
       </div>
-      ${logData.notes ? `<div style="font-size: 0.7rem; color: var(--text-muted); font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${escapeHtml(logData.notes)}">📝 ${escapeHtml(logData.notes)}</div>` : ''}
+      ${logData.notes ? `<div class="actuals-notes-line" title="${escapeHtml(logData.notes)}">📝 ${escapeHtml(logData.notes)}</div>` : ''}
     </div>
   `;
 }
@@ -3008,15 +3016,32 @@ async function initSupabase(url, key) {
         // Sync completion, actuals, and variance logs from cloud row
         if (row.is_completed || row.actual_distance_km > 0) {
           const key = `${wNum}_${row.day_of_week}_${row.workout_date}`;
+          const plannedDist = Number(row.distance_km) || 0;
+          const actualDist = Number(row.actual_distance_km) || plannedDist;
+          const targetPace = row.target_pace || 'N/A';
+          const actualPace = row.actual_pace || targetPace;
+
+          let distDelta = Number(row.distance_variance_km);
+          let paceDeltaSec = Number(row.pace_variance_sec);
+          let scorePct = row.compliance_score_pct !== null && row.compliance_score_pct !== undefined ? Number(row.compliance_score_pct) : null;
+
+          // If scorePct not in DB, calculate dynamic variance on the fly
+          if (scorePct === null || (scorePct === 100 && paceDeltaSec === 0 && actualPace !== targetPace && targetPace !== 'N/A')) {
+            const v = calculateVariance(plannedDist, actualDist, targetPace, actualPace);
+            distDelta = v.distDelta;
+            paceDeltaSec = v.paceDeltaSec;
+            scorePct = v.scorePct;
+          }
+
           completedWorkouts[key] = {
             done: true,
-            dist: Number(row.actual_distance_km) || Number(row.distance_km),
-            plannedDist: Number(row.distance_km),
-            actualPace: row.actual_pace || row.target_pace,
-            targetPace: row.target_pace,
-            distDelta: Number(row.distance_variance_km) || 0,
-            paceDeltaSec: Number(row.pace_variance_sec) || 0,
-            scorePct: Number(row.compliance_score_pct) || 100,
+            dist: actualDist,
+            plannedDist: plannedDist,
+            actualPace: actualPace,
+            targetPace: targetPace,
+            distDelta: distDelta !== undefined ? distDelta : (actualDist - plannedDist),
+            paceDeltaSec: paceDeltaSec || 0,
+            scorePct: scorePct !== null ? scorePct : 100,
             rpe: row.actual_rpe || row.rpe_target || 3,
             notes: row.athlete_notes || '',
             source: row.ingestion_source || 'cloud_db',
