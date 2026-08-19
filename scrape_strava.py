@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 ==============================================================================
-ZERO-API STRAVA SCRAPER & SUPABASE SYNCHRONIZER
+ZERO-API STRAVA SCRAPER & SUPABASE SYNCHRONIZER (ENHANCED)
 ==============================================================================
 Pulls recent runs from Strava using web session authentication, computes
 metric-by-metric variance against planned workouts, and updates Supabase.
@@ -23,7 +23,6 @@ SUPABASE_URL = os.environ.get("SUPABASE_URL", "").strip().rstrip("/")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "").strip()
 
 def parse_pace_to_seconds(pace_str):
-    """Converts pace string like '7:20 min/km' or '7:20/km' to total seconds per km."""
     if not pace_str or pace_str == "N/A":
         return 0
     m = re.search(r"(\d+):(\d+)", pace_str)
@@ -32,7 +31,6 @@ def parse_pace_to_seconds(pace_str):
     return 0
 
 def parse_target_pace_range(pace_str):
-    """Extracts min and max seconds per km from a target pace range string."""
     if not pace_str or pace_str == "N/A":
         return None
     matches = re.findall(r"(\d+):(\d+)", pace_str)
@@ -46,7 +44,6 @@ def parse_target_pace_range(pace_str):
     return None
 
 def calculate_variance(planned_dist, actual_dist, target_pace, actual_pace_str):
-    """Calculates Distance Delta, Pace Delta, and Overall Precision Score (%)."""
     dist_delta = round(actual_dist - planned_dist, 2)
     dist_err_pct = (abs(dist_delta) / planned_dist) * 100 if planned_dist > 0 else 0
 
@@ -58,11 +55,9 @@ def calculate_variance(planned_dist, actual_dist, target_pace, actual_pace_str):
 
     if actual_pace_secs > 0 and target_range:
         if actual_pace_secs < target_range["min_sec"]:
-            # Faster than fastest target pace
             pace_delta_sec = actual_pace_secs - target_range["min_sec"]
             pace_err_pct = (abs(pace_delta_sec) / target_range["min_sec"]) * 100
         elif actual_pace_secs > target_range["max_sec"]:
-            # Slower than slowest target pace
             pace_delta_sec = actual_pace_secs - target_range["max_sec"]
             pace_err_pct = (pace_delta_sec / target_range["max_sec"]) * 100
         else:
@@ -73,7 +68,6 @@ def calculate_variance(planned_dist, actual_dist, target_pace, actual_pace_str):
     return dist_delta, pace_delta_sec, score_pct
 
 def fetch_strava_activities():
-    """Fetches recent activities using the web session cookie."""
     if not STRAVA_COOKIE:
         print("⚠️ Warning: STRAVA_SESSION_COOKIE is missing.")
         return []
@@ -82,7 +76,7 @@ def fetch_strava_activities():
     if not cookie_header.startswith("_strava4_session="):
         cookie_header = f"_strava4_session={cookie_header}"
 
-    url = "https://www.strava.com/athlete/training_activities?page=1&per_page=15"
+    url = "https://www.strava.com/athlete/training_activities?page=1&per_page=30"
     headers = {
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
         "Accept": "application/json, text/javascript, */*; q=0.01",
@@ -96,22 +90,17 @@ def fetch_strava_activities():
         with urllib.request.urlopen(req, timeout=20) as response:
             content = response.read().decode("utf-8")
             data = json.loads(content)
-            
-            # Strava returns { "models": [...] }
             activities = data.get("models", [])
             print(f"✅ Successfully retrieved {len(activities)} activities from Strava web feed.")
             return activities
     except urllib.error.HTTPError as e:
         print(f"❌ Strava HTTP Error: {e.code} {e.reason}")
-        if e.code in (401, 403, 302):
-            print("💡 Your Strava session cookie may have expired. Please re-copy _strava4_session from browser.")
         return []
     except Exception as e:
         print(f"❌ Error scraping Strava: {e}")
         return []
 
 def query_supabase_workout(date_str):
-    """Queries planned workout for a specific date from Supabase."""
     if not SUPABASE_URL or not SUPABASE_KEY:
         return None
 
@@ -133,7 +122,6 @@ def query_supabase_workout(date_str):
     return None
 
 def update_supabase_workout(date_str, payload):
-    """Updates a workout row in Supabase daily_workouts table."""
     if not SUPABASE_URL or not SUPABASE_KEY:
         print("⚠️ Supabase credentials missing. Skipping cloud write.")
         return False
@@ -168,85 +156,88 @@ def main():
 
     activities = fetch_strava_activities()
     if not activities:
-        print("ℹ️ No activities found or authentication failed. Exiting gracefully.")
+        print("ℹ️ No activities found or authentication failed.")
         return
 
     synced_count = 0
 
-    for act in activities:
-        # Filter for runs
-        act_type = act.get("type", "") or act.get("activity_type", "")
-        if str(act_type).lower() != "run":
-            continue
+    print("\n🔍 Inspecting Discovered Strava Activities:")
+    for idx, act in enumerate(activities):
+        name = act.get("name", "Untitled")
+        act_type = str(act.get("type") or act.get("activity_type") or act.get("display_type") or "").strip()
+        
+        # Date parsing
+        date_raw = str(act.get("start_date_local_raw") or act.get("start_date_local") or act.get("start_date") or act.get("start_time") or "")
+        date_match = re.search(r"(\d{4}-\d{2}-\d{2})", date_raw)
+        date_str = date_match.group(1) if date_match else "Unknown Date"
 
-        # Extract date (YYYY-MM-DD)
-        start_date_raw = act.get("start_date_local_raw") or act.get("start_date") or act.get("start_time", "")
-        date_match = re.search(r"(\d{4}-\d{2}-\d{2})", str(start_date_raw))
-        if not date_match:
-            continue
-        date_str = date_match.group(1)
-
-        # Extract distance in km
-        dist_raw = act.get("distance_raw") or act.get("distance", 0)
+        # Distance parsing
+        dist_val = act.get("distance_raw") if act.get("distance_raw") is not None else act.get("distance", 0)
         try:
-            dist_km = round(float(dist_raw) / 1000.0, 2) if float(dist_raw) > 100 else round(float(dist_raw), 2)
+            dist_num = float(dist_val)
+            dist_km = round(dist_num / 1000.0, 2) if dist_num > 100 else round(dist_num, 2)
         except (ValueError, TypeError):
-            continue
+            dist_km = 0.0
 
-        if dist_km <= 0:
-            continue
-
-        # Extract moving time in seconds
-        time_raw = act.get("moving_time_raw") or act.get("elapsed_time_raw") or act.get("moving_time", 0)
+        # Duration parsing
+        time_val = act.get("moving_time_raw") if act.get("moving_time_raw") is not None else act.get("moving_time", 0)
+        if not time_val:
+            time_val = act.get("elapsed_time_raw") or act.get("elapsed_time", 0)
         try:
-            duration_secs = int(time_raw)
+            duration_secs = int(time_val)
         except (ValueError, TypeError):
             duration_secs = 0
 
-        # Calculate pace
+        # Calculate Pace
         if duration_secs > 0 and dist_km > 0:
-            pace_secs_per_km = duration_secs / dist_km
-            p_min = math.floor(pace_secs_per_km / 60)
-            p_sec = round(pace_secs_per_km % 60)
-            pace_str = f"{p_min}:{p_sec:02d} min/km"
+            pace_secs = duration_secs / dist_km
+            p_m = math.floor(pace_secs / 60)
+            p_s = round(pace_secs % 60)
+            pace_str = f"{p_m}:{p_s:02d} min/km"
         else:
             pace_str = "N/A"
 
-        # Query planned workout from Supabase
+        print(f"[{idx+1}] \"{name}\" • Type: {act_type} • Date: {date_str} • Distance: {dist_km} km • Pace: {pace_str}")
+
+        # Check if type is a run
+        is_run = any(t in act_type.lower() for t in ["run", "jog", "treadmill"]) or act_type == ""
+        if not is_run or dist_km <= 0 or date_str == "Unknown Date":
+            continue
+
+        # Check matching planned workout in Supabase
         planned_wo = query_supabase_workout(date_str)
-        planned_dist = float(planned_wo.get("distance_km", dist_km)) if planned_wo else dist_km
-        target_pace = planned_wo.get("target_pace", "N/A") if planned_wo else "N/A"
+        if planned_wo:
+            planned_dist = float(planned_wo.get("distance_km", dist_km))
+            target_pace = planned_wo.get("target_pace", "N/A")
+            
+            dist_delta, pace_delta_sec, score_pct = calculate_variance(planned_dist, dist_km, target_pace, pace_str)
 
-        # Calculate variance
-        dist_delta, pace_delta_sec, score_pct = calculate_variance(planned_dist, dist_km, target_pace, pace_str)
+            print(f"   🎯 MATCHED SCHEDULED WORKOUT: Week {planned_wo.get('week_number')} {planned_wo.get('day_of_week')}")
+            print(f"      • Planned: {planned_dist} km @ {target_pace} | Actual: {dist_km} km @ {pace_str}")
+            print(f"      • Variance: {dist_delta:+} km, Pace Delta: {pace_delta_sec:+}s/km -> Precision: {score_pct}%")
 
-        print(f"\n📊 Synced Run: {date_str} • {act.get('name', 'Run')}")
-        print(f"   • Actual: {dist_km} km @ {pace_str}")
-        print(f"   • Planned: {planned_dist} km @ {target_pace}")
-        print(f"   • Variance: {dist_delta:+} km | Pace Delta: {pace_delta_sec:+}s/km")
-        print(f"   • Accuracy Score: {score_pct}%")
+            payload = {
+                "is_completed": True,
+                "actual_distance_km": dist_km,
+                "actual_pace": pace_str,
+                "actual_duration_min": round(duration_secs / 60, 2),
+                "distance_variance_km": dist_delta,
+                "pace_variance_sec": pace_delta_sec,
+                "compliance_score_pct": score_pct,
+                "ingestion_source": "strava_github_action",
+                "athlete_notes": f"Auto-synced from Strava ({name})"
+            }
 
-        # Update Supabase
-        payload = {
-            "is_completed": True,
-            "actual_distance_km": dist_km,
-            "actual_pace": pace_str,
-            "actual_duration_min": round(duration_secs / 60, 2),
-            "distance_variance_km": dist_delta,
-            "pace_variance_sec": pace_delta_sec,
-            "compliance_score_pct": score_pct,
-            "ingestion_source": "strava_github_action",
-            "athlete_notes": f"Auto-synced from Strava ({act.get('name', 'Run')})"
-        }
-
-        success = update_supabase_workout(date_str, payload)
-        if success:
-            print(f"   ✅ Supabase daily_workouts row updated for {date_str}!")
-            synced_count += 1
+            success = update_supabase_workout(date_str, payload)
+            if success:
+                print(f"      ✅ Successfully written to Supabase daily_workouts!")
+                synced_count += 1
+            else:
+                print(f"      ❌ Supabase write failed.")
         else:
-            print(f"   ⚠️ Could not update row in Supabase.")
+            print(f"   ℹ️ Date {date_str} is outside the 22-week plan dates (Aug 17, 2026 – Jan 17, 2027).")
 
-    print(f"\n🏁 Finished! {synced_count} run(s) synced to Supabase successfully.")
+    print(f"\n🏁 Finished! {synced_count} scheduled run(s) synced to Supabase.")
 
 if __name__ == "__main__":
     main()
