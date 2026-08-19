@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 ==============================================================================
-ZERO-API STRAVA SCRAPER & SUPABASE SYNCHRONIZER (ULTRA-ROBUST)
+ZERO-API STRAVA SCRAPER & SUPABASE SYNCHRONIZER (ULTRA-ROBUST & RESILIENT)
 ==============================================================================
 Pulls recent runs from Strava using web session authentication, computes
 metric-by-metric variance against planned workouts, and updates Supabase.
@@ -68,20 +68,16 @@ def calculate_variance(planned_dist, actual_dist, target_pace, actual_pace_str):
     return dist_delta, pace_delta_sec, score_pct
 
 def extract_date_str(act):
-    """Robustly extracts YYYY-MM-DD from various possible Strava date fields."""
     for field in ["start_date_local", "start_date_local_raw", "start_date", "start_day", "start_time"]:
         val = act.get(field)
         if not val:
             continue
-        # Check standard ISO YYYY-MM-DD
         m = re.search(r"(\d{4}-\d{2}-\d{2})", str(val))
         if m:
             return m.group(1)
-        # Check timestamp
         if isinstance(val, (int, float)) and val > 1000000000:
             ts = val / 1000.0 if val > 1000000000000 else val
             return datetime.fromtimestamp(ts, timezone.utc).strftime("%Y-%m-%d")
-        # Check month name format (e.g. Aug 19, 2026)
         try:
             parsed = datetime.strptime(str(val)[:20], "%b %d, %Y")
             return parsed.strftime("%Y-%m-%d")
@@ -156,12 +152,33 @@ def update_supabase_workout(date_str, payload):
         "Prefer": "return=representation"
     }
 
+    # First attempt: full payload
     data = json.dumps(payload).encode("utf-8")
     req = urllib.request.Request(url, data=data, headers=headers, method="PATCH")
     try:
         with urllib.request.urlopen(req, timeout=15) as response:
             res = json.loads(response.read().decode("utf-8"))
             return bool(res)
+    except urllib.error.HTTPError as e:
+        err_msg = e.read().decode("utf-8")
+        print(f"⚠️ Full payload rejected ({e.code}): {err_msg}")
+        
+        # Fallback to core columns in case extended variance columns are not in schema
+        core_payload = {
+            "is_completed": payload.get("is_completed", True),
+            "actual_distance_km": payload.get("actual_distance_km"),
+            "actual_pace": payload.get("actual_pace"),
+            "athlete_notes": payload.get("athlete_notes")
+        }
+        data_fallback = json.dumps(core_payload).encode("utf-8")
+        req_fallback = urllib.request.Request(url, data=data_fallback, headers=headers, method="PATCH")
+        try:
+            with urllib.request.urlopen(req_fallback, timeout=15) as fb_response:
+                res = json.loads(fb_response.read().decode("utf-8"))
+                return bool(res)
+        except Exception as fb_err:
+            print(f"❌ Fallback update failed: {fb_err}")
+            return False
     except Exception as e:
         print(f"❌ Failed to update Supabase for date {date_str}: {e}")
         return False
