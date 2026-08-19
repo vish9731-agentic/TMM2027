@@ -1,0 +1,29 @@
+name: Sync Strava Activities
+
+on:
+  schedule:
+    # Runs automatically every 4 hours
+    - cron: '0 */4 * * *'
+  workflow_dispatch: # Allows 1-click manual sync anytime from the Actions tab
+
+jobs:
+  sync:
+    name: Scrape Strava & Sync to Supabase
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run Strava Sync Script
+        env:
+          STRAVA_SESSION_COOKIE: ${{ secrets.STRAVA_SESSION_COOKIE }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: |
+          python scrape_strava.py

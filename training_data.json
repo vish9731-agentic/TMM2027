@@ -1,0 +1,2011 @@
+{
+  "athlete": {
+    "name": "Marathon Runner",
+    "target_race": "Tata Mumbai Marathon 2027",
+    "race_date": "2027-01-17",
+    "start_date": "2026-08-17",
+    "goal_time": "04:59:59",
+    "goal_pace_min_km": 7.1,
+    "current_10k_time": "01:00:00",
+    "baseline_easy_pace": "7:15 min/km",
+    "shoe": "Adidas Adizero Evo SL 2",
+    "procam_slam": [
+      {
+        "event": "Vedanta Delhi Half Marathon (VDHM)",
+        "date": "2026-10-18",
+        "distance_km": 21.1,
+        "week": 9,
+        "role": "Controlled Long Run Rehearsal"
+      },
+      {
+        "event": "Tata Steel World 25K Kolkata (TSW 25K)",
+        "date": "2026-12-20",
+        "distance_km": 25.0,
+        "week": 18,
+        "role": "Marathon Pace Race Simulation"
+      },
+      {
+        "event": "Tata Mumbai Marathon (TMM 2027)",
+        "date": "2027-01-17",
+        "distance_km": 42.195,
+        "week": 22,
+        "role": "THE GOAL RACE (Sub-5:00:00)"
+      }
+    ]
+  },
+  "phases": [
+    {
+      "id": 1,
+      "name": "Phase 1: Prep & Foundation",
+      "start_week": 1,
+      "end_week": 4,
+      "description": "Establish 4-day weekly habit, build calf resilience (eccentric loading), core stability for lower back, adapt tendons."
+    },
+    {
+      "id": 2,
+      "name": "Phase 2: Aerobic Base Building",
+      "start_week": 5,
+      "end_week": 12,
+      "description": "Expand mitochondrial density, overcome the 18-20k calf cramp barrier with hydration/electrolytes, Pedder road hill repeats, 10K time trial benchmark."
+    },
+    {
+      "id": 3,
+      "name": "Phase 3: Peak & Race Specificity",
+      "start_week": 13,
+      "end_week": 19,
+      "description": "Peak volume tolerance, Marathon Pace threshold endurance, Half Marathon simulation, Peak 32 km Long Run."
+    },
+    {
+      "id": 4,
+      "name": "Phase 4: Taper & Race Execution",
+      "start_week": 20,
+      "end_week": 22,
+      "description": "Glycogen restoration, cellular repair, short sharp MP strides, race logistics and execution at Tata Mumbai Marathon."
+    }
+  ],
+  "pace_zones": {
+    "recovery": "7:45 - 8:15 min/km",
+    "easy_aerobic": "7:15 - 7:35 min/km",
+    "marathon_pace": "7:00 - 7:06 min/km",
+    "tempo_threshold": "6:15 - 6:35 min/km",
+    "interval_10k": "5:45 - 6:00 min/km"
+  },
+  "weeks": [
+    {
+      "week_number": 1,
+      "phase": "Prep & Foundation",
+      "start_date": "2026-08-17",
+      "end_date": "2026-08-23",
+      "total_planned_km": 21,
+      "is_deload": false,
+      "focus": "Establishing 4-day rhythm & calf strength baseline",
+      "workouts": [
+        {
+          "day": "Monday",
+          "date": "2026-08-17",
+          "type": "Recovery Run",
+          "distance_km": 4.0,
+          "target_pace": "7:50 - 8:10 min/km",
+          "rpe": 2,
+          "description": "Short easy shakeout run to start the cycle.",
+          "strength_prehab": "Post-run calf & hip flexor stretches (15 mins)",
+          "fueling": "Hydration with water post-run"
+        },
+        {
+          "day": "Tuesday",
+          "date": "2026-08-18",
+          "type": "Strength Day 1",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 5,
+          "description": "Lower Body & Calf Armor.",
+          "strength_prehab": "Single-leg eccentric heel drops (3x15/leg), seated calf raises (3x15), Bulgarian split squats (3x8/leg), glute bridges (3x12/leg), tibialis wall raises (3x20).",
+          "fueling": "Adequate protein intake"
+        },
+        {
+          "day": "Wednesday",
+          "date": "2026-08-19",
+          "type": "Mid-Week Aerobic",
+          "distance_km": 5.0,
+          "target_pace": "7:20 - 7:35 min/km",
+          "rpe": 3,
+          "description": "Smooth conversational pace to build weekly aerobic base.",
+          "strength_prehab": "Dynamic warmup & ankle mobility",
+          "fueling": "Water as needed"
+        },
+        {
+          "day": "Thursday",
+          "date": "2026-08-20",
+          "type": "Strength Day 2",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 5,
+          "description": "Posterior Chain & Core Stability.",
+          "strength_prehab": "Romanian Deadlifts (3x10), Bird-dogs (3x10/side with 3s hold), Side planks (3x35s/side), Deadbugs (3x12), Back extensions (3x12).",
+          "fueling": "Normal balanced diet"
+        },
+        {
+          "day": "Friday",
+          "date": "2026-08-21",
+          "type": "Speed (Strides)",
+          "distance_km": 5.0,
+          "target_pace": "7:45 warmup/cooldown, ~5:30 strides",
+          "rpe": 6,
+          "description": "1.5 km warmup, 5x100m fast relaxed strides with 90s walk rest, 2 km cooldown.",
+          "strength_prehab": "Hamstring and calf dynamic stretches",
+          "fueling": "Light carbs pre-run"
+        },
+        {
+          "day": "Saturday",
+          "date": "2026-08-22",
+          "type": "Rest",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 1,
+          "description": "Complete rest day before long run.",
+          "strength_prehab": "Light walking / gentle stretching only",
+          "fueling": "Hydrate well with 2-2.5L fluids"
+        },
+        {
+          "day": "Sunday",
+          "date": "2026-08-23",
+          "type": "Long Run",
+          "distance_km": 7.0,
+          "target_pace": "7:35 - 7:45 min/km",
+          "rpe": 3,
+          "description": "Week 1 long run. Focus on relaxed breathing, light foot strikes, and time on feet.",
+          "strength_prehab": "Post-run 10-min calf and quad flush",
+          "fueling": "Water sips every 2 km"
+        }
+      ]
+    },
+    {
+      "week_number": 2,
+      "phase": "Prep & Foundation",
+      "start_date": "2026-08-24",
+      "end_date": "2026-08-30",
+      "total_planned_km": 24,
+      "is_deload": false,
+      "focus": "Introducing hill form & tempo strides",
+      "workouts": [
+        {
+          "day": "Monday",
+          "date": "2026-08-24",
+          "type": "Recovery Run",
+          "distance_km": 4.5,
+          "target_pace": "7:50 - 8:10 min/km",
+          "rpe": 2,
+          "description": "Gentle recovery run.",
+          "strength_prehab": "Calf stretching on step",
+          "fueling": "Water"
+        },
+        {
+          "day": "Tuesday",
+          "date": "2026-08-25",
+          "type": "Strength Day 1",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 5,
+          "description": "Lower Body & Calf Armor.",
+          "strength_prehab": "Eccentric heel drops (3x15), seated soleus raises (3x15), split squats, glute bridges, tibialis raises.",
+          "fueling": "Protein & carbs"
+        },
+        {
+          "day": "Wednesday",
+          "date": "2026-08-26",
+          "type": "Mid-Week Aerobic",
+          "distance_km": 5.5,
+          "target_pace": "7:15 - 7:30 min/km",
+          "rpe": 3,
+          "description": "Aerobic cruise.",
+          "strength_prehab": "Hip mobility drills",
+          "fueling": "Water"
+        },
+        {
+          "day": "Thursday",
+          "date": "2026-08-27",
+          "type": "Strength Day 2",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 5,
+          "description": "Posterior Chain & Core.",
+          "strength_prehab": "RDLs, Bird-dogs, Side planks, Deadbugs, Supermans.",
+          "fueling": "Balanced nutrition"
+        },
+        {
+          "day": "Friday",
+          "date": "2026-08-28",
+          "type": "Speed (Hill Intro)",
+          "distance_km": 6.0,
+          "target_pace": "7:45 warmup/cooldown, uphill RPE 7-8",
+          "rpe": 7,
+          "description": "2 km warmup, 4x60-sec steady uphill repeats (focus on posture & high knees, jog down recovery), 2 km cooldown.",
+          "strength_prehab": "Calf & Achilles dynamic activation",
+          "fueling": "Banana/toast 45 min before"
+        },
+        {
+          "day": "Saturday",
+          "date": "2026-08-29",
+          "type": "Rest",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 1,
+          "description": "Complete Rest.",
+          "strength_prehab": "Foam roll quads & glutes",
+          "fueling": "Hydration tracking"
+        },
+        {
+          "day": "Sunday",
+          "date": "2026-08-30",
+          "type": "Long Run",
+          "distance_km": 8.0,
+          "target_pace": "7:30 - 7:45 min/km",
+          "rpe": 3,
+          "description": "Long run. Test 1st Energy Gel at 45-min mark with water.",
+          "strength_prehab": "Post-run calf massage",
+          "fueling": "1 Energy Gel at 45 min + water sips"
+        }
+      ]
+    },
+    {
+      "week_number": 3,
+      "phase": "Prep & Foundation",
+      "start_date": "2026-08-31",
+      "end_date": "2026-09-06",
+      "total_planned_km": 27,
+      "is_deload": false,
+      "focus": "First double-digit long run + hydration & salt capsule test",
+      "workouts": [
+        {
+          "day": "Monday",
+          "date": "2026-08-31",
+          "type": "Recovery Run",
+          "distance_km": 5.0,
+          "target_pace": "7:50 - 8:10 min/km",
+          "rpe": 2,
+          "description": "Easy recovery jog.",
+          "strength_prehab": "Hip & calf flush",
+          "fueling": "Water"
+        },
+        {
+          "day": "Tuesday",
+          "date": "2026-09-01",
+          "type": "Strength Day 1",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 5,
+          "description": "Lower Body & Calf Armor (Add 2.5kg weight).",
+          "strength_prehab": "Eccentric heel drops, soleus raises, lunges, glute bridges, tibialis raises.",
+          "fueling": "Protein"
+        },
+        {
+          "day": "Wednesday",
+          "date": "2026-09-02",
+          "type": "Mid-Week Aerobic",
+          "distance_km": 6.0,
+          "target_pace": "7:15 - 7:30 min/km",
+          "rpe": 3,
+          "description": "Aerobic base builder.",
+          "strength_prehab": "Ankle mobility",
+          "fueling": "Water"
+        },
+        {
+          "day": "Thursday",
+          "date": "2026-09-03",
+          "type": "Strength Day 2",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 5,
+          "description": "Posterior Chain & Core.",
+          "strength_prehab": "RDLs, Bird-dogs, Side planks, Pallof press, Supermans.",
+          "fueling": "Balanced nutrition"
+        },
+        {
+          "day": "Friday",
+          "date": "2026-09-04",
+          "type": "Speed (Tempo Intro)",
+          "distance_km": 6.0,
+          "target_pace": "6:30 min/km tempo intervals",
+          "rpe": 7,
+          "description": "1.5 km warmup, 3x1 km @ Tempo Pace (6:30 min/km) with 2 min walk rest, 1.5 km cooldown.",
+          "strength_prehab": "Hamstring dynamic swings",
+          "fueling": "Carb snack pre-run"
+        },
+        {
+          "day": "Saturday",
+          "date": "2026-09-05",
+          "type": "Rest",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 1,
+          "description": "Rest & hydrate for 10k long run.",
+          "strength_prehab": "Light stretching",
+          "fueling": "Electrolyte drink"
+        },
+        {
+          "day": "Sunday",
+          "date": "2026-09-06",
+          "type": "Long Run",
+          "distance_km": 10.0,
+          "target_pace": "7:30 - 7:45 min/km",
+          "rpe": 4,
+          "description": "First 10 km long run. Take 1 Gel at km 6 + 1 Salt capsule at km 5.",
+          "strength_prehab": "Post-run calf and hamstring stretch",
+          "fueling": "1 Gel at km 6 + 1 Salt capsule at km 5 + water"
+        }
+      ]
+    },
+    {
+      "week_number": 4,
+      "phase": "Prep & Foundation",
+      "start_date": "2026-09-07",
+      "end_date": "2026-09-13",
+      "total_planned_km": 20,
+      "is_deload": true,
+      "focus": "DELOAD WEEK 1: Neuromuscular recovery & soft-tissue adaptation",
+      "workouts": [
+        {
+          "day": "Monday",
+          "date": "2026-09-07",
+          "type": "Recovery Run",
+          "distance_km": 4.0,
+          "target_pace": "8:00 min/km",
+          "rpe": 2,
+          "description": "Very easy recovery jog.",
+          "strength_prehab": "Gentle foam rolling",
+          "fueling": "Water"
+        },
+        {
+          "day": "Tuesday",
+          "date": "2026-09-08",
+          "type": "Strength Day 1",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 4,
+          "description": "Light bodyweight mobility & calf activation (2x10 reps).",
+          "strength_prehab": "Bodyweight only",
+          "fueling": "Nutritious recovery meals"
+        },
+        {
+          "day": "Wednesday",
+          "date": "2026-09-09",
+          "type": "Mid-Week Aerobic",
+          "distance_km": 5.0,
+          "target_pace": "7:25 - 7:40 min/km",
+          "rpe": 3,
+          "description": "Easy cruise.",
+          "strength_prehab": "Hip openers",
+          "fueling": "Water"
+        },
+        {
+          "day": "Thursday",
+          "date": "2026-09-10",
+          "type": "Strength Day 2",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 4,
+          "description": "Light core & spine stabilization.",
+          "strength_prehab": "Bird-dogs, deadbugs, side planks (2 sets)",
+          "fueling": "Balanced diet"
+        },
+        {
+          "day": "Friday",
+          "date": "2026-09-11",
+          "type": "Speed (Strides)",
+          "distance_km": 4.0,
+          "target_pace": "7:45 warmup, strides",
+          "rpe": 5,
+          "description": "2 km easy, 4x100m relaxed strides, 1.5 km easy.",
+          "strength_prehab": "Dynamic leg swings",
+          "fueling": "Water"
+        },
+        {
+          "day": "Saturday",
+          "date": "2026-09-12",
+          "type": "Rest",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 1,
+          "description": "Full Rest.",
+          "strength_prehab": "Sleep 8+ hours",
+          "fueling": "Hydration"
+        },
+        {
+          "day": "Sunday",
+          "date": "2026-09-13",
+          "type": "Long Run",
+          "distance_km": 7.0,
+          "target_pace": "7:40 - 7:50 min/km",
+          "rpe": 3,
+          "description": "Deload long run. Low heart rate, super easy effort.",
+          "strength_prehab": "Calf stretching",
+          "fueling": "Water sips"
+        }
+      ]
+    },
+    {
+      "week_number": 5,
+      "phase": "Aerobic Base Building",
+      "start_date": "2026-09-14",
+      "end_date": "2026-09-20",
+      "total_planned_km": 29,
+      "is_deload": false,
+      "focus": "Aerobic base expansion; introducing 400m intervals",
+      "workouts": [
+        {
+          "day": "Monday",
+          "date": "2026-09-14",
+          "type": "Recovery Run",
+          "distance_km": 5.0,
+          "target_pace": "7:50 min/km",
+          "rpe": 2,
+          "description": "Recovery run.",
+          "strength_prehab": "Calf & hamstring flush",
+          "fueling": "Water"
+        },
+        {
+          "day": "Tuesday",
+          "date": "2026-09-15",
+          "type": "Strength Day 1",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 5,
+          "description": "Lower Body & Calf Armor (3x15 eccentric drops).",
+          "strength_prehab": "Heel drops, soleus raises, split squats, glute bridges, tibialis raises.",
+          "fueling": "Protein"
+        },
+        {
+          "day": "Wednesday",
+          "date": "2026-09-16",
+          "type": "Mid-Week Aerobic",
+          "distance_km": 6.0,
+          "target_pace": "7:15 - 7:30 min/km",
+          "rpe": 3,
+          "description": "Smooth aerobic building run.",
+          "strength_prehab": "Dynamic warmup",
+          "fueling": "Water"
+        },
+        {
+          "day": "Thursday",
+          "date": "2026-09-17",
+          "type": "Strength Day 2",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 5,
+          "description": "Posterior Chain & Core.",
+          "strength_prehab": "RDLs, Bird-dogs, Side planks, Pallof press.",
+          "fueling": "Balanced diet"
+        },
+        {
+          "day": "Friday",
+          "date": "2026-09-18",
+          "type": "Speed (Intervals)",
+          "distance_km": 6.0,
+          "target_pace": "5:50 min/km intervals",
+          "rpe": 7,
+          "description": "1.5 km warmup, 4x400m @ 5:50 min/km (200m jog rest), 2 km cooldown.",
+          "strength_prehab": "Calf dynamic prep",
+          "fueling": "Carb snack"
+        },
+        {
+          "day": "Saturday",
+          "date": "2026-09-19",
+          "type": "Rest",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 1,
+          "description": "Full Rest.",
+          "strength_prehab": "Mobility work",
+          "fueling": "Hydration"
+        },
+        {
+          "day": "Sunday",
+          "date": "2026-09-20",
+          "type": "Long Run",
+          "distance_km": 12.0,
+          "target_pace": "7:30 - 7:45 min/km",
+          "rpe": 4,
+          "description": "12 km long run. Gels at km 5 and 10; salt capsule at km 6.",
+          "strength_prehab": "Post-run calf recovery",
+          "fueling": "2 Gels + 1 Salt capsule + water"
+        }
+      ]
+    },
+    {
+      "week_number": 6,
+      "phase": "Aerobic Base Building",
+      "start_date": "2026-09-21",
+      "end_date": "2026-09-27",
+      "total_planned_km": 33,
+      "is_deload": false,
+      "focus": "Pedder Road hill simulation workout #1",
+      "workouts": [
+        {
+          "day": "Monday",
+          "date": "2026-09-21",
+          "type": "Recovery Run",
+          "distance_km": 5.0,
+          "target_pace": "7:50 min/km",
+          "rpe": 2,
+          "description": "Easy recovery run.",
+          "strength_prehab": "Calf & hip stretch",
+          "fueling": "Water"
+        },
+        {
+          "day": "Tuesday",
+          "date": "2026-09-22",
+          "type": "Strength Day 1",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 5,
+          "description": "Lower Body & Calf Armor.",
+          "strength_prehab": "Eccentric heel drops (weighted), soleus raises, split squats, glute bridges, tibialis raises.",
+          "fueling": "Protein"
+        },
+        {
+          "day": "Wednesday",
+          "date": "2026-09-23",
+          "type": "Mid-Week Aerobic",
+          "distance_km": 7.0,
+          "target_pace": "7:15 - 7:30 min/km",
+          "rpe": 3,
+          "description": "Aerobic foundation run.",
+          "strength_prehab": "Ankle mobility",
+          "fueling": "Water"
+        },
+        {
+          "day": "Thursday",
+          "date": "2026-09-24",
+          "type": "Strength Day 2",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 5,
+          "description": "Posterior Chain & Core.",
+          "strength_prehab": "RDLs, Bird-dogs, Side planks, Supermans.",
+          "fueling": "Balanced nutrition"
+        },
+        {
+          "day": "Friday",
+          "date": "2026-09-25",
+          "type": "Speed (Hill Repeats)",
+          "distance_km": 7.0,
+          "target_pace": "Uphill RPE 8, cooldown 7:45",
+          "rpe": 8,
+          "description": "2 km warmup, 5x90-sec steady uphill repeats (focus on glute drive, jog down recovery), 2 km cooldown.",
+          "strength_prehab": "Calf & Achilles prep",
+          "fueling": "Carb snack"
+        },
+        {
+          "day": "Saturday",
+          "date": "2026-09-26",
+          "type": "Rest",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 1,
+          "description": "Full Rest.",
+          "strength_prehab": "Gentle stretching",
+          "fueling": "Electrolyte hydration"
+        },
+        {
+          "day": "Sunday",
+          "date": "2026-09-27",
+          "type": "Long Run",
+          "distance_km": 14.0,
+          "target_pace": "7:30 - 7:45 min/km",
+          "rpe": 4,
+          "description": "14 km long run with full hydration vest test.",
+          "strength_prehab": "Post-run calf flush",
+          "fueling": "2 Gels (km 5, 10) + 1 Salt capsule (km 6) + 1L water"
+        }
+      ]
+    },
+    {
+      "week_number": 7,
+      "phase": "Aerobic Base Building",
+      "start_date": "2026-09-28",
+      "end_date": "2026-10-04",
+      "total_planned_km": 37,
+      "is_deload": false,
+      "focus": "Long run nutrition & electrolyte test (400mg Na/hr)",
+      "workouts": [
+        {
+          "day": "Monday",
+          "date": "2026-09-28",
+          "type": "Recovery Run",
+          "distance_km": 6.0,
+          "target_pace": "7:50 min/km",
+          "rpe": 2,
+          "description": "Easy recovery run.",
+          "strength_prehab": "Foam rolling calves & quads",
+          "fueling": "Water"
+        },
+        {
+          "day": "Tuesday",
+          "date": "2026-09-29",
+          "type": "Strength Day 1",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 5,
+          "description": "Lower Body & Calf Armor.",
+          "strength_prehab": "Eccentric heel drops, soleus raises, split squats, glute bridges, tibialis raises.",
+          "fueling": "Protein"
+        },
+        {
+          "day": "Wednesday",
+          "date": "2026-09-30",
+          "type": "Mid-Week Aerobic",
+          "distance_km": 8.0,
+          "target_pace": "7:15 - 7:30 min/km",
+          "rpe": 3,
+          "description": "Aerobic base builder.",
+          "strength_prehab": "Hip openers",
+          "fueling": "Water"
+        },
+        {
+          "day": "Thursday",
+          "date": "2026-10-01",
+          "type": "Strength Day 2",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 5,
+          "description": "Posterior Chain & Core.",
+          "strength_prehab": "RDLs, Bird-dogs, Side planks, Deadbugs.",
+          "fueling": "Balanced diet"
+        },
+        {
+          "day": "Friday",
+          "date": "2026-10-02",
+          "type": "Speed (Threshold Tempo)",
+          "distance_km": 7.0,
+          "target_pace": "6:25 - 6:35 min/km tempo",
+          "rpe": 7,
+          "description": "1.5 km warmup, 4 km continuous @ Tempo (6:25-6:35 min/km), 1.5 km cooldown.",
+          "strength_prehab": "Hamstring & calf dynamic stretches",
+          "fueling": "Carb snack pre-run"
+        },
+        {
+          "day": "Saturday",
+          "date": "2026-10-03",
+          "type": "Rest",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 1,
+          "description": "Full Rest.",
+          "strength_prehab": "Light walking only",
+          "fueling": "Carb-focused dinner + hydration"
+        },
+        {
+          "day": "Sunday",
+          "date": "2026-10-04",
+          "type": "Long Run",
+          "distance_km": 16.0,
+          "target_pace": "7:30 - 7:45 min/km",
+          "rpe": 4,
+          "description": "16 km long run. Gels at km 5, 10, 14 + Salt capsules at km 5 & 12.",
+          "strength_prehab": "Post-run calf & hamstring stretch",
+          "fueling": "3 Gels + 2 Salt capsules + water"
+        }
+      ]
+    },
+    {
+      "week_number": 8,
+      "phase": "Aerobic Base Building",
+      "start_date": "2026-10-05",
+      "end_date": "2026-10-11",
+      "total_planned_km": 26,
+      "is_deload": true,
+      "focus": "DELOAD WEEK 2: Mid-Base 10K Time Trial Benchmark (Aim: Sub-59 min)",
+      "workouts": [
+        {
+          "day": "Monday",
+          "date": "2026-10-05",
+          "type": "Recovery Run",
+          "distance_km": 4.0,
+          "target_pace": "8:00 min/km",
+          "rpe": 2,
+          "description": "Gentle shakeout.",
+          "strength_prehab": "Calf stretching",
+          "fueling": "Water"
+        },
+        {
+          "day": "Tuesday",
+          "date": "2026-10-06",
+          "type": "Strength Day 1",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 4,
+          "description": "Light bodyweight calf raises & glute bridges (2x10).",
+          "strength_prehab": "Bodyweight only",
+          "fueling": "Balanced meals"
+        },
+        {
+          "day": "Wednesday",
+          "date": "2026-10-07",
+          "type": "Mid-Week Aerobic",
+          "distance_km": 5.0,
+          "target_pace": "7:20 min/km + 3 strides",
+          "rpe": 3,
+          "description": "5 km easy with 3x100m strides.",
+          "strength_prehab": "Dynamic mobility",
+          "fueling": "Water"
+        },
+        {
+          "day": "Thursday",
+          "date": "2026-10-08",
+          "type": "Strength Day 2",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 4,
+          "description": "Light core and back mobility.",
+          "strength_prehab": "Bird-dogs and side planks (2 sets)",
+          "fueling": "Balanced diet"
+        },
+        {
+          "day": "Friday",
+          "date": "2026-10-09",
+          "type": "Speed (Shakeout)",
+          "distance_km": 3.0,
+          "target_pace": "7:45 min/km + pickups",
+          "rpe": 4,
+          "description": "3 km shakeout + 3x30-sec pickups.",
+          "strength_prehab": "Light dynamic stretches",
+          "fueling": "Water"
+        },
+        {
+          "day": "Saturday",
+          "date": "2026-10-10",
+          "type": "Rest",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 1,
+          "description": "Full Rest before Time Trial.",
+          "strength_prehab": "Rest",
+          "fueling": "Carb dinner + hydration"
+        },
+        {
+          "day": "Sunday",
+          "date": "2026-10-11",
+          "type": "10K Time Trial",
+          "distance_km": 10.0,
+          "target_pace": "5:50 - 5:55 min/km race effort",
+          "rpe": 9,
+          "description": "10K TIME TRIAL BENCHMARK: 1.5 km warmup, 10 km Time Trial @ Maximum Sustainable Effort (Target: 58:00-59:30), 1 km cooldown.",
+          "strength_prehab": "Full post-race stretching and recovery",
+          "fueling": "Pre-race snack + water"
+        }
+      ]
+    },
+    {
+      "week_number": 9,
+      "phase": "Aerobic Base Building",
+      "start_date": "2026-10-12",
+      "end_date": "2026-10-18",
+      "total_planned_km": 41.1,
+      "is_deload": false,
+      "focus": "PROCAM SLAM #1: Vedanta Delhi Half Marathon (VDHM) \u2014 Non-Tapered Training Effort",
+      "workouts": [
+        {
+          "day": "Monday",
+          "date": "2026-10-12",
+          "type": "Recovery Run",
+          "distance_km": 5.0,
+          "target_pace": "7:55 min/km",
+          "rpe": 2,
+          "description": "Post-10K recovery run.",
+          "strength_prehab": "Calf & hamstring flush",
+          "fueling": "Water"
+        },
+        {
+          "day": "Tuesday",
+          "date": "2026-10-13",
+          "type": "Strength Day 1",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 5,
+          "description": "Lower Body & Calf Armor.",
+          "strength_prehab": "Eccentric heel drops (3x15), seated calf raises (3x15), split squats, glute bridges, tibialis raises.",
+          "fueling": "Protein"
+        },
+        {
+          "day": "Wednesday",
+          "date": "2026-10-14",
+          "type": "Mid-Week Aerobic",
+          "distance_km": 8.0,
+          "target_pace": "7:15 - 7:30 min/km",
+          "rpe": 3,
+          "description": "Aerobic cruise.",
+          "strength_prehab": "Hip mobility drills",
+          "fueling": "Water"
+        },
+        {
+          "day": "Thursday",
+          "date": "2026-10-15",
+          "type": "Strength Day 2",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 5,
+          "description": "Posterior Chain & Core.",
+          "strength_prehab": "RDLs, Bird-dogs, Side planks, Pallof press, Back extensions.",
+          "fueling": "Balanced nutrition"
+        },
+        {
+          "day": "Friday",
+          "date": "2026-10-16",
+          "type": "Speed (Strides)",
+          "distance_km": 7.0,
+          "target_pace": "7:40 warmup, strides",
+          "rpe": 7,
+          "description": "2 km warmup, 4x100m relaxed strides, 4.5 km easy. Pre-Delhi shakeout.",
+          "strength_prehab": "Dynamic prep",
+          "fueling": "Carb snack"
+        },
+        {
+          "day": "Saturday",
+          "date": "2026-10-17",
+          "type": "Rest",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 1,
+          "description": "Full Rest.",
+          "strength_prehab": "Foam roll calves & quads",
+          "fueling": "Hydrate with electrolyte drink"
+        },
+        {
+          "day": "Sunday",
+          "date": "2026-10-18",
+          "type": "VDHM 2026 (HM)",
+          "distance_km": 21.1,
+          "target_pace": "7:20 - 7:35 min/km",
+          "rpe": 5,
+          "description": "PROCAM SLAM #1: VEDANTA DELHI HALF MARATHON (21.1 km). Steady, controlled training pace. Gels at km 6, 12, 17 + Salt capsules at km 6 & 14. Do not race at 100% effort.",
+          "strength_prehab": "Post-run calf ice/elevation & stretch",
+          "fueling": "3 Gels + 2 Salt capsules + on-course water"
+        }
+      ]
+    },
+    {
+      "week_number": 10,
+      "phase": "Aerobic Base Building",
+      "start_date": "2026-10-19",
+      "end_date": "2026-10-25",
+      "total_planned_km": 42,
+      "is_deload": false,
+      "focus": "Breaking the 20K barrier @ 7:30-7:45 min/km",
+      "workouts": [
+        {
+          "day": "Monday",
+          "date": "2026-10-19",
+          "type": "Recovery Run",
+          "distance_km": 6.0,
+          "target_pace": "7:50 min/km",
+          "rpe": 2,
+          "description": "Recovery run.",
+          "strength_prehab": "Calf & hamstring flush",
+          "fueling": "Water"
+        },
+        {
+          "day": "Tuesday",
+          "date": "2026-10-20",
+          "type": "Strength Day 1",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 5,
+          "description": "Lower Body & Calf Armor.",
+          "strength_prehab": "Eccentric heel drops, seated calf raises, Bulgarian split squats, glute bridges, tibialis raises.",
+          "fueling": "Protein"
+        },
+        {
+          "day": "Wednesday",
+          "date": "2026-10-21",
+          "type": "Mid-Week Aerobic",
+          "distance_km": 8.0,
+          "target_pace": "7:15 - 7:30 min/km",
+          "rpe": 3,
+          "description": "Aerobic foundation run.",
+          "strength_prehab": "Ankle mobility",
+          "fueling": "Water"
+        },
+        {
+          "day": "Thursday",
+          "date": "2026-10-22",
+          "type": "Strength Day 2",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 5,
+          "description": "Posterior Chain & Core.",
+          "strength_prehab": "RDLs, Bird-dogs, Side planks, Supermans.",
+          "fueling": "Balanced nutrition"
+        },
+        {
+          "day": "Friday",
+          "date": "2026-10-23",
+          "type": "Speed (Hills + Tempo)",
+          "distance_km": 8.0,
+          "target_pace": "Hills RPE 8, Tempo 6:30 min/km",
+          "rpe": 8,
+          "description": "2 km warmup, 4x75-sec hill repeats, 2 km @ Tempo (6:30 min/km), 1.5 km cooldown.",
+          "strength_prehab": "Calf & Achilles prep",
+          "fueling": "Carb snack"
+        },
+        {
+          "day": "Saturday",
+          "date": "2026-10-24",
+          "type": "Rest",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 1,
+          "description": "Full Rest.",
+          "strength_prehab": "Light stretching",
+          "fueling": "Carb-rich dinner + electrolytes"
+        },
+        {
+          "day": "Sunday",
+          "date": "2026-10-25",
+          "type": "Long Run",
+          "distance_km": 20.0,
+          "target_pace": "7:30 - 7:45 min/km",
+          "rpe": 4,
+          "description": "20 km Long Run. 4 Gels (every 40 min) + 2 Salt capsules (km 6, 14) + hydration vest.",
+          "strength_prehab": "Post-run calf massage",
+          "fueling": "4 Gels + 2 Salt capsules + 1.5L water"
+        }
+      ]
+    },
+    {
+      "week_number": 11,
+      "phase": "Aerobic Base Building",
+      "start_date": "2026-10-26",
+      "end_date": "2026-11-01",
+      "total_planned_km": 45,
+      "is_deload": false,
+      "focus": "Sustained aerobic volume + 1K speed repeats",
+      "workouts": [
+        {
+          "day": "Monday",
+          "date": "2026-10-26",
+          "type": "Recovery Run",
+          "distance_km": 6.0,
+          "target_pace": "7:50 min/km",
+          "rpe": 2,
+          "description": "Recovery run.",
+          "strength_prehab": "Calf & hip stretch",
+          "fueling": "Water"
+        },
+        {
+          "day": "Tuesday",
+          "date": "2026-10-27",
+          "type": "Strength Day 1",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 5,
+          "description": "Lower Body & Calf Armor.",
+          "strength_prehab": "Eccentric heel drops, soleus raises, split squats, glute bridges, tibialis raises.",
+          "fueling": "Protein"
+        },
+        {
+          "day": "Wednesday",
+          "date": "2026-10-28",
+          "type": "Mid-Week Aerobic",
+          "distance_km": 9.0,
+          "target_pace": "7:15 - 7:30 min/km",
+          "rpe": 3,
+          "description": "Mid-week aerobic anchor.",
+          "strength_prehab": "Hip openers",
+          "fueling": "Water"
+        },
+        {
+          "day": "Thursday",
+          "date": "2026-10-29",
+          "type": "Strength Day 2",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 5,
+          "description": "Posterior Chain & Core.",
+          "strength_prehab": "RDLs, Bird-dogs, Side planks, Deadbugs.",
+          "fueling": "Balanced diet"
+        },
+        {
+          "day": "Friday",
+          "date": "2026-10-30",
+          "type": "Speed (1K Repeats)",
+          "distance_km": 8.0,
+          "target_pace": "5:50 min/km intervals",
+          "rpe": 8,
+          "description": "1.5 km warmup, 4x1 km @ 5:50 min/km (2 min jog rest), 1.5 km cooldown.",
+          "strength_prehab": "Dynamic leg swings",
+          "fueling": "Carb snack"
+        },
+        {
+          "day": "Saturday",
+          "date": "2026-10-31",
+          "type": "Rest",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 1,
+          "description": "Full Rest.",
+          "strength_prehab": "Foam rolling",
+          "fueling": "Hydration tracking"
+        },
+        {
+          "day": "Sunday",
+          "date": "2026-11-01",
+          "type": "Long Run",
+          "distance_km": 22.0,
+          "target_pace": "7:30 - 7:45 min/km (Last 2k @ 7:06)",
+          "rpe": 5,
+          "description": "22 km Long Run. First 20 km @ 7:35 min/km, last 2 km @ Marathon Pace (7:06 min/km).",
+          "strength_prehab": "Post-run calf recovery",
+          "fueling": "4 Gels + 3 Salt capsules + 1.5L water"
+        }
+      ]
+    },
+    {
+      "week_number": 12,
+      "phase": "Aerobic Base Building",
+      "start_date": "2026-11-02",
+      "end_date": "2026-11-08",
+      "total_planned_km": 32,
+      "is_deload": true,
+      "focus": "DELOAD WEEK 3: Mid-program reset & musculoskeletal check",
+      "workouts": [
+        {
+          "day": "Monday",
+          "date": "2026-11-02",
+          "type": "Recovery Run",
+          "distance_km": 5.0,
+          "target_pace": "8:00 min/km",
+          "rpe": 2,
+          "description": "Gentle recovery jog.",
+          "strength_prehab": "Gentle stretching",
+          "fueling": "Water"
+        },
+        {
+          "day": "Tuesday",
+          "date": "2026-11-03",
+          "type": "Strength Day 1",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 4,
+          "description": "Bodyweight maintenance (2 sets).",
+          "strength_prehab": "Calf raises, glute bridges, lunges",
+          "fueling": "Balanced meals"
+        },
+        {
+          "day": "Wednesday",
+          "date": "2026-11-04",
+          "type": "Mid-Week Aerobic",
+          "distance_km": 6.0,
+          "target_pace": "7:25 min/km",
+          "rpe": 3,
+          "description": "Easy aerobic run.",
+          "strength_prehab": "Dynamic mobility",
+          "fueling": "Water"
+        },
+        {
+          "day": "Thursday",
+          "date": "2026-11-05",
+          "type": "Strength Day 2",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 4,
+          "description": "Core stability & hip flexor release.",
+          "strength_prehab": "Bird-dogs, deadbugs (2 sets)",
+          "fueling": "Balanced diet"
+        },
+        {
+          "day": "Friday",
+          "date": "2026-11-06",
+          "type": "Speed (Strides)",
+          "distance_km": 5.0,
+          "target_pace": "7:45 warmup, strides",
+          "rpe": 5,
+          "description": "2 km easy, 5x100m strides, 1.5 km easy.",
+          "strength_prehab": "Dynamic prep",
+          "fueling": "Water"
+        },
+        {
+          "day": "Saturday",
+          "date": "2026-11-07",
+          "type": "Rest",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 1,
+          "description": "Full Rest.",
+          "strength_prehab": "Sleep 8+ hours",
+          "fueling": "Hydration"
+        },
+        {
+          "day": "Sunday",
+          "date": "2026-11-08",
+          "type": "Long Run",
+          "distance_km": 14.0,
+          "target_pace": "7:35 - 7:45 min/km",
+          "rpe": 3,
+          "description": "Deload long run. Low heart rate, smooth cruising.",
+          "strength_prehab": "Calf stretching",
+          "fueling": "2 Gels + 1 Salt capsule + water"
+        }
+      ]
+    },
+    {
+      "week_number": 13,
+      "phase": "Peak & Race Specificity",
+      "start_date": "2026-11-09",
+      "end_date": "2026-11-15",
+      "total_planned_km": 46,
+      "is_deload": false,
+      "focus": "Peak phase opening; Marathon Pace threshold blocks",
+      "workouts": [
+        {
+          "day": "Monday",
+          "date": "2026-11-09",
+          "type": "Recovery Run",
+          "distance_km": 6.0,
+          "target_pace": "7:50 min/km",
+          "rpe": 2,
+          "description": "Recovery run.",
+          "strength_prehab": "Calf & hamstring flush",
+          "fueling": "Water"
+        },
+        {
+          "day": "Tuesday",
+          "date": "2026-11-10",
+          "type": "Strength Day 1",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 5,
+          "description": "Lower Body & Calf Armor.",
+          "strength_prehab": "Eccentric heel drops, seated calf raises, Bulgarian split squats, glute bridges, tibialis raises.",
+          "fueling": "Protein"
+        },
+        {
+          "day": "Wednesday",
+          "date": "2026-11-11",
+          "type": "Mid-Week Aerobic",
+          "distance_km": 8.0,
+          "target_pace": "7:15 - 7:25 min/km",
+          "rpe": 3,
+          "description": "Aerobic rhythm run.",
+          "strength_prehab": "Hip mobility",
+          "fueling": "Water"
+        },
+        {
+          "day": "Thursday",
+          "date": "2026-11-12",
+          "type": "Strength Day 2",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 5,
+          "description": "Posterior Chain & Core.",
+          "strength_prehab": "RDLs, Bird-dogs, Side planks, Pallof press.",
+          "fueling": "Balanced nutrition"
+        },
+        {
+          "day": "Friday",
+          "date": "2026-11-13",
+          "type": "Speed (MP Tempo)",
+          "distance_km": 8.0,
+          "target_pace": "7:00 - 7:06 min/km MP block",
+          "rpe": 6,
+          "description": "2 km warmup, 4 km continuous @ Marathon Pace (7:00-7:06 min/km), 2 km cooldown.",
+          "strength_prehab": "Dynamic stretches",
+          "fueling": "Carb snack"
+        },
+        {
+          "day": "Saturday",
+          "date": "2026-11-14",
+          "type": "Rest",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 1,
+          "description": "Full Rest.",
+          "strength_prehab": "Foam rolling",
+          "fueling": "Hydration tracking"
+        },
+        {
+          "day": "Sunday",
+          "date": "2026-11-15",
+          "type": "Long Run",
+          "distance_km": 24.0,
+          "target_pace": "7:30 - 7:45 min/km",
+          "rpe": 4,
+          "description": "24 km Long Run. Gels every 40 mins + Salt capsules at km 6, 12, 18.",
+          "strength_prehab": "Post-run calf recovery",
+          "fueling": "5 Gels + 3 Salt capsules + 1.5L water"
+        }
+      ]
+    },
+    {
+      "week_number": 14,
+      "phase": "Peak & Race Specificity",
+      "start_date": "2026-11-16",
+      "end_date": "2026-11-22",
+      "total_planned_km": 40,
+      "is_deload": false,
+      "focus": "HALF MARATHON RACE SIMULATION (Aim: 2:23-2:27)",
+      "workouts": [
+        {
+          "day": "Monday",
+          "date": "2026-11-16",
+          "type": "Recovery Run",
+          "distance_km": 5.0,
+          "target_pace": "8:00 min/km",
+          "rpe": 2,
+          "description": "Short easy recovery.",
+          "strength_prehab": "Gentle calf stretches",
+          "fueling": "Water"
+        },
+        {
+          "day": "Tuesday",
+          "date": "2026-11-17",
+          "type": "Strength Day 1",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 4,
+          "description": "Light calf & glute activation (2 sets).",
+          "strength_prehab": "Bodyweight only",
+          "fueling": "Balanced meals"
+        },
+        {
+          "day": "Wednesday",
+          "date": "2026-11-18",
+          "type": "Mid-Week Aerobic",
+          "distance_km": 6.0,
+          "target_pace": "7:20 min/km",
+          "rpe": 3,
+          "description": "Easy aerobic run.",
+          "strength_prehab": "Dynamic mobility",
+          "fueling": "Water"
+        },
+        {
+          "day": "Thursday",
+          "date": "2026-11-19",
+          "type": "Strength Day 2",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 3,
+          "description": "Core & mobility only.",
+          "strength_prehab": "Bird-dogs, deadbugs",
+          "fueling": "Balanced diet"
+        },
+        {
+          "day": "Friday",
+          "date": "2026-11-20",
+          "type": "Speed (Shakeout)",
+          "distance_km": 4.0,
+          "target_pace": "7:45 min/km + strides",
+          "rpe": 4,
+          "description": "4 km shakeout + 4x100m strides.",
+          "strength_prehab": "Dynamic stretches",
+          "fueling": "Water"
+        },
+        {
+          "day": "Saturday",
+          "date": "2026-11-21",
+          "type": "Rest",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 1,
+          "description": "Full Rest. Full race-morning meal rehearsal.",
+          "strength_prehab": "Rest",
+          "fueling": "High-carb dinner + hydration"
+        },
+        {
+          "day": "Sunday",
+          "date": "2026-11-22",
+          "type": "HM Simulation",
+          "distance_km": 21.1,
+          "target_pace": "Progressive: 7:10 -> 6:50 -> 6:35 min/km",
+          "rpe": 8,
+          "description": "HALF MARATHON RACE SIMULATION (21.1 km): First 5 km @ 7:10, km 5-16 @ 6:45-6:55, km 16-21.1 @ 6:30-6:40. Target: 2:23:00-2:27:00.",
+          "strength_prehab": "Full post-race recovery protocol",
+          "fueling": "3 Gels (km 6, 12, 17) + 2 Salt capsules + 1.2L water"
+        }
+      ]
+    },
+    {
+      "week_number": 15,
+      "phase": "Peak & Race Specificity",
+      "start_date": "2026-11-23",
+      "end_date": "2026-11-29",
+      "total_planned_km": 50,
+      "is_deload": false,
+      "focus": "High volume peak week; Pedder Road Hill Attack; 26 km Long Run",
+      "workouts": [
+        {
+          "day": "Monday",
+          "date": "2026-11-23",
+          "type": "Recovery Run",
+          "distance_km": 6.0,
+          "target_pace": "7:55 min/km",
+          "rpe": 2,
+          "description": "Post-HM recovery run.",
+          "strength_prehab": "Calf & hamstring flush",
+          "fueling": "Water"
+        },
+        {
+          "day": "Tuesday",
+          "date": "2026-11-24",
+          "type": "Strength Day 1",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 5,
+          "description": "Lower Body & Calf Armor.",
+          "strength_prehab": "Eccentric heel drops, seated calf raises, Bulgarian split squats, glute bridges, tibialis raises.",
+          "fueling": "Protein"
+        },
+        {
+          "day": "Wednesday",
+          "date": "2026-11-25",
+          "type": "Mid-Week Aerobic",
+          "distance_km": 9.0,
+          "target_pace": "7:15 - 7:30 min/km",
+          "rpe": 3,
+          "description": "Aerobic volume builder.",
+          "strength_prehab": "Hip mobility",
+          "fueling": "Water"
+        },
+        {
+          "day": "Thursday",
+          "date": "2026-11-26",
+          "type": "Strength Day 2",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 5,
+          "description": "Posterior Chain & Core.",
+          "strength_prehab": "RDLs, Bird-dogs, Side planks, Supermans.",
+          "fueling": "Balanced nutrition"
+        },
+        {
+          "day": "Friday",
+          "date": "2026-11-27",
+          "type": "Speed (Hill Attack)",
+          "distance_km": 9.0,
+          "target_pace": "Uphill RPE 8, cooldown 7:45",
+          "rpe": 8,
+          "description": "2 km warmup, 6x90-sec hill repeats @ RPE 8 (Pedder Road prep), 2 km cooldown.",
+          "strength_prehab": "Calf & Achilles prep",
+          "fueling": "Carb snack"
+        },
+        {
+          "day": "Saturday",
+          "date": "2026-11-28",
+          "type": "Rest",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 1,
+          "description": "Full Rest.",
+          "strength_prehab": "Foam rolling",
+          "fueling": "Carb dinner + hydration"
+        },
+        {
+          "day": "Sunday",
+          "date": "2026-11-29",
+          "type": "Long Run",
+          "distance_km": 26.0,
+          "target_pace": "7:30 - 7:45 min/km",
+          "rpe": 5,
+          "description": "26 km Long Run. Practice taking 5 full gels + 3 salt capsules.",
+          "strength_prehab": "Post-run calf recovery",
+          "fueling": "5 Gels + 3 Salt capsules + 1.8L water"
+        }
+      ]
+    },
+    {
+      "week_number": 16,
+      "phase": "Peak & Race Specificity",
+      "start_date": "2026-11-30",
+      "end_date": "2026-12-06",
+      "total_planned_km": 36,
+      "is_deload": true,
+      "focus": "DELOAD WEEK 4: Pre-peak recovery & glycogen store refresh",
+      "workouts": [
+        {
+          "day": "Monday",
+          "date": "2026-11-30",
+          "type": "Recovery Run",
+          "distance_km": 5.0,
+          "target_pace": "8:00 min/km",
+          "rpe": 2,
+          "description": "Gentle recovery run.",
+          "strength_prehab": "Gentle stretching",
+          "fueling": "Water"
+        },
+        {
+          "day": "Tuesday",
+          "date": "2026-12-01",
+          "type": "Strength Day 1",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 4,
+          "description": "Bodyweight maintenance (2 sets).",
+          "strength_prehab": "Calf raises, glute bridges",
+          "fueling": "Balanced meals"
+        },
+        {
+          "day": "Wednesday",
+          "date": "2026-12-02",
+          "type": "Mid-Week Aerobic",
+          "distance_km": 7.0,
+          "target_pace": "7:25 min/km",
+          "rpe": 3,
+          "description": "Easy aerobic run.",
+          "strength_prehab": "Dynamic mobility",
+          "fueling": "Water"
+        },
+        {
+          "day": "Thursday",
+          "date": "2026-12-03",
+          "type": "Strength Day 2",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 4,
+          "description": "Core & lower back mobility.",
+          "strength_prehab": "Bird-dogs, deadbugs (2 sets)",
+          "fueling": "Balanced diet"
+        },
+        {
+          "day": "Friday",
+          "date": "2026-12-04",
+          "type": "Speed (Strides)",
+          "distance_km": 6.0,
+          "target_pace": "7:45 warmup, strides",
+          "rpe": 5,
+          "description": "2 km easy, 5x100m strides, 2 km easy.",
+          "strength_prehab": "Dynamic prep",
+          "fueling": "Water"
+        },
+        {
+          "day": "Saturday",
+          "date": "2026-12-05",
+          "type": "Rest",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 1,
+          "description": "Full Rest.",
+          "strength_prehab": "Sleep 8+ hours",
+          "fueling": "Hydration"
+        },
+        {
+          "day": "Sunday",
+          "date": "2026-12-06",
+          "type": "Long Run",
+          "distance_km": 16.0,
+          "target_pace": "7:35 - 7:45 min/km",
+          "rpe": 3,
+          "description": "Deload long run. Easy, relaxed rhythm.",
+          "strength_prehab": "Calf stretching",
+          "fueling": "2 Gels + 1 Salt capsule + water"
+        }
+      ]
+    },
+    {
+      "week_number": 17,
+      "phase": "Peak & Race Specificity",
+      "start_date": "2026-12-07",
+      "end_date": "2026-12-13",
+      "total_planned_km": 55.0,
+      "is_deload": false,
+      "focus": "Heavy volume builder; 30 km Peak Distance Long Run",
+      "workouts": [
+        {
+          "day": "Monday",
+          "date": "2026-12-07",
+          "type": "Recovery Run",
+          "distance_km": 7.0,
+          "target_pace": "7:50 min/km",
+          "rpe": 2,
+          "description": "Recovery run.",
+          "strength_prehab": "Calf & hamstring flush",
+          "fueling": "Water"
+        },
+        {
+          "day": "Tuesday",
+          "date": "2026-12-08",
+          "type": "Strength Day 1",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 5,
+          "description": "Lower Body & Calf Armor.",
+          "strength_prehab": "Eccentric heel drops, seated calf raises, Bulgarian split squats, glute bridges, tibialis raises.",
+          "fueling": "Protein"
+        },
+        {
+          "day": "Wednesday",
+          "date": "2026-12-09",
+          "type": "Mid-Week Aerobic",
+          "distance_km": 10.0,
+          "target_pace": "7:15 - 7:30 min/km",
+          "rpe": 3,
+          "description": "Double-digit mid-week aerobic run.",
+          "strength_prehab": "Hip mobility",
+          "fueling": "Water"
+        },
+        {
+          "day": "Thursday",
+          "date": "2026-12-10",
+          "type": "Strength Day 2",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 5,
+          "description": "Posterior Chain & Core.",
+          "strength_prehab": "RDLs, Bird-dogs, Side planks, Pallof press.",
+          "fueling": "Balanced nutrition"
+        },
+        {
+          "day": "Friday",
+          "date": "2026-12-11",
+          "type": "Speed (Threshold Blocks)",
+          "distance_km": 8.0,
+          "target_pace": "6:25 min/km tempo blocks",
+          "rpe": 7,
+          "description": "2 km warmup, 3x1.5 km @ 6:25 min/km (2 min rest), 1.5 km cooldown.",
+          "strength_prehab": "Dynamic stretches",
+          "fueling": "Carb snack"
+        },
+        {
+          "day": "Saturday",
+          "date": "2026-12-12",
+          "type": "Rest",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 1,
+          "description": "Full Rest.",
+          "strength_prehab": "Foam rolling",
+          "fueling": "Carb dinner + hydration"
+        },
+        {
+          "day": "Sunday",
+          "date": "2026-12-13",
+          "type": "Peak Long Run",
+          "distance_km": 30.0,
+          "target_pace": "7:35 - 7:45 min/km (Last 3k @ 7:06)",
+          "rpe": 6,
+          "description": "30 km Peak Distance Run. First 27 km @ 7:35 min/km, last 3 km @ Marathon Pace (7:06 min/km). Max time-on-feet conditioning.",
+          "strength_prehab": "Post-run calf recovery",
+          "fueling": "6 Gels + 4 Salt capsules + 2L water"
+        }
+      ]
+    },
+    {
+      "week_number": 18,
+      "phase": "Peak & Race Specificity",
+      "start_date": "2026-12-14",
+      "end_date": "2026-12-20",
+      "total_planned_km": 49.0,
+      "is_deload": false,
+      "focus": "PROCAM SLAM #2: Tata Steel World 25K Kolkata \u2014 Marathon Pace Dress Rehearsal",
+      "workouts": [
+        {
+          "day": "Monday",
+          "date": "2026-12-14",
+          "type": "Recovery Run",
+          "distance_km": 6.0,
+          "target_pace": "7:55 min/km",
+          "rpe": 2,
+          "description": "Gentle recovery run.",
+          "strength_prehab": "Calf & hamstring flush",
+          "fueling": "Water"
+        },
+        {
+          "day": "Tuesday",
+          "date": "2026-12-15",
+          "type": "Strength Day 1",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 5,
+          "description": "Lower Body & Calf Armor (Final heavy strength week).",
+          "strength_prehab": "Eccentric heel drops, seated calf raises, split squats, glute bridges, tibialis raises.",
+          "fueling": "Protein"
+        },
+        {
+          "day": "Wednesday",
+          "date": "2026-12-16",
+          "type": "Mid-Week Aerobic",
+          "distance_km": 10.0,
+          "target_pace": "7:15 - 7:30 min/km",
+          "rpe": 3,
+          "description": "Mid-week aerobic anchor.",
+          "strength_prehab": "Hip mobility",
+          "fueling": "Water"
+        },
+        {
+          "day": "Thursday",
+          "date": "2026-12-17",
+          "type": "Strength Day 2",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 5,
+          "description": "Posterior Chain & Core.",
+          "strength_prehab": "RDLs, Bird-dogs, Side planks, Supermans.",
+          "fueling": "Balanced nutrition"
+        },
+        {
+          "day": "Friday",
+          "date": "2026-12-18",
+          "type": "Pre-Race Easy + Strides",
+          "distance_km": 8.0,
+          "target_pace": "7:30 - 7:45 min/km",
+          "rpe": 6,
+          "description": "2 km warmup, 4x100m strides, 5.5 km easy shakeout before traveling to Kolkata.",
+          "strength_prehab": "Dynamic stretches",
+          "fueling": "Carb snack"
+        },
+        {
+          "day": "Saturday",
+          "date": "2026-12-19",
+          "type": "Rest",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 1,
+          "description": "Full Rest. Hyper-hydrate with electrolytes.",
+          "strength_prehab": "Rest",
+          "fueling": "High-carb loading meals + 2.5L fluids"
+        },
+        {
+          "day": "Sunday",
+          "date": "2026-12-20",
+          "type": "TSW Kolkata 25K",
+          "distance_km": 25.0,
+          "target_pace": "First 15k @ 7:25, Last 10k @ 7:05 min/km",
+          "rpe": 6,
+          "description": "PROCAM SLAM #2: TATA STEEL WORLD 25K KOLKATA (25 km). Marathon Goal Pace Dress Rehearsal. First 15 km steady @ 7:25 min/km, last 10 km locked at Marathon Goal Pace (7:00-7:06 min/km). Target: ~3:00:00.",
+          "strength_prehab": "Full post-run ice/foam roll & elevation",
+          "fueling": "5 Gels + 3 Salt capsules + water"
+        }
+      ]
+    },
+    {
+      "week_number": 19,
+      "phase": "Peak & Race Specificity",
+      "start_date": "2026-12-21",
+      "end_date": "2026-12-27",
+      "total_planned_km": 46,
+      "is_deload": false,
+      "focus": "Post-peak consolidation run (24 km Long Run)",
+      "workouts": [
+        {
+          "day": "Monday",
+          "date": "2026-12-21",
+          "type": "Recovery Run",
+          "distance_km": 6.0,
+          "target_pace": "8:00 min/km",
+          "rpe": 2,
+          "description": "Gentle shakeout after peak 32k.",
+          "strength_prehab": "Calf & hamstring flush",
+          "fueling": "Water"
+        },
+        {
+          "day": "Tuesday",
+          "date": "2026-12-22",
+          "type": "Strength Day 1",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 4,
+          "description": "Lighter maintenance strength (2 sets/exercise).",
+          "strength_prehab": "Bodyweight heel drops, glute bridges",
+          "fueling": "Protein"
+        },
+        {
+          "day": "Wednesday",
+          "date": "2026-12-23",
+          "type": "Mid-Week Aerobic",
+          "distance_km": 8.0,
+          "target_pace": "7:20 - 7:35 min/km",
+          "rpe": 3,
+          "description": "Aerobic cruise.",
+          "strength_prehab": "Hip mobility",
+          "fueling": "Water"
+        },
+        {
+          "day": "Thursday",
+          "date": "2026-12-24",
+          "type": "Strength Day 2",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 4,
+          "description": "Core & bodyweight back stabilization.",
+          "strength_prehab": "Bird-dogs, deadbugs (2 sets)",
+          "fueling": "Balanced nutrition"
+        },
+        {
+          "day": "Friday",
+          "date": "2026-12-25",
+          "type": "Speed (Tempo)",
+          "distance_km": 8.0,
+          "target_pace": "6:30 min/km tempo",
+          "rpe": 7,
+          "description": "2 km warmup, 3 km @ 6:30 min/km tempo, 2 km cooldown.",
+          "strength_prehab": "Dynamic stretches",
+          "fueling": "Carb snack"
+        },
+        {
+          "day": "Saturday",
+          "date": "2026-12-26",
+          "type": "Rest",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 1,
+          "description": "Full Rest.",
+          "strength_prehab": "Foam rolling",
+          "fueling": "Carb dinner + hydration"
+        },
+        {
+          "day": "Sunday",
+          "date": "2026-12-27",
+          "type": "Long Run",
+          "distance_km": 24.0,
+          "target_pace": "7:35 - 7:45 min/km",
+          "rpe": 4,
+          "description": "24 km Long Run. Comfortable rhythm.",
+          "strength_prehab": "Post-run calf recovery",
+          "fueling": "4 Gels + 3 Salt capsules + 1.5L water"
+        }
+      ]
+    },
+    {
+      "week_number": 20,
+      "phase": "Taper & Race Execution",
+      "start_date": "2026-12-28",
+      "end_date": "2027-01-03",
+      "total_planned_km": 35,
+      "is_deload": true,
+      "focus": "TAPER WEEK 1: 35% Volume Reduction; Glycogen supercompensation begins",
+      "workouts": [
+        {
+          "day": "Monday",
+          "date": "2026-12-28",
+          "type": "Recovery Run",
+          "distance_km": 5.0,
+          "target_pace": "7:55 min/km",
+          "rpe": 2,
+          "description": "Easy recovery run.",
+          "strength_prehab": "Gentle calf stretches",
+          "fueling": "Water"
+        },
+        {
+          "day": "Tuesday",
+          "date": "2026-12-29",
+          "type": "Strength Day 1",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 3,
+          "description": "Bodyweight only (Calf raises 2x15, glute bridges, bird-dogs). No heavy lifting.",
+          "strength_prehab": "Mobility & activation",
+          "fueling": "Balanced meals"
+        },
+        {
+          "day": "Wednesday",
+          "date": "2026-12-30",
+          "type": "Mid-Week Aerobic",
+          "distance_km": 7.0,
+          "target_pace": "7:15 - 7:30 min/km",
+          "rpe": 3,
+          "description": "Light, springy aerobic run.",
+          "strength_prehab": "Dynamic mobility",
+          "fueling": "Water"
+        },
+        {
+          "day": "Thursday",
+          "date": "2026-12-31",
+          "type": "Strength Day 2",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 3,
+          "description": "Light core & stretching (15 mins).",
+          "strength_prehab": "Bird-dogs, deadbugs (2 sets)",
+          "fueling": "Balanced diet"
+        },
+        {
+          "day": "Friday",
+          "date": "2027-01-01",
+          "type": "Speed (MP Sharpening)",
+          "distance_km": 5.0,
+          "target_pace": "7:00 min/km MP block",
+          "rpe": 5,
+          "description": "1.5 km warmup, 2 km @ Marathon Pace (7:00 min/km), 1.5 km cooldown.",
+          "strength_prehab": "Dynamic stretches",
+          "fueling": "Carb snack"
+        },
+        {
+          "day": "Saturday",
+          "date": "2027-01-02",
+          "type": "Rest",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 1,
+          "description": "Full Rest.",
+          "strength_prehab": "Rest & sleep",
+          "fueling": "Hydration"
+        },
+        {
+          "day": "Sunday",
+          "date": "2027-01-03",
+          "type": "Long Run",
+          "distance_km": 18.0,
+          "target_pace": "7:30 - 7:40 min/km",
+          "rpe": 3,
+          "description": "Taper 1 Long Run: 18 km. Legs should feel fresh and bouncy.",
+          "strength_prehab": "Post-run calf flush",
+          "fueling": "3 Gels + 2 Salt capsules + water"
+        }
+      ]
+    },
+    {
+      "week_number": 21,
+      "phase": "Taper & Race Execution",
+      "start_date": "2027-01-04",
+      "end_date": "2027-01-10",
+      "total_planned_km": 26,
+      "is_deload": true,
+      "focus": "TAPER WEEK 2: 55% Volume Reduction; Final race gear rehearsal",
+      "workouts": [
+        {
+          "day": "Monday",
+          "date": "2027-01-04",
+          "type": "Recovery Run",
+          "distance_km": 4.0,
+          "target_pace": "8:00 min/km",
+          "rpe": 2,
+          "description": "Short shakeout.",
+          "strength_prehab": "Gentle stretching",
+          "fueling": "Water"
+        },
+        {
+          "day": "Tuesday",
+          "date": "2027-01-05",
+          "type": "Mobility",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 2,
+          "description": "Light mobility, foam rolling, dynamic hip openers.",
+          "strength_prehab": "Mobility only",
+          "fueling": "Balanced meals"
+        },
+        {
+          "day": "Wednesday",
+          "date": "2027-01-06",
+          "type": "Mid-Week Aerobic",
+          "distance_km": 5.0,
+          "target_pace": "7:20 min/km + 3 strides",
+          "rpe": 3,
+          "description": "5 km easy with 3x100m strides.",
+          "strength_prehab": "Dynamic mobility",
+          "fueling": "Water"
+        },
+        {
+          "day": "Thursday",
+          "date": "2027-01-07",
+          "type": "Rest",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 1,
+          "description": "Complete Rest & hydration tracking.",
+          "strength_prehab": "Rest",
+          "fueling": "Hydration tracking"
+        },
+        {
+          "day": "Friday",
+          "date": "2027-01-08",
+          "type": "Speed (MP Sharpener)",
+          "distance_km": 5.0,
+          "target_pace": "7:05 min/km MP block",
+          "rpe": 4,
+          "description": "2 km easy, 1.5 km @ Marathon Pace (7:05 min/km), 1.5 km cooldown.",
+          "strength_prehab": "Dynamic prep",
+          "fueling": "Carb snack"
+        },
+        {
+          "day": "Saturday",
+          "date": "2027-01-09",
+          "type": "Rest",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 1,
+          "description": "Full Rest.",
+          "strength_prehab": "Rest",
+          "fueling": "Hydration"
+        },
+        {
+          "day": "Sunday",
+          "date": "2027-01-10",
+          "type": "Long Run",
+          "distance_km": 12.0,
+          "target_pace": "7:30 - 7:40 min/km",
+          "rpe": 3,
+          "description": "Final dress rehearsal: 12 km @ 7:30-7:40 min/km with Adidas Evo SL 2 and race vest.",
+          "strength_prehab": "Calf stretching",
+          "fueling": "2 Gels + 1 Salt capsule + water"
+        }
+      ]
+    },
+    {
+      "week_number": 22,
+      "phase": "Taper & Race Execution",
+      "start_date": "2027-01-11",
+      "end_date": "2027-01-17",
+      "total_planned_km": 54.2,
+      "is_deload": false,
+      "focus": "RACE WEEK: TATA MUMBAI MARATHON 2027 (Sub-5:00:00 Target: 4:58:30)",
+      "workouts": [
+        {
+          "day": "Monday",
+          "date": "2027-01-11",
+          "type": "Recovery Shakeout",
+          "distance_km": 4.0,
+          "target_pace": "8:00 min/km",
+          "rpe": 2,
+          "description": "4 km shakeout run + gentle calf stretches.",
+          "strength_prehab": "Light stretching",
+          "fueling": "Water"
+        },
+        {
+          "day": "Tuesday",
+          "date": "2027-01-12",
+          "type": "Rest & Packing",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 1,
+          "description": "Rest & Travel Packing (Vest, Gels, Salt Tabs, Shoes).",
+          "strength_prehab": "Rest",
+          "fueling": "Balanced meals"
+        },
+        {
+          "day": "Wednesday",
+          "date": "2027-01-13",
+          "type": "Easy Jog",
+          "distance_km": 4.0,
+          "target_pace": "7:30 min/km + 3 strides",
+          "rpe": 3,
+          "description": "4 km easy jog + 3x60m light strides.",
+          "strength_prehab": "Mobility",
+          "fueling": "Water"
+        },
+        {
+          "day": "Thursday",
+          "date": "2027-01-14",
+          "type": "Travel / Expo",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 1,
+          "description": "Travel to Mumbai. Bib collection at MMRDA Expo. Rest off feet.",
+          "strength_prehab": "Rest",
+          "fueling": "Hydrate with electrolyte bottle"
+        },
+        {
+          "day": "Friday",
+          "date": "2027-01-15",
+          "type": "Mumbai Shakeout",
+          "distance_km": 3.0,
+          "target_pace": "7:45 min/km + 2 strides",
+          "rpe": 3,
+          "description": "3 km morning shakeout run in Mumbai to acclimatize to coastal humidity.",
+          "strength_prehab": "Light dynamic stretches",
+          "fueling": "Water"
+        },
+        {
+          "day": "Saturday",
+          "date": "2027-01-16",
+          "type": "Pre-Race Rest",
+          "distance_km": 0.0,
+          "target_pace": "N/A",
+          "rpe": 1,
+          "description": "Full Rest Day. Stay off feet. High carb meals (rice/potatoes). Sleep by 9 PM.",
+          "strength_prehab": "Rest",
+          "fueling": "High-carb loading (350-400g carbs) + 2L electrolyte fluids"
+        },
+        {
+          "day": "Sunday",
+          "date": "2027-01-17",
+          "type": "RACE DAY",
+          "distance_km": 42.195,
+          "target_pace": "7:05 min/km avg (Sub-5:00 Target: 4:58:30)",
+          "rpe": 9,
+          "description": "TATA MUMBAI MARATHON 2027: Gun off ~5:00 AM. km 0-10 @ 7:10-7:15, Pedder Rd #1 @ 7:25, Sea Link @ 7:02-7:06, Pedder Rd #2 @ 7:35, Finish sprint @ 6:55-7:00!",
+          "strength_prehab": "FINISH LINE MEDAL CELEBRATION! \ud83c\udfc5",
+          "fueling": "6 Gels + 5 Salt capsules + water sips every 15 mins"
+        }
+      ]
+    }
+  ]
+}

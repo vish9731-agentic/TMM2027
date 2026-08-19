@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>22-Week Marathon Training Master Plan | Tata Mumbai Marathon 2027</title>
+  <meta name="description" content="A periodized 22-week marathon training plan tailored for a sub-5:00:00 finish at the Tata Mumbai Marathon 2027 with calf cramp elimination protocols and 3-day strength training.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="#" class="brand">
+        <div class="brand-icon">🏃</div>
+        <div>
+          <div class="brand-title">TMM 2027 MASTER PLAN</div>
+          <div class="brand-subtitle">Sub-5:00 Marathon • 22 Weeks Periodization</div>
+        </div>
+      </a>
+
+      <!-- Navigation Tabs -->
+      <nav class="nav-tabs" role="tablist">
+        <button class="nav-tab-btn active" data-tab="plan" role="tab">📅 Weekly Schedule</button>
+        <button class="nav-tab-btn" data-tab="procam" role="tab">🏅 Procam Slam</button>
+        
+        <button class="nav-tab-btn" data-tab="strength" role="tab">💪 Strength & Prehab</button>
+        <button class="nav-tab-btn" data-tab="fueling" role="tab">⚡ Anti-Cramp Fueling</button>
+        <button class="nav-tab-btn" data-tab="calculator" role="tab">⏱️ Pace Calculator</button>
+        <button class="nav-tab-btn" data-tab="supabase" role="tab">🗄️ Database Hub</button>
+      </nav>
+
+      <!-- Quick Action Buttons -->
+      <div class="nav-actions">
+        <!-- Connect Supabase Button -->
+        <button class="btn-icon" id="btn-supabase-status" onclick="openSupabaseModal()" style="border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.1);">
+          <span id="supabase-status-indicator">⚡</span>
+          <span id="supabase-status-label">Connect Supabase</span>
+        </button>
+
+        <!-- Upload Run Button -->
+        <button class="btn-icon" onclick="openRunUploadModal()" style="background: var(--primary); color: #000; font-weight: 800;">
+          <span>📥 Upload Run (GPX / Strava)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-wrapper">
+
+    <!-- Hero Metric Dashboard -->
+    <section class="hero-section">
+      <!-- Race Card -->
+      <div class="hero-card hero-card-race">
+        <span class="race-badge">🏁 Target Race</span>
+        <h1 class="race-title">Tata Mumbai Marathon</h1>
+        <div class="race-meta">
+          <span>📅 Sunday, Jan 17, 2027</span>
+          <span>📍 Mumbai, India</span>
+        </div>
+        <div class="countdown-timer">
+          <div class="countdown-box">
+            <div class="countdown-val" id="cd-days">--</div>
+            <div class="countdown-lbl">Days</div>
+          </div>
+          <div class="countdown-box">
+            <div class="countdown-val" id="cd-hours">--</div>
+            <div class="countdown-lbl">Hours</div>
+          </div>
+          <div class="countdown-box">
+            <div class="countdown-val" id="cd-mins">--</div>
+            <div class="countdown-lbl">Mins</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Goal Target Card -->
+      <div class="hero-card">
+        <div class="metric-label">
+          <span>Goal Finish Time</span>
+          <span>🎯</span>
+        </div>
+        <div class="metric-value" style="color: var(--primary);">4:59:59</div>
+        <div class="metric-sub">Target Pace: <strong class="mono">7:06 min/km</strong> (11:26/mi)</div>
+        <div class="progress-track" style="margin-top: 1rem;">
+          <div class="progress-fill" style="width: 100%;"></div>
+        </div>
+      </div>
+
+      <!-- Progress Tracking Card -->
+      <div class="hero-card">
+        <div class="metric-label">
+          <span>Completed Volume</span>
+          <span>📈</span>
+        </div>
+        <div class="metric-value" id="metric-completed-km">0.0 km</div>
+        <div class="metric-sub" id="metric-progress-pct">0% completed (0 runs done)</div>
+        <div class="progress-track">
+          <div class="progress-fill" id="metric-progress-fill" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <!-- Key Gear & Baseline Card -->
+      <div class="hero-card">
+        <div class="metric-label">
+          <span>Baseline & Gear</span>
+          <span>👟</span>
+        </div>
+        <div class="metric-value" style="font-size: 1.4rem;">Adidas Evo SL 2</div>
+        <div class="metric-sub">Baseline: <strong>10K in 60:00</strong></div>
+        <div class="metric-sub">Training Base: <strong>Bengaluru (~920m)</strong></div>
+      </div>
+    </section>
+
+    <!-- TAB 1: WEEKLY PLAN & SCHEDULE -->
+    <section id="tab-plan" class="tab-content-panel active">
+      
+      <!-- Phase Timeline Navigator -->
+      <div class="phase-timeline" id="phase-timeline-container">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+
+      <!-- Controls & Filter Toolbar -->
+      <div class="controls-bar">
+        <div class="filter-group">
+          <span class="filter-label">Filter:</span>
+          <button class="filter-btn active" data-filter="all">All Weeks</button>
+          <button class="filter-btn" data-filter="deload">🔋 Deloads (W4, 8, 12, 16, 20)</button>
+          <button class="filter-btn" data-filter="procam">🏅 Procam Slam (VDHM, Kolkata, TMM)</button>
+          <button class="filter-btn" data-filter="milestone">⭐ All Milestones</button>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+          <div class="view-mode-toggle">
+            <button class="view-mode-btn active" id="btn-view-grid" onclick="setViewMode('grid')">🎴 Cards</button>
+            <button class="view-mode-btn" id="btn-view-table" onclick="setViewMode('table')">📋 Agenda Table</button>
+          </div>
+          
+          <button class="btn-icon" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;" onclick="toggleAllWeeks()">
+            <span id="expand-toggle-label">📂 Collapse All</span>
+          </button>
+        </div>
+
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="search-workouts" class="search-input" placeholder="Search workout, tempo, hills, prehab...">
+        </div>
+      </div>
+
+      <!-- Quick Week Jumper Bar -->
+      <div class="week-jumper-bar" id="week-jumper-bar">
+        <!-- Rendered by app.js -->
+      </div>
+        <div class="filter-group">
+          <span class="filter-label">Filter Weeks:</span>
+          <button class="filter-btn active" data-filter="all">All 22 Weeks</button>
+          <button class="filter-btn" data-filter="deload">🔋 Deload Weeks (W4, 8, 12, 16, 20)</button>
+          <button class="filter-btn" data-filter="milestone">⭐ Milestones (10K TT, HM Sim, 32K)</button>
+        </div>
+
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="search-workouts" class="search-input" placeholder="Search tempo, hills, intervals, gels...">
+        </div>
+      </div>
+
+      <!-- Weekly Cards Container -->
+      <div class="weeks-container" id="weeks-container">
+        <!-- Injected via JavaScript from training_data.json -->
+      </div>
+
+    </section>
+
+    <!-- TAB: PROCAM SLAM JOURNEY -->
+    <section id="tab-procam" class="tab-content-panel">
+      <div class="course-card" style="border-top: 3px solid var(--accent-orange);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <span class="badge" style="background: rgba(249, 115, 22, 0.2); color: var(--accent-orange); font-size: 0.8rem;">PROCAM SLAM 2026-27 CYCLE</span>
+            <h2 style="font-size: 1.8rem; font-weight: 800; margin-top: 0.4rem;">Road to the Procam Slam: Course & Elevation Hub</h2>
+          </div>
+          <div style="font-size: 0.85rem; color: var(--text-muted); background: rgba(0,0,0,0.3); padding: 0.5rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+            🎯 Laser Focus: <strong>Tata Mumbai Marathon (Full 42.195K)</strong>
+          </div>
+        </div>
+
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.75rem; line-height: 1.6;">
+          Click on any of the 3 race cards below to inspect the <strong>detailed course elevation profile, sector-by-sector pacing blueprint, and on-course fueling/electrolyte strategy</strong> for that specific event.
+        </p>
+
+        <!-- 3 Interactive Race Selector Cards Grid -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-top: 1.75rem;">
+          
+          <!-- Event 1: VDHM -->
+          <div class="procam-select-card" id="procam-card-vdhm" data-race="vdhm" onclick="selectProcamRace('vdhm')">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="badge" style="background: rgba(56, 189, 248, 0.2); color: var(--accent-blue);">PROCAM SLAM #1</span>
+                <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: 700;">WEEK 9</span>
+              </div>
+              <h3 style="font-size: 1.25rem; font-weight: 800; margin-top: 0.75rem; color: var(--text-main);">Vedanta Delhi Half Marathon</h3>
+              <div style="font-size: 0.8rem; color: var(--accent-blue); margin-top: 0.25rem; font-weight: 600;">📅 Sunday, October 18, 2026</div>
+              <div style="font-size: 1.6rem; font-weight: 900; color: var(--text-main); font-family: 'Outfit'; margin: 0.75rem 0;">21.0975 <span style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500;">km</span></div>
+              
+              <div style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">
+                <strong>Role in Plan:</strong> Controlled long training run. Zero taper before, zero recovery downtime after.
+              </div>
+            </div>
+
+            <div style="margin-top: 1.25rem; padding-top: 0.75rem; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <div style="font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">Training Pace</div>
+                <div class="mono" style="font-size: 0.95rem; font-weight: 700; color: var(--accent-blue);">7:20 – 7:35 /km</div>
+              </div>
+              <span class="action-pill-btn" style="flex: 0; padding: 0.3rem 0.6rem;">Inspect Course ➔</span>
+            </div>
+          </div>
+
+          <!-- Event 2: Kolkata 25K -->
+          <div class="procam-select-card" id="procam-card-kolkata" data-race="kolkata" onclick="selectProcamRace('kolkata')">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: var(--accent-amber);">PROCAM SLAM #2</span>
+                <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: 700;">WEEK 18</span>
+              </div>
+              <h3 style="font-size: 1.25rem; font-weight: 800; margin-top: 0.75rem; color: var(--text-main);">Tata Steel World 25K Kolkata</h3>
+              <div style="font-size: 0.8rem; color: var(--accent-amber); margin-top: 0.25rem; font-weight: 600;">📅 Sunday, December 20, 2026</div>
+              <div style="font-size: 1.6rem; font-weight: 900; color: var(--text-main); font-family: 'Outfit'; margin: 0.75rem 0;">25.0000 <span style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500;">km</span></div>
+              
+              <div style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">
+                <strong>Role in Plan:</strong> Marathon Goal Pace (MP) dress rehearsal on pre-fatigued legs.
+              </div>
+            </div>
+
+            <div style="margin-top: 1.25rem; padding-top: 0.75rem; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <div style="font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">Training Pace</div>
+                <div class="mono" style="font-size: 0.95rem; font-weight: 700; color: var(--accent-amber);">7:05 – 7:25 /km</div>
+              </div>
+              <span class="action-pill-btn" style="flex: 0; padding: 0.3rem 0.6rem;">Inspect Course ➔</span>
+            </div>
+          </div>
+
+          <!-- Event 3: TMM Full Marathon (Default Active) -->
+          <div class="procam-select-card active" id="procam-card-tmm" data-race="tmm" onclick="selectProcamRace('tmm')">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="badge" style="background: rgba(16, 185, 129, 0.3); color: var(--primary);">THE ULTIMATE GOAL 🏆</span>
+                <span style="font-size: 0.75rem; color: var(--primary); font-weight: 800;">WEEK 22</span>
+              </div>
+              <h3 style="font-size: 1.25rem; font-weight: 800; margin-top: 0.75rem; color: var(--text-main);">Tata Mumbai Marathon 2027</h3>
+              <div style="font-size: 0.8rem; color: var(--primary); margin-top: 0.25rem; font-weight: 700;">📅 Sunday, January 17, 2027</div>
+              <div style="font-size: 1.6rem; font-weight: 900; color: var(--primary); font-family: 'Outfit'; margin: 0.75rem 0;">42.195 <span style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500;">km (Full)</span></div>
+              
+              <div style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">
+                <strong>Role in Plan:</strong> The Peak Race! Fully tapered, carb-loaded, executing the sub-5:00 finish across Pedder Road.
+              </div>
+            </div>
+
+            <div style="margin-top: 1.25rem; padding-top: 0.75rem; border-top: 1px solid rgba(16, 185, 129, 0.3); display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <div style="font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">Race Goal Pace</div>
+                <div class="mono" style="font-size: 0.95rem; font-weight: 800; color: var(--primary);">7:05 – 7:06 /km</div>
+              </div>
+              <span class="action-pill-btn" style="flex: 0; padding: 0.3rem 0.6rem; background: var(--primary); color: #000; font-weight: 800;">Inspect Course ➔</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Dynamic Course Elevation Profile & Strategy Container -->
+        <div id="procam-race-details-container">
+          <!-- Rendered dynamically by app.js when selecting VDHM, Kolkata, or TMM -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 3: STRENGTH & PREHAB -->
+    <section id="tab-strength" class="tab-content-panel">
+      <div style="margin-bottom: 1.5rem;">
+        <h2 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 0.5rem;">3-Day Strength & Injury Armor System</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Targeted specifically to eradicate calf cramps at km 18–19 and eliminate lower back fatigue.</p>
+      </div>
+
+      <div class="strength-grid">
+        <!-- Tuesday Routine -->
+        <div class="strength-routine-card" style="border-top: 3px solid var(--primary);">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: var(--primary);">Tuesday (35 mins)</span>
+            <span style="font-size: 0.8rem; color: var(--text-dim);">Lower Body</span>
+          </div>
+          <h3 style="font-size: 1.2rem; font-weight: 700; margin-top: 0.75rem;">Calf Armor & Achilles</h3>
+          <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Builds eccentric muscle resilience so calves do not fail under marathon load.</p>
+
+          <ul class="exercise-list">
+            <li class="exercise-item">
+              <div class="exercise-name">
+                <span>1. Single-Leg Eccentric Heel Drops</span>
+                <span class="exercise-sets">3 x 15 / leg</span>
+              </div>
+              <div class="exercise-desc">Lower down slowly over 3 full seconds on a stair step. Directly targets gastrocnemius & Achilles stiffness.</div>
+            </li>
+            <li class="exercise-item">
+              <div class="exercise-name">
+                <span>2. Seated Bent-Knee Calf Raises</span>
+                <span class="exercise-sets">3 x 15 reps</span>
+              </div>
+              <div class="exercise-desc">Place weight or backpack on knees. Isolates the soleus muscle (primary shock absorber during long runs).</div>
+            </li>
+            <li class="exercise-item">
+              <div class="exercise-name">
+                <span>3. Tibialis Anterior Wall Raises</span>
+                <span class="exercise-sets">3 x 20 reps</span>
+              </div>
+              <div class="exercise-desc">Lean back against a wall, lift toes high. Eliminates shin splints and anterior muscle fatigue.</div>
+            </li>
+            <li class="exercise-item">
+              <div class="exercise-name">
+                <span>4. Bulgarian Split Squats</span>
+                <span class="exercise-sets">3 x 8-10 / leg</span>
+              </div>
+              <div class="exercise-desc">Strengthens quads and knee stabilizers without compressing the lower back.</div>
+            </li>
+            <li class="exercise-item">
+              <div class="exercise-name">
+                <span>5. Single-Leg Glute Bridges</span>
+                <span class="exercise-sets">3 x 12 / leg</span>
+              </div>
+              <div class="exercise-desc">Hold top position for 2 seconds. Fires gluteus medius/maximus to take load off the lumbar spine.</div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Thursday Routine -->
+        <div class="strength-routine-card" style="border-top: 3px solid var(--accent-blue);">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="badge" style="background: rgba(56, 189, 248, 0.2); color: var(--accent-blue);">Thursday (30 mins)</span>
+            <span style="font-size: 0.8rem; color: var(--text-dim);">Core & Spine</span>
+          </div>
+          <h3 style="font-size: 1.2rem; font-weight: 700; margin-top: 0.75rem;">Posterior Chain & Lumbar Core</h3>
+          <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Stops lower back aching and supports upright posture when fatigue sets in.</p>
+
+          <ul class="exercise-list">
+            <li class="exercise-item">
+              <div class="exercise-name">
+                <span>1. Romanian Deadlifts (RDLs)</span>
+                <span class="exercise-sets">3 x 10 reps</span>
+              </div>
+              <div class="exercise-desc">Hinge hips back with flat spine. Strengthens hamstrings and lumbar erector muscles.</div>
+            </li>
+            <li class="exercise-item">
+              <div class="exercise-name">
+                <span>2. Bird-Dogs (with 3-sec pause)</span>
+                <span class="exercise-sets">3 x 10 / side</span>
+              </div>
+              <div class="exercise-desc">Deep transverse abdominis & multifidus stability. Prevents lumbar spine extension faults.</div>
+            </li>
+            <li class="exercise-item">
+              <div class="exercise-name">
+                <span>3. Side Planks (Pelvic Lock)</span>
+                <span class="exercise-sets">3 x 35-45s / side</span>
+              </div>
+              <div class="exercise-desc">Strengthens quadratus lumborum & obliques to stop side-to-side hip drop when running.</div>
+            </li>
+            <li class="exercise-item">
+              <div class="exercise-name">
+                <span>4. Deadbugs</span>
+                <span class="exercise-sets">3 x 12 alternating</span>
+              </div>
+              <div class="exercise-desc">Anti-extension core drill. Teaches your rib cage to stay locked over your pelvis.</div>
+            </li>
+            <li class="exercise-item">
+              <div class="exercise-name">
+                <span>5. Supermans / Prone Cobras</span>
+                <span class="exercise-sets">3 x 12 reps</span>
+              </div>
+              <div class="exercise-desc">Endurance for upper and lower back muscles.</div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Monday Mobility Routine -->
+        <div class="strength-routine-card" style="border-top: 3px solid var(--accent-purple);">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="badge" style="background: rgba(168, 85, 247, 0.2); color: var(--accent-purple);">Monday Post-Run (15 mins)</span>
+            <span style="font-size: 0.8rem; color: var(--text-dim);">Mobility</span>
+          </div>
+          <h3 style="font-size: 1.2rem; font-weight: 700; margin-top: 0.75rem;">Hip & Calf Tissue Flush</h3>
+          <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Quick recovery routine immediately following Monday's short shakeout run.</p>
+
+          <ul class="exercise-list">
+            <li class="exercise-item">
+              <div class="exercise-name">
+                <span>1. Foam Roll Calves & Quads</span>
+                <span class="exercise-sets">30s / muscle</span>
+              </div>
+              <div class="exercise-desc">Gentle sweeping passes over tight knots. Do not aggressively mash inflamed tendons.</div>
+            </li>
+            <li class="exercise-item">
+              <div class="exercise-name">
+                <span>2. Couch Stretch / Hip Flexor Stretch</span>
+                <span class="exercise-sets">60s / side</span>
+              </div>
+              <div class="exercise-desc">Unlocks tight psoas muscles that pull directly on your lower back.</div>
+            </li>
+            <li class="exercise-item">
+              <div class="exercise-name">
+                <span>3. Pigeon Pose / Figure-4</span>
+                <span class="exercise-sets">60s / side</span>
+              </div>
+              <div class="exercise-desc">Releases deep piriformis and gluteal tension.</div>
+            </li>
+            <li class="exercise-item">
+              <div class="exercise-name">
+                <span>4. Cat-Cow Segmental Mobility</span>
+                <span class="exercise-sets">10 slow breaths</span>
+              </div>
+              <div class="exercise-desc">Restores gentle articulation throughout the entire spine.</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: ANTI-CRAMP & FUELING -->
+    <section id="tab-fueling" class="tab-content-panel">
+      <div class="course-card">
+        <h2 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 0.5rem;">Anti-Cramp Hydration & Fueling Protocol</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Engineered to overcome sodium depletion in Mumbai's coastal humidity ($65\% - 85\%$).</p>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0;">
+          <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem;">
+            <div style="color: var(--primary); font-weight: 700; font-size: 1.1rem; margin-bottom: 0.3rem;">⚡ Energy Gels</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);">1 Gel every <strong>40–45 minutes</strong> ($30 - 45\text{g}$ carbs/hr). Always wash down with $150\text{ ml}$ plain water.</div>
+          </div>
+
+          <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem;">
+            <div style="color: var(--accent-orange); font-weight: 700; font-size: 1.1rem; margin-bottom: 0.3rem;">🧂 Salt Capsules</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);">1 Capsule ($200\text{mg}$ sodium) every <strong>45–60 mins</strong>. Take at km 15–16 <em>before</em> the cramp threshold!</div>
+          </div>
+
+          <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem;">
+            <div style="color: var(--accent-blue); font-weight: 700; font-size: 1.1rem; margin-bottom: 0.3rem;">💧 Fluid Timing</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);">$150 - 200\text{ ml}$ small sips every <strong>15–20 mins</strong>. Do not gulp large volumes all at once.</div>
+          </div>
+        </div>
+
+        <h3 style="font-size: 1.2rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.75rem;">Long Run & Race Morning Timeline</h3>
+        <table class="course-split-table">
+          <thead>
+            <tr>
+              <th>Time / Distance</th>
+              <th>Fuel (Carbohydrates)</th>
+              <th>Electrolytes / Salt</th>
+              <th>Hydration Guideline</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Pre-Run (2 hrs before)</strong></td>
+              <td>Banana + Toast with peanut butter / Oats</td>
+              <td>1 Salt capsule with $300\text{ml}$ water</td>
+              <td>Hydrate until urine is pale straw yellow</td>
+            </tr>
+            <tr>
+              <td><strong>40–45 mins (~6 km)</strong></td>
+              <td><strong>Gel #1</strong></td>
+              <td>1 Salt capsule ($200\text{mg}$ Na)</td>
+              <td>$150\text{ ml}$ water</td>
+            </tr>
+            <tr>
+              <td><strong>80–90 mins (~12 km)</strong></td>
+              <td><strong>Gel #2</strong></td>
+              <td>1 Salt capsule</td>
+              <td>$150\text{ ml}$ water</td>
+            </tr>
+            <tr>
+              <td><strong>120–130 mins (~17–18 km)</strong></td>
+              <td><strong>Gel #3</strong></td>
+              <td><strong>CRITICAL: 1 Salt capsule</strong> (Pre-cramp defense)</td>
+              <td>$150\text{ ml}$ water</td>
+            </tr>
+            <tr>
+              <td><strong>160–170 mins (~24 km)</strong></td>
+              <td><strong>Gel #4</strong></td>
+              <td>1 Salt capsule</td>
+              <td>$150\text{ ml}$ water</td>
+            </tr>
+            <tr>
+              <td><strong>200–210 mins (~30 km)</strong></td>
+              <td><strong>Gel #5</strong></td>
+              <td>1 Salt capsule</td>
+              <td>$150\text{ ml}$ water</td>
+            </tr>
+            <tr>
+              <td><strong>240–250 mins (~35 km)</strong></td>
+              <td><strong>Gel #6 (Caffeine optional)</strong></td>
+              <td>1 Salt capsule before Pedder Road #2</td>
+              <td>$150\text{ ml}$ water</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TAB 5: PACE CALCULATOR & ZONES -->
+    <section id="tab-calculator" class="tab-content-panel">
+      <div class="course-card">
+        <h2 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 0.5rem;">Interactive Marathon Pace Calculator</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Test different finish time scenarios and inspect exact required splits.</p>
+
+        <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; margin: 1.5rem 0; align-items: flex-end;">
+          <div>
+            <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.4rem;">TARGET HOURS</label>
+            <input type="number" id="calc-hrs" value="4" min="2" max="7" class="search-input" style="width: 100px; padding: 0.6rem 1rem;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.4rem;">TARGET MINUTES</label>
+            <input type="number" id="calc-mins" value="59" min="0" max="59" class="search-input" style="width: 100px; padding: 0.6rem 1rem;">
+          </div>
+          <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid var(--primary); border-radius: var(--radius-md); padding: 0.75rem 1.5rem;">
+            <div style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">Required Marathon Pace</div>
+            <div id="calc-result-pace" style="font-size: 1.8rem; font-weight: 800; color: var(--primary); font-family: 'JetBrains Mono', monospace;">7:06 /km</div>
+          </div>
+          <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.75rem 1.25rem;">
+            <div style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">10K Split</div>
+            <div id="calc-split-10k" style="font-size: 1.3rem; font-weight: 700; color: var(--text-main); font-family: 'JetBrains Mono', monospace;">71:00</div>
+          </div>
+          <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.75rem 1.25rem;">
+            <div style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">Half Marathon Split</div>
+            <div id="calc-split-hm" style="font-size: 1.3rem; font-weight: 700; color: var(--text-main); font-family: 'JetBrains Mono', monospace;">2h 30m</div>
+          </div>
+        </div>
+
+        <h3 style="font-size: 1.2rem; font-weight: 700; margin-top: 2rem; margin-bottom: 0.75rem;">Your 5-Hour Marathon Training Pace Zones</h3>
+        <table class="course-split-table">
+          <thead>
+            <tr>
+              <th>Zone / Workout Type</th>
+              <th>Target Pace Range</th>
+              <th>RPE (1–10)</th>
+              <th>Physiological Adaptations</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Recovery / Easy Shakeout (Mon)</strong></td>
+              <td><span class="mono" style="color: var(--badge-recovery);">7:45 – 8:15 min/km</span></td>
+              <td>2 / 10</td>
+              <td>Active recovery, capillary flush, zero muscular strain.</td>
+            </tr>
+            <tr>
+              <td><strong>Aerobic Base Run (Wed)</strong></td>
+              <td><span class="mono" style="color: var(--badge-aerobic);">7:15 – 7:35 min/km</span></td>
+              <td>3 / 10</td>
+              <td>Mitochondrial density, cardiac stroke volume, fat oxidation.</td>
+            </tr>
+            <tr>
+              <td><strong>Marathon Goal Pace - MP (Sun blocks)</strong></td>
+              <td><span class="mono" style="color: var(--primary); font-weight: 700;">7:00 – 7:06 min/km</span></td>
+              <td>4 – 5 / 10</td>
+              <td>Neuromuscular pacing economy and race day rhythm.</td>
+            </tr>
+            <tr>
+              <td><strong>Lactate Threshold / Tempo (Fri)</strong></td>
+              <td><span class="mono" style="color: var(--accent-orange);">6:15 – 6:35 min/km</span></td>
+              <td>6 – 7 / 10</td>
+              <td>Increases lactate clearance; raises sustainable cruise velocity.</td>
+            </tr>
+            <tr>
+              <td><strong>Interval / 10K Repeats (Fri)</strong></td>
+              <td><span class="mono" style="color: var(--badge-speed);">5:45 – 6:00 min/km</span></td>
+              <td>7 – 8 / 10</td>
+              <td>$\text{VO}_2\text{max}$ enhancement, running economy, leg speed.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TAB 6: SUPABASE INTEGRATION HUB -->
+    <section id="tab-supabase" class="tab-content-panel">
+      <div class="course-card">
+        <h2 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 0.5rem;">Supabase & Database Architecture</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Your complete 22-week plan is fully modeled for relational PostgreSQL / Supabase databases.</p>
+
+        <div style="display: flex; gap: 1rem; margin: 1.5rem 0;">
+          <button class="btn-icon" style="background: var(--primary); color: #000; font-weight: 700;" onclick="exportSupabaseSQL()">
+            ⚡ Download supabase_schema.sql
+          </button>
+          <button class="btn-icon" onclick="exportTrainingDataJSON()">
+            📥 Download training_data.json
+          </button>
+        </div>
+
+        <h3 style="font-size: 1.1rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem;">Database Schema Structure:</h3>
+        <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem; color: var(--text-muted); font-size: 0.85rem;">
+          <li>• <strong style="color: var(--text-main);">training_phases:</strong> ID, name, start_week, end_week, description</li>
+          <li>• <strong style="color: var(--text-main);">training_weeks:</strong> week_number, phase_name, start_date, end_date, total_planned_km, is_deload, focus</li>
+          <li>• <strong style="color: var(--text-main);">daily_workouts:</strong> id, week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy, is_completed</li>
+          <li>• <strong style="color: var(--text-main);">race_targets:</strong> race_name, race_date, target_finish_time, target_pace</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Supabase Connection Modal -->
+  <div class="modal-overlay" id="supabase-modal" onclick="if(event.target===this) closeSupabaseModal()">
+    <div class="modal-content" style="max-width: 600px;">
+      <button class="modal-close-btn" onclick="closeSupabaseModal()">✕</button>
+      <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+        <span style="font-size: 1.8rem;">⚡</span>
+        <h3 style="font-size: 1.4rem; font-weight: 800; color: var(--text-main); margin: 0;">Connect Supabase Cloud DB</h3>
+      </div>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.25rem;">
+        Connect your free Supabase PostgreSQL database to persist your training logs, actuals, and variance scores across all your devices.
+      </p>
+
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <div>
+          <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; margin-bottom: 0.35rem;">
+            1. Supabase Project URL
+          </label>
+          <input type="text" id="supabase-input-url" placeholder="https://xyzabcdefghijklm.supabase.co" class="search-input" style="width: 100%; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.3rem;">
+            💡 <em>Found in Project Settings &gt; API, or your browser address bar: <code>https://&lt;project-id&gt;.supabase.co</code></em>
+          </div>
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; margin-bottom: 0.35rem;">
+            2. Supabase Anon Public Key
+          </label>
+          <textarea id="supabase-input-key" rows="3" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." class="search-input" style="width: 100%; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; resize: vertical;"></textarea>
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.3rem;">
+            💡 <em>Found under Project Settings &gt; Data API &gt; Project API keys &gt; <code>anon</code> <code>public</code></em>
+          </div>
+        </div>
+
+        <div id="supabase-test-feedback" style="display: none; padding: 0.75rem 1rem; border-radius: var(--radius-sm); font-size: 0.85rem;"></div>
+
+        <div style="display: flex; gap: 0.75rem; margin-top: 0.5rem; justify-content: flex-end;">
+          <button class="btn-icon" onclick="disconnectSupabase()" style="color: var(--badge-rest); border-color: rgba(239, 68, 68, 0.3);">
+            Disconnect / Local Mode
+          </button>
+          <button class="btn-icon" id="btn-save-supabase" onclick="saveAndTestSupabaseConnection()" style="background: var(--primary); color: #000; font-weight: 800;">
+            ⚡ Save & Connect Live
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Run Upload & Strava Ingestion Modal -->
+  <div class="modal-overlay" id="run-upload-modal" onclick="if(event.target===this) closeRunUploadModal()">
+    <div class="modal-content" style="max-width: 680px;">
+      <button class="modal-close-btn" onclick="closeRunUploadModal()">✕</button>
+      <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+        <span style="font-size: 1.8rem;">📥</span>
+        <h3 style="font-size: 1.4rem; font-weight: 800; color: var(--text-main); margin: 0;">Log Workout & Ingest Actuals</h3>
+      </div>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.25rem;">
+        Import your completed run from Strava or Galaxy Watch (GPX/TCX/FIT) or log manually to instantly compute metric variance and pacing accuracy.
+      </p>
+
+      <!-- Sub-tabs for ingestion method -->
+      <div style="display: flex; gap: 0.5rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.5rem; margin-bottom: 1.25rem;">
+        <button class="ingest-subtab-btn active" onclick="switchIngestTab('gpx')">📁 Drag & Drop File (GPX/TCX)</button>
+        <button class="ingest-subtab-btn" onclick="switchIngestTab('bookmarklet')">⚡ Strava 1-Click Sync</button>
+        <button class="ingest-subtab-btn" onclick="switchIngestTab('manual')">✏️ Quick Manual Log</button>
+      </div>
+
+      <!-- Tab A: GPX / File Dropzone -->
+      <div id="ingest-panel-gpx" class="ingest-panel">
+        <div class="file-dropzone" id="file-dropzone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleFileDrop(event)" onclick="document.getElementById('gpx-file-input').click()">
+          <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📂</div>
+          <div style="font-weight: 700; font-size: 1.05rem; color: var(--text-main);">Drop your .GPX, .TCX, or .FIT file here</div>
+          <div style="color: var(--text-muted); font-size: 0.8rem; margin-top: 0.3rem;">
+            Export from <strong>Strava</strong> (Activity &gt; Export GPX) or <strong>Samsung Health / Galaxy Watch</strong>
+          </div>
+          <button class="btn-icon" style="margin-top: 1rem; background: rgba(255,255,255,0.08);">Browse File</button>
+          <input type="file" id="gpx-file-input" accept=".gpx,.tcx,.fit,.xml" style="display: none;" onchange="handleFileSelect(event)">
+        </div>
+
+        <div id="gpx-parse-result" style="display: none; margin-top: 1rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--primary); border-radius: var(--radius-md);">
+          <!-- Populated dynamically upon parse -->
+        </div>
+      </div>
+
+      <!-- Tab B: Strava Bookmarklet -->
+      <div id="ingest-panel-bookmarklet" class="ingest-panel" style="display: none;">
+        <div style="background: rgba(255, 107, 0, 0.08); border: 1px solid rgba(255, 107, 0, 0.3); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1rem;">
+          <div style="font-weight: 800; color: #ff6b00; font-size: 0.95rem; margin-bottom: 0.3rem;">🚀 1-Click Sync from Strava Web (No API Needed)</div>
+          <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.4;">
+            Drag this bookmarklet button to your browser bookmarks bar. When viewing your completed run on <code>strava.com/activities/...</code>, click the bookmarklet to automatically sync distance, time, and pace straight to this plan!
+          </p>
+        </div>
+
+        <div style="text-align: center; margin: 1.5rem 0;">
+          <a id="strava-bookmarklet-link" href="#" class="btn-icon" style="background: #fc4c02; color: #fff; font-weight: 800; padding: 0.75rem 1.5rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; cursor: grab;">
+            <span>⚡ Sync to Marathon Plan</span>
+          </a>
+          <div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 0.5rem;">👆 Drag & drop this button into your Bookmarks Bar</div>
+        </div>
+
+        <details style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-muted);">
+          <summary style="cursor: pointer; color: var(--primary);">View Bookmarklet JavaScript Code</summary>
+          <pre id="bookmarklet-code-preview" style="background: #000; padding: 0.75rem; border-radius: 6px; font-family: monospace; overflow-x: auto; margin-top: 0.5rem;"></pre>
+        </details>
+      </div>
+
+      <!-- Tab C: Quick Manual Log -->
+      <div id="ingest-panel-manual" class="ingest-panel" style="display: none;">
+        
+        <!-- Workout Context Banner -->
+        <div id="manual-workout-context-banner" style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: var(--radius-md); padding: 0.75rem 1rem; margin-bottom: 1rem;">
+          <div id="manual-workout-context-title" style="font-weight: 800; color: var(--primary); font-size: 0.95rem;">📅 Workout Entry</div>
+          <div id="manual-workout-context-target" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">Prescribed Pace: —</div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+          <div>
+            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-dim); margin-bottom: 0.3rem;">WORKOUT DATE</label>
+            <input type="date" id="manual-run-date" class="search-input" style="width: 100%;" onchange="onManualDateChanged()">
+          </div>
+          <div>
+            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-dim); margin-bottom: 0.3rem;">ACTUAL DISTANCE (KM)</label>
+            <input type="number" step="0.01" id="manual-run-distance" placeholder="e.g. 8.2" class="search-input" style="width: 100%;" oninput="updateManualLivePacePreview()">
+          </div>
+          <div>
+            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-dim); margin-bottom: 0.3rem;">DURATION (MINUTES &amp; SECONDS)</label>
+            <div style="display: flex; gap: 0.5rem;">
+              <input type="number" id="manual-run-mins" placeholder="Mins (e.g. 58)" class="search-input" style="width: 50%;" oninput="updateManualLivePacePreview()">
+              <input type="number" id="manual-run-secs" placeholder="Secs (e.g. 30)" class="search-input" style="width: 50%;" oninput="updateManualLivePacePreview()">
+            </div>
+          </div>
+          <div>
+            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-dim); margin-bottom: 0.3rem;">PERCEIVED EXERTION (RPE 1-10)</label>
+            <select id="manual-run-rpe" class="search-input" style="width: 100%;">
+              <option value="2">2/10 - Very Easy (Recovery Shakeout)</option>
+              <option value="3" selected>3/10 - Easy Aerobic Zone 2 (Conversational)</option>
+              <option value="4">4/10 - Steady Marathon Goal Pace (MP)</option>
+              <option value="5">5/10 - Moderate Hard (Progression)</option>
+              <option value="6">6/10 - Lactate Threshold / Tempo</option>
+              <option value="7">7/10 - Hard 10K Race Effort</option>
+              <option value="8">8/10 - Very Hard VO2 Max Intervals</option>
+              <option value="9">9/10 - Near Maximum Race Finish</option>
+              <option value="10">10/10 - All-Out Sprint</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Live Pace & Variance Calculation Preview -->
+        <div id="manual-live-pace-preview" style="background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.75rem 1rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+          <div>
+            <div style="font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">Calculated Pace</div>
+            <div id="manual-live-pace-val" style="font-size: 1.25rem; font-weight: 800; color: var(--primary); font-family: 'JetBrains Mono', monospace;">— /km</div>
+          </div>
+          <div id="manual-live-score-badge">
+            <span class="variance-pill on-target">Enter time to calculate</span>
+          </div>
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-dim); margin-bottom: 0.3rem;">ATHLETE NOTES (Cramps, Hydration, Shoes, Weather)</label>
+          <input type="text" id="manual-run-notes" placeholder="e.g. Evo SL 2 felt great, 1 salt cap @ km 6, zero calf tightness" class="search-input" style="width: 100%;">
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.25rem; flex-wrap: wrap; gap: 0.5rem;">
+          <div style="display: flex; gap: 0.5rem;">
+            <button type="button" class="btn-icon" onclick="quickFillTargetPace()" style="font-size: 0.75rem; background: rgba(255,255,255,0.06);">
+              ⚡ Quick-Fill Target Pace
+            </button>
+            <button type="button" id="btn-manual-clear-log" class="btn-icon" onclick="clearWorkoutLogFromModal()" style="font-size: 0.75rem; color: var(--accent-red); border-color: rgba(239,68,68,0.3); display: none;">
+              🗑️ Clear / Uncheck
+            </button>
+          </div>
+          <button type="button" class="btn-icon" onclick="saveManualRunLog()" style="background: var(--primary); color: #000; font-weight: 800; padding: 0.6rem 1.5rem;">
+            💾 Save Run &amp; Calculate Variance
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Global Modal Dialog for Prehab & Fueling Details -->
+  <div class="modal-overlay" id="global-modal" onclick="if(event.target===this) closeModal()">
+    <div class="modal-content">
+      <button class="modal-close-btn" onclick="closeModal()">✕</button>
+      <h3 id="modal-title" style="font-size: 1.3rem; font-weight: 700; color: var(--text-main);"></h3>
+      <div id="modal-body-content"></div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p>Tata Mumbai Marathon 2027 • 22-Week Sub-5:00 Periodized Training Master Plan</p>
+    <p style="margin-top: 0.3rem;">Kickoff: Monday, August 17, 2026 • Race Day: Sunday, January 17, 2027</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
