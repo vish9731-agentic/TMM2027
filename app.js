@@ -3415,6 +3415,29 @@ function clearWorkoutLogFromModal() {
   closeRunUploadModal();
 }
 
+function parsePaceToSeconds(paceStr) {
+  if (!paceStr || paceStr === 'N/A') return 0;
+  const m = paceStr.match(/(\d+):(\d+)/);
+  if (m) {
+    return parseInt(m[1]) * 60 + parseInt(m[2]);
+  }
+  return 0;
+}
+
+function parseTargetPaceRange(paceStr) {
+  if (!paceStr || paceStr === 'N/A') return null;
+  const matches = [...paceStr.matchAll(/(\d+):(\d+)/g)];
+  if (matches.length >= 2) {
+    const p1 = parseInt(matches[0][1]) * 60 + parseInt(matches[0][2]);
+    const p2 = parseInt(matches[1][1]) * 60 + parseInt(matches[1][2]);
+    return { minSec: Math.min(p1, p2), maxSec: Math.max(p1, p2) };
+  } else if (matches.length === 1) {
+    const p = parseInt(matches[0][1]) * 60 + parseInt(matches[0][2]);
+    return { minSec: p - 10, maxSec: p + 10 };
+  }
+  return null;
+}
+
 function calculateVariance(plannedDist, actualDist, targetPace, actualPaceStr) {
   const distDelta = Number((actualDist - plannedDist).toFixed(2));
   const distErrPct = plannedDist > 0 ? (Math.abs(distDelta) / plannedDist) * 100 : 0;
