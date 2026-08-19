@@ -2499,7 +2499,7 @@ function renderWeekTableView(week) {
             const logData = completedWorkouts[workoutKey];
             const isDone = !!logData;
             const tagClass = getTagClass(wo.type);
-            const actualsHtml = isDone ? renderActualsBox(logData, wo.distance_km, wo.target_pace, wo.date) : '';
+            const actualsHtml = isDone ? renderActualsBox(logData, wo.distance_km, wo.target_pace, wo.date, workoutKey) : '';
             return `
               <tr class="${isDone ? 'completed-row' : ''}">
                 <td>
@@ -2527,7 +2527,7 @@ function renderWeekTableView(week) {
                   <div style="margin-top: 0.35rem; display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
                     ${wo.strength_prehab && wo.strength_prehab !== 'N/A' ? `<button class="action-pill-btn" onclick="showStrengthModal('${escapeHtml(wo.strength_prehab)}')">💪 Prehab</button>` : ''}
                     ${wo.fueling && wo.fueling !== 'N/A' ? `<button class="action-pill-btn" onclick="showFuelingModal('${escapeHtml(wo.fueling)}')">⚡ Fueling</button>` : ''}
-                    ${wo.distance_km > 0 ? `<button class="action-pill-btn" style="border-color: rgba(16, 185, 129, 0.4); color: var(--primary);" onclick="openManualLogForDate('${wo.date}', ${wo.distance_km})">${isDone ? '✏️ Edit Actuals' : '✏️ Log Run'}</button>` : ''}
+                    ${!isDone && wo.distance_km > 0 ? `<button class="action-pill-btn" style="border-color: rgba(16, 185, 129, 0.4); color: var(--primary);" onclick="openManualLogForDate('${wo.date}', ${wo.distance_km})">✏️ Log Run</button>` : ''}
                   </div>
                 </td>
               </tr>
@@ -2550,15 +2550,15 @@ function getTagClass(type) {
   return 'tag-aerobic';
 }
 
-// Render Actuals & Variance Comparison Box
-function renderActualsBox(logData, plannedDist, targetPace, dateStr) {
+// Render Sleek Interactive Variance Pill Button on Cards
+function renderActualsBox(logData, plannedDist, targetPace, dateStr, workoutKey) {
   if (!logData || (!logData.actualPace && !logData.dist)) return '';
 
   const dist = logData.dist || 0;
   let pace = logData.actualPace || 'N/A';
   pace = pace.replace(' min/km', '/km').replace(' - ', '-');
 
-  // Dynamic variance recalculation to ensure accuracy
+  // Dynamic variance calculation
   let score = logData.scorePct;
   let distDelta = logData.distDelta;
   let paceDeltaSec = logData.paceDeltaSec;
@@ -2575,45 +2575,186 @@ function renderActualsBox(logData, plannedDist, targetPace, dateStr) {
   if (paceDeltaSec === undefined) paceDeltaSec = 0;
 
   let pillClass = 'on-target';
-  let pillText = `🎯 ${score}% On Target`;
+  let pillText = `🎯 ${score}% Match`;
+  let subText = `On Target`;
 
   if (plannedDist === 0 && dist > 0) {
     pillClass = 'on-target';
-    pillText = `🏃 Extra Run (${dist}k)`;
+    pillText = `🏃 Extra Run`;
+    subText = `${dist} km @ ${pace}`;
   } else if (paceDeltaSec < -15) {
     pillClass = 'too-fast';
-    pillText = `⚡ ${score}% • ${Math.abs(paceDeltaSec)}s Fast`;
+    pillText = `⚡ ${score}% Match`;
+    subText = `${Math.abs(paceDeltaSec)}s Fast`;
   } else if (paceDeltaSec > 25) {
     pillClass = 'too-slow';
-    pillText = `🐢 ${score}% • ${paceDeltaSec}s Slow`;
+    pillText = `🐢 ${score}% Match`;
+    subText = `${paceDeltaSec}s Slow`;
   } else if (distDelta < -1) {
     pillClass = 'under-volume';
-    pillText = `⚠️ ${score}% • Under Dist`;
+    pillText = `⚠️ ${score}% Match`;
+    subText = `${Math.abs(distDelta).toFixed(1)}k Under`;
   }
 
   return `
-    <div class="workout-actuals-box">
-      <div class="workout-actuals-header">
-        <span class="variance-pill ${pillClass}">${pillText}</span>
-        ${dateStr ? `
-          <button class="actuals-edit-btn" onclick="event.stopPropagation(); openManualLogForDate('${dateStr}', ${plannedDist})">
-            ✏️ Edit
-          </button>
-        ` : ''}
-      </div>
-      <div class="variance-metrics-row">
-        <div class="variance-metric-item">
-          <div class="variance-metric-label">Actual</div>
-          <div class="variance-metric-value">${dist} km <span style="font-size: 0.65rem; color: ${distDelta >= 0 ? 'var(--primary)' : 'var(--accent-red)'}">(${distDelta >= 0 ? '+' : ''}${distDelta.toFixed(1)}k)</span></div>
+    <button class="variance-pill-btn ${pillClass}" onclick="event.stopPropagation(); showVarianceDetailModal('${workoutKey}', '${dateStr}')" title="Click to view detailed execution report">
+      <span style="display: flex; align-items: center; gap: 0.35rem;">
+        <span>${pillText}</span>
+        <span style="opacity: 0.8; font-weight: 500; font-size: 0.68rem;">(${subText})</span>
+      </span>
+      <span style="font-size: 0.65rem; opacity: 0.75; font-weight: 800;">Breakdown ▾</span>
+    </button>
+  `;
+}
+
+// Show Detailed Execution & Variance Modal Breakdown
+function showVarianceDetailModal(workoutKey, dateStr) {
+  const logData = completedWorkouts[workoutKey];
+  const match = findWorkoutInfoByDate(dateStr);
+  const modal = document.getElementById('variance-detail-modal');
+  const container = document.getElementById('variance-modal-content');
+
+  if (!modal || !container || !logData) return;
+
+  const plannedDist = match ? match.workout.distance_km : (logData.plannedDist || 0);
+  const targetPace = match ? match.workout.target_pace : (logData.targetPace || 'N/A');
+  const actualDist = logData.dist || 0;
+  const actualPace = logData.actualPace || 'N/A';
+  const workoutType = match ? match.workout.type : 'Workout';
+  const dayName = match ? `Week ${match.weekNumber} • ${match.workout.day}` : dateStr;
+
+  const variance = calculateVariance(plannedDist, actualDist, targetPace, actualPace);
+  const score = variance.scorePct;
+  const distDelta = variance.distDelta;
+  const paceDeltaSec = variance.paceDeltaSec;
+
+  // Generate "What You Got Right" Wins
+  const wins = [];
+  if (actualDist >= plannedDist * 0.95 && plannedDist > 0) {
+    wins.push(`🎯 <strong>Volume Completed:</strong> You ran <strong>${actualDist} km</strong> (${Math.round((actualDist/plannedDist)*100)}% of the planned ${plannedDist} km target).`);
+  } else if (plannedDist === 0 && actualDist > 0) {
+    wins.push(`🏃 <strong>Bonus Mileage:</strong> Logged an extra <strong>${actualDist} km</strong> aerobic volume.`);
+  }
+
+  if (Math.abs(paceDeltaSec) <= 15 && targetPace !== 'N/A') {
+    wins.push(`🎯 <strong>Zone 2 Precision:</strong> Maintained your prescribed pace zone (<strong>${actualPace}</strong> vs target <strong>${targetPace}</strong>).`);
+  }
+
+  if (logData.source) {
+    wins.push(`☁️ <strong>Automated Tracking:</strong> Successfully recorded and synced from <strong>${logData.source.includes('strava') ? 'Strava' : logData.source}</strong>.`);
+  }
+
+  // Generate "What Needs Attention / Adjustments"
+  const warnings = [];
+  if (paceDeltaSec < -15 && targetPace !== 'N/A') {
+    warnings.push(`⚡ <strong>Pace Was ${Math.abs(paceDeltaSec)}s/km Too Fast:</strong> Ran at <strong>${actualPace}</strong> against prescribed easy ceiling of <strong>${targetPace}</strong>.`);
+    warnings.push(`💡 <strong>Coach Strategy:</strong> In early Base Building (Weeks 1–4), running faster than Zone 2 increases calf/Achilles strain and burns glycogen instead of building mitochondrial fat adaptation. Slow down by ~45–60s on easy days to stay fresh!`);
+  } else if (paceDeltaSec > 25 && targetPace !== 'N/A') {
+    warnings.push(`🐢 <strong>Pace Was ${paceDeltaSec}s/km Slower than Target:</strong> Check your hydration, sleep, and fatigue levels.`);
+  }
+
+  if (distDelta < -1.0 && plannedDist > 0) {
+    warnings.push(`⚠️ <strong>Volume Shortfall:</strong> Stopped ${Math.abs(distDelta).toFixed(1)} km short of the planned distance.`);
+  }
+
+  if (warnings.length === 0) {
+    warnings.push(`✨ <strong>Flawless Execution:</strong> You followed all prescribed training constraints perfectly! Keep this consistency rolling.`);
+  }
+
+  const scoreColor = score >= 90 ? 'var(--primary)' : score >= 75 ? 'var(--accent-orange)' : 'var(--accent-red)';
+
+  container.innerHTML = `
+    <div style="margin-bottom: 1.25rem;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+        <div>
+          <span class="workout-tag tag-aerobic" style="margin-bottom: 0.4rem;">${workoutType}</span>
+          <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--text-main); margin: 0;">${dayName} Execution Report</h2>
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">Date: ${dateStr}</div>
         </div>
-        <div class="variance-metric-item">
-          <div class="variance-metric-label">Pace</div>
-          <div class="variance-metric-value">${pace}</div>
+        <div style="text-align: right; background: rgba(0,0,0,0.3); padding: 0.5rem 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+          <div style="font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">Overall Match</div>
+          <div style="font-size: 1.6rem; font-weight: 900; color: ${scoreColor}; font-family: 'JetBrains Mono', monospace; line-height: 1;">
+            ${score}%
+          </div>
         </div>
       </div>
-      ${logData.notes ? `<div class="actuals-notes-line" title="${escapeHtml(logData.notes)}">📝 ${escapeHtml(logData.notes)}</div>` : ''}
+    </div>
+
+    <!-- Section 1: Wins -->
+    <div class="breakdown-section" style="border-left: 3px solid var(--primary);">
+      <div class="breakdown-section-title" style="color: var(--primary);">
+        <span>✅</span> What You Got Right
+      </div>
+      <ul class="breakdown-list">
+        ${wins.map(w => `<li><span>•</span><div>${w}</div></li>`).join('')}
+      </ul>
+    </div>
+
+    <!-- Section 2: Areas for Focus -->
+    <div class="breakdown-section" style="border-left: 3px solid ${paceDeltaSec < -15 ? 'var(--accent-red)' : 'var(--accent-orange)'};">
+      <div class="breakdown-section-title" style="color: ${paceDeltaSec < -15 ? 'var(--accent-red)' : 'var(--accent-orange)'};">
+        <span>${paceDeltaSec < -15 ? '⚡' : '⚠️'}</span> What Needs Attention &amp; Coach Guidance
+      </div>
+      <ul class="breakdown-list">
+        ${warnings.map(w => `<li><span>•</span><div>${w}</div></li>`).join('')}
+      </ul>
+    </div>
+
+    <!-- Section 3: Side-by-Side Comparison Table -->
+    <div class="breakdown-section">
+      <div class="breakdown-section-title" style="color: var(--text-main);">
+        <span>📊</span> Target vs Actual Breakdown
+      </div>
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Planned Target</th>
+            <th>Actual Strava Run</th>
+            <th>Variance / Delta</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Distance</strong></td>
+            <td>${plannedDist > 0 ? `${plannedDist} km` : 'Rest / Strength'}</td>
+            <td><strong>${actualDist} km</strong></td>
+            <td style="color: ${distDelta >= 0 ? 'var(--primary)' : 'var(--accent-red)'}; font-weight: 700;">${distDelta >= 0 ? '+' : ''}${distDelta.toFixed(2)} km</td>
+          </tr>
+          <tr>
+            <td><strong>Pace</strong></td>
+            <td>${targetPace}</td>
+            <td style="font-family: monospace;"><strong>${actualPace}</strong></td>
+            <td style="font-weight: 700; color: ${paceDeltaSec < -15 ? 'var(--accent-red)' : paceDeltaSec > 25 ? 'var(--accent-orange)' : 'var(--primary)'};">
+              ${paceDeltaSec < 0 ? `⚡ ${Math.abs(paceDeltaSec)}s fast` : paceDeltaSec > 0 ? `🐢 ${paceDeltaSec}s slow` : '🎯 On Target'}
+            </td>
+          </tr>
+          ${logData.notes ? `
+            <tr>
+              <td><strong>Notes</strong></td>
+              <td colspan="3" style="color: var(--text-muted); font-style: italic;">"${escapeHtml(logData.notes)}"</td>
+            </tr>
+          ` : ''}
+        </tbody>
+      </table>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.25rem; flex-wrap: wrap; gap: 0.5rem;">
+      <button class="action-pill-btn" style="color: var(--primary); border-color: rgba(16, 185, 129, 0.4);" onclick="closeVarianceModal(); openManualLogForDate('${dateStr}', ${plannedDist});">
+        ✏️ Edit Run Actuals
+      </button>
+      <button class="btn-icon" style="background: rgba(255,255,255,0.08);" onclick="closeVarianceModal()">
+        ✕ Close
+      </button>
     </div>
   `;
+
+  modal.classList.add('open');
+}
+
+function closeVarianceModal() {
+  const modal = document.getElementById('variance-detail-modal');
+  if (modal) modal.classList.remove('open');
 }
 
 // Render Single Day Workout Card (Grid Mode)
@@ -2628,7 +2769,7 @@ function renderDayCard(weekNum, wo) {
     `<div class="rpe-pill ${i < rpeVal ? 'fill' : ''}"></div>`
   ).join('');
 
-  const actualsHtml = isDone ? renderActualsBox(logData, wo.distance_km, wo.target_pace, wo.date) : '';
+  const actualsHtml = isDone ? renderActualsBox(logData, wo.distance_km, wo.target_pace, wo.date, workoutKey) : '';
 
   return `
     <div class="day-card ${isDone ? 'completed' : ''}" id="day-${workoutKey}">
@@ -3413,6 +3554,20 @@ function clearWorkoutLogFromModal() {
   renderWeeklyPlan();
   updateProgressMetrics();
   closeRunUploadModal();
+}
+
+function findWorkoutInfoByDate(dateStr) {
+  if (!dateStr || !rawWeeksData) return null;
+  for (const week of rawWeeksData) {
+    if (week.workouts) {
+      for (const wo of week.workouts) {
+        if (wo.date === dateStr) {
+          return { weekNumber: week.week_number, workout: wo };
+        }
+      }
+    }
+  }
+  return null;
 }
 
 function parsePaceToSeconds(paceStr) {

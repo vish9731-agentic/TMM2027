@@ -802,6 +802,16 @@
     </div>
   </div>
 
+  <!-- Dedicated Workout Variance & Execution Breakdown Modal -->
+  <div class="modal-overlay" id="variance-detail-modal" onclick="if(event.target===this) closeVarianceModal()">
+    <div class="modal-content" style="max-width: 580px;">
+      <button class="modal-close-btn" onclick="closeVarianceModal()">✕</button>
+      <div id="variance-modal-content">
+        <!-- Populated dynamically by showVarianceDetailModal() -->
+      </div>
+    </div>
+  </div>
+
   <!-- Footer -->
   <footer class="app-footer">
     <p>Tata Mumbai Marathon 2027 • 22-Week Sub-5:00 Periodized Training Master Plan</p>

@@ -1266,130 +1266,118 @@ h1, h2, h3, h4, .brand-font {
   transform: scale(1.01);
 }
 
-/* Workout Card Actuals & Variance Box */
-.workout-actuals-box {
-  margin-top: 0.6rem;
-  padding: 0.45rem 0.55rem;
-  background: rgba(16, 185, 129, 0.06);
-  border: 1px solid rgba(16, 185, 129, 0.25);
-  border-radius: var(--radius-sm);
+/* Sleek Interactive Variance Pill Button on Cards */
+.variance-pill-btn {
   display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  overflow: hidden;
-  box-sizing: border-box;
-  width: 100%;
-}
-
-.workout-actuals-header {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 0.25rem;
+  justify-content: space-between;
   width: 100%;
-}
-
-.actuals-edit-btn {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(16, 185, 129, 0.35);
-  color: var(--primary);
-  font-size: 0.65rem;
+  padding: 0.45rem 0.65rem;
+  margin-top: 0.5rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  padding: 0.12rem 0.4rem;
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: var(--transition-fast);
-  white-space: nowrap;
-  flex-shrink: 0;
+  border: 1px solid transparent;
+  text-align: left;
+  box-sizing: border-box;
 }
 
-.actuals-edit-btn:hover {
-  background: rgba(16, 185, 129, 0.2);
+.variance-pill-btn.on-target {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--primary);
+  border-color: rgba(16, 185, 129, 0.35);
+}
+.variance-pill-btn.on-target:hover {
+  background: rgba(16, 185, 129, 0.22);
   border-color: var(--primary);
 }
 
-.variance-pill {
-  font-size: 0.65rem;
-  font-weight: 800;
-  padding: 0.12rem 0.4rem;
-  border-radius: var(--radius-full);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.2rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 75%;
-}
-
-.variance-pill.on-target {
-  background: rgba(16, 185, 129, 0.2);
-  color: var(--primary);
-  border: 1px solid rgba(16, 185, 129, 0.4);
-}
-
-.variance-pill.too-fast {
-  background: rgba(239, 68, 68, 0.2);
+.variance-pill-btn.too-fast {
+  background: rgba(239, 68, 68, 0.12);
   color: var(--accent-red);
-  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-color: rgba(239, 68, 68, 0.35);
+}
+.variance-pill-btn.too-fast:hover {
+  background: rgba(239, 68, 68, 0.22);
+  border-color: var(--accent-red);
 }
 
-.variance-pill.too-slow {
-  background: rgba(245, 158, 11, 0.2);
+.variance-pill-btn.too-slow {
+  background: rgba(245, 158, 11, 0.12);
   color: var(--accent-orange);
-  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-color: rgba(245, 158, 11, 0.35);
+}
+.variance-pill-btn.too-slow:hover {
+  background: rgba(245, 158, 11, 0.22);
+  border-color: var(--accent-orange);
 }
 
-.variance-pill.under-volume {
-  background: rgba(239, 68, 68, 0.2);
+.variance-pill-btn.under-volume {
+  background: rgba(239, 68, 68, 0.12);
   color: var(--accent-red);
-  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-color: rgba(239, 68, 68, 0.35);
+}
+.variance-pill-btn.under-volume:hover {
+  background: rgba(239, 68, 68, 0.22);
+  border-color: var(--accent-red);
 }
 
-.variance-metrics-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.25rem;
-  width: 100%;
-  box-sizing: border-box;
+/* Variance Detail Modal Breakdown Styles */
+.breakdown-section {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1rem;
+  margin-bottom: 0.85rem;
 }
 
-.variance-metric-item {
-  background: rgba(0, 0, 0, 0.35);
-  padding: 0.25rem 0.35rem;
-  border-radius: 4px;
-  min-width: 0;
-  overflow: hidden;
-  box-sizing: border-box;
-}
-
-.variance-metric-label {
-  font-size: 0.58rem;
-  color: var(--text-dim);
+.breakdown-section-title {
+  font-size: 0.8rem;
+  font-weight: 800;
   text-transform: uppercase;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
-.variance-metric-value {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--text-main);
-  margin-top: 0.05rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.breakdown-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  font-size: 0.82rem;
+  line-height: 1.4;
 }
 
-.actuals-notes-line {
-  font-size: 0.65rem;
-  color: var(--text-muted);
-  font-style: italic;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-top: 0.05rem;
+.breakdown-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  margin-top: 0.4rem;
+}
+
+.comparison-table th, .comparison-table td {
+  padding: 0.45rem 0.6rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.comparison-table th {
+  color: var(--text-dim);
+  font-weight: 700;
+  font-size: 0.72rem;
+  text-transform: uppercase;
 }
 
