@@ -1381,3 +1381,424 @@ h1, h2, h3, h4, .brand-font {
   text-transform: uppercase;
 }
 
+/* ==============================================================================
+   COACH VEGA: AI COACH FAB, DRAWER & CHAT STYLES
+   ============================================================================== */
+
+/* Floating Action Button */
+#coach-fab-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 990;
+}
+
+.coach-fab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: var(--radius-full);
+  padding: 0.75rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.45);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.coach-fab-btn:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 12px 30px rgba(99, 102, 241, 0.6);
+}
+
+.coach-fab-avatar {
+  font-size: 1.2rem;
+}
+
+.coach-fab-status-dot {
+  width: 8px;
+  height: 8px;
+  background: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #10b981;
+}
+
+.coach-live-pulse {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: #6366f1;
+  border-radius: 50%;
+  margin-left: 0.3rem;
+  box-shadow: 0 0 8px #6366f1;
+  animation: coachPulse 1.8s infinite;
+}
+
+@keyframes coachPulse {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  50% { transform: scale(1.4); opacity: 1; box-shadow: 0 0 12px #818cf8; }
+  100% { transform: scale(0.9); opacity: 0.7; }
+}
+
+/* Slide-out Coach Drawer */
+.coach-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 440px;
+  max-width: 100vw;
+  height: 100vh;
+  background: #0b0f17;
+  border-left: 1px solid rgba(99, 102, 241, 0.3);
+  box-shadow: -15px 0 45px rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1000;
+}
+
+.coach-drawer.open {
+  transform: translateX(0);
+}
+
+.coach-drawer-header {
+  padding: 1rem 1.25rem;
+  background: rgba(99, 102, 241, 0.08);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.coach-avatar-badge {
+  width: 36px;
+  height: 36px;
+  background: rgba(99, 102, 241, 0.2);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.coach-online-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.1rem 0.4rem;
+  border-radius: var(--radius-full);
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--primary);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.coach-telemetry-strip {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 1.25rem;
+  background: rgba(0, 0, 0, 0.45);
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 0.7rem;
+}
+
+.coach-telemetry-item {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.coach-telemetry-label {
+  color: var(--text-dim);
+  font-weight: 700;
+}
+
+.coach-telemetry-val {
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.coach-clear-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-size: 0.7rem;
+  cursor: pointer;
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+}
+
+.coach-clear-btn:hover {
+  color: var(--accent-red);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* Triage Bar */
+.coach-triage-bar {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.6rem 1.25rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: 1px solid var(--border-subtle);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.coach-triage-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.triage-chip {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.triage-chip:hover {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: #818cf8;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+/* Messages Area */
+.coach-messages-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.coach-msg {
+  display: flex;
+  gap: 0.6rem;
+  max-width: 92%;
+  animation: fadeInMsg 0.2s ease-out;
+}
+
+@keyframes fadeInMsg {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.coach-msg.bot {
+  align-self: flex-start;
+}
+
+.coach-msg.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.coach-msg-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(99, 102, 241, 0.2);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+.coach-msg-bubble {
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.coach-msg.bot .coach-msg-bubble {
+  border-left: 2px solid #6366f1;
+}
+
+.coach-msg.user .coach-msg-bubble {
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+  color: #fff;
+  border: none;
+}
+
+.coach-msg-bubble p {
+  margin: 0 0 0.5rem 0;
+}
+
+.coach-msg-bubble p:last-child {
+  margin-bottom: 0;
+}
+
+.coach-msg-bubble ul, .coach-msg-bubble ol {
+  margin: 0.4rem 0 0.4rem 1.2rem;
+  padding: 0;
+}
+
+.coach-msg-bubble li {
+  margin-bottom: 0.3rem;
+}
+
+/* Proposed Plan Diff Card inside chat */
+.coach-plan-diff-card {
+  margin-top: 0.75rem;
+  background: rgba(16, 185, 129, 0.06);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: var(--radius-md);
+  padding: 0.85rem;
+}
+
+.coach-diff-header {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.coach-diff-item {
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 4px;
+  padding: 0.5rem 0.65rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.78rem;
+}
+
+.coach-diff-date {
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 0.2rem;
+}
+
+.diff-tag-before {
+  color: var(--accent-red);
+  text-decoration: line-through;
+  opacity: 0.85;
+}
+
+.diff-tag-after {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.coach-approve-btn {
+  width: 100%;
+  background: var(--primary);
+  color: #000;
+  border: none;
+  padding: 0.55rem 1rem;
+  font-weight: 800;
+  font-size: 0.8rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.coach-approve-btn:hover {
+  background: #34d399;
+  transform: translateY(-1px);
+}
+
+.coach-approve-btn.approved {
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--primary);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  cursor: default;
+}
+
+/* Typing Indicator */
+.coach-typing-box {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1.25rem;
+}
+
+.coach-typing-dot {
+  width: 6px;
+  height: 6px;
+  background: #818cf8;
+  border-radius: 50%;
+  margin-right: 4px;
+  animation: typingBounce 1.2s infinite;
+}
+
+.coach-typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.coach-typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingBounce {
+  0%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-5px); }
+}
+
+/* Input Bar */
+.coach-input-bar {
+  padding: 0.75rem 1.25rem;
+  background: rgba(0, 0, 0, 0.5);
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+
+.coach-textarea {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-highlight);
+  border-radius: var(--radius-md);
+  padding: 0.6rem 0.85rem;
+  color: #fff;
+  font-size: 0.85rem;
+  resize: none;
+  font-family: inherit;
+  line-height: 1.4;
+  max-height: 100px;
+}
+
+.coach-textarea:focus {
+  outline: none;
+  border-color: #818cf8;
+  background: rgba(99, 102, 241, 0.08);
+}
+
+.coach-send-btn {
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.coach-send-btn:hover {
+  background: #4f46e5;
+  transform: scale(1.05);
+}
+

@@ -2197,6 +2197,7 @@ document.addEventListener('DOMContentLoaded', () => {
   updateProgressMetrics();
   initSupabase(supabaseUrl, supabaseAnonKey);
   initBookmarklet();
+  updateCoachStatusDot();
 });
 
 // Countdown to Jan 17, 2027
@@ -3663,4 +3664,522 @@ function initBookmarklet() {
   if (link) link.href = scriptCode;
   if (preview) preview.textContent = scriptCode;
 }
+
+// ==============================================================================
+// COACH VEGA: ADAPTIVE MARATHON AI COACH & SPORTS PHYSIOTHERAPIST
+// ==============================================================================
+
+let geminiApiKey = localStorage.getItem('tmm_gemini_api_key') || '';
+let geminiModel = localStorage.getItem('tmm_gemini_model') || 'gemini-2.5-flash';
+let coachChatHistory = [];
+
+try {
+  const savedHistory = localStorage.getItem('tmm_coach_history');
+  if (savedHistory) coachChatHistory = JSON.parse(savedHistory);
+} catch (e) {
+  coachChatHistory = [];
+}
+
+// Open/Close Coach Drawer
+function toggleCoachDrawer() {
+  const drawer = document.getElementById('ai-coach-drawer');
+  if (!drawer) return;
+  const isOpen = drawer.classList.toggle('open');
+  if (isOpen) {
+    updateCoachStatusDot();
+    renderCoachMessages();
+    setTimeout(() => {
+      const input = document.getElementById('coach-input');
+      if (input && typeof input.focus === 'function') input.focus();
+    }, 100);
+  }
+}
+
+// Settings Modal
+function openCoachSettingsModal() {
+  const modal = document.getElementById('ai-coach-settings-modal');
+  const keyInput = document.getElementById('gemini-api-key-input');
+  const modelSelect = document.getElementById('gemini-model-select');
+  const statusEl = document.getElementById('coach-api-test-status');
+
+  if (keyInput) keyInput.value = geminiApiKey || '';
+  if (modelSelect) modelSelect.value = geminiModel || 'gemini-2.5-flash';
+  if (statusEl) statusEl.style.display = 'none';
+
+  if (modal) modal.classList.add('open');
+}
+
+function closeCoachSettingsModal() {
+  const modal = document.getElementById('ai-coach-settings-modal');
+  if (modal) modal.classList.remove('open');
+}
+
+function saveCoachApiSettings() {
+  const keyInput = document.getElementById('gemini-api-key-input');
+  const modelSelect = document.getElementById('gemini-model-select');
+  
+  if (keyInput) {
+    geminiApiKey = keyInput.value.trim();
+    localStorage.setItem('tmm_gemini_api_key', geminiApiKey);
+  }
+  if (modelSelect) {
+    geminiModel = modelSelect.value;
+    localStorage.setItem('tmm_gemini_model', geminiModel);
+  }
+
+  updateCoachStatusDot();
+  closeCoachSettingsModal();
+  alert('Coach Vega settings saved successfully!');
+}
+
+async function testCoachApiConnection() {
+  const key = document.getElementById('gemini-api-key-input')?.value.trim();
+  const model = document.getElementById('gemini-model-select')?.value || 'gemini-2.5-flash';
+  const statusEl = document.getElementById('coach-api-test-status');
+
+  if (!key) {
+    if (statusEl) {
+      statusEl.style.display = 'block';
+      statusEl.style.background = 'rgba(239, 68, 68, 0.15)';
+      statusEl.style.color = 'var(--accent-red)';
+      statusEl.textContent = '❌ Please enter an API key first.';
+    }
+    return;
+  }
+
+  if (statusEl) {
+    statusEl.style.display = 'block';
+    statusEl.style.background = 'rgba(99, 102, 241, 0.15)';
+    statusEl.style.color = '#818cf8';
+    statusEl.textContent = '🔄 Testing connection with Google AI...';
+  }
+
+  try {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ role: 'user', parts: [{ text: 'Respond with the word "READY".' }] }]
+      })
+    });
+
+    if (res.ok) {
+      if (statusEl) {
+        statusEl.style.background = 'rgba(16, 185, 129, 0.15)';
+        statusEl.style.color = 'var(--primary)';
+        statusEl.textContent = '✅ Connection successful! Coach Vega is ready.';
+      }
+    } else {
+      const errData = await res.json().catch(() => ({}));
+      if (statusEl) {
+        statusEl.style.background = 'rgba(239, 68, 68, 0.15)';
+        statusEl.style.color = 'var(--accent-red)';
+        statusEl.textContent = `❌ API Error (${res.status}): ${errData.error?.message || 'Invalid API Key'}`;
+      }
+    }
+  } catch (err) {
+    if (statusEl) {
+      statusEl.style.background = 'rgba(239, 68, 68, 0.15)';
+      statusEl.style.color = 'var(--accent-red)';
+      statusEl.textContent = `❌ Network Error: ${err.message}`;
+    }
+  }
+}
+
+function updateCoachStatusDot() {
+  const dot = document.getElementById('coach-fab-status-dot');
+  const badge = document.getElementById('coach-online-badge');
+  const hasKey = !!geminiApiKey;
+
+  if (dot) {
+    dot.style.background = hasKey ? '#10b981' : '#f59e0b';
+    dot.style.boxShadow = hasKey ? '0 0 8px #10b981' : '0 0 8px #f59e0b';
+  }
+  if (badge) {
+    badge.textContent = hasKey ? '🟢 Online' : '⚠️ Setup Key';
+    badge.style.color = hasKey ? 'var(--primary)' : 'var(--accent-orange)';
+  }
+}
+
+// Build Rich Context of Current Training Plan & Strava Telemetry
+function buildCoachContext() {
+  const todayStr = new Date().toISOString().slice(0, 10);
+  
+  // Find recent completed workouts with Strava logs
+  const completedList = Object.entries(completedWorkouts).map(([k, v]) => {
+    return {
+      key: k,
+      date: k.split('_')[2] || '',
+      day: k.split('_')[1] || '',
+      actualDist: v.dist,
+      plannedDist: v.plannedDist,
+      actualPace: v.actualPace,
+      targetPace: v.targetPace,
+      distDelta: v.distDelta,
+      paceDeltaSec: v.paceDeltaSec,
+      scorePct: v.scorePct,
+      notes: v.notes,
+      source: v.source
+    };
+  }).slice(-7);
+
+  // Upcoming workouts for current & next week
+  const upcomingWorkouts = [];
+  if (Array.isArray(rawWeeksData)) {
+    rawWeeksData.forEach(w => {
+      if (Array.isArray(w.workouts)) {
+        w.workouts.forEach(wo => {
+          upcomingWorkouts.push({
+            week: w.week_number,
+            day: wo.day,
+            date: wo.date,
+            type: wo.type,
+            distance_km: wo.distance_km,
+            target_pace: wo.target_pace,
+            description: wo.description,
+            strength_prehab: wo.strength_prehab
+          });
+        });
+      }
+    });
+  }
+
+  return {
+    athlete: {
+      target_race: 'Tata Mumbai Marathon 2027 (Jan 17, 2027)',
+      goal_finish_time: '04:59:59 (Sub-5:00:00)',
+      target_marathon_pace: '7:06 min/km',
+      shoes_gear: 'Adidas Adizero Evo SL 2',
+      procam_slam_races: [
+        'Vedanta Delhi Half Marathon (VDHM) - Oct 18, 2026',
+        'Tata Steel World 25K Kolkata - Dec 20, 2026'
+      ]
+    },
+    today_date: todayStr,
+    recent_strava_actuals: completedList,
+    full_schedule_sample: upcomingWorkouts.slice(0, 14)
+  };
+}
+
+// Send Quick Triage Prompt
+function sendQuickPrompt(promptText) {
+  const input = document.getElementById('coach-input');
+  if (input) input.value = promptText;
+  sendCoachMessage();
+}
+
+function handleCoachInputKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendCoachMessage();
+  }
+}
+
+// Main Send Message Function
+async function sendCoachMessage() {
+  const input = document.getElementById('coach-input');
+  const userText = input?.value.trim();
+  if (!userText) return;
+
+  if (input) input.value = '';
+
+  coachChatHistory.push({ role: 'user', content: userText, timestamp: new Date().toISOString() });
+  renderCoachMessages();
+
+  if (!geminiApiKey) {
+    coachChatHistory.push({
+      role: 'bot',
+      content: `👋 **Welcome to Coach Vega!**\n\nTo activate my real-time diagnostic AI engine, please click **⚙️ Settings** at the top right of this drawer and enter your free **Google AI Studio / Gemini API Key**.\n\nOnce connected, I will have full live intelligence to diagnose your running mechanics, calf strain, pacing variances, and update your master plan!`,
+      timestamp: new Date().toISOString()
+    });
+    renderCoachMessages();
+    return;
+  }
+
+  const typingIndicator = document.getElementById('coach-typing-indicator');
+  if (typingIndicator) typingIndicator.style.display = 'flex';
+
+  try {
+    const context = buildCoachContext();
+    
+    const systemPrompt = `You are Coach Vega — an elite marathon coach, exercise physiologist, and sports physical therapist specialized in coaching an athlete for the Tata Mumbai Marathon 2027 (Target: Sub-5:00:00 finish at 7:06 min/km pace).
+The athlete is training in Adidas Adizero Evo SL 2 shoes and tracking with Galaxy Watch / Strava.
+
+ATHLETE TELEMETRY & LIVE SCHEDULE CONTEXT:
+${JSON.stringify(context, null, 2)}
+
+YOUR CORE COACHING & DIAGNOSTIC DIRECTIVES:
+1. **Active Multi-Turn Clinical Interviewing:** When the athlete mentions pain, calf tightness, strain, unusual fatigue, or a missed workout, DO NOT immediately prescribe major changes in your very first turn without understanding context. First ask 1–2 sharp, focused diagnostic questions (e.g. pain location/nature, when it began, pace on recent runs, shoe feel, stretching/foam rolling, hydration/cramps).
+2. **Root Cause Analysis:** Once you have gathered the context (or if enough context is already provided in the message and Strava telemetry), explain clearly WHY this occurred (e.g., pace variance on Wednesday exceeding Zone 2 aerobic ceiling causing excessive soleus/Achilles loading, insufficient eccentric heel drops, or dehydration).
+3. **Targeted Prehab/Rehab:** Prescribe immediate physical therapy relief (e.g. eccentric single-leg heel drops on a step 3x15, soleus foam rolling, hydration/electrolytes).
+4. **Structured Plan Modifications:** When you determine that future workouts should be modified to protect the athlete and ensure recovery:
+   - Provide your explanation in conversational text.
+   - AND output a structured plan change proposal in a dedicated JSON code block tagged with \`\`\`plan_change_proposal ... \`\`\`.
+   The JSON format MUST be:
+   \`\`\`plan_change_proposal
+   {
+     "summary": "Brief summary of plan adjustment",
+     "changes": [
+       {
+         "workout_date": "YYYY-MM-DD",
+         "day_of_week": "Friday",
+         "workout_type": "Recovery Shakeout + Calf Prehab",
+         "distance_km": 3.5,
+         "target_pace": "8:00 - 8:15 min/km",
+         "rpe": 2,
+         "description": "Very easy gentle recovery run. Focus on soft foot strikes.",
+         "strength_prehab": "Eccentric heel drops (3x15/leg), gentle calf massage"
+       }
+     ]
+   }
+   \`\`\`
+
+Tone: Encouraging, analytical, highly knowledgeable, empathetic, and authoritative. Keep responses concise and focused on high performance and injury prevention.`;
+
+    const contents = [
+      { role: 'user', parts: [{ text: systemPrompt + '\n\nPlease acknowledge with readiness.' }] },
+      { role: 'model', parts: [{ text: "Understood. I am Coach Vega, your marathon coach and sports physiotherapist for TMM 2027. I am ready to analyze your telemetry, diagnose your setbacks, and optimize your master plan." }] }
+    ];
+
+    coachChatHistory.slice(-10).forEach(msg => {
+      contents.push({
+        role: msg.role === 'user' ? 'user' : 'model',
+        parts: [{ text: msg.content }]
+      });
+    });
+
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${geminiApiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: contents,
+        generationConfig: {
+          temperature: 0.4,
+          maxOutputTokens: 1200
+        }
+      })
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      const botResponseText = data.candidates?.[0]?.content?.parts?.[0]?.text || "I'm analyzing your workout plan. How are your legs feeling today?";
+      
+      coachChatHistory.push({
+        role: 'bot',
+        content: botResponseText,
+        timestamp: new Date().toISOString()
+      });
+    } else {
+      const errData = await res.json().catch(() => ({}));
+      coachChatHistory.push({
+        role: 'bot',
+        content: `⚠️ **API Error (${res.status}):** ${errData.error?.message || 'Could not communicate with Google AI model. Please verify your API key in Settings.'}`,
+        timestamp: new Date().toISOString()
+      });
+    }
+  } catch (err) {
+    coachChatHistory.push({
+      role: 'bot',
+      content: `❌ **Network Connection Error:** ${err.message}. Please check your internet connection.`,
+      timestamp: new Date().toISOString()
+    });
+  } finally {
+    if (typingIndicator) typingIndicator.style.display = 'none';
+    localStorage.setItem('tmm_coach_history', JSON.stringify(coachChatHistory));
+    renderCoachMessages();
+  }
+}
+
+// Render Messages & Interactive Plan Diff Cards
+function renderCoachMessages() {
+  const container = document.getElementById('coach-messages-container');
+  if (!container) return;
+
+  if (coachChatHistory.length === 0) {
+    container.innerHTML = `
+      <div class="coach-msg bot">
+        <div class="coach-msg-avatar">🤖</div>
+        <div class="coach-msg-bubble">
+          <p><strong>Hi! I'm Coach Vega.</strong> 👋</p>
+          <p style="margin-top: 0.4rem;">
+            I'm your personal marathon coach and sports injury specialist for the <strong>Tata Mumbai Marathon 2027</strong>.
+          </p>
+          <p style="margin-top: 0.4rem;">
+            I have full live visibility into your 22-week plan, your recent Strava runs, and your training variance. 
+            If your calves feel tight, you miss a session, or you want to adjust your schedule, just tell me! I will investigate what happened and suggest tailored plan changes.
+          </p>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  let html = '';
+  coachChatHistory.forEach((msg, idx) => {
+    const isBot = msg.role === 'bot';
+    
+    let parsedText = msg.content;
+    let planProposalHtml = '';
+
+    const proposalMatch = msg.content.match(/```plan_change_proposal([\s\S]*?)```/);
+    if (proposalMatch) {
+      try {
+        const proposalJson = JSON.parse(proposalMatch[1].trim());
+        parsedText = msg.content.replace(proposalMatch[0], '').trim();
+        planProposalHtml = renderCoachPlanProposalWidget(proposalJson, idx);
+      } catch (pe) {
+        console.warn('Could not parse plan proposal JSON:', pe);
+      }
+    }
+
+    let formattedText = escapeHtmlText(parsedText)
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/\n/g, '<br>');
+
+    html += `
+      <div class="coach-msg ${isBot ? 'bot' : 'user'}">
+        <div class="coach-msg-avatar">${isBot ? '🤖' : '🏃'}</div>
+        <div class="coach-msg-bubble">
+          <p>${formattedText}</p>
+          ${planProposalHtml}
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+  container.scrollTop = container.scrollHeight;
+}
+
+function escapeHtmlText(text) {
+  if (!text) return '';
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// Render Interactive Plan Diff Widget
+function renderCoachPlanProposalWidget(proposal, msgIdx) {
+  const changes = proposal.changes || [];
+  if (changes.length === 0) return '';
+
+  let diffItemsHtml = '';
+  changes.forEach(ch => {
+    const existing = findWorkoutInfoByDate(ch.workout_date);
+    const beforeDist = existing ? `${existing.workout.distance_km} km` : '—';
+    const beforeType = existing ? existing.workout.type : 'Rest';
+    const beforePace = existing ? existing.workout.target_pace : 'N/A';
+
+    diffItemsHtml += `
+      <div class="coach-diff-item">
+        <div class="coach-diff-date">📅 ${ch.day_of_week} (${ch.workout_date})</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.25rem;">
+          <div>
+            <div style="font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase;">Current Plan:</div>
+            <div class="diff-tag-before">${beforeType} (${beforeDist})</div>
+          </div>
+          <div>
+            <div style="font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase;">Proposed Adjustment:</div>
+            <div class="diff-tag-after">${ch.workout_type} (${ch.distance_km} km)</div>
+          </div>
+        </div>
+        <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.3rem;">
+          🎯 <strong>Target:</strong> ${ch.target_pace} • <strong>Effort:</strong> RPE ${ch.rpe || 2}/10
+        </div>
+        ${ch.description ? `<div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.2rem; font-style: italic;">"${ch.description}"</div>` : ''}
+      </div>
+    `;
+  });
+
+  const changesEncoded = encodeURIComponent(JSON.stringify(changes));
+
+  return `
+    <div class="coach-plan-diff-card">
+      <div class="coach-diff-header">
+        <span>🔄</span> Proposed Plan Modifications
+      </div>
+      <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+        ${proposal.summary || 'Adjustments calculated to protect muscles and optimize recovery:'}
+      </div>
+      ${diffItemsHtml}
+      <button id="coach-approve-btn-${msgIdx}" class="coach-approve-btn" onclick="applyCoachPlanChanges('${changesEncoded}', 'coach-approve-btn-${msgIdx}')">
+        ✅ Approve &amp; Update Master Plan in Cloud
+      </button>
+    </div>
+  `;
+}
+
+// Apply Plan Changes to Supabase and Local Dashboard
+async function applyCoachPlanChanges(changesEncoded, btnId) {
+  const btn = document.getElementById(btnId);
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '🔄 Updating Plan in Supabase...';
+  }
+
+  try {
+    const changes = JSON.parse(decodeURIComponent(changesEncoded));
+
+    for (const ch of changes) {
+      // 1. Update in-memory rawWeeksData
+      for (const week of rawWeeksData) {
+        for (let i = 0; i < week.workouts.length; i++) {
+          if (week.workouts[i].date === ch.workout_date) {
+            week.workouts[i].type = ch.workout_type || week.workouts[i].type;
+            week.workouts[i].distance_km = ch.distance_km !== undefined ? ch.distance_km : week.workouts[i].distance_km;
+            week.workouts[i].target_pace = ch.target_pace || week.workouts[i].target_pace;
+            week.workouts[i].rpe = ch.rpe !== undefined ? ch.rpe : week.workouts[i].rpe;
+            week.workouts[i].description = ch.description || week.workouts[i].description;
+            if (ch.strength_prehab) week.workouts[i].strength_prehab = ch.strength_prehab;
+          }
+        }
+      }
+
+      // 2. Update Supabase if connected
+      if (supabaseClient) {
+        await supabaseClient.from('daily_workouts').update({
+          workout_type: ch.workout_type,
+          distance_km: ch.distance_km,
+          target_pace: ch.target_pace,
+          rpe_target: ch.rpe,
+          description: ch.description,
+          strength_prehab: ch.strength_prehab
+        }).eq('workout_date', ch.workout_date);
+      }
+    }
+
+    // 3. Re-render UI
+    renderWeeklyPlan();
+    updateProgressMetrics();
+
+    if (btn) {
+      btn.classList.add('approved');
+      btn.innerHTML = '✅ Plan Updated Successfully in Cloud!';
+    }
+
+    coachChatHistory.push({
+      role: 'bot',
+      content: `🎉 **Plan Updated!** I have updated your scheduled workouts in Supabase. Your weekly schedule cards are now updated with the new recovery targets!`,
+      timestamp: new Date().toISOString()
+    });
+    localStorage.setItem('tmm_coach_history', JSON.stringify(coachChatHistory));
+    renderCoachMessages();
+
+  } catch (err) {
+    console.error('Failed to apply plan changes:', err);
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `❌ Error: ${err.message}. Try Again`;
+    }
+  }
+}
+
+function clearCoachChatHistory() {
+  if (confirm('Clear Coach Vega chat history?')) {
+    coachChatHistory = [];
+    localStorage.removeItem('tmm_coach_history');
+    renderCoachMessages();
+  }
+}
+
 

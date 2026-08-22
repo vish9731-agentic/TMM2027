@@ -38,6 +38,12 @@
 
       <!-- Quick Action Buttons -->
       <div class="nav-actions">
+        <!-- AI Coach Button -->
+        <button class="btn-icon" id="btn-coach-nav" onclick="toggleCoachDrawer()" style="border-color: rgba(99, 102, 241, 0.4); background: rgba(99, 102, 241, 0.12); color: #818cf8;">
+          <span>🤖 Coach Vega</span>
+          <span class="coach-live-pulse"></span>
+        </button>
+
         <!-- Connect Supabase Button -->
         <button class="btn-icon" id="btn-supabase-status" onclick="openSupabaseModal()" style="border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.1);">
           <span id="supabase-status-indicator">⚡</span>
@@ -808,6 +814,151 @@
       <button class="modal-close-btn" onclick="closeVarianceModal()">✕</button>
       <div id="variance-modal-content">
         <!-- Populated dynamically by showVarianceDetailModal() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Coach Vega FAB -->
+  <div id="coach-fab-container">
+    <button class="coach-fab-btn" onclick="toggleCoachDrawer()" title="Chat with Coach Vega">
+      <span class="coach-fab-avatar">🤖</span>
+      <span class="coach-fab-text">Coach Vega</span>
+      <span class="coach-fab-status-dot" id="coach-fab-status-dot"></span>
+    </button>
+  </div>
+
+  <!-- Slide-out AI Coach Vega Drawer -->
+  <div id="ai-coach-drawer" class="coach-drawer">
+    <!-- Drawer Header -->
+    <div class="coach-drawer-header">
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <div class="coach-avatar-badge">🤖</div>
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.4rem;">
+            <h3 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: #fff;">Coach Vega</h3>
+            <span class="coach-online-badge" id="coach-online-badge">🟢 Online</span>
+          </div>
+          <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.1rem;">
+            Adaptive Marathon AI &amp; Sports Physiotherapist
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 0.4rem;">
+        <button class="btn-icon" onclick="openCoachSettingsModal()" title="AI Model Settings" style="padding: 0.35rem 0.55rem; font-size: 0.85rem;">⚙️</button>
+        <button class="btn-icon" onclick="toggleCoachDrawer()" title="Close Drawer" style="padding: 0.35rem 0.55rem; font-size: 0.85rem;">✕</button>
+      </div>
+    </div>
+
+    <!-- Active Telemetry Strip -->
+    <div class="coach-telemetry-strip">
+      <div class="coach-telemetry-item">
+        <span class="coach-telemetry-label">Target:</span>
+        <span class="coach-telemetry-val">TMM 2027 (4:59:59)</span>
+      </div>
+      <div class="coach-telemetry-item">
+        <span class="coach-telemetry-label">Pace:</span>
+        <span class="coach-telemetry-val">7:06 /km</span>
+      </div>
+      <div class="coach-telemetry-item">
+        <span class="coach-telemetry-label">Gear:</span>
+        <span class="coach-telemetry-val">Evo SL 2</span>
+      </div>
+      <div style="margin-left: auto;">
+        <button class="coach-clear-btn" onclick="clearCoachChatHistory()" title="Clear Chat History">🗑️ Clear</button>
+      </div>
+    </div>
+
+    <!-- Quick Triage Chips -->
+    <div class="coach-triage-bar">
+      <button class="triage-chip" onclick="sendQuickPrompt('My calves felt tight and strained during my run yesterday.')">🦵 Calf Tightness</button>
+      <button class="triage-chip" onclick="sendQuickPrompt('Can you review my recent pace and variance from Strava?')">⚡ Pacing Check</button>
+      <button class="triage-chip" onclick="sendQuickPrompt('I missed a workout this week. How should I adjust?')">⏸️ Missed Run</button>
+      <button class="triage-chip" onclick="sendQuickPrompt('I am feeling unusually fatigued today. Should I rest or run?')">😴 Heavy Fatigue</button>
+      <button class="triage-chip" onclick="sendQuickPrompt('What prehab drills should I do today for calf &amp; achilles armor?')">💪 Calf Armor Drill</button>
+    </div>
+
+    <!-- Chat Messages Scroll Area -->
+    <div id="coach-messages-container" class="coach-messages-area">
+      <!-- Default Coach Vega Welcome Bubble -->
+      <div class="coach-msg bot">
+        <div class="coach-msg-avatar">🤖</div>
+        <div class="coach-msg-bubble">
+          <p><strong>Hi! I'm Coach Vega.</strong> 👋</p>
+          <p style="margin-top: 0.4rem;">
+            I'm your personal marathon coach and sports injury specialist for the <strong>Tata Mumbai Marathon 2027</strong>.
+          </p>
+          <p style="margin-top: 0.4rem;">
+            I have full live visibility into your 22-week plan, your recent Strava runs, and your training variance. 
+            If your calves feel tight, you miss a session, or you want to adjust your schedule, just tell me! I will investigate what happened and suggest tailored plan changes.
+          </p>
+          <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-dim);">
+            💡 <em>Tip: Try clicking one of the quick triage buttons above or type below!</em>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Typing / Thinking Indicator -->
+    <div id="coach-typing-indicator" style="display: none;" class="coach-typing-box">
+      <div class="coach-typing-dot"></div>
+      <div class="coach-typing-dot"></div>
+      <div class="coach-typing-dot"></div>
+      <span style="font-size: 0.75rem; color: #818cf8; margin-left: 0.4rem; font-weight: 600;">Coach Vega is analyzing your training telemetry...</span>
+    </div>
+
+    <!-- Input Bar -->
+    <div class="coach-input-bar">
+      <textarea id="coach-input" class="coach-textarea" placeholder="Ask Coach Vega (e.g. My calves felt strained yesterday...)" rows="1" onkeydown="handleCoachInputKeydown(event)"></textarea>
+      <button id="coach-send-btn" class="coach-send-btn" onclick="sendCoachMessage()" title="Send Message">
+        ➤
+      </button>
+    </div>
+  </div>
+
+  <!-- AI Coach Settings Modal -->
+  <div class="modal-overlay" id="ai-coach-settings-modal" onclick="if(event.target===this) closeCoachSettingsModal()">
+    <div class="modal-content" style="max-width: 520px;">
+      <button class="modal-close-btn" onclick="closeCoachSettingsModal()">✕</button>
+      <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1rem;">
+        <div style="font-size: 1.8rem;">🤖</div>
+        <div>
+          <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: var(--text-main);">Coach Vega AI Settings</h3>
+          <div style="font-size: 0.8rem; color: var(--text-muted);">Powered by Antigravity / Gemini Engine</div>
+        </div>
+      </div>
+
+      <div style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.25rem;">
+        <div style="font-size: 0.82rem; color: var(--text-main); line-height: 1.45;">
+          Enter your <strong>Google AI Studio / Gemini API Key</strong> to activate Coach Vega's real-time diagnostic intelligence and adaptive plan changes. Your key is stored securely inside your browser.
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1rem;">
+        <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-dim); margin-bottom: 0.35rem;">GOOGLE GEMINI / ANTIGRAVITY API KEY</label>
+        <input type="password" id="gemini-api-key-input" placeholder="AIzaSy..." class="search-input" style="width: 100%; font-family: monospace;">
+        <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.3rem;">
+          Get a free API key at <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color: var(--primary);">Google AI Studio ↗</a>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1.25rem;">
+        <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-dim); margin-bottom: 0.35rem;">MODEL SELECTION</label>
+        <select id="gemini-model-select" class="search-input" style="width: 100%;">
+          <option value="gemini-2.5-flash" selected>Gemini 2.5 Flash (Ultra Fast &amp; Recommended)</option>
+          <option value="gemini-2.5-pro">Gemini 2.5 Pro (Deep Clinical Reasoning)</option>
+          <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+        </select>
+      </div>
+
+      <div id="coach-api-test-status" style="display: none; padding: 0.65rem 0.85rem; border-radius: var(--radius-sm); font-size: 0.8rem; margin-bottom: 1rem;"></div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+        <button type="button" class="btn-icon" onclick="testCoachApiConnection()" style="font-size: 0.8rem; background: rgba(255,255,255,0.06);">
+          🧪 Test Connection
+        </button>
+        <button type="button" class="btn-icon" onclick="saveCoachApiSettings()" style="background: #6366f1; color: #fff; font-weight: 800; padding: 0.6rem 1.5rem;">
+          💾 Save &amp; Activate Coach Vega
+        </button>
       </div>
     </div>
   </div>
