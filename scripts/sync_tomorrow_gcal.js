@@ -148,7 +148,7 @@ function buildEventPayload(wo, tomorrow) {
     `• Pre-Run Fueling: 250ml water + pinch of Himalayan pink salt 30 mins before`,
     `• Post-Run: 500ml electrolyte water + 20g protein`,
     ``,
-    `✨ Automated nightly sync by TMM 2027 Coach Vega Engine.`
+    `✨ Automated nightly sync by TMM 2027 Training Engine.`
   ].join('\n');
 
   return {
