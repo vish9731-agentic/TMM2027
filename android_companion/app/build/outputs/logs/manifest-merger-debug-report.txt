@@ -135,9 +135,9 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/altcreative/.gradle/
 	android:label
 		ADDED from /Users/altcreative/Downloads/Procam afterthought/android_companion/app/src/main/AndroidManifest.xml:19:9-41
 	android:roundIcon
-		ADDED from /Users/altcreative/Downloads/Procam afterthought/android_companion/app/src/main/AndroidManifest.xml:20:9-54
+		ADDED from /Users/altcreative/Downloads/Procam afterthought/android_companion/app/src/main/AndroidManifest.xml:20:9-62
 	android:icon
-		ADDED from /Users/altcreative/Downloads/Procam afterthought/android_companion/app/src/main/AndroidManifest.xml:18:9-43
+		ADDED from /Users/altcreative/Downloads/Procam afterthought/android_companion/app/src/main/AndroidManifest.xml:18:9-57
 	android:allowBackup
 		ADDED from /Users/altcreative/Downloads/Procam afterthought/android_companion/app/src/main/AndroidManifest.xml:17:9-35
 	android:theme

@@ -21,9 +21,10 @@
   --accent-amber: #f59e0b; /* Gold */
   --accent-red: #ef4444; /* Alert Crimson */
   
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --text-dim: #64748b;
+  --text-main: #ffffff;
+  --text-muted: #e2e8f0;
+  --text-dim: #94a3b8;
+  --text-faint: #64748b;
   
   /* Badges & Zones */
   --badge-recovery: #06b6d4;
@@ -786,75 +787,77 @@ h1, h2, h3, h4, .brand-font {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.5rem;
-  padding-bottom: 0.4rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 0.6rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .day-name {
-  font-size: 0.8rem;
+  font-size: 0.92rem;
   font-weight: 800;
   text-transform: uppercase;
-  color: var(--text-main);
-  letter-spacing: 0.03em;
+  color: #ffffff;
+  letter-spacing: 0.04em;
 }
 
 .day-date {
-  font-size: 0.7rem;
-  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #38bdf8;
 }
 
 .checkbox-custom {
   cursor: pointer;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border-radius: 4px;
   accent-color: var(--primary);
   flex-shrink: 0;
 }
 
 .workout-tag {
-  font-size: 0.65rem;
+  font-size: 0.76rem;
   font-weight: 800;
-  padding: 0.2rem 0.45rem;
-  border-radius: var(--radius-sm);
+  padding: 0.25rem 0.55rem;
+  border-radius: 6px;
   display: inline-block;
-  margin-bottom: 0.45rem;
+  margin-bottom: 0.5rem;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
 }
 
-.tag-recovery { background: rgba(6, 182, 212, 0.2); color: var(--badge-recovery); border: 1px solid rgba(6, 182, 212, 0.3); }
-.tag-aerobic { background: rgba(59, 130, 246, 0.2); color: var(--badge-aerobic); border: 1px solid rgba(59, 130, 246, 0.3); }
-.tag-speed { background: rgba(244, 63, 94, 0.2); color: var(--badge-speed); border: 1px solid rgba(244, 63, 94, 0.3); }
-.tag-long { background: rgba(16, 185, 129, 0.25); color: var(--primary); border: 1px solid rgba(16, 185, 129, 0.4); }
-.tag-strength { background: rgba(139, 92, 246, 0.2); color: var(--badge-strength); border: 1px solid rgba(139, 92, 246, 0.3); }
-.tag-rest { background: rgba(100, 116, 139, 0.25); color: #cbd5e1; border: 1px solid rgba(100, 116, 139, 0.3); }
-.tag-race { background: rgba(234, 179, 8, 0.25); color: var(--badge-race); border: 1px solid rgba(234, 179, 8, 0.4); }
+.tag-recovery { background: rgba(6, 182, 212, 0.22); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.45); }
+.tag-aerobic { background: rgba(59, 130, 246, 0.22); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.45); }
+.tag-speed { background: rgba(244, 63, 94, 0.22); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.45); }
+.tag-long { background: rgba(16, 185, 129, 0.25); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.5); }
+.tag-strength { background: rgba(139, 92, 246, 0.22); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.45); }
+.tag-rest { background: rgba(100, 116, 139, 0.3); color: #f1f5f9; border: 1px solid rgba(148, 163, 184, 0.4); }
+.tag-race { background: rgba(234, 179, 8, 0.25); color: #fde047; border: 1px solid rgba(234, 179, 8, 0.5); }
 
 .day-distance {
-  font-size: 1.35rem;
+  font-size: 1.45rem;
   font-weight: 900;
-  color: var(--text-main);
+  color: #ffffff;
   font-family: 'Outfit', sans-serif;
-  line-height: 1.1;
-  margin-bottom: 0.3rem;
+  line-height: 1.15;
+  margin-bottom: 0.35rem;
 }
 
 .day-pace {
-  font-size: 0.72rem;
-  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fbbf24;
   font-family: 'JetBrains Mono', monospace;
-  margin-bottom: 0.5rem;
-  background: rgba(255, 255, 255, 0.03);
-  padding: 0.2rem 0.4rem;
+  margin-bottom: 0.55rem;
+  background: rgba(251, 191, 36, 0.08);
+  padding: 0.25rem 0.5rem;
   border-radius: var(--radius-sm);
   display: inline-block;
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(251, 191, 36, 0.25);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -864,10 +867,11 @@ h1, h2, h3, h4, .brand-font {
 .day-rpe-bar {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
-  font-size: 0.7rem;
-  color: var(--text-dim);
-  margin-bottom: 0.5rem;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--accent-orange);
+  margin-bottom: 0.6rem;
   width: 100%;
 }
 
@@ -879,9 +883,9 @@ h1, h2, h3, h4, .brand-font {
 
 .rpe-pill {
   flex: 1;
-  height: 5px;
+  height: 6px;
   border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
   min-width: 0;
 }
 
@@ -890,10 +894,11 @@ h1, h2, h3, h4, .brand-font {
 }
 
 .day-desc {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  line-height: 1.35;
-  margin-bottom: 0.75rem;
+  font-size: 0.84rem;
+  color: #e2e8f0;
+  line-height: 1.45;
+  font-weight: 450;
+  margin-bottom: 0.85rem;
   flex-grow: 1;
   display: -webkit-box;
   -webkit-line-clamp: 4;
@@ -903,32 +908,34 @@ h1, h2, h3, h4, .brand-font {
 
 .day-footer {
   display: flex;
-  gap: 0.35rem;
+  gap: 0.45rem;
   margin-top: auto;
   flex-wrap: wrap;
+  align-items: center;
 }
 
 .action-pill-btn {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--border-subtle);
-  color: var(--text-muted);
-  font-size: 0.65rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  font-size: 0.75rem;
   font-weight: 700;
-  padding: 0.25rem 0.45rem;
+  padding: 0.35rem 0.6rem;
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: var(--transition-fast);
   display: inline-flex;
   align-items: center;
-  gap: 0.2rem;
+  gap: 0.25rem;
   flex: 1;
+  min-height: 32px;
   justify-content: center;
 }
 
 .action-pill-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
-  color: var(--text-main);
-  border-color: var(--border-highlight);
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  border-color: #ffffff;
 }
 
 /* Agenda / Table View for Weeks */
@@ -2226,6 +2233,19 @@ h1, h2, h3, h4, .brand-font {
   .coach-fab-btn {
     padding: 0.5rem 0.85rem;
     font-size: 0.8rem;
+  }
+}
+
+.audio-feature-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+@media (max-width: 600px) {
+  .audio-feature-grid {
+    grid-template-columns: 1fr;
   }
 }
 
