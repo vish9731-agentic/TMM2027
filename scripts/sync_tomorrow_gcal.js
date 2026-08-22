@@ -112,17 +112,20 @@ function buildEventPayload(wo, tomorrow) {
   const targetPace = wo.target_pace || 'N/A';
   const type = wo.workout_type || wo.type || 'Workout';
   
-  const [startH, startM] = DEFAULT_RUN_TIME.split(':');
+  const [startHRaw, startMRaw] = DEFAULT_RUN_TIME.split(':').map(Number);
+  const startH = isNaN(startHRaw) ? 6 : startHRaw;
+  const startM = isNaN(startMRaw) ? 0 : startMRaw;
   const durationMins = dist > 0 ? Math.max(30, Math.round(dist * 7.5 + 15)) : 45;
   
-  const startDateTimeStr = `${tomorrow.dateStr}T${startH}:${startM}:00+05:30`;
-  
-  // End time
-  const startDate = new Date(`${tomorrow.dateStr}T${startH}:${startM}:00+05:30`);
-  const endDate = new Date(startDate.getTime() + durationMins * 60 * 1000);
-  
   const pad = (n) => String(n).padStart(2, '0');
-  const endDateTimeStr = `${tomorrow.dateStr}T${pad(endDate.getHours())}:${pad(endDate.getMinutes())}:00+05:30`;
+  const totalStartMins = startH * 60 + startM;
+  const totalEndMins = totalStartMins + durationMins;
+  
+  const endH = pad(Math.floor(totalEndMins / 60) % 24);
+  const endM = pad(totalEndMins % 60);
+
+  const startDateTimeStr = `${tomorrow.dateStr}T${pad(startH)}:${pad(startM)}:00+05:30`;
+  const endDateTimeStr = `${tomorrow.dateStr}T${endH}:${endM}:00+05:30`;
 
   const summary = `🏃 TMM 2027: ${dist > 0 ? `${dist}km ` : ''}${type} (${targetPace !== 'N/A' ? targetPace : 'Rest & Prehab'})`;
   
@@ -226,7 +229,10 @@ async function pushToGoogleCalendar(eventPayload) {
   const accessToken = tokenData.access_token;
 
   // Insert event into Google Calendar
-  const insertUrl = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CALENDAR_ID)}/events`;
+  const targetCalId = CALENDAR_ID || 'primary';
+  console.log(`📅 Target Calendar ID: ${targetCalId}`);
+
+  const insertUrl = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(targetCalId)}/events`;
   const insertRes = await fetch(insertUrl, {
     method: 'POST',
     headers: {
@@ -238,11 +244,17 @@ async function pushToGoogleCalendar(eventPayload) {
 
   if (!insertRes.ok) {
     const errText = await insertRes.text();
-    throw new Error(`Google Calendar Event Insert failed: ${errText}`);
+    let parsedErr = {};
+    try { parsedErr = JSON.parse(errText); } catch(e) {}
+    
+    if (insertRes.status === 404 || insertRes.status === 403) {
+      console.error(`\n⚠️ Permission/Calendar ID Tip: Make sure you shared your Google Calendar with '${creds.client_email}' giving permission 'Make changes to events', and set repository secret GOOGLE_CALENDAR_ID to your Gmail address if using a secondary calendar.\n`);
+    }
+    throw new Error(`Google Calendar Event Insert failed: ${JSON.stringify(parsedErr, null, 2) || errText}`);
   }
 
   const createdEvent = await insertRes.json();
-  console.log(`🎉 Successfully created Google Calendar event: ${createdEvent.htmlLink}`);
+  console.log(`🎉 Successfully created Google Calendar event: ${createdEvent.htmlLink || 'Done'}`);
   return { ok: true, event: createdEvent };
 }
 
