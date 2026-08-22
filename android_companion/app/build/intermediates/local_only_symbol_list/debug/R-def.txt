@@ -1,0 +1,18 @@
+R_DEF: Internal format may change without notice
+local
+color accent
+color background
+color primary
+color primary_variant
+color surface
+color warning
+id btnFastTest
+id btnStart
+id switchMetronome
+id tvStatus
+id tvTargetPace
+id tvWeatherAdvisory
+id tvWorkoutTitle
+layout activity_main
+string app_name
+style Theme.TMM2027

@@ -2113,3 +2113,119 @@ h1, h2, h3, h4, .brand-font {
   box-shadow: 0 6px 20px rgba(255, 84, 0, 0.55);
 }
 
+/* ==============================================================================
+   COMPREHENSIVE MOBILE & TABLET RESPONSIVENESS OVERHAUL
+   ============================================================================== */
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0.75rem 1rem;
+  }
+
+  .nav-container {
+    gap: 0.75rem;
+  }
+
+  .nav-actions {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .nav-actions::-webkit-scrollbar {
+    display: none;
+  }
+
+  .main-wrapper {
+    padding: 0 0.85rem;
+    margin: 1rem auto;
+  }
+
+  .modal-overlay {
+    padding: 0.75rem;
+  }
+
+  .modal-content {
+    padding: 1.25rem 1rem;
+    max-height: 90vh;
+  }
+
+  .coach-drawer {
+    width: 100vw;
+  }
+
+  .strategy-actions-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+  }
+
+  .strategy-gcal-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .brand-title {
+    font-size: 1.1rem;
+  }
+
+  .brand-subtitle {
+    font-size: 0.68rem;
+  }
+
+  .btn-icon {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+
+  .hero-card {
+    padding: 1.1rem 0.9rem;
+  }
+
+  .week-card {
+    padding: 0;
+  }
+
+  .week-header {
+    padding: 1rem 0.85rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+
+  .week-badges {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .day-card {
+    min-width: 190px;
+    flex: 0 0 190px;
+    padding: 0.75rem 0.65rem;
+  }
+
+  .strategy-hero {
+    gap: 0.45rem;
+    padding: 0.75rem 0.6rem;
+  }
+
+  .strategy-metric-pill {
+    min-width: 60px;
+    padding: 0.3rem 0.4rem;
+  }
+
+  .strategy-metric-val {
+    font-size: 0.85rem;
+  }
+
+  .coach-fab-btn {
+    padding: 0.5rem 0.85rem;
+    font-size: 0.8rem;
+  }
+}
+
