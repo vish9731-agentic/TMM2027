@@ -3696,17 +3696,41 @@ function toggleCoachDrawer() {
   }
 }
 
+const VEGA_AVAILABLE_MODELS = [
+  { value: 'gemini-3.7-flash', label: 'Gemini 3.7 Flash (Antigravity Flagship • Ultra Fast & High Reasoning)' },
+  { value: 'gemini-3.7-pro', label: 'Gemini 3.7 Pro (Antigravity Deep Clinical Reasoning)' },
+  { value: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash' },
+  { value: 'gemini-2.5-pro', label: 'Gemini 2.5 Pro' },
+  { value: 'gemini-2.0-flash', label: 'Gemini 2.0 Flash' },
+  { value: 'custom', label: '⚙️ Custom Antigravity / Gemini Model ID...' }
+];
+
 function handleModelSelectChange() {
   const modelSelect = document.getElementById('gemini-model-select');
-  const customContainer = document.getElementById('gemini-custom-model-container');
-  const customInput = document.getElementById('gemini-custom-model-input');
-  if (!modelSelect || !customContainer) return;
+  let customContainer = document.getElementById('gemini-custom-model-container');
+  let customInput = document.getElementById('gemini-custom-model-input');
   
+  if (!modelSelect) return;
+  
+  if (!customContainer && modelSelect.parentElement) {
+    customContainer = document.createElement('div');
+    customContainer.id = 'gemini-custom-model-container';
+    customContainer.style.marginTop = '0.5rem';
+    customContainer.innerHTML = `
+      <input type="text" id="gemini-custom-model-input" placeholder="e.g. gemini-3.7-flash or custom-model-id" class="search-input" style="width: 100%; font-family: monospace; font-size: 0.82rem;">
+      <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.25rem;">
+        Type any model identifier available in your Google AI Studio account.
+      </div>
+    `;
+    modelSelect.parentElement.appendChild(customContainer);
+    customInput = document.getElementById('gemini-custom-model-input');
+  }
+
   if (modelSelect.value === 'custom') {
-    customContainer.style.display = 'block';
+    if (customContainer) customContainer.style.display = 'block';
     if (customInput) customInput.focus();
   } else {
-    customContainer.style.display = 'none';
+    if (customContainer) customContainer.style.display = 'none';
   }
 }
 
@@ -3727,21 +3751,41 @@ function openCoachSettingsModal() {
   const modal = document.getElementById('ai-coach-settings-modal');
   const keyInput = document.getElementById('gemini-api-key-input');
   const modelSelect = document.getElementById('gemini-model-select');
-  const customContainer = document.getElementById('gemini-custom-model-container');
-  const customInput = document.getElementById('gemini-custom-model-input');
   const statusEl = document.getElementById('coach-api-test-status');
 
   if (keyInput) keyInput.value = geminiApiKey || '';
   
   if (modelSelect) {
-    const knownOptions = Array.from(modelSelect.options).map(o => o.value);
-    if (knownOptions.includes(geminiModel) && geminiModel !== 'custom') {
-      modelSelect.value = geminiModel;
-      if (customContainer) customContainer.style.display = 'none';
-    } else {
-      modelSelect.value = 'custom';
+    // Dynamically rebuild the select options to guarantee all latest models appear
+    const currentVal = geminiModel || 'gemini-3.7-flash';
+    const isCustom = !VEGA_AVAILABLE_MODELS.slice(0, 5).some(m => m.value === currentVal);
+    
+    modelSelect.innerHTML = VEGA_AVAILABLE_MODELS.map(m => 
+      `<option value="${m.value}" ${(!isCustom && m.value === currentVal) || (isCustom && m.value === 'custom') ? 'selected' : ''}>${m.label}</option>`
+    ).join('');
+    
+    let customContainer = document.getElementById('gemini-custom-model-container');
+    let customInput = document.getElementById('gemini-custom-model-input');
+    
+    if (!customContainer && modelSelect.parentElement) {
+      customContainer = document.createElement('div');
+      customContainer.id = 'gemini-custom-model-container';
+      customContainer.style.marginTop = '0.5rem';
+      customContainer.innerHTML = `
+        <input type="text" id="gemini-custom-model-input" placeholder="e.g. gemini-3.7-flash or custom-model-id" class="search-input" style="width: 100%; font-family: monospace; font-size: 0.82rem;">
+        <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.25rem;">
+          Type any model identifier available in your Google AI Studio account.
+        </div>
+      `;
+      modelSelect.parentElement.appendChild(customContainer);
+      customInput = document.getElementById('gemini-custom-model-input');
+    }
+
+    if (isCustom) {
       if (customContainer) customContainer.style.display = 'block';
-      if (customInput) customInput.value = geminiModel || '';
+      if (customInput) customInput.value = currentVal;
+    } else {
+      if (customContainer) customContainer.style.display = 'none';
     }
   }
 
@@ -4143,12 +4187,16 @@ function updateVegaIconEverywhere() {
 function openVegaIconStudioModal() {
   renderVegaIconStudioCards();
   const modal = document.getElementById('vega-icon-studio-modal');
-  if (modal) modal.classList.add('active');
+  if (modal) {
+    modal.classList.add('open');
+  }
 }
 
 function closeVegaIconStudioModal() {
   const modal = document.getElementById('vega-icon-studio-modal');
-  if (modal) modal.classList.remove('active');
+  if (modal) {
+    modal.classList.remove('open');
+  }
 }
 
 function renderVegaIconStudioCards() {
@@ -4164,13 +4212,13 @@ function renderVegaIconStudioCards() {
       <div class="vega-icon-card ${isSelected ? 'selected' : ''}" onclick="selectVegaSunsetIcon(${icon.id})">
         <span class="vega-icon-card-tag">ACTIVE</span>
         <div class="vega-icon-card-svg">
-          ${icon.svg(26)}
+          ${icon.svg(28)}
         </div>
         <div class="vega-icon-card-title">${icon.title}</div>
         <div class="vega-icon-card-subtitle">${icon.subtitle}</div>
-        <div style="font-size: 0.72rem; color: #a8a29e; margin-top: 0.35rem; line-height: 1.35;">${icon.desc}</div>
-        <button type="button" style="margin-top: 0.65rem; width: 100%; font-size: 0.75rem; font-weight: 800; padding: 0.35rem; border-radius: 6px; border: none; background: ${isSelected ? '#ffcc00' : 'rgba(255,255,255,0.1)'}; color: ${isSelected ? '#000' : '#fff'}; cursor: pointer;">
-          ${isSelected ? '✓ Selected' : 'Select Icon'}
+        <div style="font-size: 0.75rem; color: #a8a29e; margin-top: 0.35rem; line-height: 1.35;">${icon.desc}</div>
+        <button type="button" style="margin-top: 0.65rem; width: 100%; font-size: 0.75rem; font-weight: 800; padding: 0.4rem; border-radius: 6px; border: none; background: ${isSelected ? '#ffcc00' : 'rgba(255,255,255,0.1)'}; color: ${isSelected ? '#000' : '#fff'}; cursor: pointer;">
+          ${isSelected ? '✓ Active Icon' : 'Select This Icon'}
         </button>
       </div>
     `;
@@ -4185,6 +4233,10 @@ function selectVegaSunsetIcon(iconId) {
   updateVegaIconEverywhere();
   renderVegaIconStudioCards();
 }
+
+window.openVegaIconStudioModal = openVegaIconStudioModal;
+window.closeVegaIconStudioModal = closeVegaIconStudioModal;
+window.selectVegaSunsetIcon = selectVegaSunsetIcon;
 
 // Render Messages & Interactive Plan Diff Cards
 function renderCoachMessages() {

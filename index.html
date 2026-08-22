@@ -1001,11 +1001,21 @@
 
       <div id="coach-api-test-status" style="display: none; padding: 0.65rem 0.85rem; border-radius: var(--radius-sm); font-size: 0.8rem; margin-bottom: 1rem;"></div>
 
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+      <div style="margin-top: 1.25rem; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div style="font-size: 0.85rem; font-weight: 700; color: #fff;">Athlete Icon Studio</div>
+          <div style="font-size: 0.72rem; color: var(--text-dim);">Pick from 6 sunset athlete concepts</div>
+        </div>
+        <button type="button" class="btn-icon" onclick="closeCoachSettingsModal(); openVegaIconStudioModal();" style="border-color: rgba(255,140,0,0.5); color: #ffcc00; font-weight: 700; font-size: 0.8rem;">
+          🎨 Open Icon Studio
+        </button>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem;">
         <button type="button" class="btn-icon" onclick="testCoachApiConnection()" style="font-size: 0.8rem; background: rgba(255,255,255,0.06);">
           🧪 Test Connection
         </button>
-        <button type="button" class="btn-icon" onclick="saveCoachApiSettings()" style="background: #6366f1; color: #fff; font-weight: 800; padding: 0.6rem 1.5rem;">
+        <button type="button" class="btn-icon" onclick="saveCoachApiSettings()" style="background: linear-gradient(135deg, #ff7700, #ff5400); color: #fff; font-weight: 800; padding: 0.6rem 1.5rem; border: none;">
           💾 Save &amp; Activate Coach Vega
         </button>
       </div>
@@ -1041,6 +1051,6 @@
     <p style="margin-top: 0.3rem;">Kickoff: Monday, August 17, 2026 • Race Day: Sunday, January 17, 2027</p>
   </footer>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=3.7"></script>
 </body>
 </html>
