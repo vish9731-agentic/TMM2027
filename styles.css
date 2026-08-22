@@ -1789,6 +1789,100 @@ h1, h2, h3, h4, .brand-font {
   40% { transform: translateY(-5px); }
 }
 
+/* ==============================================================================
+   VEGA ICON STUDIO MODAL & CARD STYLES
+   ============================================================================== */
+.vega-icon-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 600px) {
+  .vega-icon-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.vega-icon-card {
+  background: rgba(20, 8, 4, 0.85);
+  border: 1px solid rgba(255, 140, 0, 0.25);
+  border-radius: var(--radius-md);
+  padding: 1rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.vega-icon-card:hover {
+  border-color: #ffcc00;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(255, 119, 0, 0.35);
+  background: rgba(36, 13, 5, 0.95);
+}
+
+.vega-icon-card.selected {
+  border-color: #ffcc00;
+  background: linear-gradient(180deg, rgba(66, 22, 0, 0.8) 0%, rgba(20, 8, 4, 0.95) 100%);
+  box-shadow: 0 0 0 2px #ffcc00, 0 10px 30px rgba(255, 84, 0, 0.45);
+}
+
+.vega-icon-card-svg {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255, 59, 0, 0.25), rgba(255, 204, 0, 0.2));
+  border: 1px solid rgba(255, 140, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.65rem;
+  box-shadow: 0 0 18px rgba(255, 84, 0, 0.4);
+}
+
+.vega-icon-card-svg svg {
+  width: 26px;
+  height: 26px;
+  filter: drop-shadow(0 0 6px rgba(255, 140, 0, 0.9));
+}
+
+.vega-icon-card-title {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 0.2rem;
+}
+
+.vega-icon-card-subtitle {
+  font-size: 0.68rem;
+  color: #ffcc00;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.vega-icon-card-tag {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: #ffcc00;
+  color: #000;
+  font-size: 0.6rem;
+  font-weight: 900;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  display: none;
+}
+
+.vega-icon-card.selected .vega-icon-card-tag {
+  display: block;
+}
+
 /* Input Bar */
 .coach-input-bar {
   padding: 0.75rem 1.25rem;

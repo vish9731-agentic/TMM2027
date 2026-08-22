@@ -882,6 +882,7 @@
         </div>
       </div>
       <div style="display: flex; align-items: center; gap: 0.4rem;">
+        <button class="btn-icon" onclick="openVegaIconStudioModal()" title="Choose Sunset Athlete Icon" style="padding: 0.35rem 0.55rem; font-size: 0.85rem; border-color: rgba(255,140,0,0.5); color: #ffcc00;">🎨</button>
         <button class="btn-icon" onclick="openCoachSettingsModal()" title="AI Model Settings" style="padding: 0.35rem 0.55rem; font-size: 0.85rem;">⚙️</button>
         <button class="btn-icon" onclick="toggleCoachDrawer()" title="Close Drawer" style="padding: 0.35rem 0.55rem; font-size: 0.85rem;">✕</button>
       </div>
@@ -982,11 +983,20 @@
 
       <div style="margin-bottom: 1.25rem;">
         <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-dim); margin-bottom: 0.35rem;">MODEL SELECTION</label>
-        <select id="gemini-model-select" class="search-input" style="width: 100%;">
-          <option value="gemini-2.5-flash" selected>Gemini 2.5 Flash (Ultra Fast &amp; Recommended)</option>
-          <option value="gemini-2.5-pro">Gemini 2.5 Pro (Deep Clinical Reasoning)</option>
+        <select id="gemini-model-select" class="search-input" style="width: 100%;" onchange="handleModelSelectChange()">
+          <option value="gemini-3.7-flash" selected>Gemini 3.7 Flash (Antigravity Flagship • Ultra Fast &amp; Reasoning)</option>
+          <option value="gemini-3.7-pro">Gemini 3.7 Pro (Antigravity Deep Clinical Reasoning)</option>
+          <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+          <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
           <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+          <option value="custom">⚙️ Custom Antigravity / Gemini Model ID...</option>
         </select>
+        <div id="gemini-custom-model-container" style="display: none; margin-top: 0.5rem;">
+          <input type="text" id="gemini-custom-model-input" placeholder="e.g. gemini-3.7-flash or custom-model-name" class="search-input" style="width: 100%; font-family: monospace; font-size: 0.82rem;">
+          <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.25rem;">
+            Type any model identifier available in your Google AI Studio account.
+          </div>
+        </div>
       </div>
 
       <div id="coach-api-test-status" style="display: none; padding: 0.65rem 0.85rem; border-radius: var(--radius-sm); font-size: 0.8rem; margin-bottom: 1rem;"></div>
@@ -998,6 +1008,29 @@
         <button type="button" class="btn-icon" onclick="saveCoachApiSettings()" style="background: #6366f1; color: #fff; font-weight: 800; padding: 0.6rem 1.5rem;">
           💾 Save &amp; Activate Coach Vega
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vega Icon Studio Modal (Pick 1 of 6 Sunset Athlete Icons) -->
+  <div class="modal-overlay" id="vega-icon-studio-modal" onclick="if(event.target===this) closeVegaIconStudioModal()">
+    <div class="modal-content" style="max-width: 680px; background: #0c0502; border: 1px solid rgba(255, 140, 0, 0.45); box-shadow: 0 20px 60px rgba(0,0,0,0.9), 0 0 35px rgba(255, 84, 0, 0.25);">
+      <button class="modal-close-btn" onclick="closeVegaIconStudioModal()">✕</button>
+      
+      <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+        <div style="font-size: 1.6rem;">🌅</div>
+        <div>
+          <h3 style="margin: 0; font-size: 1.3rem; font-weight: 900; color: #fff; background: linear-gradient(135deg, #fff 30%, #ffcc00 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Vega Sunset Icon Studio</h3>
+          <div style="font-size: 0.8rem; color: #ffcc00; font-weight: 700;">Pick your favorite athlete concept in radiant sunset glow</div>
+        </div>
+      </div>
+
+      <div style="font-size: 0.82rem; color: #d6d3d1; line-height: 1.45; margin-bottom: 1rem;">
+        Click any of the 6 athlete icons below to instantly update Vega's avatar on your navbar, floating button, drawer, and chat bubbles:
+      </div>
+
+      <div class="vega-icon-grid" id="vega-icon-studio-grid">
+        <!-- Injected dynamically by renderVegaIconStudioCards() -->
       </div>
     </div>
   </div>

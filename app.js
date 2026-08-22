@@ -2198,6 +2198,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initSupabase(supabaseUrl, supabaseAnonKey);
   initBookmarklet();
   updateCoachStatusDot();
+  updateVegaIconEverywhere();
 });
 
 // Countdown to Jan 17, 2027
@@ -3670,7 +3671,7 @@ function initBookmarklet() {
 // ==============================================================================
 
 let geminiApiKey = localStorage.getItem('tmm_gemini_api_key') || '';
-let geminiModel = localStorage.getItem('tmm_gemini_model') || 'gemini-2.5-flash';
+let geminiModel = localStorage.getItem('tmm_gemini_model') || 'gemini-3.7-flash';
 let coachChatHistory = [];
 
 try {
@@ -3695,17 +3696,56 @@ function toggleCoachDrawer() {
   }
 }
 
+function handleModelSelectChange() {
+  const modelSelect = document.getElementById('gemini-model-select');
+  const customContainer = document.getElementById('gemini-custom-model-container');
+  const customInput = document.getElementById('gemini-custom-model-input');
+  if (!modelSelect || !customContainer) return;
+  
+  if (modelSelect.value === 'custom') {
+    customContainer.style.display = 'block';
+    if (customInput) customInput.focus();
+  } else {
+    customContainer.style.display = 'none';
+  }
+}
+
+function getActiveCoachModel() {
+  const modelSelect = document.getElementById('gemini-model-select');
+  const customInput = document.getElementById('gemini-custom-model-input');
+  if (modelSelect && modelSelect.value === 'custom' && customInput && customInput.value.trim()) {
+    return customInput.value.trim();
+  }
+  if (modelSelect && modelSelect.value !== 'custom') {
+    return modelSelect.value;
+  }
+  return geminiModel || 'gemini-3.7-flash';
+}
+
 // Settings Modal
 function openCoachSettingsModal() {
   const modal = document.getElementById('ai-coach-settings-modal');
   const keyInput = document.getElementById('gemini-api-key-input');
   const modelSelect = document.getElementById('gemini-model-select');
+  const customContainer = document.getElementById('gemini-custom-model-container');
+  const customInput = document.getElementById('gemini-custom-model-input');
   const statusEl = document.getElementById('coach-api-test-status');
 
   if (keyInput) keyInput.value = geminiApiKey || '';
-  if (modelSelect) modelSelect.value = geminiModel || 'gemini-2.5-flash';
-  if (statusEl) statusEl.style.display = 'none';
+  
+  if (modelSelect) {
+    const knownOptions = Array.from(modelSelect.options).map(o => o.value);
+    if (knownOptions.includes(geminiModel) && geminiModel !== 'custom') {
+      modelSelect.value = geminiModel;
+      if (customContainer) customContainer.style.display = 'none';
+    } else {
+      modelSelect.value = 'custom';
+      if (customContainer) customContainer.style.display = 'block';
+      if (customInput) customInput.value = geminiModel || '';
+    }
+  }
 
+  if (statusEl) statusEl.style.display = 'none';
   if (modal) modal.classList.add('open');
 }
 
@@ -3717,24 +3757,30 @@ function closeCoachSettingsModal() {
 function saveCoachApiSettings() {
   const keyInput = document.getElementById('gemini-api-key-input');
   const modelSelect = document.getElementById('gemini-model-select');
+  const customInput = document.getElementById('gemini-custom-model-input');
   
   if (keyInput) {
     geminiApiKey = keyInput.value.trim();
     localStorage.setItem('tmm_gemini_api_key', geminiApiKey);
   }
+  
   if (modelSelect) {
-    geminiModel = modelSelect.value;
+    let chosenModel = modelSelect.value;
+    if (chosenModel === 'custom') {
+      chosenModel = (customInput?.value || '').trim() || 'gemini-3.7-flash';
+    }
+    geminiModel = chosenModel;
     localStorage.setItem('tmm_gemini_model', geminiModel);
   }
 
   updateCoachStatusDot();
   closeCoachSettingsModal();
-  alert('Coach Vega settings saved successfully!');
+  alert(`Coach Vega settings saved successfully!\nModel: ${geminiModel}`);
 }
 
 async function testCoachApiConnection() {
   const key = document.getElementById('gemini-api-key-input')?.value.trim();
-  const model = document.getElementById('gemini-model-select')?.value || 'gemini-2.5-flash';
+  const model = getActiveCoachModel();
   const statusEl = document.getElementById('coach-api-test-status');
 
   if (!key) {
@@ -3751,7 +3797,7 @@ async function testCoachApiConnection() {
     statusEl.style.display = 'block';
     statusEl.style.background = 'rgba(99, 102, 241, 0.15)';
     statusEl.style.color = '#818cf8';
-    statusEl.textContent = '🔄 Testing connection with Google AI...';
+    statusEl.textContent = `🔄 Testing connection with Google AI (${model})...`;
   }
 
   try {
@@ -3767,14 +3813,14 @@ async function testCoachApiConnection() {
       if (statusEl) {
         statusEl.style.background = 'rgba(16, 185, 129, 0.15)';
         statusEl.style.color = 'var(--primary)';
-        statusEl.textContent = '✅ Connection successful! Coach Vega is ready.';
+        statusEl.textContent = `✅ Connection successful! Coach Vega is ready on ${model}.`;
       }
     } else {
       const errData = await res.json().catch(() => ({}));
       if (statusEl) {
         statusEl.style.background = 'rgba(239, 68, 68, 0.15)';
         statusEl.style.color = 'var(--accent-red)';
-        statusEl.textContent = `❌ API Error (${res.status}): ${errData.error?.message || 'Invalid API Key'}`;
+        statusEl.textContent = `❌ API Error (${res.status}): ${errData.error?.message || 'Invalid API Key or Model Name'}`;
       }
     }
   } catch (err) {
@@ -4006,17 +4052,151 @@ Tone: Warm, empathetic, inspiring, analytical, and authoritative. Speak like an 
   }
 }
 
-const VEGA_ATHLETE_SVG = `<svg class="vega-athlete-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 18px; height: 18px; filter: drop-shadow(0 0 5px rgba(255, 140, 0, 0.85));"><defs><linearGradient id="vegaSunsetMsgGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff3b00"/><stop offset="50%" stop-color="#ff8800"/><stop offset="100%" stop-color="#ffcc00"/></linearGradient></defs><circle cx="15.5" cy="4.5" r="2.5" fill="url(#vegaSunsetMsgGrad)" /><path d="M12.5 7.5L9.5 11L5.5 9.5M13.5 9.5L16.5 13.5L13 17L15 21.5M10 14L7.5 17.5L3.5 16.5" stroke="url(#vegaSunsetMsgGrad)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 4.5L7.5 4.5M2 7L5.5 7M3 9.5L5 9.5" stroke="#ffcc00" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+// ==============================================================================
+// VEGA SUNSET ATHLETE ICONS (6 DISTINCT CONCEPTS)
+// ==============================================================================
+var VEGA_SUNSET_ICONS = {
+  1: {
+    id: 1,
+    title: '1. Sunset Strider',
+    subtitle: 'Kinetic Runner',
+    desc: 'Elite female marathoner in aerodynamic forward stride with sun halo and velocity trails.',
+    svg: (size = 20) => `<svg class="vega-athlete-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: ${size}px; height: ${size}px; filter: drop-shadow(0 0 5px rgba(255, 140, 0, 0.85));"><defs><linearGradient id="vGrad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff3b00"/><stop offset="50%" stop-color="#ff8800"/><stop offset="100%" stop-color="#ffcc00"/></linearGradient></defs><circle cx="15.5" cy="4.5" r="2.5" fill="url(#vGrad1)" /><path d="M12.5 7.5L9.5 11L5.5 9.5M13.5 9.5L16.5 13.5L13 17L15 21.5M10 14L7.5 17.5L3.5 16.5" stroke="url(#vGrad1)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 4.5L7.5 4.5M2 7L5.5 7M3 9.5L5 9.5" stroke="#ffcc00" stroke-width="1.8" stroke-linecap="round"/></svg>`
+  },
+  2: {
+    id: 2,
+    title: '2. Vega Starburst',
+    subtitle: 'Endurance Compass',
+    desc: '4-point stellar diamond with velocity rings, honoring the brightest star in the sky.',
+    svg: (size = 20) => `<svg class="vega-athlete-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: ${size}px; height: ${size}px; filter: drop-shadow(0 0 5px rgba(255, 140, 0, 0.85));"><defs><linearGradient id="vGrad2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff3b00"/><stop offset="50%" stop-color="#ff8800"/><stop offset="100%" stop-color="#ffcc00"/></linearGradient></defs><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="url(#vGrad2)" stroke="#ffcc00" stroke-width="1.5"/><circle cx="12" cy="12" r="2.5" fill="#fff"/><path d="M4 18C7.5 21.5 16.5 21.5 20 18" stroke="#ff8800" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 3"/></svg>`
+  },
+  3: {
+    id: 3,
+    title: '3. Athlete Profile',
+    subtitle: 'Visor & Ponytail',
+    desc: 'Sharp athletic profile of a female runner with performance race shades and aerodynamic ponytail.',
+    svg: (size = 20) => `<svg class="vega-athlete-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: ${size}px; height: ${size}px; filter: drop-shadow(0 0 5px rgba(255, 140, 0, 0.85));"><defs><linearGradient id="vGrad3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff3b00"/><stop offset="50%" stop-color="#ff8800"/><stop offset="100%" stop-color="#ffcc00"/></linearGradient></defs><path d="M11 5C14 5 16.5 7.5 16.5 10.5C16.5 12 15.5 13.5 14.5 14.5L13 18H9L8.5 14C6.5 13 5.5 11 6 8.5C6.5 6.5 8.5 5 11 5Z" stroke="url(#vGrad3)" stroke-width="2.2" stroke-linecap="round"/><path d="M6 8C3.5 8.5 1.5 11 2 14C2.5 16 4.5 17 6.5 16.5" stroke="#ff3b00" stroke-width="2.2" stroke-linecap="round"/><path d="M11 9.5H17L15 12H11.5L11 9.5Z" fill="#ffcc00"/></svg>`
+  },
+  4: {
+    id: 4,
+    title: '4. Kinetic Pulse',
+    subtitle: 'Heartbeat Pace Wave',
+    desc: 'Zone 2 aerobic rhythm ECG wave surging into a forward speed arrow.',
+    svg: (size = 20) => `<svg class="vega-athlete-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: ${size}px; height: ${size}px; filter: drop-shadow(0 0 5px rgba(255, 140, 0, 0.85));"><defs><linearGradient id="vGrad4" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff3b00"/><stop offset="50%" stop-color="#ff8800"/><stop offset="100%" stop-color="#ffcc00"/></linearGradient></defs><path d="M2 12H6L8.5 5.5L12.5 18.5L15.5 8.5L17.5 12H21" stroke="url(#vGrad4)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 7L22 12L17 17" stroke="#ffcc00" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+  },
+  5: {
+    id: 5,
+    title: '5. Aero Wings',
+    subtitle: 'Cadence Wings',
+    desc: 'Dual aerodynamic wings cutting through wind at sub-5:00 marathon pace.',
+    svg: (size = 20) => `<svg class="vega-athlete-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: ${size}px; height: ${size}px; filter: drop-shadow(0 0 5px rgba(255, 140, 0, 0.85));"><defs><linearGradient id="vGrad5" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff3b00"/><stop offset="50%" stop-color="#ff8800"/><stop offset="100%" stop-color="#ffcc00"/></linearGradient></defs><path d="M3 13C7 13 14 10 21 4C18 11 14 15 7 17L3 13Z" fill="rgba(255,119,0,0.25)" stroke="url(#vGrad5)" stroke-width="2.2" stroke-linejoin="round"/><path d="M4 17C8 17 13 15 18 11C15 16 12 19 6 20L4 17Z" fill="rgba(255,204,0,0.3)" stroke="#ffcc00" stroke-width="1.8" stroke-linejoin="round"/></svg>`
+  },
+  6: {
+    id: 6,
+    title: '6. Marathon Flame',
+    subtitle: 'Endurance Torch',
+    desc: 'Olympic-style stamina flame symbolizing aerobic energy and unstoppable momentum.',
+    svg: (size = 20) => `<svg class="vega-athlete-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: ${size}px; height: ${size}px; filter: drop-shadow(0 0 5px rgba(255, 140, 0, 0.85));"><defs><linearGradient id="vGrad6" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff3b00"/><stop offset="50%" stop-color="#ff8800"/><stop offset="100%" stop-color="#ffcc00"/></linearGradient></defs><path d="M12 2C12 2 16.5 7 16.5 11C16.5 13.5 15 15.5 13 16.5C15 14.5 15 12 14 10C13.5 12 12 13.5 10.5 14.5C10 12.5 11 10 12 8C10 9.5 8.5 12 8.5 15C8.5 18.3 11.2 21 14.5 21C17.8 21 20.5 18.3 20.5 15C20.5 9.5 12 2 12 2Z" fill="url(#vGrad6)" stroke="#ffcc00" stroke-width="1.5"/></svg>`
+  }
+};
+
+function getActiveVegaIconId() {
+  const stored = localStorage.getItem('tmm_vega_icon_id');
+  return stored && VEGA_SUNSET_ICONS[stored] ? parseInt(stored, 10) : 1;
+}
+
+function getVegaIconSvg(size = 20) {
+  const id = getActiveVegaIconId();
+  return VEGA_SUNSET_ICONS[id]?.svg(size) || VEGA_SUNSET_ICONS[1].svg(size);
+}
+
+function updateVegaIconEverywhere() {
+  const id = getActiveVegaIconId();
+  const iconObj = VEGA_SUNSET_ICONS[id] || VEGA_SUNSET_ICONS[1];
+
+  // 1. Update Navbar Icon
+  const navBtn = document.getElementById('btn-coach-nav');
+  if (navBtn) {
+    navBtn.innerHTML = `
+      ${iconObj.svg(18)}
+      <span style="font-weight: 800; letter-spacing: 0.03em;">Vega</span>
+      <span class="coach-live-pulse"></span>
+    `;
+  }
+
+  // 2. Update Floating FAB Icon
+  const fabAvatar = document.querySelector('.coach-fab-avatar');
+  if (fabAvatar) {
+    fabAvatar.innerHTML = iconObj.svg(22);
+  }
+
+  // 3. Update Drawer Avatar Badge
+  const drawerAvatar = document.querySelector('.coach-avatar-badge');
+  if (drawerAvatar) {
+    drawerAvatar.innerHTML = iconObj.svg(24);
+  }
+
+  // 4. Update Chat Messages Avatar
+  renderCoachMessages();
+}
+
+function openVegaIconStudioModal() {
+  renderVegaIconStudioCards();
+  const modal = document.getElementById('vega-icon-studio-modal');
+  if (modal) modal.classList.add('active');
+}
+
+function closeVegaIconStudioModal() {
+  const modal = document.getElementById('vega-icon-studio-modal');
+  if (modal) modal.classList.remove('active');
+}
+
+function renderVegaIconStudioCards() {
+  const container = document.getElementById('vega-icon-studio-grid');
+  if (!container) return;
+
+  const activeId = getActiveVegaIconId();
+  let html = '';
+
+  Object.values(VEGA_SUNSET_ICONS).forEach(icon => {
+    const isSelected = icon.id === activeId;
+    html += `
+      <div class="vega-icon-card ${isSelected ? 'selected' : ''}" onclick="selectVegaSunsetIcon(${icon.id})">
+        <span class="vega-icon-card-tag">ACTIVE</span>
+        <div class="vega-icon-card-svg">
+          ${icon.svg(26)}
+        </div>
+        <div class="vega-icon-card-title">${icon.title}</div>
+        <div class="vega-icon-card-subtitle">${icon.subtitle}</div>
+        <div style="font-size: 0.72rem; color: #a8a29e; margin-top: 0.35rem; line-height: 1.35;">${icon.desc}</div>
+        <button type="button" style="margin-top: 0.65rem; width: 100%; font-size: 0.75rem; font-weight: 800; padding: 0.35rem; border-radius: 6px; border: none; background: ${isSelected ? '#ffcc00' : 'rgba(255,255,255,0.1)'}; color: ${isSelected ? '#000' : '#fff'}; cursor: pointer;">
+          ${isSelected ? '✓ Selected' : 'Select Icon'}
+        </button>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+function selectVegaSunsetIcon(iconId) {
+  if (!VEGA_SUNSET_ICONS[iconId]) return;
+  localStorage.setItem('tmm_vega_icon_id', iconId.toString());
+  updateVegaIconEverywhere();
+  renderVegaIconStudioCards();
+}
 
 // Render Messages & Interactive Plan Diff Cards
 function renderCoachMessages() {
   const container = document.getElementById('coach-messages-container');
   if (!container) return;
 
+  const currentIconSvg = getVegaIconSvg(18);
+
   if (coachChatHistory.length === 0) {
     container.innerHTML = `
       <div class="coach-msg bot">
-        <div class="coach-msg-avatar">${VEGA_ATHLETE_SVG}</div>
+        <div class="coach-msg-avatar">${currentIconSvg}</div>
         <div class="coach-msg-bubble">
           <p><strong>Hi! I'm Vega.</strong> 👋</p>
           <p style="margin-top: 0.4rem;">
@@ -4058,7 +4238,7 @@ function renderCoachMessages() {
 
     html += `
       <div class="coach-msg ${isBot ? 'bot' : 'user'}">
-        <div class="coach-msg-avatar">${isBot ? VEGA_ATHLETE_SVG : '🏃'}</div>
+        <div class="coach-msg-avatar">${isBot ? currentIconSvg : '🏃'}</div>
         <div class="coach-msg-bubble">
           <p>${formattedText}</p>
           ${planProposalHtml}
