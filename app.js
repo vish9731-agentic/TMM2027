@@ -4006,7 +4006,7 @@ Tone: Warm, empathetic, inspiring, analytical, and authoritative. Speak like an 
   }
 }
 
-const VEGA_ATHLETE_SVG = `<svg class="vega-athlete-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 18px; height: 18px; filter: drop-shadow(0 0 4px #00f5d4);"><circle cx="15.5" cy="4.5" r="2.5" fill="#00f5d4" /><path d="M13 7.5L10 11L6 9.5M14 9.5L16.5 13.5L13.5 16.5L15.5 21.5M10.5 14L8 17.5L4 16.5" stroke="#00f5d4" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 4.5L7.5 4.5M2.5 7L5.5 7" stroke="#00bbf9" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+const VEGA_ATHLETE_SVG = `<svg class="vega-athlete-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 18px; height: 18px; filter: drop-shadow(0 0 5px rgba(255, 140, 0, 0.85));"><defs><linearGradient id="vegaSunsetMsgGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff3b00"/><stop offset="50%" stop-color="#ff8800"/><stop offset="100%" stop-color="#ffcc00"/></linearGradient></defs><circle cx="15.5" cy="4.5" r="2.5" fill="url(#vegaSunsetMsgGrad)" /><path d="M12.5 7.5L9.5 11L5.5 9.5M13.5 9.5L16.5 13.5L13 17L15 21.5M10 14L7.5 17.5L3.5 16.5" stroke="url(#vegaSunsetMsgGrad)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 4.5L7.5 4.5M2 7L5.5 7M3 9.5L5 9.5" stroke="#ffcc00" stroke-width="1.8" stroke-linecap="round"/></svg>`;
 
 // Render Messages & Interactive Plan Diff Cards
 function renderCoachMessages() {
