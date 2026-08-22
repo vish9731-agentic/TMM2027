@@ -340,6 +340,16 @@ async function main() {
 
   const result = await pushToGoogleCalendar(payload);
   console.log(`✅ 8:00 PM Nightly Google Calendar Sync Completed Successfully.`);
+
+  // Trigger 8:00 PM Audio Manifest Generation
+  try {
+    const { run: runAudioManifest } = require('./generate_audio_manifest.js');
+    console.log(`\n🎙️ Triggering 8:00 PM Nightly Audio Manifest Generator...`);
+    await runAudioManifest();
+    console.log(`✅ Nightly Audio Coaching Manifest Ready.`);
+  } catch (audioErr) {
+    console.warn(`⚠️ Audio Manifest Generation warning:`, audioErr.message);
+  }
 }
 
 main().catch(err => {

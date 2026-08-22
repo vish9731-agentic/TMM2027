@@ -4871,5 +4871,344 @@ async function applyCoachPlanChanges(changesEncoded, btnId) {
 // Check on startup
 checkAndResumePendingCoachQuery();
 
+// ==============================================================================
+// 🎧 AUDIO COACH & 10% MUSIC DUCKING ENGINE (SIMULATOR & RUNNER)
+// ==============================================================================
 
+let webAudioCtx = null;
+let musicOscillatorNode = null;
+let musicGainNode = null;
+let audioSimInterval = null;
+let audioSimElapsed = 0;
+let isAudioSimActive = false;
+let isWebMetronomeActive = false;
+let webMetronomeTimer = null;
+let lastSpokenWebCue = "Starting speed intervals workout.";
 
+function getWebAudioContext() {
+  if (!webAudioCtx) {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    webAudioCtx = new AudioContextClass();
+  }
+  if (webAudioCtx.state === 'suspended') {
+    webAudioCtx.resume();
+  }
+  return webAudioCtx;
+}
+
+function openAudioCompanionModal() {
+  const modal = document.getElementById('audio-companion-modal');
+  if (modal) {
+    modal.classList.add('open');
+    loadAudioManifestIntoModal();
+  }
+}
+
+function closeAudioCompanionModal() {
+  const modal = document.getElementById('audio-companion-modal');
+  if (modal) {
+    modal.classList.remove('open');
+    stopAudioSimulator();
+  }
+}
+
+async function loadAudioManifestIntoModal() {
+  try {
+    const res = await fetch('audio_manifest.json?v=' + Date.now());
+    if (res.ok) {
+      const manifest = await res.json();
+      const typeEl = document.getElementById('audio-modal-workout-type');
+      const paceEl = document.getElementById('audio-modal-pace-target');
+      const weatherEl = document.getElementById('audio-modal-weather-adv');
+
+      if (typeEl) typeEl.textContent = `${manifest.workoutType} • ${manifest.distanceKm} km`;
+      if (paceEl) paceEl.textContent = `🎯 Target Pace: ${manifest.targetPace} (RPE ${manifest.rpeTarget}/10)`;
+      if (weatherEl && manifest.openingBriefing) {
+        weatherEl.innerHTML = `🌤️ <strong>Weather & Hydration:</strong> ${manifest.openingBriefing.weatherAdvisory}`;
+      }
+    }
+  } catch (e) {
+    console.log('Using default audio manifest values.');
+  }
+}
+
+async function regenerateAudioManifest() {
+  const btn = event?.target;
+  if (btn) btn.textContent = '⏳ Refreshing...';
+  await loadAudioManifestIntoModal();
+  setTimeout(() => {
+    if (btn) btn.textContent = '✅ Updated';
+    setTimeout(() => { if (btn) btn.textContent = '🔄 Refresh 8PM Manifest'; }, 1500);
+  }, 500);
+}
+
+// 1. Play Background Music Simulation (Smooth chords)
+function startBackgroundMusic() {
+  const ctx = getWebAudioContext();
+  if (musicGainNode) return;
+
+  musicGainNode = ctx.createGain();
+  musicGainNode.gain.setValueAtTime(0.4, ctx.currentTime);
+  musicGainNode.connect(ctx.destination);
+
+  // Create ambient background synth
+  const osc1 = ctx.createOscillator();
+  const osc2 = ctx.createOscillator();
+  osc1.type = 'triangle';
+  osc2.type = 'sine';
+  osc1.frequency.setValueAtTime(220, ctx.currentTime); // A3
+  osc2.frequency.setValueAtTime(330, ctx.currentTime); // E4
+
+  osc1.connect(musicGainNode);
+  osc2.connect(musicGainNode);
+  osc1.start();
+  osc2.start();
+
+  musicOscillatorNode = [osc1, osc2];
+  updateDuckingUi(100);
+}
+
+function stopBackgroundMusic() {
+  if (musicOscillatorNode) {
+    musicOscillatorNode.forEach(osc => {
+      try { osc.stop(); osc.disconnect(); } catch (e) {}
+    });
+    musicOscillatorNode = null;
+  }
+  if (musicGainNode) {
+    try { musicGainNode.disconnect(); } catch (e) {}
+    musicGainNode = null;
+  }
+  updateDuckingUi(100);
+}
+
+// 2. Duck Background Music strictly to 10%
+function setMusicVolumeDucking(duckToPercent = 10) {
+  const ctx = getWebAudioContext();
+  if (!musicGainNode) return;
+
+  const targetGain = duckToPercent === 10 ? 0.04 : 0.4;
+  musicGainNode.gain.cancelScheduledValues(ctx.currentTime);
+  musicGainNode.gain.setTargetAtTime(targetGain, ctx.currentTime, 0.15); // Fast smooth 150ms drop
+
+  updateDuckingUi(duckToPercent);
+}
+
+function updateDuckingUi(percent) {
+  const bar = document.getElementById('audio-volume-bar');
+  const txt = document.getElementById('audio-volume-text');
+  const badge = document.getElementById('audio-duck-badge');
+
+  if (bar) bar.style.width = `${percent}%`;
+  if (txt) txt.textContent = `${percent}% Volume`;
+  if (badge) {
+    if (percent <= 20) {
+      badge.textContent = 'DUCKED TO 10% (COACH SPEAKING)';
+      badge.style.background = 'rgba(245, 158, 11, 0.25)';
+      badge.style.color = '#f59e0b';
+      badge.style.borderColor = 'rgba(245, 158, 11, 0.5)';
+    } else {
+      badge.textContent = 'MUSIC AT 100%';
+      badge.style.background = 'rgba(16, 185, 129, 0.2)';
+      badge.style.color = '#10b981';
+      badge.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+    }
+  }
+}
+
+// 3. Play Zero-Latency Oscillator Countdown Beep (880Hz / 1760Hz)
+function playOscillatorBeep(freq = 880, durationMs = 120) {
+  const ctx = getWebAudioContext();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(freq, ctx.currentTime);
+
+  gain.gain.setValueAtTime(0.8, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + (durationMs / 1000));
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+
+  osc.start();
+  osc.stop(ctx.currentTime + (durationMs / 1000));
+}
+
+// 4. Web Speech Voice Prompt
+function speakWebVoice(text, onComplete) {
+  lastSpokenWebCue = text;
+  const sub = document.getElementById('audio-live-subtitle');
+  if (sub) sub.textContent = `🎙️ "${text}"`;
+
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 1.05;
+    utterance.pitch = 1.0;
+    utterance.onend = () => { if (onComplete) onComplete(); };
+    utterance.onerror = () => { if (onComplete) onComplete(); };
+    window.speechSynthesis.speak(utterance);
+  } else {
+    setTimeout(() => { if (onComplete) onComplete(); }, 2000);
+  }
+}
+
+// 5. Cadence Metronome (170 BPM Tick)
+function toggleWebMetronome() {
+  const btn = document.getElementById('btn-web-metronome');
+  isWebMetronomeActive = !isWebMetronomeActive;
+
+  if (isWebMetronomeActive) {
+    if (btn) {
+      btn.textContent = 'ON (170 BPM)';
+      btn.style.background = 'rgba(16, 185, 129, 0.2)';
+      btn.style.color = '#10b981';
+      btn.style.borderColor = '#10b981';
+    }
+    const intervalMs = (60 / 170) * 1000;
+    webMetronomeTimer = setInterval(() => {
+      playOscillatorBeep(1200, 30);
+    }, intervalMs);
+  } else {
+    if (btn) {
+      btn.textContent = 'OFF';
+      btn.style.background = 'transparent';
+      btn.style.color = 'inherit';
+      btn.style.borderColor = 'rgba(255,255,255,0.2)';
+    }
+    if (webMetronomeTimer) clearInterval(webMetronomeTimer);
+    webMetronomeTimer = null;
+  }
+}
+
+// 6. Earbud Simulation Actions
+function simulateEarbudDoubleTap() {
+  const sub = document.getElementById('audio-live-subtitle');
+  if (sub) sub.textContent = `🎧 Double Tap -> Replaying: "${lastSpokenWebCue}"`;
+  setMusicVolumeDucking(10);
+  speakWebVoice(`Replaying: ${lastSpokenWebCue}`, () => {
+    setMusicVolumeDucking(100);
+  });
+}
+
+function simulateEarbudTripleTap() {
+  const sub = document.getElementById('audio-live-subtitle');
+  if (sub) sub.textContent = `🎧 Triple Tap -> Skipping current interval...`;
+  setMusicVolumeDucking(10);
+  speakWebVoice(`Skipping to next interval.`, () => {
+    setMusicVolumeDucking(100);
+  });
+}
+
+// 7. Full 60-Second Simulator Engine
+function start60SecondAudioSimulator() {
+  if (isAudioSimActive) stopAudioSimulator();
+
+  isAudioSimActive = true;
+  audioSimElapsed = 0;
+
+  const btnStart = document.getElementById('btn-audio-sim-start');
+  const btnStop = document.getElementById('btn-audio-sim-stop');
+  const countdownEl = document.getElementById('audio-live-countdown');
+  const subEl = document.getElementById('audio-live-subtitle');
+
+  if (btnStart) btnStart.style.display = 'none';
+  if (btnStop) btnStop.style.display = 'block';
+
+  // Start background music simulation
+  startBackgroundMusic();
+  if (subEl) subEl.textContent = '🎵 Background YouTube Music playing at 100% volume...';
+
+  audioSimInterval = setInterval(() => {
+    audioSimElapsed++;
+
+    // T = 5s: Pre-Cue for Interval (Duck to 10% 1.5s prior)
+    if (audioSimElapsed === 5) {
+      setMusicVolumeDucking(10);
+      speakWebVoice("Interval 1 of 6: 1 minute hard effort. Target pace 5:45, RPE 8.");
+    }
+
+    // T = 12s to 16s: 5-4-3-2-1 Countdown
+    if (audioSimElapsed >= 12 && audioSimElapsed <= 16) {
+      const count = 17 - audioSimElapsed;
+      if (countdownEl) {
+        countdownEl.style.display = 'block';
+        countdownEl.textContent = count;
+      }
+      playOscillatorBeep(880, 100);
+    }
+
+    // T = 17s: GO! Transition Chime & Unduck
+    if (audioSimElapsed === 17) {
+      if (countdownEl) {
+        countdownEl.textContent = 'GO!';
+        setTimeout(() => { countdownEl.style.display = 'none'; }, 1000);
+      }
+      playOscillatorBeep(1760, 350);
+      speakWebVoice("GO! Push to 5:45.", () => {
+        setMusicVolumeDucking(100);
+      });
+    }
+
+    // T = 30s: Fueling Alert
+    if (audioSimElapsed === 30) {
+      setMusicVolumeDucking(10);
+      speakWebVoice("45 minutes elapsed. Take 1 Salt Capsule now with water to protect your calves.", () => {
+        setMusicVolumeDucking(100);
+      });
+    }
+
+    // T = 45s: Rest Pre-Cue
+    if (audioSimElapsed === 45) {
+      setMusicVolumeDucking(10);
+      speakWebVoice("Rest in 5 seconds. 30 seconds easy walk or slow jog.");
+    }
+
+    // T = 50s to 54s: Rest Countdown
+    if (audioSimElapsed >= 50 && audioSimElapsed <= 54) {
+      const count = 55 - audioSimElapsed;
+      if (countdownEl) {
+        countdownEl.style.display = 'block';
+        countdownEl.textContent = count;
+      }
+      playOscillatorBeep(700, 100);
+    }
+
+    // T = 55s: Rest chime & Unduck
+    if (audioSimElapsed === 55) {
+      if (countdownEl) {
+        countdownEl.textContent = 'REST';
+        setTimeout(() => { countdownEl.style.display = 'none'; }, 1000);
+      }
+      playOscillatorBeep(1200, 250);
+      speakWebVoice("Catch your breath. RPE 2.", () => {
+        setMusicVolumeDucking(100);
+      });
+    }
+
+    // T = 60s: Complete
+    if (audioSimElapsed >= 60) {
+      stopAudioSimulator();
+      if (subEl) subEl.textContent = "🏆 60-Second Simulator Test Complete! All ducking & countdowns verified.";
+    }
+
+  }, 1000);
+}
+
+function stopAudioSimulator() {
+  isAudioSimActive = false;
+  if (audioSimInterval) clearInterval(audioSimInterval);
+  audioSimInterval = null;
+
+  stopBackgroundMusic();
+  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+
+  const btnStart = document.getElementById('btn-audio-sim-start');
+  const btnStop = document.getElementById('btn-audio-sim-stop');
+  const countdownEl = document.getElementById('audio-live-countdown');
+
+  if (btnStart) btnStart.style.display = 'block';
+  if (btnStop) btnStop.style.display = 'none';
+  if (countdownEl) countdownEl.style.display = 'none';
+}

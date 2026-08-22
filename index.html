@@ -62,6 +62,11 @@
           <span id="supabase-status-label">Connect Supabase</span>
         </button>
 
+        <!-- Audio Companion Button -->
+        <button class="btn-icon" id="btn-audio-companion-nav" onclick="openAudioCompanionModal()" style="border-color: rgba(56, 189, 248, 0.45); background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(14, 165, 233, 0.15)); color: #38bdf8; font-weight: 800;">
+          <span>🎧 Audio Coach</span>
+        </button>
+
         <!-- Upload Run Button -->
         <button class="btn-icon" onclick="openRunUploadModal()" style="background: var(--primary); color: #000; font-weight: 800;">
           <span>📥 Upload Run (GPX / Strava)</span>
@@ -1097,6 +1102,113 @@
 
       <div class="vega-icon-grid" id="vega-icon-studio-grid">
         <!-- Injected dynamically by renderVegaIconStudioCards() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio Run Companion & Ducking Simulator Modal -->
+  <div class="modal-overlay" id="audio-companion-modal" onclick="if(event.target===this) closeAudioCompanionModal()">
+    <div class="modal-content" style="max-width: 720px; background: #080c16; border: 1px solid rgba(56, 189, 248, 0.4); box-shadow: 0 25px 70px rgba(0,0,0,0.9), 0 0 40px rgba(56, 189, 248, 0.2);">
+      <button class="modal-close-btn" onclick="closeAudioCompanionModal()">✕</button>
+      
+      <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.85rem; margin-bottom: 1rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div style="font-size: 1.8rem; background: rgba(56, 189, 248, 0.15); padding: 0.4rem 0.6rem; border-radius: 12px; border: 1px solid rgba(56, 189, 248, 0.3);">🎧</div>
+          <div>
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 900; color: #fff; display: flex; align-items: center; gap: 0.5rem;">
+              TMM 2027 Audio Coach &amp; Ducking Engine
+              <span style="font-size: 0.65rem; background: #10b981; color: #000; font-weight: 800; padding: 0.15rem 0.5rem; border-radius: 999px;">READY</span>
+            </h3>
+            <div style="font-size: 0.78rem; color: #38bdf8; font-weight: 600;">Automated 8:00 PM Pre-Generation • 10% YouTube Music Ducking • 5-4-3-2-1 Countdowns</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Workout Briefing Banner -->
+      <div id="audio-workout-briefing-card" style="background: rgba(19, 28, 49, 0.7); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 10px; padding: 1rem; margin-bottom: 1rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+          <div>
+            <div id="audio-modal-workout-type" style="font-size: 1.1rem; font-weight: 800; color: #fff;">Speed Intervals • 7.0 km</div>
+            <div id="audio-modal-pace-target" style="font-size: 0.85rem; color: #f59e0b; font-weight: 700; margin-top: 0.2rem;">🎯 Target Pace: 5:45 – 6:00 min/km (RPE 8)</div>
+          </div>
+          <button class="btn-icon" onclick="regenerateAudioManifest()" style="font-size: 0.72rem; padding: 0.3rem 0.7rem; background: rgba(56,189,248,0.1); border-color: rgba(56,189,248,0.3); color: #38bdf8;">
+            🔄 Refresh 8PM Manifest
+          </button>
+        </div>
+        <div id="audio-modal-weather-adv" style="font-size: 0.78rem; color: #94a3b8; line-height: 1.4;">
+          🌤️ <strong>Weather &amp; Hydration:</strong> Morning 21°C, 85% humidity. Take Salt capsule at 45m mark.
+        </div>
+      </div>
+
+      <!-- Live Simulator & Audio Focus Visualizer -->
+      <div style="background: #0d1527; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 1.1rem; margin-bottom: 1rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem;">
+          <div style="font-size: 0.8rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">
+            Live Audio Focus &amp; Ducking State
+          </div>
+          <div id="audio-duck-badge" style="font-size: 0.75rem; font-weight: 800; padding: 0.2rem 0.6rem; border-radius: 6px; background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4);">
+            MUSIC AT 100%
+          </div>
+        </div>
+
+        <!-- Volume Level Indicator -->
+        <div style="margin-bottom: 0.75rem;">
+          <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-dim); margin-bottom: 0.25rem;">
+            <span>Background Music (YouTube Music)</span>
+            <span id="audio-volume-text" style="font-weight: 700; color: #10b981;">100% Volume</span>
+          </div>
+          <div style="height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
+            <div id="audio-volume-bar" style="height: 100%; width: 100%; background: linear-gradient(90deg, #10b981, #38bdf8); transition: width 0.2s ease, background 0.2s ease;"></div>
+          </div>
+        </div>
+
+        <!-- Prompt Text & Countdown Big Display -->
+        <div style="background: #060a12; border: 1px dashed rgba(56, 189, 248, 0.3); border-radius: 8px; padding: 1rem; text-align: center; min-height: 85px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+          <div id="audio-live-subtitle" style="font-size: 0.92rem; color: #e2e8f0; font-weight: 600; line-height: 1.45;">
+            "Ready. Tap 'Test 60s Fast Simulator' to hear 1.5s ducking, voice prompt, and 5-4-3-2-1 beeps."
+          </div>
+          <div id="audio-live-countdown" style="font-size: 2.2rem; font-weight: 900; color: #38bdf8; font-family: 'JetBrains Mono', monospace; margin-top: 0.25rem; display: none;">
+            5
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature Controls: Metronome & Earbud Keys -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.25rem;">
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 0.82rem; font-weight: 700; color: #fff;">🥁 Cadence Metronome</div>
+            <div style="font-size: 0.7rem; color: var(--text-dim);">170 SPM subtle tick</div>
+          </div>
+          <button id="btn-web-metronome" class="btn-icon" onclick="toggleWebMetronome()" style="font-size: 0.75rem; padding: 0.3rem 0.6rem; border-color: rgba(255,255,255,0.2);">
+            OFF
+          </button>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 0.82rem; font-weight: 700; color: #fff;">🎧 Earbud Controls</div>
+            <div style="font-size: 0.7rem; color: var(--text-dim);">Double Tap: Repeat | Triple: Skip</div>
+          </div>
+          <div style="display: flex; gap: 0.3rem;">
+            <button class="btn-icon" onclick="simulateEarbudDoubleTap()" title="Simulate Earbud Double Tap" style="font-size: 0.7rem; padding: 0.25rem 0.5rem; background: rgba(56,189,248,0.1); color: #38bdf8;">2x</button>
+            <button class="btn-icon" onclick="simulateEarbudTripleTap()" title="Simulate Earbud Triple Tap" style="font-size: 0.7rem; padding: 0.25rem 0.5rem; background: rgba(245,158,11,0.1); color: #f59e0b;">3x</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        <button class="btn-icon" id="btn-audio-sim-start" onclick="start60SecondAudioSimulator()" style="flex: 1.5; background: linear-gradient(135deg, #0284c7, #0ea5e9); color: #fff; font-weight: 800; padding: 0.85rem 1rem; border: none; font-size: 0.95rem;">
+          ⚡ Test 60s Fast Simulator (Music + Ducking + Countdowns)
+        </button>
+        <button class="btn-icon" id="btn-audio-sim-stop" onclick="stopAudioSimulator()" style="flex: 1; background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.4); color: #ef4444; font-weight: 700; padding: 0.85rem 1rem; display: none;">
+          ⏹️ Stop Simulator
+        </button>
+      </div>
+
+      <div style="margin-top: 1rem; font-size: 0.72rem; color: #64748b; text-align: center;">
+        📱 <strong>Android APK Available:</strong> Codebase compiled in <code>android_companion/</code> with background <code>ForegroundService</code> &amp; WakeLock.
       </div>
     </div>
   </div>

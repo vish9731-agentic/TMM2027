@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#0A0F1D"
+    android:padding="24dp">
+
+    <!-- Header -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="🏃 TMM 2027 AUDIO COMPANION"
+        android:textColor="#38BDF8"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.08" />
+
+    <TextView
+        android:id="@+id/tvWorkoutTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Speed Intervals • 7.0 km"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp" />
+
+    <TextView
+        android:id="@+id/tvTargetPace"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="🎯 Target: 5:45 - 6:00 min/km (RPE 8)"
+        android:textColor="#F59E0B"
+        android:textSize="16sp"
+        android:layout_marginTop="4dp" />
+
+    <TextView
+        android:id="@+id/tvWeatherAdvisory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="🌤️ Morning 21°C • Salt Capsule @ 45m"
+        android:textColor="#94A3B8"
+        android:textSize="13sp"
+        android:layout_marginTop="6dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#1E293B"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp" />
+
+    <!-- Feature Toggles -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="🥁 Cadence Metronome (170 SPM)"
+            android:textColor="#E2E8F0"
+            android:textSize="15sp" />
+
+        <Switch
+            android:id="@+id/switchMetronome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="🎧 YouTube Music will automatically duck to 10% 1.5s before cues."
+        android:textColor="#64748B"
+        android:textSize="12sp"
+        android:layout_marginTop="6dp" />
+
+    <!-- Status Card -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#131C31"
+        android:padding="16dp"
+        android:orientation="vertical"
+        android:layout_marginTop="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SESSION STATUS"
+            android:textColor="#38BDF8"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ready. Start YouTube Music, then tap Start Run."
+            android:textColor="#F8FAFC"
+            android:textSize="15sp"
+            android:layout_marginTop="6dp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- Fast Test Button -->
+    <Button
+        android:id="@+id/btnFastTest"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:text="⚡ TEST DUCKING & COUNTDOWN (60s TEST)"
+        android:backgroundTint="#334155"
+        android:textColor="#38BDF8"
+        android:textStyle="bold"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Master Start Button -->
+    <Button
+        android:id="@+id/btnStart"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:text="START RUN"
+        android:backgroundTint="#10B981"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+</LinearLayout>

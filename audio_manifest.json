@@ -1,0 +1,124 @@
+{
+  "generatedAt": "2026-08-22T11:59:33.796Z",
+  "workoutDate": "2026-08-23",
+  "dayOfWeek": "Sunday",
+  "workoutType": "Zone 2 Easy Aerobic Run",
+  "distanceKm": 6,
+  "targetPace": "7:20 - 7:35 min/km",
+  "rpeTarget": 3,
+  "estDurationMins": 55,
+  "openingBriefing": {
+    "title": "Good Morning! Today's Workout: 6km Zone 2 Easy Aerobic Run",
+    "summaryText": "Welcome to your morning run! Today's session is 6 kilometers. Target pace is 7:20 - 7:35 min/km with an RPE of 3 out of 10. Morning temperature is 21°C with 90% humidity. High sweat rate expected—take your scheduled salt capsules on time.",
+    "weatherAdvisory": "Morning temperature is 21°C with 90% humidity. High sweat rate expected—take your scheduled salt capsules on time.",
+    "targetCadence": 168,
+    "fuelingPlanSummary": "Water sips as needed"
+  },
+  "cadenceMetronome": {
+    "enabledByDefault": false,
+    "bpm": 168
+  },
+  "audioDucking": {
+    "preDuckLeadSeconds": 1.5,
+    "duckedVolumePercent": 10,
+    "releaseBufferSeconds": 0.5
+  },
+  "earbudControls": {
+    "doubleTap": "REPEAT_LAST_CUE",
+    "tripleTap": "SKIP_CURRENT_INTERVAL"
+  },
+  "timeline": [
+    {
+      "id": "start_run",
+      "type": "SESSION_START",
+      "triggerType": "TIME",
+      "triggerSeconds": 0,
+      "title": "🚀 Workout Started",
+      "text": "Starting workout. Conversational aerobic endurance building. Settle into an easy rhythm.",
+      "duckMusicSeconds": 1.5,
+      "hasCountdown": false
+    },
+    {
+      "id": "km_split_1",
+      "type": "DISTANCE_SPLIT",
+      "triggerType": "DISTANCE",
+      "triggerDistanceKm": 1,
+      "title": "📍 Kilometer 1 Split",
+      "text": "Kilometer 1 reached. Gently float into your rhythm. Do not start too fast.",
+      "duckMusicSeconds": 1.5,
+      "hasCountdown": false
+    },
+    {
+      "id": "km_split_2",
+      "type": "DISTANCE_SPLIT",
+      "triggerType": "DISTANCE",
+      "triggerDistanceKm": 2,
+      "title": "📍 Kilometer 2 Split",
+      "text": "Kilometer 2 reached.",
+      "duckMusicSeconds": 1.5,
+      "hasCountdown": false
+    },
+    {
+      "id": "km_split_3",
+      "type": "DISTANCE_SPLIT",
+      "triggerType": "DISTANCE",
+      "triggerDistanceKm": 3,
+      "title": "📍 Kilometer 3 Split",
+      "text": "Kilometer 3 reached.",
+      "duckMusicSeconds": 1.5,
+      "hasCountdown": false
+    },
+    {
+      "id": "km_split_4",
+      "type": "DISTANCE_SPLIT",
+      "triggerType": "DISTANCE",
+      "triggerDistanceKm": 4,
+      "title": "📍 Kilometer 4 Split",
+      "text": "Kilometer 4 reached.",
+      "duckMusicSeconds": 1.5,
+      "hasCountdown": false
+    },
+    {
+      "id": "km_split_5",
+      "type": "DISTANCE_SPLIT",
+      "triggerType": "DISTANCE",
+      "triggerDistanceKm": 5,
+      "title": "📍 Kilometer 5 Split",
+      "text": "Kilometer 5 reached. 5k completed. Check your posture and relax your neck.",
+      "duckMusicSeconds": 1.5,
+      "hasCountdown": false
+    },
+    {
+      "id": "km_split_6",
+      "type": "DISTANCE_SPLIT",
+      "triggerType": "DISTANCE",
+      "triggerDistanceKm": 6,
+      "title": "📍 Kilometer 6 Split",
+      "text": "Kilometer 6 reached.",
+      "duckMusicSeconds": 1.5,
+      "hasCountdown": false
+    },
+    {
+      "id": "fuel_45m",
+      "type": "FUELING",
+      "triggerType": "TIME",
+      "triggerSeconds": 2700,
+      "triggerDistanceKm": 6,
+      "title": "💧 Fueling & Electrolyte Alert (45 Min Mark)",
+      "text": "45 minutes elapsed. Take 1 Salt Capsule now with 150 ml water to protect your calves from cramping.",
+      "duckMusicSeconds": 1.5,
+      "audioClip": "fuel_salt_45m.mp3"
+    },
+    {
+      "id": "workout_complete",
+      "type": "SESSION_COMPLETE",
+      "triggerType": "DISTANCE_OR_TIME",
+      "triggerDistanceKm": 6,
+      "triggerSeconds": 3300,
+      "title": "🏆 Workout Complete!",
+      "text": "Workout complete! Fantastic work on today's 6km session. Take 500ml electrolyte water and perform your calf armor heel drops.",
+      "duckMusicSeconds": 1.5,
+      "hasCountdown": false
+    }
+  ]
+}
