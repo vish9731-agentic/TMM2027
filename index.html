@@ -1036,23 +1036,22 @@
       <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1rem;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
           <div>
-            <div style="font-size: 0.85rem; font-weight: 700; color: #fff;">📅 8:00 PM Google Calendar Sync</div>
+            <div style="font-size: 0.85rem; font-weight: 700; color: #fff;">📅 8:30 PM Google Calendar Sync</div>
             <div style="font-size: 0.72rem; color: var(--text-dim);">Automated evening schedule sync for tomorrow's run</div>
           </div>
-          <span style="font-size: 0.7rem; font-weight: 800; background: rgba(16,185,129,0.15); color: var(--primary); padding: 0.15rem 0.5rem; border-radius: 9999px;">8:00 PM IST Daily</span>
+          <span style="font-size: 0.7rem; font-weight: 800; background: rgba(16,185,129,0.15); color: var(--primary); padding: 0.15rem 0.5rem; border-radius: 9999px;">8:30 PM IST Daily</span>
         </div>
         <div style="display: flex; gap: 0.6rem; align-items: center; margin-top: 0.6rem; flex-wrap: wrap;">
           <div style="flex: 1; min-width: 130px;">
-            <label style="display: block; font-size: 0.7rem; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem;">DEFAULT RUN START TIME</label>
+            <label style="display: block; font-size: 0.7rem; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem;">MORNING RUN TIME</label>
             <input type="time" id="gcal-run-time-input" value="06:00" class="search-input" style="width: 100%; font-family: monospace;" onchange="saveGCalPreferences()">
           </div>
           <div style="flex: 1; min-width: 130px;">
-            <label style="display: block; font-size: 0.7rem; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem;">CALENDAR NOTIFICATION</label>
+            <label style="display: block; font-size: 0.7rem; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem;">NOTIFICATIONS</label>
             <select id="gcal-reminder-select" class="search-input" style="width: 100%;" onchange="saveGCalPreferences()">
-              <option value="30" selected>30 mins before run</option>
-              <option value="45">45 mins before run</option>
-              <option value="60">1 hour before run</option>
-              <option value="120">2 hours before run</option>
+              <option value="dual" selected>Dual: 8:30 PM Night + 30m Before</option>
+              <option value="30">30 mins before run (5:30 AM)</option>
+              <option value="60">1 hour before run (5:00 AM)</option>
             </select>
           </div>
         </div>

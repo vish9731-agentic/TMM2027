@@ -166,8 +166,8 @@ function buildEventPayload(wo, tomorrow) {
     reminders: {
       useDefault: false,
       overrides: [
-        { method: 'popup', minutes: 30 }, // 30 minutes before morning run
-        { method: 'popup', minutes: 120 } // 2 hours before morning run
+        { method: 'popup', minutes: 30 },  // 30 minutes before 6:00 AM morning run (5:30 AM alert)
+        { method: 'popup', minutes: 570 }  // 9.5 hours before 6:00 AM run (8:30 PM evening alert upon creation)
       ]
     }
   };

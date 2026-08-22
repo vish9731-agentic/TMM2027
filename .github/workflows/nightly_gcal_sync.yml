@@ -1,9 +1,9 @@
-name: 📅 8:00 PM Nightly Google Calendar Sync
+name: 📅 8:30 PM Nightly Google Calendar Sync
 
 on:
   schedule:
-    # 14:30 UTC is exactly 20:00 (8:00 PM) IST every evening
-    - cron: '30 14 * * *'
+    # 15:00 UTC is exactly 20:30 (8:30 PM) IST every evening
+    - cron: '0 15 * * *'
   workflow_dispatch: # Allows manual trigger from GitHub Actions tab
 
 jobs:
