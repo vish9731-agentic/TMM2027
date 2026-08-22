@@ -1396,26 +1396,27 @@ h1, h2, h3, h4, .brand-font {
 .coach-fab-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+  gap: 0.65rem;
+  background: linear-gradient(135deg, #db2777 0%, #9333ea 50%, #4f46e5 100%);
   color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.35);
   border-radius: var(--radius-full);
-  padding: 0.75rem 1.25rem;
+  padding: 0.75rem 1.35rem;
   font-size: 0.95rem;
   font-weight: 800;
   cursor: pointer;
-  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.45);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 10px 30px rgba(219, 39, 119, 0.35), 0 0 15px rgba(147, 51, 234, 0.25);
+  backdrop-filter: blur(12px);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .coach-fab-btn:hover {
-  transform: translateY(-3px) scale(1.03);
-  box-shadow: 0 12px 30px rgba(99, 102, 241, 0.6);
+  transform: translateY(-4px) scale(1.04);
+  box-shadow: 0 16px 36px rgba(219, 39, 119, 0.5), 0 0 25px rgba(147, 51, 234, 0.4);
 }
 
 .coach-fab-avatar {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
 }
 
 .coach-fab-status-dot {
@@ -1423,23 +1424,23 @@ h1, h2, h3, h4, .brand-font {
   height: 8px;
   background: #10b981;
   border-radius: 50%;
-  box-shadow: 0 0 8px #10b981;
+  box-shadow: 0 0 10px #10b981;
 }
 
 .coach-live-pulse {
   display: inline-block;
   width: 6px;
   height: 6px;
-  background: #6366f1;
+  background: #ec4899;
   border-radius: 50%;
   margin-left: 0.3rem;
-  box-shadow: 0 0 8px #6366f1;
+  box-shadow: 0 0 8px #ec4899;
   animation: coachPulse 1.8s infinite;
 }
 
 @keyframes coachPulse {
   0% { transform: scale(0.9); opacity: 0.7; }
-  50% { transform: scale(1.4); opacity: 1; box-shadow: 0 0 12px #818cf8; }
+  50% { transform: scale(1.4); opacity: 1; box-shadow: 0 0 12px #f472b6; }
   100% { transform: scale(0.9); opacity: 0.7; }
 }
 
@@ -1448,12 +1449,12 @@ h1, h2, h3, h4, .brand-font {
   position: fixed;
   top: 0;
   right: 0;
-  width: 440px;
+  width: 460px;
   max-width: 100vw;
   height: 100vh;
   background: #0b0f17;
-  border-left: 1px solid rgba(99, 102, 241, 0.3);
-  box-shadow: -15px 0 45px rgba(0, 0, 0, 0.8);
+  border-left: 1px solid rgba(236, 72, 153, 0.25);
+  box-shadow: -15px 0 45px rgba(0, 0, 0, 0.85);
   display: flex;
   flex-direction: column;
   transform: translateX(100%);
@@ -1466,8 +1467,8 @@ h1, h2, h3, h4, .brand-font {
 }
 
 .coach-drawer-header {
-  padding: 1rem 1.25rem;
-  background: rgba(99, 102, 241, 0.08);
+  padding: 1.1rem 1.25rem;
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.1) 0%, rgba(99, 102, 241, 0.08) 100%);
   border-bottom: 1px solid var(--border-subtle);
   display: flex;
   justify-content: space-between;
@@ -1475,15 +1476,16 @@ h1, h2, h3, h4, .brand-font {
 }
 
 .coach-avatar-badge {
-  width: 36px;
-  height: 36px;
-  background: rgba(99, 102, 241, 0.2);
-  border: 1px solid rgba(99, 102, 241, 0.4);
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.25), rgba(147, 51, 234, 0.25));
+  border: 1px solid rgba(244, 114, 182, 0.5);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
+  font-size: 1.35rem;
+  box-shadow: 0 0 15px rgba(236, 72, 153, 0.2);
 }
 
 .coach-online-badge {
@@ -1500,7 +1502,7 @@ h1, h2, h3, h4, .brand-font {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.4rem 1.25rem;
+  padding: 0.45rem 1.25rem;
   background: rgba(0, 0, 0, 0.45);
   border-bottom: 1px solid var(--border-subtle);
   font-size: 0.7rem;
@@ -1565,8 +1567,8 @@ h1, h2, h3, h4, .brand-font {
 }
 
 .triage-chip:hover {
-  background: rgba(99, 102, 241, 0.2);
-  border-color: #818cf8;
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(99, 102, 241, 0.2));
+  border-color: #f472b6;
   color: #fff;
   transform: translateY(-1px);
 }
@@ -1584,7 +1586,7 @@ h1, h2, h3, h4, .brand-font {
 .coach-msg {
   display: flex;
   gap: 0.6rem;
-  max-width: 92%;
+  max-width: 94%;
   animation: fadeInMsg 0.2s ease-out;
 }
 
@@ -1603,20 +1605,20 @@ h1, h2, h3, h4, .brand-font {
 }
 
 .coach-msg-avatar {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background: rgba(99, 102, 241, 0.2);
-  border: 1px solid rgba(99, 102, 241, 0.4);
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(99, 102, 241, 0.2));
+  border: 1px solid rgba(244, 114, 182, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   flex-shrink: 0;
 }
 
 .coach-msg-bubble {
-  padding: 0.8rem 1rem;
+  padding: 0.85rem 1.05rem;
   border-radius: var(--radius-md);
   font-size: 0.85rem;
   line-height: 1.5;
@@ -1626,11 +1628,11 @@ h1, h2, h3, h4, .brand-font {
 }
 
 .coach-msg.bot .coach-msg-bubble {
-  border-left: 2px solid #6366f1;
+  border-left: 2px solid #ec4899;
 }
 
 .coach-msg.user .coach-msg-bubble {
-  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+  background: linear-gradient(135deg, #db2777 0%, #9333ea 60%, #6366f1 100%);
   color: #fff;
   border: none;
 }
@@ -1652,7 +1654,7 @@ h1, h2, h3, h4, .brand-font {
   margin-bottom: 0.3rem;
 }
 
-/* Proposed Plan Diff Card inside chat */
+/* Proposed Plan Diff Card inside chat (Handles Multi-Day, Whole-Week, Whole-Month) */
 .coach-plan-diff-card {
   margin-top: 0.75rem;
   background: rgba(16, 185, 129, 0.06);
@@ -1670,14 +1672,39 @@ h1, h2, h3, h4, .brand-font {
   margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
-  gap: 0.35rem;
+  justify-content: space-between;
+}
+
+.diff-week-group {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  margin-bottom: 0.6rem;
+  overflow: hidden;
+}
+
+.diff-week-header {
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.4rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #f472b6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.diff-week-body {
+  padding: 0.4rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
 }
 
 .coach-diff-item {
   background: rgba(0, 0, 0, 0.35);
   border-radius: 4px;
-  padding: 0.5rem 0.65rem;
-  margin-bottom: 0.5rem;
+  padding: 0.45rem 0.6rem;
   font-size: 0.78rem;
 }
 
@@ -1698,26 +1725,34 @@ h1, h2, h3, h4, .brand-font {
   font-weight: 700;
 }
 
+.coach-diff-scrollable {
+  max-height: 290px;
+  overflow-y: auto;
+  padding-right: 0.2rem;
+  margin-bottom: 0.6rem;
+}
+
 .coach-approve-btn {
   width: 100%;
-  background: var(--primary);
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: #000;
   border: none;
-  padding: 0.55rem 1rem;
+  padding: 0.65rem 1rem;
   font-weight: 800;
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: var(--transition-fast);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.35rem;
+  gap: 0.4rem;
 }
 
 .coach-approve-btn:hover {
   background: #34d399;
   transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
 }
 
 .coach-approve-btn.approved {

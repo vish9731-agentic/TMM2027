@@ -3801,7 +3801,7 @@ function updateCoachStatusDot() {
   }
 }
 
-// Build Rich Context of Current Training Plan & Strava Telemetry
+// Build Rich Context of Current Training Plan & Strava Telemetry (Next 28 Days / Full Month)
 function buildCoachContext() {
   const todayStr = new Date().toISOString().slice(0, 10);
   
@@ -3823,14 +3823,19 @@ function buildCoachContext() {
     };
   }).slice(-7);
 
-  // Upcoming workouts for current & next week
+  // Upcoming workouts for current & next 4 weeks (Full Month Mesocycle)
   const upcomingWorkouts = [];
+  const weeklySummary = [];
+
   if (Array.isArray(rawWeeksData)) {
     rawWeeksData.forEach(w => {
+      let weeklyTotalKm = 0;
       if (Array.isArray(w.workouts)) {
         w.workouts.forEach(wo => {
+          weeklyTotalKm += (wo.distance_km || 0);
           upcomingWorkouts.push({
             week: w.week_number,
+            phase: w.phase_name || '',
             day: wo.day,
             date: wo.date,
             type: wo.type,
@@ -3841,6 +3846,11 @@ function buildCoachContext() {
           });
         });
       }
+      weeklySummary.push({
+        week: w.week_number,
+        phase: w.phase_name,
+        total_distance_km: Number(weeklyTotalKm.toFixed(1))
+      });
     });
   }
 
@@ -3857,7 +3867,8 @@ function buildCoachContext() {
     },
     today_date: todayStr,
     recent_strava_actuals: completedList,
-    full_schedule_sample: upcomingWorkouts.slice(0, 14)
+    upcoming_month_schedule: upcomingWorkouts.slice(0, 28), // Next 28 days (4 full weeks)
+    weekly_mesocycle_summary: weeklySummary.slice(0, 8)
   };
 }
 
@@ -3889,7 +3900,7 @@ async function sendCoachMessage() {
   if (!geminiApiKey) {
     coachChatHistory.push({
       role: 'bot',
-      content: `👋 **Welcome to Coach Vega!**\n\nTo activate my real-time diagnostic AI engine, please click **⚙️ Settings** at the top right of this drawer and enter your free **Google AI Studio / Gemini API Key**.\n\nOnce connected, I will have full live intelligence to diagnose your running mechanics, calf strain, pacing variances, and update your master plan!`,
+      content: `👋 **Welcome! I'm Coach Vega.** 🏃‍♀️\n\nTo activate my real-time diagnostic AI engine, please click **⚙️ Settings** at the top right of this drawer and enter your free **Google AI Studio / Gemini API Key**.\n\nOnce connected, I will have full live intelligence to diagnose your running mechanics, calf strain, pacing variances, and can adjust a single day, an entire week, or a full month of your plan!`,
       timestamp: new Date().toISOString()
     });
     renderCoachMessages();
@@ -3905,20 +3916,25 @@ async function sendCoachMessage() {
     const systemPrompt = `You are Coach Vega — an elite marathon coach, exercise physiologist, and sports physical therapist specialized in coaching an athlete for the Tata Mumbai Marathon 2027 (Target: Sub-5:00:00 finish at 7:06 min/km pace).
 The athlete is training in Adidas Adizero Evo SL 2 shoes and tracking with Galaxy Watch / Strava.
 
-ATHLETE TELEMETRY & LIVE SCHEDULE CONTEXT:
+ATHLETE TELEMETRY & 4-WEEK MESOCYCLE SCHEDULE CONTEXT:
 ${JSON.stringify(context, null, 2)}
 
 YOUR CORE COACHING & DIAGNOSTIC DIRECTIVES:
-1. **Active Multi-Turn Clinical Interviewing:** When the athlete mentions pain, calf tightness, strain, unusual fatigue, or a missed workout, DO NOT immediately prescribe major changes in your very first turn without understanding context. First ask 1–2 sharp, focused diagnostic questions (e.g. pain location/nature, when it began, pace on recent runs, shoe feel, stretching/foam rolling, hydration/cramps).
+1. **Heartful, Empathetic & Clinical Interviewing:** You care deeply about the athlete's long-term health, longevity, and race-day success. When the athlete mentions pain, calf tightness, strain, unusual fatigue, or a missed workout, DO NOT immediately prescribe major changes without understanding context. First ask 1–2 sharp, empathetic diagnostic questions (e.g. pain location/nature, when it began, pace on recent runs, shoe feel in Evo SL 2, stretching/foam rolling, hydration/cramps).
 2. **Root Cause Analysis:** Once you have gathered the context (or if enough context is already provided in the message and Strava telemetry), explain clearly WHY this occurred (e.g., pace variance on Wednesday exceeding Zone 2 aerobic ceiling causing excessive soleus/Achilles loading, insufficient eccentric heel drops, or dehydration).
 3. **Targeted Prehab/Rehab:** Prescribe immediate physical therapy relief (e.g. eccentric single-leg heel drops on a step 3x15, soleus foam rolling, hydration/electrolytes).
-4. **Structured Plan Modifications:** When you determine that future workouts should be modified to protect the athlete and ensure recovery:
-   - Provide your explanation in conversational text.
-   - AND output a structured plan change proposal in a dedicated JSON code block tagged with \`\`\`plan_change_proposal ... \`\`\`.
+4. **Comprehensive Schedule Adjustment Authority (Single-Day, Full-Week, or Entire Month):**
+   - You have FULL authority to adjust:
+     a) A single day (e.g. swap today with rest/cross-training).
+     b) An entire 7-day week (e.g. deloading Week 1 or Week 2, reducing mileage by 25-40% with extra recovery shakeouts and eccentric prehab).
+     c) An entire month (e.g. restructuring the next 4 weeks into a gentle ramp rebuild to allow calf tissues to heal while preserving aerobic base for VDHM and TMM 2027).
+   - When modifying workouts:
+     - Provide your analysis and reasoning in conversational text.
+     - AND output a structured plan change proposal in a dedicated JSON code block tagged with \`\`\`plan_change_proposal ... \`\`\`.
    The JSON format MUST be:
    \`\`\`plan_change_proposal
    {
-     "summary": "Brief summary of plan adjustment",
+     "summary": "Clear summary of the changes (e.g. 'Deload Week 1 & 2 to reduce calf stress while maintaining aerobic consistency')",
      "changes": [
        {
          "workout_date": "YYYY-MM-DD",
@@ -3934,11 +3950,11 @@ YOUR CORE COACHING & DIAGNOSTIC DIRECTIVES:
    }
    \`\`\`
 
-Tone: Encouraging, analytical, highly knowledgeable, empathetic, and authoritative. Keep responses concise and focused on high performance and injury prevention.`;
+Tone: Warm, empathetic, inspiring, analytical, and authoritative. Speak like an elite Olympic coach who genuinely cares about the athlete.`;
 
     const contents = [
       { role: 'user', parts: [{ text: systemPrompt + '\n\nPlease acknowledge with readiness.' }] },
-      { role: 'model', parts: [{ text: "Understood. I am Coach Vega, your marathon coach and sports physiotherapist for TMM 2027. I am ready to analyze your telemetry, diagnose your setbacks, and optimize your master plan." }] }
+      { role: 'model', parts: [{ text: "Understood. I am Coach Vega, your marathon coach and sports physiotherapist for TMM 2027. I am ready to analyze your telemetry, diagnose your setbacks, and optimize your master plan across days, weeks, or full months." }] }
     ];
 
     coachChatHistory.slice(-10).forEach(msg => {
@@ -3955,14 +3971,14 @@ Tone: Encouraging, analytical, highly knowledgeable, empathetic, and authoritati
         contents: contents,
         generationConfig: {
           temperature: 0.4,
-          maxOutputTokens: 1200
+          maxOutputTokens: 2000
         }
       })
     });
 
     if (res.ok) {
       const data = await res.json();
-      const botResponseText = data.candidates?.[0]?.content?.parts?.[0]?.text || "I'm analyzing your workout plan. How are your legs feeling today?";
+      const botResponseText = data.candidates?.[0]?.content?.parts?.[0]?.text || "I'm reviewing your monthly plan. How are your legs feeling today?";
       
       coachChatHistory.push({
         role: 'bot',
@@ -3998,15 +4014,15 @@ function renderCoachMessages() {
   if (coachChatHistory.length === 0) {
     container.innerHTML = `
       <div class="coach-msg bot">
-        <div class="coach-msg-avatar">🤖</div>
+        <div class="coach-msg-avatar">🏃‍♀️</div>
         <div class="coach-msg-bubble">
           <p><strong>Hi! I'm Coach Vega.</strong> 👋</p>
           <p style="margin-top: 0.4rem;">
-            I'm your personal marathon coach and sports injury specialist for the <strong>Tata Mumbai Marathon 2027</strong>.
+            I'm your personal marathon coach and recovery specialist for the <strong>Tata Mumbai Marathon 2027</strong>.
           </p>
           <p style="margin-top: 0.4rem;">
             I have full live visibility into your 22-week plan, your recent Strava runs, and your training variance. 
-            If your calves feel tight, you miss a session, or you want to adjust your schedule, just tell me! I will investigate what happened and suggest tailored plan changes.
+            If your calves feel tight, you miss a workout, or you want to deload an entire week or month, just tell me! I will investigate what happened and suggest tailored plan changes.
           </p>
         </div>
       </div>
@@ -4040,7 +4056,7 @@ function renderCoachMessages() {
 
     html += `
       <div class="coach-msg ${isBot ? 'bot' : 'user'}">
-        <div class="coach-msg-avatar">${isBot ? '🤖' : '🏃'}</div>
+        <div class="coach-msg-avatar">${isBot ? '🏃‍♀️' : '🏃'}</div>
         <div class="coach-msg-bubble">
           <p>${formattedText}</p>
           ${planProposalHtml}
@@ -4058,58 +4074,118 @@ function escapeHtmlText(text) {
   return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-// Render Interactive Plan Diff Widget
+// Render Interactive Plan Diff Widget (Handles Single-Day, Multi-Day, Full-Week, and Full-Month Overhauls)
 function renderCoachPlanProposalWidget(proposal, msgIdx) {
   const changes = proposal.changes || [];
   if (changes.length === 0) return '';
 
-  let diffItemsHtml = '';
+  // Group changes by Week Number
+  const weekGroups = {};
+  let totalBeforeKm = 0;
+  let totalAfterKm = 0;
+
   changes.forEach(ch => {
     const existing = findWorkoutInfoByDate(ch.workout_date);
-    const beforeDist = existing ? `${existing.workout.distance_km} km` : '—';
-    const beforeType = existing ? existing.workout.type : 'Rest';
-    const beforePace = existing ? existing.workout.target_pace : 'N/A';
+    const weekNum = existing ? existing.weekNumber : (ch.week_number || 1);
+    
+    if (!weekGroups[weekNum]) {
+      weekGroups[weekNum] = {
+        weekNumber: weekNum,
+        items: [],
+        beforeKm: 0,
+        afterKm: 0
+      };
+    }
 
-    diffItemsHtml += `
-      <div class="coach-diff-item">
-        <div class="coach-diff-date">📅 ${ch.day_of_week} (${ch.workout_date})</div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.25rem;">
-          <div>
-            <div style="font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase;">Current Plan:</div>
-            <div class="diff-tag-before">${beforeType} (${beforeDist})</div>
+    const beforeDist = existing ? existing.workout.distance_km : 0;
+    const afterDist = ch.distance_km !== undefined ? ch.distance_km : beforeDist;
+
+    weekGroups[weekNum].beforeKm += beforeDist;
+    weekGroups[weekNum].afterKm += afterDist;
+    totalBeforeKm += beforeDist;
+    totalAfterKm += afterDist;
+
+    weekGroups[weekNum].items.push({
+      change: ch,
+      existing: existing
+    });
+  });
+
+  let groupsHtml = '';
+  Object.values(weekGroups).forEach(group => {
+    const weekDelta = group.afterKm - group.beforeKm;
+    const deltaColor = weekDelta <= 0 ? 'var(--primary)' : 'var(--accent-orange)';
+    const deltaSign = weekDelta >= 0 ? '+' : '';
+
+    let itemsHtml = '';
+    group.items.forEach(({ change: ch, existing }) => {
+      const beforeDist = existing ? `${existing.workout.distance_km} km` : '—';
+      const beforeType = existing ? existing.workout.type : 'Rest';
+
+      itemsHtml += `
+        <div class="coach-diff-item">
+          <div class="coach-diff-date">📅 ${ch.day_of_week} (${ch.workout_date})</div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.25rem;">
+            <div>
+              <div style="font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase;">Current:</div>
+              <div class="diff-tag-before">${beforeType} (${beforeDist})</div>
+            </div>
+            <div>
+              <div style="font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase;">Adjusted:</div>
+              <div class="diff-tag-after">${ch.workout_type} (${ch.distance_km} km)</div>
+            </div>
           </div>
-          <div>
-            <div style="font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase;">Proposed Adjustment:</div>
-            <div class="diff-tag-after">${ch.workout_type} (${ch.distance_km} km)</div>
+          <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.25rem;">
+            🎯 <strong>Pace:</strong> ${ch.target_pace} • <strong>Effort:</strong> RPE ${ch.rpe || 2}/10
           </div>
+          ${ch.description ? `<div style="font-size: 0.7rem; color: var(--text-dim); margin-top: 0.15rem; font-style: italic;">"${ch.description}"</div>` : ''}
+          ${ch.strength_prehab ? `<div style="font-size: 0.7rem; color: #f472b6; margin-top: 0.15rem;">💪 <strong>Prehab:</strong> ${ch.strength_prehab}</div>` : ''}
         </div>
-        <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.3rem;">
-          🎯 <strong>Target:</strong> ${ch.target_pace} • <strong>Effort:</strong> RPE ${ch.rpe || 2}/10
+      `;
+    });
+
+    groupsHtml += `
+      <div class="diff-week-group">
+        <div class="diff-week-header">
+          <span>📅 Week ${group.weekNumber} (${group.items.length} Workout${group.items.length > 1 ? 's' : ''})</span>
+          <span class="diff-delta-badge" style="color: ${deltaColor};">
+            ${group.beforeKm.toFixed(1)}k ➔ ${group.afterKm.toFixed(1)}k (${deltaSign}${weekDelta.toFixed(1)}k)
+          </span>
         </div>
-        ${ch.description ? `<div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.2rem; font-style: italic;">"${ch.description}"</div>` : ''}
+        <div class="diff-week-body">
+          ${itemsHtml}
+        </div>
       </div>
     `;
   });
 
+  const totalDelta = totalAfterKm - totalBeforeKm;
+  const totalDeltaSign = totalDelta >= 0 ? '+' : '';
   const changesEncoded = encodeURIComponent(JSON.stringify(changes));
+  const isMultiWorkout = changes.length > 3;
 
   return `
     <div class="coach-plan-diff-card">
       <div class="coach-diff-header">
-        <span>🔄</span> Proposed Plan Modifications
+        <span>🔄 Proposed Schedule Modifications</span>
+        <span style="font-size: 0.7rem; color: var(--text-main); font-weight: 700;">
+          Total: ${totalBeforeKm.toFixed(1)}k ➔ ${totalAfterKm.toFixed(1)}k (${totalDeltaSign}${totalDelta.toFixed(1)}k)
+        </span>
       </div>
       <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">
         ${proposal.summary || 'Adjustments calculated to protect muscles and optimize recovery:'}
       </div>
-      ${diffItemsHtml}
+      <div class="${isMultiWorkout ? 'coach-diff-scrollable' : ''}">
+        ${groupsHtml}
+      </div>
       <button id="coach-approve-btn-${msgIdx}" class="coach-approve-btn" onclick="applyCoachPlanChanges('${changesEncoded}', 'coach-approve-btn-${msgIdx}')">
-        ✅ Approve &amp; Update Master Plan in Cloud
+        ✅ Approve &amp; Apply ${changes.length} Workout Changes in Cloud
       </button>
     </div>
   `;
 }
 
-// Apply Plan Changes to Supabase and Local Dashboard
+// Apply Plan Changes to Supabase and Local Dashboard (Single-Day, Full-Week, or Entire-Month Batch Update)
 async function applyCoachPlanChanges(changesEncoded, btnId) {
   const btn = document.getElementById(btnId);
   if (btn) {
@@ -4154,12 +4230,12 @@ async function applyCoachPlanChanges(changesEncoded, btnId) {
 
     if (btn) {
       btn.classList.add('approved');
-      btn.innerHTML = '✅ Plan Updated Successfully in Cloud!';
+      btn.innerHTML = `✅ Successfully Updated ${changes.length} Workouts in Cloud!`;
     }
 
     coachChatHistory.push({
       role: 'bot',
-      content: `🎉 **Plan Updated!** I have updated your scheduled workouts in Supabase. Your weekly schedule cards are now updated with the new recovery targets!`,
+      content: `🎉 **Plan Overhaul Applied!** I have updated all **${changes.length} workouts** in Supabase and your calendar. Your weekly mileage targets and recovery prescriptions are now active!`,
       timestamp: new Date().toISOString()
     });
     localStorage.setItem('tmm_coach_history', JSON.stringify(coachChatHistory));

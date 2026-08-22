@@ -39,8 +39,8 @@
       <!-- Quick Action Buttons -->
       <div class="nav-actions">
         <!-- AI Coach Button -->
-        <button class="btn-icon" id="btn-coach-nav" onclick="toggleCoachDrawer()" style="border-color: rgba(99, 102, 241, 0.4); background: rgba(99, 102, 241, 0.12); color: #818cf8;">
-          <span>🤖 Coach Vega</span>
+        <button class="btn-icon" id="btn-coach-nav" onclick="toggleCoachDrawer()" style="border-color: rgba(236, 72, 153, 0.35); background: linear-gradient(135deg, rgba(236, 72, 153, 0.12), rgba(99, 102, 241, 0.15)); color: #f472b6;">
+          <span>🏃‍♀️ Coach Vega</span>
           <span class="coach-live-pulse"></span>
         </button>
 
@@ -821,7 +821,7 @@
   <!-- Floating Coach Vega FAB -->
   <div id="coach-fab-container">
     <button class="coach-fab-btn" onclick="toggleCoachDrawer()" title="Chat with Coach Vega">
-      <span class="coach-fab-avatar">🤖</span>
+      <span class="coach-fab-avatar">🏃‍♀️</span>
       <span class="coach-fab-text">Coach Vega</span>
       <span class="coach-fab-status-dot" id="coach-fab-status-dot"></span>
     </button>
@@ -832,14 +832,14 @@
     <!-- Drawer Header -->
     <div class="coach-drawer-header">
       <div style="display: flex; align-items: center; gap: 0.75rem;">
-        <div class="coach-avatar-badge">🤖</div>
+        <div class="coach-avatar-badge">🏃‍♀️</div>
         <div>
           <div style="display: flex; align-items: center; gap: 0.4rem;">
             <h3 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: #fff;">Coach Vega</h3>
             <span class="coach-online-badge" id="coach-online-badge">🟢 Online</span>
           </div>
           <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.1rem;">
-            Adaptive Marathon AI &amp; Sports Physiotherapist
+            Your Personal Marathon Coach &amp; Recovery Specialist
           </div>
         </div>
       </div>
@@ -868,12 +868,13 @@
       </div>
     </div>
 
-    <!-- Quick Triage Chips -->
+    <!-- Quick Triage Chips (Single Day, Whole Week, Whole Month) -->
     <div class="coach-triage-bar">
-      <button class="triage-chip" onclick="sendQuickPrompt('My calves felt tight and strained during my run yesterday.')">🦵 Calf Tightness</button>
+      <button class="triage-chip" onclick="sendQuickPrompt('My calves felt tight and strained during my run yesterday.')">🦵 Calf Strain Diagnosis</button>
+      <button class="triage-chip" onclick="sendQuickPrompt('I need to deload this entire week to recover. Please adjust the whole week\'s schedule.')">🗓️ Deload Entire Week</button>
+      <button class="triage-chip" onclick="sendQuickPrompt('Can you restructure the entire upcoming month of workouts to give my calves extra time to adapt?')">🔄 Restructure Next Month</button>
       <button class="triage-chip" onclick="sendQuickPrompt('Can you review my recent pace and variance from Strava?')">⚡ Pacing Check</button>
-      <button class="triage-chip" onclick="sendQuickPrompt('I missed a workout this week. How should I adjust?')">⏸️ Missed Run</button>
-      <button class="triage-chip" onclick="sendQuickPrompt('I am feeling unusually fatigued today. Should I rest or run?')">😴 Heavy Fatigue</button>
+      <button class="triage-chip" onclick="sendQuickPrompt('I missed workouts this week. Can you reschedule the rest of the week?')">⏸️ Reschedule Week</button>
       <button class="triage-chip" onclick="sendQuickPrompt('What prehab drills should I do today for calf &amp; achilles armor?')">💪 Calf Armor Drill</button>
     </div>
 
