@@ -16,8 +16,8 @@ const path = require('path');
 
 // Configuration
 const DEFAULT_RUN_TIME = process.env.DEFAULT_RUN_TIME || '06:00';
-const SUPABASE_URL = process.env.SUPABASE_URL || 'https://cqgxtymtxcugpuvsvece.supabase.co';
-const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_KEY || '';
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://xtdfhxczdlgyhkqsltyq.supabase.co';
+const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh0ZGZoeGN6ZGxneWhrcXNsdHlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxMzg2OTUsImV4cCI6MjEwMjcxNDY5NX0.ARI4z_eWMhBQiF66xTXKDOrspfsBQjnG81qxaBhEuww';
 const OUTPUT_FILE = path.join(__dirname, '..', 'audio_manifest.json');
 
 // 1. Calculate Tomorrow's Date in IST (Asia/Kolkata)

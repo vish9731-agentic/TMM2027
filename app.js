@@ -2178,9 +2178,12 @@ let rawWeeksData = [
   }
 ];
 
-// Supabase State & URL Query Auto-Connect
-let supabaseUrl = localStorage.getItem('tmm_supabase_url') || '';
-let supabaseAnonKey = localStorage.getItem('tmm_supabase_key') || '';
+// Supabase State & Seamless Cross-Device Auto-Sync
+const DEFAULT_SUPABASE_URL = 'https://xtdfhxczdlgyhkqsltyq.supabase.co';
+const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh0ZGZoeGN6ZGxneWhrcXNsdHlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxMzg2OTUsImV4cCI6MjEwMjcxNDY5NX0.ARI4z_eWMhBQiF66xTXKDOrspfsBQjnG81qxaBhEuww';
+
+let supabaseUrl = localStorage.getItem('tmm_supabase_url') || DEFAULT_SUPABASE_URL;
+let supabaseAnonKey = localStorage.getItem('tmm_supabase_key') || DEFAULT_SUPABASE_ANON_KEY;
 let supabaseClient = null;
 
 try {
