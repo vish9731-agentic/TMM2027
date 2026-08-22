@@ -209,6 +209,20 @@ function buildEventPayload(wo, tomorrow) {
     ].filter(Boolean).join('\n');
   }
 
+  // Calculate exact minutes until workout start for immediate notification upon creation
+  const startMs = new Date(startDateTimeStr).getTime();
+  const nowMs = Date.now();
+  const minsUntilStart = Math.max(1, Math.round((startMs - nowMs) / (60 * 1000)));
+
+  const reminders = {
+    useDefault: false,
+    overrides: [
+      { method: 'popup', minutes: minsUntilStart }, // Instant notification right when event is created tonight
+      { method: 'popup', minutes: 30 },            // 30 mins before 6:00 AM morning run (5:30 AM wake-up alert)
+      { method: 'email', minutes: minsUntilStart }  // Immediate email notification on creation
+    ]
+  };
+
   return {
     summary,
     description,
@@ -221,13 +235,7 @@ function buildEventPayload(wo, tomorrow) {
       dateTime: endDateTimeStr,
       timeZone: 'Asia/Kolkata'
     },
-    reminders: {
-      useDefault: false,
-      overrides: [
-        { method: 'popup', minutes: 30 },  // 30 minutes before 6:00 AM morning run (5:30 AM alert)
-        { method: 'popup', minutes: 570 }  // 9.5 hours before 6:00 AM run (8:30 PM evening alert upon creation)
-      ]
-    }
+    reminders
   };
 }
 
@@ -287,7 +295,7 @@ async function pushToGoogleCalendar(eventPayload) {
   const targetCalId = CALENDAR_ID || 'primary';
   console.log(`📅 Target Calendar ID: ${targetCalId}`);
 
-  const insertUrl = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(targetCalId)}/events`;
+  const insertUrl = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(targetCalId)}/events?sendUpdates=all`;
   const insertRes = await fetch(insertUrl, {
     method: 'POST',
     headers: {
