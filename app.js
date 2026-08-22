@@ -2178,10 +2178,25 @@ let rawWeeksData = [
   }
 ];
 
-// Supabase State
+// Supabase State & URL Query Auto-Connect
 let supabaseUrl = localStorage.getItem('tmm_supabase_url') || '';
 let supabaseAnonKey = localStorage.getItem('tmm_supabase_key') || '';
 let supabaseClient = null;
+
+try {
+  const urlParams = new URLSearchParams(window.location.search);
+  const qUrl = urlParams.get('supabase_url') || urlParams.get('sb_url');
+  const qKey = urlParams.get('supabase_key') || urlParams.get('sb_key');
+  if (qUrl && qKey) {
+    supabaseUrl = qUrl.startsWith('http') ? qUrl : `https://${qUrl}.supabase.co`;
+    supabaseAnonKey = qKey;
+    localStorage.setItem('tmm_supabase_url', supabaseUrl);
+    localStorage.setItem('tmm_supabase_key', supabaseAnonKey);
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }
+} catch (e) {}
 
 // Initialize App on DOM Load
 document.addEventListener('DOMContentLoaded', () => {
@@ -3580,7 +3595,7 @@ function openSupabaseModal() {
   const keyInput = document.getElementById('supabase-input-key');
   const fb = document.getElementById('supabase-test-feedback');
 
-  if (urlInput) urlInput.value = supabaseUrl;
+  if (urlInput) urlInput.value = supabaseUrl || 'https://cqgxtymtxcugpuvsvece.supabase.co';
   if (keyInput) keyInput.value = supabaseAnonKey;
   if (fb) fb.style.display = 'none';
 
