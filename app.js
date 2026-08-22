@@ -2199,6 +2199,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initBookmarklet();
   updateCoachStatusDot();
   updateVegaIconEverywhere();
+  pruneCoachChatHistory();
+  checkAndResumePendingCoachQuery();
 });
 
 // Countdown to Jan 17, 2027
@@ -2527,6 +2529,7 @@ function renderWeekTableView(week) {
                   <div style="font-size: 0.85rem; line-height: 1.4; color: var(--text-muted);">${wo.description}</div>
                   ${actualsHtml}
                   <div style="margin-top: 0.35rem; display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
+                    <button class="workout-card-strategy-btn" onclick="showDailyWorkoutStrategyModal('${wo.date}', ${week.week_number}, '${wo.day}')">🎯 Strategy</button>
                     ${wo.strength_prehab && wo.strength_prehab !== 'N/A' ? `<button class="action-pill-btn" onclick="showStrengthModal('${escapeHtml(wo.strength_prehab)}')">💪 Prehab</button>` : ''}
                     ${wo.fueling && wo.fueling !== 'N/A' ? `<button class="action-pill-btn" onclick="showFuelingModal('${escapeHtml(wo.fueling)}')">⚡ Fueling</button>` : ''}
                     ${!isDone && wo.distance_km > 0 ? `<button class="action-pill-btn" style="border-color: rgba(16, 185, 129, 0.4); color: var(--primary);" onclick="openManualLogForDate('${wo.date}', ${wo.distance_km})">✏️ Log Run</button>` : ''}
@@ -2759,6 +2762,264 @@ function closeVarianceModal() {
   if (modal) modal.classList.remove('open');
 }
 
+// ==============================================================================
+// DAILY WORKOUT STRATEGY BLUEPRINT & GOOGLE CALENDAR LINK GENERATOR
+// ==============================================================================
+function getGCalPreferences() {
+  const defaultTime = localStorage.getItem('tmm_gcal_time') || '06:00';
+  const defaultReminder = parseInt(localStorage.getItem('tmm_gcal_reminder') || '30', 10);
+  return { defaultTime, defaultReminder };
+}
+
+function saveGCalPreferences() {
+  const timeInput = document.getElementById('gcal-run-time-input');
+  const reminderSelect = document.getElementById('gcal-reminder-select');
+  if (timeInput) localStorage.setItem('tmm_gcal_time', timeInput.value);
+  if (reminderSelect) localStorage.setItem('tmm_gcal_reminder', reminderSelect.value);
+}
+
+function generateGoogleCalendarUrl(wo, customTime = null) {
+  const { defaultTime } = getGCalPreferences();
+  const startTimeStr = customTime || defaultTime; // e.g. "06:00"
+  
+  // Format Date & Times: YYYYMMDDTHHMMSS
+  const [year, month, day] = (wo.date || new Date().toISOString().slice(0, 10)).split('-');
+  const [startHour, startMin] = startTimeStr.split(':');
+  
+  const startDt = new Date(parseInt(year, 10), parseInt(month, 10) - 1, parseInt(day, 10), parseInt(startHour, 10), parseInt(startMin, 10), 0);
+  
+  // Estimate workout duration in minutes
+  const dist = wo.distance_km || 0;
+  let durationMins = 45;
+  if (dist > 0) {
+    durationMins = Math.max(30, Math.round(dist * 7.5 + 15)); // Target pace ~7:30 + 15 min warmup/cooldown
+  }
+  const endDt = new Date(startDt.getTime() + durationMins * 60 * 1000);
+
+  const formatGCalDate = (d) => {
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
+  };
+
+  const title = `🏃 TMM 2027: ${dist > 0 ? `${dist}km ` : ''}${wo.type}`;
+  
+  const details = [
+    `🎯 TMM 2027 WORKOUT EXECUTION BLUEPRINT`,
+    `========================================`,
+    `• Target: ${dist > 0 ? `${dist} km` : 'Rest & Prehab Day'}`,
+    `• Prescribed Pace: ${wo.target_pace !== 'N/A' ? wo.target_pace : 'Active Recovery / Rest'}`,
+    `• Effort Target: RPE ${wo.rpe || 2}/10 (Aerobic Base)`,
+    `• Race Goal Pace: 7:06 min/km (Sub-5:00 Marathon)`,
+    ``,
+    `📋 WORKOUT STRUCTURE:`,
+    `${wo.description}`,
+    ``,
+    `🦵 CALF & ACHILLES ARMOR PREHAB:`,
+    `• Pre-Run: 3-min Dynamic Ankle Mobility + Soleus Calve Rockers (2x15)`,
+    `• Post-Run: Eccentric Heel Drops on a step (3x15 straight leg + 3x15 bent knee)`,
+    `• Mobility: Foam roll calves & plantar fascia`,
+    ``,
+    `👟 GEAR & HYDRATION:`,
+    `• Shoes: Adidas Adizero Evo SL 2`,
+    `• Hydration: 250ml water + pinch of pink salt 30 mins before`,
+    `• Fueling: ${wo.fueling || 'Water / Electrolytes'}`
+  ].join('\n');
+
+  const startIso = formatGCalDate(startDt);
+  const endIso = formatGCalDate(endDt);
+
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${startIso}/${endIso}&details=${encodeURIComponent(details)}&location=${encodeURIComponent('Mumbai / Training Course')}`;
+}
+
+function showDailyWorkoutStrategyModal(workoutDate, weekNum, dayName) {
+  const modal = document.getElementById('daily-strategy-modal');
+  const container = document.getElementById('daily-strategy-modal-content');
+  if (!modal || !container) return;
+
+  // Find workout details
+  let targetWo = null;
+  let targetWeekNum = weekNum;
+
+  if (Array.isArray(rawWeeksData)) {
+    for (const w of rawWeeksData) {
+      if (Array.isArray(w.workouts)) {
+        const found = w.workouts.find(x => x.date === workoutDate || (w.week_number === weekNum && x.day === dayName));
+        if (found) {
+          targetWo = found;
+          targetWeekNum = w.week_number;
+          break;
+        }
+      }
+    }
+  }
+
+  if (!targetWo) {
+    alert('Workout details not found for ' + workoutDate);
+    return;
+  }
+
+  const dist = targetWo.distance_km || 0;
+  const isRest = dist === 0;
+  const targetPace = targetWo.target_pace || 'N/A';
+  const rpe = targetWo.rpe || 2;
+  const tagClass = getTagClass(targetWo.type);
+
+  // Compute estimated workout duration
+  let estDurationStr = '25 – 35 mins';
+  if (dist > 0) {
+    const minMins = Math.round(dist * 7.1);
+    const maxMins = Math.round(dist * 7.8);
+    estDurationStr = `${minMins} – ${maxMins} mins`;
+  }
+
+  // Generate Stage Pacing Progression Splits
+  const splits = [];
+  if (dist > 0) {
+    if (dist <= 4.0) {
+      splits.push({ km: 'Km 1', phase: 'Warm-up Float', pace: '7:45 – 8:00', desc: 'Gentle aerobic warmup, high cadence, warm up calves', color: '#10b981' });
+      if (dist > 1.0) {
+        splits.push({ km: `Km 2 – ${dist.toFixed(1)}`, phase: 'Zone 2 Cruise', pace: targetPace, desc: 'Locked-in aerobic pace, controlled nose breathing', color: '#00f5d4' });
+      }
+    } else if (dist <= 8.0) {
+      splits.push({ km: 'Km 1', phase: 'Warm-up Float', pace: '7:45 – 8:00', desc: 'Gradual heart rate ramp, loose shoulders', color: '#10b981' });
+      splits.push({ km: `Km 2 – ${(dist - 1).toFixed(0)}`, phase: 'Zone 2 Target', pace: targetPace, desc: 'Rhythmic aerobic cruise, keep calves relaxed in Evo SL 2', color: '#00f5d4' });
+      splits.push({ km: `Km ${dist.toFixed(0)}`, phase: 'Strides & Cool-down', pace: '7:40 + 3x20s strides', desc: 'Light leg turnover strides + easy walk float', color: '#ffcc00' });
+    } else {
+      // Long Run Progression
+      splits.push({ km: 'Km 1 – 2', phase: 'Aerobic Warmup', pace: '7:45 – 8:00', desc: 'Easy aerobic warmup, wake up tendons', color: '#10b981' });
+      splits.push({ km: `Km 3 – ${(dist - 2).toFixed(0)}`, phase: 'Marathon Aerobic Cruise', pace: targetPace, desc: 'Steady endurance rhythm, take water every 20 mins', color: '#00f5d4' });
+      splits.push({ km: `Km ${(dist - 1).toFixed(0)} – ${dist.toFixed(0)}`, phase: 'Sub-5:00 Finish', pace: '7:06 min/km', desc: 'TMM 2027 goal pace rehearsal, strong posture', color: '#ff7700' });
+    }
+  } else {
+    splits.push({ km: 'Prehab 1', phase: 'Ankle & Foot Mobility', pace: '10 Mins', desc: 'Ankle alphabets, plantar roll with lacrosse ball', color: '#10b981' });
+    splits.push({ km: 'Prehab 2', phase: 'Eccentric Calf Loading', pace: '15 Mins', desc: 'Heel drops on a step (3x15 straight leg + 3x15 bent knee)', color: '#ffcc00' });
+    splits.push({ km: 'Prehab 3', phase: 'Foam Rolling & Recovery', pace: '10 Mins', desc: 'Soleus, gastrocnemius, and quads myofascial release', color: '#38bdf8' });
+  }
+
+  const gcalUrl = generateGoogleCalendarUrl(targetWo);
+
+  container.innerHTML = `
+    <!-- Header -->
+    <div style="margin-bottom: 1rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap;">
+        <div>
+          <span class="workout-tag ${tagClass}" style="margin-bottom: 0.3rem;">${targetWo.type}</span>
+          <h2 style="font-size: 1.3rem; font-weight: 900; color: #fff; margin: 0; background: linear-gradient(135deg, #fff 30%, #ffcc00 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            ${dayName} Strategy Blueprint
+          </h2>
+          <div style="font-size: 0.78rem; color: #a8a29e; margin-top: 0.2rem;">
+            Week ${targetWeekNum} • Date: ${workoutDate}
+          </div>
+        </div>
+        <span style="font-size: 0.72rem; font-weight: 800; color: #ffcc00; background: rgba(255, 140, 0, 0.15); border: 1px solid rgba(255, 140, 0, 0.4); padding: 0.25rem 0.65rem; border-radius: 9999px;">
+          TMM 2027 Micro-Plan
+        </span>
+      </div>
+    </div>
+
+    <!-- Hero Metrics Strip -->
+    <div class="strategy-hero">
+      <div class="strategy-metric-pill">
+        <div class="strategy-metric-label">Target Distance</div>
+        <div class="strategy-metric-val">${dist > 0 ? `${dist} km` : 'Rest Day'}</div>
+      </div>
+      <div class="strategy-metric-pill">
+        <div class="strategy-metric-label">Prescribed Pace</div>
+        <div class="strategy-metric-val" style="font-size: 0.88rem;">${targetPace}</div>
+      </div>
+      <div class="strategy-metric-pill">
+        <div class="strategy-metric-label">Est. Duration</div>
+        <div class="strategy-metric-val" style="font-size: 0.88rem;">${estDurationStr}</div>
+      </div>
+      <div class="strategy-metric-pill">
+        <div class="strategy-metric-label">Effort Level</div>
+        <div class="strategy-metric-val" style="color: var(--accent-orange);">RPE ${rpe}/10</div>
+      </div>
+    </div>
+
+    <!-- Workout Description Overview -->
+    <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-sm); padding: 0.75rem 0.9rem; font-size: 0.82rem; color: var(--text-main); margin-bottom: 0.85rem; line-height: 1.45;">
+      <strong>🎯 Session Goal:</strong> ${targetWo.description}
+    </div>
+
+    <!-- Stage Pacing Progression Table -->
+    <div class="strategy-splits-box">
+      <div style="font-size: 0.75rem; font-weight: 800; color: #ffcc00; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.5rem; display: flex; justify-content: space-between;">
+        <span>⚡ ${isRest ? 'Prehab Protocol Structure' : 'Stage-by-Stage Pacing Blueprint'}</span>
+        <span style="color: var(--text-dim); font-size: 0.7rem;">Target Ceiling: 7:06 min/km</span>
+      </div>
+      <div>
+        ${splits.map(s => `
+          <div class="strategy-split-row">
+            <div class="strategy-split-km">
+              <span class="strategy-split-phase" style="background: rgba(255,255,255,0.06); color: ${s.color}; border: 1px solid ${s.color}40;">
+                ${s.phase}
+              </span>
+              <span>${s.km}</span>
+            </div>
+            <div style="font-size: 0.72rem; color: var(--text-muted); text-align: right; flex: 1; padding: 0 0.6rem;">
+              ${s.desc}
+            </div>
+            <div class="strategy-split-pace">
+              ${s.pace}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <!-- Calf & Achilles Armor Prehab Protocol -->
+    <div class="strategy-prehab-box">
+      <div class="strategy-prehab-title">
+        <span>🦵 Calf &amp; Achilles Armor Protocol</span>
+      </div>
+      <div style="color: var(--text-main); line-height: 1.45;">
+        ${targetWo.strength_prehab && targetWo.strength_prehab !== 'N/A' ? targetWo.strength_prehab : '• <strong>Pre-Run:</strong> 3-min Dynamic Ankle Mobility &amp; Calf Rockers (2x15)<br>• <strong>Post-Run:</strong> Eccentric Heel Drops on a Step (3x15 straight leg + 3x15 bent knee for Soleus) + Foam rolling.'}
+      </div>
+    </div>
+
+    <!-- Hydration & Gear Checklist -->
+    <div class="strategy-hydration-box">
+      <div class="strategy-hydration-title">
+        <span>💧 Hydration &amp; Gear Checklist</span>
+      </div>
+      <div style="color: var(--text-main); line-height: 1.45;">
+        • <strong>Pre-Run Hydration:</strong> Drink 250ml water with a pinch of Himalayan pink salt 30 mins before heading out.<br>
+        • <strong>Shoe Selection:</strong> Adidas Adizero Evo SL 2 (keep forefoot strike light &amp; relaxed).<br>
+        • <strong>Fueling:</strong> ${targetWo.fueling && targetWo.fueling !== 'N/A' ? targetWo.fueling : 'Water / electrolytes only for runs under 60 minutes.'}
+      </div>
+    </div>
+
+    <!-- Action Buttons Row -->
+    <div class="strategy-actions-bar">
+      <a href="${gcalUrl}" target="_blank" class="strategy-gcal-btn" title="Add this specific run to your Google Calendar">
+        <span>📅 Add to Google Calendar</span>
+        <span>↗</span>
+      </a>
+
+      <div style="display: flex; gap: 0.5rem;">
+        <button class="btn-icon" onclick="closeDailyStrategyModal(); sendQuickPrompt('Can you explain the pacing strategy and calf prehab for ${dayName} (${targetWo.date})?'); toggleCoachDrawer();" style="border-color: rgba(255,140,0,0.5); color: #ffcc00; font-size: 0.8rem;">
+          💬 Ask Vega
+        </button>
+        <button class="btn-icon" onclick="closeDailyStrategyModal()" style="background: rgba(255,255,255,0.08); font-size: 0.8rem;">
+          ✕ Close
+        </button>
+      </div>
+    </div>
+  `;
+
+  modal.classList.add('open');
+}
+
+function closeDailyStrategyModal() {
+  const modal = document.getElementById('daily-strategy-modal');
+  if (modal) modal.classList.remove('open');
+}
+
+window.showDailyWorkoutStrategyModal = showDailyWorkoutStrategyModal;
+window.closeDailyStrategyModal = closeDailyStrategyModal;
+window.saveGCalPreferences = saveGCalPreferences;
+
 // Render Single Day Workout Card (Grid Mode)
 function renderDayCard(weekNum, wo) {
   const workoutKey = `${weekNum}_${wo.day}_${wo.date}`;
@@ -2798,6 +3059,9 @@ function renderDayCard(weekNum, wo) {
       ${actualsHtml}
 
       <div class="day-footer">
+        <button class="workout-card-strategy-btn" onclick="showDailyWorkoutStrategyModal('${wo.date}', ${weekNum}, '${wo.day}')">
+          🎯 Strategy
+        </button>
         ${wo.strength_prehab && wo.strength_prehab !== 'N/A' ? `
           <button class="action-pill-btn" onclick="showStrengthModal('${escapeHtml(wo.strength_prehab)}')">
             💪 Prehab
@@ -3822,6 +4086,141 @@ function saveCoachApiSettings() {
   alert(`Coach Vega settings saved successfully!\nModel: ${geminiModel}`);
 }
 
+// Clean & Prune Chat History older than 48 hours (2 days)
+function pruneCoachChatHistory() {
+  const now = Date.now();
+  const FORTY_EIGHT_HOURS_MS = 48 * 60 * 60 * 1000;
+  
+  if (!Array.isArray(coachChatHistory)) {
+    coachChatHistory = [];
+    return;
+  }
+
+  // Filter messages strictly within last 48 hours
+  coachChatHistory = coachChatHistory.filter(msg => {
+    if (!msg.timestamp) return true;
+    const msgTime = new Date(msg.timestamp).getTime();
+    if (isNaN(msgTime)) return true;
+    return (now - msgTime) <= FORTY_EIGHT_HOURS_MS;
+  });
+
+  // Keep at most 40 messages
+  if (coachChatHistory.length > 40) {
+    coachChatHistory = coachChatHistory.slice(-40);
+  }
+
+  try {
+    localStorage.setItem('tmm_coach_history', JSON.stringify(coachChatHistory));
+  } catch (e) {
+    console.warn('Failed to save pruned history:', e);
+  }
+}
+
+// Clear Memory function
+function clearCoachChatHistory() {
+  if (confirm('Clear Vega chat history and rolling 48-hour memory?')) {
+    coachChatHistory = [];
+    localStorage.removeItem('tmm_coach_history');
+    localStorage.removeItem('tmm_coach_pending_query');
+    hideCoachQueue();
+    renderCoachMessages();
+    alert('Chat memory cleared successfully!');
+  }
+}
+window.clearCoachChatHistory = clearCoachChatHistory;
+
+// Strict Gemini Execution (No fallback - answers strictly from selected model)
+async function executeGeminiStrictRequest(model, key, contents) {
+  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: contents,
+      generationConfig: {
+        temperature: 0.4,
+        maxOutputTokens: 2000
+      }
+    })
+  });
+
+  if (res.ok) {
+    const data = await res.json();
+    return { ok: true, data };
+  }
+
+  const errData = await res.json().catch(() => ({}));
+  return {
+    ok: false,
+    status: res.status,
+    message: errData.error?.message || `HTTP ${res.status}`
+  };
+}
+
+// Live Queue & Countdown Management
+let coachCountdownInterval = null;
+let currentPendingPrompt = null;
+let currentPendingAttempt = 1;
+
+function showCoachQueue(secondsLeft, attemptNum, promptText) {
+  const queueBox = document.getElementById('coach-queue-box');
+  const countEl = document.getElementById('coach-countdown-val');
+  const msgEl = document.getElementById('coach-queue-msg');
+  const typingIndicator = document.getElementById('coach-typing-indicator');
+
+  if (typingIndicator) typingIndicator.style.display = 'none';
+
+  if (queueBox && countEl && msgEl) {
+    queueBox.style.display = 'flex';
+    msgEl.innerHTML = `⏳ <strong>${geminiModel} high demand.</strong> Auto-retrying in <span id="coach-countdown-val" style="font-weight: 800; font-family: monospace; color: #fff; background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem;">${secondsLeft}</span>s... (Attempt ${attemptNum}/10)`;
+  }
+
+  if (coachCountdownInterval) clearInterval(coachCountdownInterval);
+
+  let remaining = secondsLeft;
+  coachCountdownInterval = setInterval(() => {
+    remaining--;
+    const countElNow = document.getElementById('coach-countdown-val');
+    if (countElNow) countElNow.textContent = Math.max(0, remaining);
+
+    if (remaining <= 0) {
+      clearInterval(coachCountdownInterval);
+      coachCountdownInterval = null;
+      hideCoachQueue();
+      processCoachQuery(promptText, attemptNum + 1);
+    }
+  }, 1000);
+}
+
+function hideCoachQueue() {
+  if (coachCountdownInterval) {
+    clearInterval(coachCountdownInterval);
+    coachCountdownInterval = null;
+  }
+  const queueBox = document.getElementById('coach-queue-box');
+  if (queueBox) queueBox.style.display = 'none';
+}
+
+function triggerImmediateRetry() {
+  hideCoachQueue();
+  const pending = getStoredPendingCoachQuery();
+  if (pending && pending.prompt) {
+    processCoachQuery(pending.prompt, (pending.attempt || 1) + 1);
+  } else if (currentPendingPrompt) {
+    processCoachQuery(currentPendingPrompt, currentPendingAttempt + 1);
+  }
+}
+window.triggerImmediateRetry = triggerImmediateRetry;
+
+function getStoredPendingCoachQuery() {
+  try {
+    const raw = localStorage.getItem('tmm_coach_pending_query');
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+// Test Connection strictly with chosen model
 async function testCoachApiConnection() {
   const key = document.getElementById('gemini-api-key-input')?.value.trim();
   const model = getActiveCoachModel();
@@ -3841,138 +4240,31 @@ async function testCoachApiConnection() {
     statusEl.style.display = 'block';
     statusEl.style.background = 'rgba(99, 102, 241, 0.15)';
     statusEl.style.color = '#818cf8';
-    statusEl.textContent = `🔄 Testing connection with Google AI (${model})...`;
+    statusEl.textContent = `🔄 Testing connection strictly with ${model}...`;
   }
 
-  try {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ role: 'user', parts: [{ text: 'Respond with the word "READY".' }] }]
-      })
-    });
+  const result = await executeGeminiStrictRequest(
+    model,
+    key,
+    [{ role: 'user', parts: [{ text: 'Respond with the single word READY.' }] }]
+  );
 
-    if (res.ok) {
-      if (statusEl) {
-        statusEl.style.background = 'rgba(16, 185, 129, 0.15)';
-        statusEl.style.color = 'var(--primary)';
-        statusEl.textContent = `✅ Connection successful! Coach Vega is ready on ${model}.`;
-      }
-    } else {
-      const errData = await res.json().catch(() => ({}));
-      if (statusEl) {
-        statusEl.style.background = 'rgba(239, 68, 68, 0.15)';
-        statusEl.style.color = 'var(--accent-red)';
-        statusEl.textContent = `❌ API Error (${res.status}): ${errData.error?.message || 'Invalid API Key or Model Name'}`;
-      }
+  if (result.ok) {
+    if (statusEl) {
+      statusEl.style.background = 'rgba(16, 185, 129, 0.15)';
+      statusEl.style.color = 'var(--primary)';
+      statusEl.textContent = `✅ Connection successful! Coach Vega is ready strictly on ${model}.`;
     }
-  } catch (err) {
+  } else {
     if (statusEl) {
       statusEl.style.background = 'rgba(239, 68, 68, 0.15)';
       statusEl.style.color = 'var(--accent-red)';
-      statusEl.textContent = `❌ Network Error: ${err.message}`;
-    }
-  }
-}
-
-function updateCoachStatusDot() {
-  const dot = document.getElementById('coach-fab-status-dot');
-  const badge = document.getElementById('coach-online-badge');
-  const hasKey = !!geminiApiKey;
-
-  if (dot) {
-    dot.style.background = hasKey ? '#10b981' : '#f59e0b';
-    dot.style.boxShadow = hasKey ? '0 0 8px #10b981' : '0 0 8px #f59e0b';
-  }
-  if (badge) {
-    badge.textContent = hasKey ? '🟢 Online' : '⚠️ Setup Key';
-    badge.style.color = hasKey ? 'var(--primary)' : 'var(--accent-orange)';
-  }
-}
-
-// Build Rich Context of Current Training Plan & Strava Telemetry (Next 28 Days / Full Month)
-function buildCoachContext() {
-  const todayStr = new Date().toISOString().slice(0, 10);
-  
-  // Find recent completed workouts with Strava logs
-  const completedList = Object.entries(completedWorkouts).map(([k, v]) => {
-    return {
-      key: k,
-      date: k.split('_')[2] || '',
-      day: k.split('_')[1] || '',
-      actualDist: v.dist,
-      plannedDist: v.plannedDist,
-      actualPace: v.actualPace,
-      targetPace: v.targetPace,
-      distDelta: v.distDelta,
-      paceDeltaSec: v.paceDeltaSec,
-      scorePct: v.scorePct,
-      notes: v.notes,
-      source: v.source
-    };
-  }).slice(-7);
-
-  // Upcoming workouts for current & next 4 weeks (Full Month Mesocycle)
-  const upcomingWorkouts = [];
-  const weeklySummary = [];
-
-  if (Array.isArray(rawWeeksData)) {
-    rawWeeksData.forEach(w => {
-      let weeklyTotalKm = 0;
-      if (Array.isArray(w.workouts)) {
-        w.workouts.forEach(wo => {
-          weeklyTotalKm += (wo.distance_km || 0);
-          upcomingWorkouts.push({
-            week: w.week_number,
-            phase: w.phase_name || '',
-            day: wo.day,
-            date: wo.date,
-            type: wo.type,
-            distance_km: wo.distance_km,
-            target_pace: wo.target_pace,
-            description: wo.description,
-            strength_prehab: wo.strength_prehab
-          });
-        });
+      if (result.status === 503 || result.status === 429) {
+        statusEl.innerHTML = `⚠️ <strong>Google Server 503 (High Demand on ${model}):</strong><br>Google servers are temporarily busy on this model. When you ask questions in the chat, Vega will automatically queue them with a live countdown timer and retry until answered.`;
+      } else {
+        statusEl.textContent = `❌ API Error (${result.status}): ${result.message}`;
       }
-      weeklySummary.push({
-        week: w.week_number,
-        phase: w.phase_name,
-        total_distance_km: Number(weeklyTotalKm.toFixed(1))
-      });
-    });
-  }
-
-  return {
-    athlete: {
-      target_race: 'Tata Mumbai Marathon 2027 (Jan 17, 2027)',
-      goal_finish_time: '04:59:59 (Sub-5:00:00)',
-      target_marathon_pace: '7:06 min/km',
-      shoes_gear: 'Adidas Adizero Evo SL 2',
-      procam_slam_races: [
-        'Vedanta Delhi Half Marathon (VDHM) - Oct 18, 2026',
-        'Tata Steel World 25K Kolkata - Dec 20, 2026'
-      ]
-    },
-    today_date: todayStr,
-    recent_strava_actuals: completedList,
-    upcoming_month_schedule: upcomingWorkouts.slice(0, 28), // Next 28 days (4 full weeks)
-    weekly_mesocycle_summary: weeklySummary.slice(0, 8)
-  };
-}
-
-// Send Quick Triage Prompt
-function sendQuickPrompt(promptText) {
-  const input = document.getElementById('coach-input');
-  if (input) input.value = promptText;
-  sendCoachMessage();
-}
-
-function handleCoachInputKeydown(e) {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    sendCoachMessage();
+    }
   }
 }
 
@@ -3985,20 +4277,44 @@ async function sendCoachMessage() {
   if (input) input.value = '';
 
   coachChatHistory.push({ role: 'user', content: userText, timestamp: new Date().toISOString() });
+  pruneCoachChatHistory();
   renderCoachMessages();
 
+  processCoachQuery(userText, 1);
+}
+
+// Core Async Processing Engine with Persistence
+async function processCoachQuery(userText, attempt = 1) {
+  currentPendingPrompt = userText;
+  currentPendingAttempt = attempt;
+
   if (!geminiApiKey) {
+    localStorage.removeItem('tmm_coach_pending_query');
+    hideCoachQueue();
     coachChatHistory.push({
       role: 'bot',
       content: `👋 **Welcome! I'm Coach Vega.** 🏃‍♀️\n\nTo activate my real-time diagnostic AI engine, please click **⚙️ Settings** at the top right of this drawer and enter your free **Google AI Studio / Gemini API Key**.\n\nOnce connected, I will have full live intelligence to diagnose your running mechanics, calf strain, pacing variances, and can adjust a single day, an entire week, or a full month of your plan!`,
       timestamp: new Date().toISOString()
     });
+    pruneCoachChatHistory();
     renderCoachMessages();
     return;
   }
 
+  // Persist pending query to localStorage so it resumes across reloads / log-offs
+  localStorage.setItem('tmm_coach_pending_query', JSON.stringify({
+    prompt: userText,
+    attempt: attempt,
+    timestamp: Date.now()
+  }));
+
   const typingIndicator = document.getElementById('coach-typing-indicator');
-  if (typingIndicator) typingIndicator.style.display = 'flex';
+  const typingText = document.getElementById('coach-typing-text');
+  if (typingIndicator) {
+    typingIndicator.style.display = 'flex';
+    if (typingText) typingText.textContent = `Coach Vega (${geminiModel}) is analyzing${attempt > 1 ? ` (Attempt ${attempt})...` : '...'}`;
+  }
+  hideCoachQueue();
 
   try {
     const context = buildCoachContext();
@@ -4047,52 +4363,67 @@ Tone: Warm, empathetic, inspiring, analytical, and authoritative. Speak like an 
       { role: 'model', parts: [{ text: "Understood. I am Coach Vega, your marathon coach and sports physiotherapist for TMM 2027. I am ready to analyze your telemetry, diagnose your setbacks, and optimize your master plan across days, weeks, or full months." }] }
     ];
 
-    coachChatHistory.slice(-10).forEach(msg => {
+    // Include recent conversational turns (within 48-hour active memory)
+    coachChatHistory.slice(-14).forEach(msg => {
       contents.push({
         role: msg.role === 'user' ? 'user' : 'model',
         parts: [{ text: msg.content }]
       });
     });
 
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${geminiApiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: contents,
-        generationConfig: {
-          temperature: 0.4,
-          maxOutputTokens: 2000
-        }
-      })
-    });
+    const modelToUse = geminiModel || 'gemini-3.7-flash';
+    const result = await executeGeminiStrictRequest(modelToUse, geminiApiKey, contents);
 
-    if (res.ok) {
-      const data = await res.json();
-      const botResponseText = data.candidates?.[0]?.content?.parts?.[0]?.text || "I'm reviewing your monthly plan. How are your legs feeling today?";
-      
+    if (result.ok) {
+      // Succeeded on Gemini 3.7! Clear pending task
+      localStorage.removeItem('tmm_coach_pending_query');
+      currentPendingPrompt = null;
+      hideCoachQueue();
+
+      const botResponseText = result.data.candidates?.[0]?.content?.parts?.[0]?.text || "I'm reviewing your monthly plan. How are your legs feeling today?";
       coachChatHistory.push({
         role: 'bot',
         content: botResponseText,
         timestamp: new Date().toISOString()
       });
+      pruneCoachChatHistory();
+      renderCoachMessages();
     } else {
-      const errData = await res.json().catch(() => ({}));
-      coachChatHistory.push({
-        role: 'bot',
-        content: `⚠️ **API Error (${res.status}):** ${errData.error?.message || 'Could not communicate with Google AI model. Please verify your API key in Settings.'}`,
-        timestamp: new Date().toISOString()
-      });
+      if (result.status === 503 || result.status === 429) {
+        // High Demand on 3.7: Calculate exact wait seconds (e.g. 10s, 15s, 20s, 25s, 30s)
+        const waitSec = Math.min(10 + (attempt - 1) * 5, 30);
+        showCoachQueue(waitSec, attempt, userText);
+      } else {
+        localStorage.removeItem('tmm_coach_pending_query');
+        hideCoachQueue();
+        coachChatHistory.push({
+          role: 'bot',
+          content: `⚠️ **API Error (${result.status}):** ${result.message}`,
+          timestamp: new Date().toISOString()
+        });
+        pruneCoachChatHistory();
+        renderCoachMessages();
+      }
     }
   } catch (err) {
-    coachChatHistory.push({
-      role: 'bot',
-      content: `❌ **Network Connection Error:** ${err.message}. Please check your internet connection.`,
-      timestamp: new Date().toISOString()
-    });
+    // Network disconnect or timeout: wait 12s and retry
+    showCoachQueue(12, attempt, userText);
   } finally {
-    if (typingIndicator) typingIndicator.style.display = 'none';
-    localStorage.setItem('tmm_coach_history', JSON.stringify(coachChatHistory));
-    renderCoachMessages();
+    if (typingIndicator && !coachCountdownInterval) {
+      typingIndicator.style.display = 'none';
+    }
+  }
+}
+
+// Auto-Resume Pending Coach Query on Page Load (even if user closed browser or reloaded)
+function checkAndResumePendingCoachQuery() {
+  pruneCoachChatHistory();
+  const pending = getStoredPendingCoachQuery();
+  if (pending && pending.prompt && geminiApiKey) {
+    console.log('🔄 Resuming pending Gemini 3.7 coach query from previous session:', pending);
+    setTimeout(() => {
+      processCoachQuery(pending.prompt, (pending.attempt || 1));
+    }, 800);
   }
 }
 
@@ -4472,7 +4803,7 @@ async function applyCoachPlanChanges(changesEncoded, btnId) {
       content: `🎉 **Plan Overhaul Applied!** I have updated all **${changes.length} workouts** in Supabase and your calendar. Your weekly mileage targets and recovery prescriptions are now active!`,
       timestamp: new Date().toISOString()
     });
-    localStorage.setItem('tmm_coach_history', JSON.stringify(coachChatHistory));
+    pruneCoachChatHistory();
     renderCoachMessages();
 
   } catch (err) {
@@ -4484,12 +4815,8 @@ async function applyCoachPlanChanges(changesEncoded, btnId) {
   }
 }
 
-function clearCoachChatHistory() {
-  if (confirm('Clear Coach Vega chat history?')) {
-    coachChatHistory = [];
-    localStorage.removeItem('tmm_coach_history');
-    renderCoachMessages();
-  }
-}
+// Check on startup
+checkAndResumePendingCoachQuery();
+
 
 

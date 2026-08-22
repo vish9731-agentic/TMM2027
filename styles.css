@@ -1934,3 +1934,182 @@ h1, h2, h3, h4, .brand-font {
   transform: scale(1.05);
 }
 
+/* ==============================================================================
+   DAILY WORKOUT STRATEGY & PACING BLUEPRINT STYLES
+   ============================================================================== */
+.workout-card-strategy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255, 140, 0, 0.12);
+  border: 1px solid rgba(255, 140, 0, 0.4);
+  color: #ffcc00;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.35rem 0.65rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 0.4rem;
+}
+
+.workout-card-strategy-btn:hover {
+  background: linear-gradient(135deg, rgba(255, 69, 0, 0.25), rgba(255, 204, 0, 0.25));
+  border-color: #ffcc00;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3);
+}
+
+.strategy-hero {
+  background: linear-gradient(135deg, #240d04 0%, #160803 100%);
+  border: 1px solid rgba(255, 140, 0, 0.35);
+  border-radius: var(--radius-md);
+  padding: 1.15rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.strategy-metric-pill {
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  padding: 0.4rem 0.65rem;
+  text-align: center;
+  flex: 1;
+  min-width: 80px;
+}
+
+.strategy-metric-label {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.strategy-metric-val {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #ffcc00;
+  margin-top: 0.1rem;
+}
+
+.strategy-splits-box {
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1rem;
+  margin-bottom: 0.85rem;
+}
+
+.strategy-split-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.78rem;
+}
+
+.strategy-split-row:last-child {
+  border-bottom: none;
+}
+
+.strategy-split-km {
+  font-weight: 700;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.strategy-split-phase {
+  font-size: 0.7rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+.strategy-split-pace {
+  font-weight: 800;
+  font-family: monospace;
+  color: #ffcc00;
+}
+
+.strategy-prehab-box {
+  background: rgba(16, 185, 129, 0.06);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1rem;
+  margin-bottom: 0.85rem;
+  font-size: 0.8rem;
+}
+
+.strategy-prehab-title {
+  font-weight: 800;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.strategy-hydration-box {
+  background: rgba(56, 189, 248, 0.06);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.8rem;
+}
+
+.strategy-hydration-title {
+  font-weight: 800;
+  color: #38bdf8;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.strategy-actions-bar {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.strategy-gcal-btn {
+  background: linear-gradient(135deg, #ff7700 0%, #ff5400 100%);
+  color: #fff;
+  border: none;
+  font-weight: 800;
+  font-size: 0.82rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(255, 84, 0, 0.35);
+  text-decoration: none;
+}
+
+.strategy-gcal-btn:hover {
+  background: #ff8800;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(255, 84, 0, 0.55);
+}
+

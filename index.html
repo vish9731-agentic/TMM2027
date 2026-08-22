@@ -830,6 +830,16 @@
     </div>
   </div>
 
+  <!-- Dedicated Daily Workout Strategy & Execution Blueprint Modal -->
+  <div class="modal-overlay" id="daily-strategy-modal" onclick="if(event.target===this) closeDailyStrategyModal()">
+    <div class="modal-content" style="max-width: 640px; background: #0c0502; border: 1px solid rgba(255, 140, 0, 0.45); box-shadow: 0 20px 60px rgba(0,0,0,0.95), 0 0 35px rgba(255, 84, 0, 0.25);">
+      <button class="modal-close-btn" onclick="closeDailyStrategyModal()">✕</button>
+      <div id="daily-strategy-modal-content">
+        <!-- Populated dynamically by showDailyWorkoutStrategyModal() -->
+      </div>
+    </div>
+  </div>
+
   <!-- Floating Vega FAB -->
   <div id="coach-fab-container">
     <button class="coach-fab-btn" onclick="toggleCoachDrawer()" title="Chat with Vega">
@@ -943,7 +953,17 @@
       <div class="coach-typing-dot"></div>
       <div class="coach-typing-dot"></div>
       <div class="coach-typing-dot"></div>
-      <span style="font-size: 0.75rem; color: #818cf8; margin-left: 0.4rem; font-weight: 600;">Coach Vega is analyzing your training telemetry...</span>
+      <span id="coach-typing-text" style="font-size: 0.75rem; color: #818cf8; margin-left: 0.4rem; font-weight: 600;">Coach Vega (Gemini 3.7) is analyzing...</span>
+    </div>
+
+    <!-- Live Queue & Retry Countdown Bar -->
+    <div id="coach-queue-box" style="display: none; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: var(--radius-sm); padding: 0.6rem 0.85rem; margin: 0.35rem 0.85rem; font-size: 0.78rem; color: #fbbf24; align-items: center; justify-content: space-between; gap: 0.6rem;">
+      <div id="coach-queue-msg" style="line-height: 1.35; flex: 1;">
+        ⏳ <strong>Gemini 3.7 high demand.</strong> Auto-retrying in <span id="coach-countdown-val" style="font-weight: 800; font-family: monospace; color: #fff; background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem;">10</span>s...
+      </div>
+      <button type="button" id="coach-retry-now-btn" onclick="triggerImmediateRetry()" style="background: #f59e0b; color: #000; font-weight: 800; border: none; border-radius: 6px; padding: 0.35rem 0.75rem; font-size: 0.72rem; cursor: pointer; white-space: nowrap;">
+        ⚡ Retry Now
+      </button>
     </div>
 
     <!-- Input Bar -->
@@ -963,13 +983,13 @@
         <div style="font-size: 1.8rem;">🤖</div>
         <div>
           <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: var(--text-main);">Coach Vega AI Settings</h3>
-          <div style="font-size: 0.8rem; color: var(--text-muted);">Powered by Antigravity / Gemini Engine</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted);">Powered by Antigravity / Gemini 3.7 Engine</div>
         </div>
       </div>
 
-      <div style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.25rem;">
+      <div style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1rem;">
         <div style="font-size: 0.82rem; color: var(--text-main); line-height: 1.45;">
-          Enter your <strong>Google AI Studio / Gemini API Key</strong> to activate Coach Vega's real-time diagnostic intelligence and adaptive plan changes. Your key is stored securely inside your browser.
+          Enter your <strong>Google AI Studio / Gemini API Key</strong> to activate Coach Vega's real-time diagnostic intelligence and adaptive plan changes.
         </div>
       </div>
 
@@ -981,7 +1001,7 @@
         </div>
       </div>
 
-      <div style="margin-bottom: 1.25rem;">
+      <div style="margin-bottom: 1rem;">
         <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-dim); margin-bottom: 0.35rem;">MODEL SELECTION</label>
         <select id="gemini-model-select" class="search-input" style="width: 100%;" onchange="handleModelSelectChange()">
           <option value="gemini-3.7-flash" selected>Gemini 3.7 Flash (Antigravity Flagship • Ultra Fast &amp; Reasoning)</option>
@@ -999,9 +1019,46 @@
         </div>
       </div>
 
+      <!-- Chat Memory Retention Info -->
+      <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-md); padding: 0.75rem 0.9rem; margin-bottom: 1rem; font-size: 0.76rem; color: var(--text-dim); line-height: 1.4;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <div style="font-weight: 700; color: var(--text-main);">🧠 48-Hour Rolling Chat Memory</div>
+          <button type="button" onclick="clearCoachChatHistory()" style="background: rgba(239,68,68,0.15); color: var(--accent-red); border: 1px solid rgba(239,68,68,0.3); padding: 0.2rem 0.55rem; border-radius: 4px; font-size: 0.7rem; cursor: pointer;">🗑️ Clear Memory</button>
+        </div>
+        <div style="margin-top: 0.3rem;">
+          Conversations within the last 2 days are stored securely in browser storage so Vega remembers your recent mileage &amp; soreness. Discussions older than 48 hours are automatically pruned.
+        </div>
+      </div>
+
       <div id="coach-api-test-status" style="display: none; padding: 0.65rem 0.85rem; border-radius: var(--radius-sm); font-size: 0.8rem; margin-bottom: 1rem;"></div>
 
-      <div style="margin-top: 1.25rem; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+      <!-- Google Calendar Sync Settings -->
+      <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+          <div>
+            <div style="font-size: 0.85rem; font-weight: 700; color: #fff;">📅 8:00 PM Google Calendar Sync</div>
+            <div style="font-size: 0.72rem; color: var(--text-dim);">Automated evening schedule sync for tomorrow's run</div>
+          </div>
+          <span style="font-size: 0.7rem; font-weight: 800; background: rgba(16,185,129,0.15); color: var(--primary); padding: 0.15rem 0.5rem; border-radius: 9999px;">8:00 PM IST Daily</span>
+        </div>
+        <div style="display: flex; gap: 0.6rem; align-items: center; margin-top: 0.6rem; flex-wrap: wrap;">
+          <div style="flex: 1; min-width: 130px;">
+            <label style="display: block; font-size: 0.7rem; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem;">DEFAULT RUN START TIME</label>
+            <input type="time" id="gcal-run-time-input" value="06:00" class="search-input" style="width: 100%; font-family: monospace;" onchange="saveGCalPreferences()">
+          </div>
+          <div style="flex: 1; min-width: 130px;">
+            <label style="display: block; font-size: 0.7rem; font-weight: 700; color: var(--text-dim); margin-bottom: 0.25rem;">CALENDAR NOTIFICATION</label>
+            <select id="gcal-reminder-select" class="search-input" style="width: 100%;" onchange="saveGCalPreferences()">
+              <option value="30" selected>30 mins before run</option>
+              <option value="45">45 mins before run</option>
+              <option value="60">1 hour before run</option>
+              <option value="120">2 hours before run</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
         <div>
           <div style="font-size: 0.85rem; font-weight: 700; color: #fff;">Athlete Icon Studio</div>
           <div style="font-size: 0.72rem; color: var(--text-dim);">Pick from 6 sunset athlete concepts</div>
@@ -1051,6 +1108,6 @@
     <p style="margin-top: 0.3rem;">Kickoff: Monday, August 17, 2026 • Race Day: Sunday, January 17, 2027</p>
   </footer>
 
-  <script src="app.js?v=3.7"></script>
+  <script src="app.js?v=3.7.4"></script>
 </body>
 </html>

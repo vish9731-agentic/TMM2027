@@ -1,0 +1,29 @@
+name: 📅 8:00 PM Nightly Google Calendar Sync
+
+on:
+  schedule:
+    # 14:30 UTC is exactly 20:00 (8:00 PM) IST every evening
+    - cron: '30 14 * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
+jobs:
+  sync-tomorrow-workout:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 🚀 Run Nightly Google Calendar Sync Engine
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
+          GOOGLE_CALENDAR_ID: ${{ secrets.GOOGLE_CALENDAR_ID || 'primary' }}
+          DEFAULT_RUN_TIME: ${{ secrets.DEFAULT_RUN_TIME || '06:00' }}
+        run: |
+          node scripts/sync_tomorrow_gcal.js
