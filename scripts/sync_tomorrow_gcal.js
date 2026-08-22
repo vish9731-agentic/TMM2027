@@ -46,6 +46,7 @@ function getTomorrowDateIST() {
 
 // 2. Fetch Tomorrow's Workout from Supabase or Master Plan
 async function fetchTomorrowWorkout(dateStr) {
+  // 1. Check Supabase first (in case Vega made live plan adaptations)
   if (SUPABASE_URL && SUPABASE_KEY) {
     try {
       const fetchUrl = `${SUPABASE_URL}/rest/v1/daily_workouts?workout_date=eq.${dateStr}&select=*`;
@@ -58,51 +59,53 @@ async function fetchTomorrowWorkout(dateStr) {
       if (res.ok) {
         const rows = await res.json();
         if (rows && rows.length > 0) {
-          console.log(`✅ Retrieved tomorrow's workout from Supabase:`, rows[0].workout_type);
+          console.log(`✅ Retrieved tomorrow's workout from Supabase Cloud:`, rows[0].workout_type, `(${rows[0].distance_km}km)`);
           return rows[0];
         }
       }
     } catch (e) {
-      console.warn(`⚠️ Supabase fetch error (falling back to plan parser):`, e.message);
+      console.warn(`⚠️ Supabase fetch error (falling back to local master plan):`, e.message);
     }
   }
 
-  // Fallback: Read app.js to find workout data for this date
+  // 2. Authoritative Fallback: Parse Master Training Plan from app.js
   try {
     const appJsPath = path.join(__dirname, '..', 'app.js');
     if (fs.existsSync(appJsPath)) {
-      const content = fs.readFileSync(appJsPath, 'utf8');
-      const dateIdx = content.indexOf(`date: '${dateStr}'`);
-      if (dateIdx !== -1) {
-        const chunk = content.slice(Math.max(0, dateIdx - 100), dateIdx + 400);
-        const typeMatch = chunk.match(/type:\s*'([^']+)'/);
-        const distMatch = chunk.match(/distance_km:\s*([0-9.]+)/);
-        const paceMatch = chunk.match(/target_pace:\s*'([^']+)'/);
-        const descMatch = chunk.match(/description:\s*'([^']+)'/);
-        const prehabMatch = chunk.match(/strength_prehab:\s*'([^']+)'/);
+      const appJs = fs.readFileSync(appJsPath, 'utf8');
+      const startIdx = appJs.indexOf('let rawWeeksData = [');
+      const endIdx = appJs.indexOf('];\n\n// Supabase State');
 
-        return {
-          workout_date: dateStr,
-          workout_type: typeMatch ? typeMatch[1] : 'Scheduled Workout',
-          distance_km: distMatch ? parseFloat(distMatch[1]) : 5.0,
-          target_pace: paceMatch ? paceMatch[1] : '7:20 - 7:35 min/km',
-          description: descMatch ? descMatch[1] : 'Follow prescribed aerobic pace.',
-          strength_prehab: prehabMatch ? prehabMatch[1] : 'Calf armor heel drops'
-        };
+      if (startIdx !== -1 && endIdx !== -1) {
+        const jsonStr = appJs.slice(startIdx + 'let rawWeeksData = '.length, endIdx + 1).trim();
+        const weeksData = JSON.parse(jsonStr);
+
+        for (const w of weeksData) {
+          if (Array.isArray(w.workouts)) {
+            for (const wo of w.workouts) {
+              if (wo.date === dateStr) {
+                console.log(`✅ Loaded workout from TMM Master Plan (Week ${w.week_number} • ${w.phase}):`, wo.type, `(${wo.distance_km}km)`);
+                return {
+                  workout_date: dateStr,
+                  workout_type: wo.type,
+                  distance_km: wo.distance_km,
+                  target_pace: wo.target_pace,
+                  rpe_target: wo.rpe,
+                  description: wo.description,
+                  strength_prehab: wo.strength_prehab,
+                  fueling: wo.fueling
+                };
+              }
+            }
+          }
+        }
       }
     }
   } catch (e) {
-    console.warn(`Could not parse local master plan:`, e.message);
+    console.error(`❌ Error parsing local master plan from app.js:`, e.message);
   }
 
-  return {
-    workout_date: dateStr,
-    workout_type: 'Zone 2 Easy Aerobic Run',
-    distance_km: 5.0,
-    target_pace: '7:20 - 7:35 min/km',
-    description: 'Keep cadence high and calves loose in Adidas Adizero Evo SL 2.',
-    strength_prehab: 'Eccentric heel drops on a step (3x15)'
-  };
+  throw new Error(`No workout found in Master Plan or Supabase for scheduled date: ${dateStr}`);
 }
 
 // 3. Build Rich Google Calendar Event Payload
