@@ -6,10 +6,15 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
+import android.view.View
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
@@ -36,6 +41,20 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnSundayTest: Button
     private lateinit var switchMetronome: Switch
 
+    // Lyric Views (YouTube Music style sync)
+    private lateinit var cardLyric1: LinearLayout
+    private lateinit var cardLyric2: LinearLayout
+    private lateinit var cardLyric3: LinearLayout
+    private lateinit var cardLyric4: LinearLayout
+    private lateinit var cardLyric5: LinearLayout
+
+    private lateinit var tvLyric1: TextView
+    private lateinit var tvLyric2: TextView
+    private lateinit var tvLyric3: TextView
+    private lateinit var tvLyric4: TextView
+    private lateinit var tvLyric5: TextView
+
+    private val handler = Handler(Looper.getMainLooper())
     private var loadedManifestJson: String? = null
     private var selectedDateStr: String = ""
 
@@ -66,6 +85,18 @@ class MainActivity : AppCompatActivity() {
         btnFastTest = findViewById(R.id.btnFastTest)
         btnSundayTest = findViewById(R.id.btnSundayTest)
         switchMetronome = findViewById(R.id.switchMetronome)
+
+        cardLyric1 = findViewById(R.id.cardLyric1)
+        cardLyric2 = findViewById(R.id.cardLyric2)
+        cardLyric3 = findViewById(R.id.cardLyric3)
+        cardLyric4 = findViewById(R.id.cardLyric4)
+        cardLyric5 = findViewById(R.id.cardLyric5)
+
+        tvLyric1 = findViewById(R.id.tvLyric1)
+        tvLyric2 = findViewById(R.id.tvLyric2)
+        tvLyric3 = findViewById(R.id.tvLyric3)
+        tvLyric4 = findViewById(R.id.tvLyric4)
+        tvLyric5 = findViewById(R.id.tvLyric5)
 
         btnStart.setOnClickListener {
             if (!isWorkoutActive) {
@@ -123,6 +154,24 @@ class MainActivity : AppCompatActivity() {
                 tvTargetPace.text = "🎯 Target: ${workout.target_pace} (RPE ${workout.rpe}/10)"
                 tvWeatherAdvisory.text = "📅 ${workout.day}, $dateStr • ${prehabText}"
                 tvStatus.text = "Ready. Start YouTube Music, then tap 'START RUN'."
+                highlightLyric(1)
+            }
+        }
+    }
+
+    private fun highlightLyric(index: Int) {
+        val cards = listOf(cardLyric1, cardLyric2, cardLyric3, cardLyric4, cardLyric5)
+        val texts = listOf(tvLyric1, tvLyric2, tvLyric3, tvLyric4, tvLyric5)
+
+        for (i in cards.indices) {
+            if (i == index - 1) {
+                cards[i].setBackgroundColor(Color.parseColor("#131D33"))
+                texts[i].setTextColor(Color.parseColor("#FFFFFF"))
+                cards[i].alpha = 1.0f
+            } else {
+                cards[i].setBackgroundColor(Color.parseColor("#0A0F1D"))
+                texts[i].setTextColor(Color.parseColor("#64748B"))
+                cards[i].alpha = 0.5f
             }
         }
     }
@@ -161,6 +210,17 @@ class MainActivity : AppCompatActivity() {
             btnStart.text = "STOP AUDIO PREVIEW"
             btnStart.setBackgroundColor(0xFFE11D48.toInt())
             tvStatus.text = "🏃 Previewing Sunday 7km Long Run Cues (YouTube Music ducking active)"
+
+            // Synchronize Live Lyrics Highlighting
+            highlightLyric(1)
+            handler.postDelayed({ highlightLyric(2) }, 15000L)
+            handler.postDelayed({ highlightLyric(3) }, 25000L)
+            handler.postDelayed({ highlightLyric(4) }, 38000L)
+            handler.postDelayed({ highlightLyric(5) }, 50000L)
+            handler.postDelayed({
+                if (isWorkoutActive) stopFullWorkout()
+            }, 62000L)
+
         }, 300)
     }
 
@@ -193,6 +253,7 @@ class MainActivity : AppCompatActivity() {
         btnStart.text = "START RUN (GPS + LIVE CUES)"
         btnStart.setBackgroundColor(0xFF10B981.toInt())
         tvStatus.text = "Workout Complete! Great job."
+        highlightLyric(1)
     }
 
     override fun onDestroy() {

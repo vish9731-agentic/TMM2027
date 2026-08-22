@@ -1199,26 +1199,140 @@
         </div>
       </div>
 
-      <!-- Feature Controls: Metronome & Earbud Keys -->
-      <div class="audio-feature-grid">
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
-          <div>
-            <div style="font-size: 0.82rem; font-weight: 700; color: #fff;">🥁 Cadence Metronome</div>
-            <div style="font-size: 0.7rem; color: var(--text-dim);">170 SPM subtle tick</div>
+      <!-- SECTION 1: VISUAL RUN AUDIO TIMELINE -->
+      <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 12px; padding: 1.1rem; margin-bottom: 1.2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem;">
+          <div style="font-size: 0.85rem; font-weight: 800; color: #38bdf8; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 0.4rem;">
+            <span>📍</span> Audio Trigger Timeline &amp; Milestones
           </div>
-          <button id="btn-web-metronome" class="btn-icon" onclick="toggleWebMetronome()" style="font-size: 0.75rem; padding: 0.3rem 0.6rem; border-color: rgba(255,255,255,0.2);">
-            OFF
-          </button>
+          <span style="font-size: 0.72rem; color: #94a3b8; background: rgba(56, 189, 248, 0.1); padding: 0.2rem 0.5rem; border-radius: 4px;">7 Points Marked</span>
         </div>
 
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
-          <div>
-            <div style="font-size: 0.82rem; font-weight: 700; color: #fff;">🎧 Earbud Controls</div>
-            <div style="font-size: 0.7rem; color: var(--text-dim);">Double Tap: Repeat | Triple: Skip</div>
+        <div class="audio-timeline-track" style="position: relative; padding-left: 24px; border-left: 2px solid rgba(56, 189, 248, 0.3); margin-left: 8px;">
+          <!-- Node 0: Start -->
+          <div class="audio-timeline-node" id="node-start" style="position: relative; margin-bottom: 1rem;">
+            <div style="position: absolute; left: -31px; top: 2px; width: 12px; height: 12px; border-radius: 50%; background: #10b981; box-shadow: 0 0 8px #10b981;"></div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.8rem; font-weight: 700; color: #f8fafc;">🚀 0.0 km • Session Kickoff</span>
+              <span style="font-size: 0.68rem; color: #10b981; font-weight: 700; background: rgba(16, 185, 129, 0.15); padding: 0.1rem 0.4rem; border-radius: 4px;">10% Ducking</span>
+            </div>
+            <div style="font-size: 0.73rem; color: #94a3b8; margin-top: 0.15rem;">Opening briefing, weather advisory &amp; 7:35-7:45 min/km pace target.</div>
           </div>
-          <div style="display: flex; gap: 0.3rem;">
-            <button class="btn-icon" onclick="simulateEarbudDoubleTap()" title="Simulate Earbud Double Tap" style="font-size: 0.7rem; padding: 0.25rem 0.5rem; background: rgba(56,189,248,0.1); color: #38bdf8;">2x</button>
-            <button class="btn-icon" onclick="simulateEarbudTripleTap()" title="Simulate Earbud Triple Tap" style="font-size: 0.7rem; padding: 0.25rem 0.5rem; background: rgba(245,158,11,0.1); color: #f59e0b;">3x</button>
+
+          <!-- Node 1: Km 1 Split -->
+          <div class="audio-timeline-node" id="node-km1" style="position: relative; margin-bottom: 1rem;">
+            <div style="position: absolute; left: -31px; top: 2px; width: 12px; height: 12px; border-radius: 50%; background: #38bdf8;"></div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.8rem; font-weight: 700; color: #f8fafc;">⏱️ 1.0 km • Split Check</span>
+              <span style="font-size: 0.68rem; color: #38bdf8; font-weight: 700;">Distance Trigger</span>
+            </div>
+            <div style="font-size: 0.73rem; color: #94a3b8; margin-top: 0.15rem;">"Gently float into rhythm. Do not start too fast."</div>
+          </div>
+
+          <!-- Node 2: Km 3 Split -->
+          <div class="audio-timeline-node" id="node-km3" style="position: relative; margin-bottom: 1rem;">
+            <div style="position: absolute; left: -31px; top: 2px; width: 12px; height: 12px; border-radius: 50%; background: #38bdf8;"></div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.8rem; font-weight: 700; color: #f8fafc;">⏱️ 3.0 km • Cadence Sync</span>
+              <span style="font-size: 0.68rem; color: #38bdf8; font-weight: 700;">Distance Trigger</span>
+            </div>
+            <div style="font-size: 0.73rem; color: #94a3b8; margin-top: 0.15rem;">Cadence lock check at 168-172 SPM.</div>
+          </div>
+
+          <!-- Node 3: 45 Min Salt Capsule (COMPULSORY) -->
+          <div class="audio-timeline-node" id="node-fuel45" style="position: relative; margin-bottom: 1rem;">
+            <div style="position: absolute; left: -31px; top: 2px; width: 12px; height: 12px; border-radius: 50%; background: #f59e0b; box-shadow: 0 0 10px #f59e0b;"></div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.8rem; font-weight: 800; color: #fbbf24;">💧 45:00 Min • Anti-Cramp Fueling</span>
+              <span style="font-size: 0.68rem; color: #fbbf24; font-weight: 800; background: rgba(245, 158, 11, 0.18); padding: 0.1rem 0.4rem; border-radius: 4px;">COMPULSORY</span>
+            </div>
+            <div style="font-size: 0.73rem; color: #cbd5e1; margin-top: 0.15rem;">"Take 1 Salt Capsule now with 150ml water to protect calves."</div>
+          </div>
+
+          <!-- Node 4: Km 5 Posture Check -->
+          <div class="audio-timeline-node" id="node-km5" style="position: relative; margin-bottom: 1rem;">
+            <div style="position: absolute; left: -31px; top: 2px; width: 12px; height: 12px; border-radius: 50%; background: #38bdf8;"></div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.8rem; font-weight: 700; color: #f8fafc;">🧘 5.0 km • Form &amp; Shoulder Check</span>
+              <span style="font-size: 0.68rem; color: #38bdf8; font-weight: 700;">Distance Trigger</span>
+            </div>
+            <div style="font-size: 0.73rem; color: #94a3b8; margin-top: 0.15rem;">"5k completed. Relax shoulders, breathe into belly."</div>
+          </div>
+
+          <!-- Node 5: Km 7 Finish -->
+          <div class="audio-timeline-node" id="node-finish" style="position: relative;">
+            <div style="position: absolute; left: -31px; top: 2px; width: 12px; height: 12px; border-radius: 50%; background: #10b981; box-shadow: 0 0 10px #10b981;"></div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.8rem; font-weight: 800; color: #34d399;">🏆 7.0 km • Finish &amp; Prehab Protocol</span>
+              <span style="font-size: 0.68rem; color: #10b981; font-weight: 800; background: rgba(16, 185, 129, 0.2); padding: 0.1rem 0.4rem; border-radius: 4px;">SESSION DONE</span>
+            </div>
+            <div style="font-size: 0.73rem; color: #94a3b8; margin-top: 0.15rem;">"Take 500ml electrolyte water &amp; begin 10-min calf flush."</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 2: YOUTUBE MUSIC STYLE SPOKEN AUDIO LYRICS VIEW -->
+      <div style="background: radial-gradient(circle at top, #111a2e 0%, #060913 100%); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; padding: 1.25rem; margin-bottom: 1.2rem; position: relative; overflow: hidden; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 8px 24px rgba(0,0,0,0.5);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 0.6rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span style="font-size: 1rem;">📜</span>
+            <span style="font-size: 0.85rem; font-weight: 800; color: #f8fafc; text-transform: uppercase; letter-spacing: 0.06em;">Spoken Audio Lyrics</span>
+          </div>
+          <span style="font-size: 0.68rem; color: #ef4444; font-weight: 800; display: flex; align-items: center; gap: 0.3rem;">
+            <span style="width: 6px; height: 6px; border-radius: 50%; background: #ef4444; display: inline-block; animation: pulse 1.5s infinite;"></span>
+            YOUTUBE MUSIC SYNC VIEW
+          </span>
+        </div>
+
+        <div id="audio-lyrics-container" style="max-height: 260px; overflow-y: auto; display: flex; flex-direction: column; gap: 1.1rem; padding-right: 0.3rem; scroll-behavior: smooth;">
+          <!-- Lyric Line 1 -->
+          <div class="audio-lyric-line active" id="lyric-1" style="transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); opacity: 1; transform: scale(1.02); origin-left;">
+            <div style="display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.2rem;">
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 700; color: #38bdf8; background: rgba(56, 189, 248, 0.15); padding: 0.1rem 0.45rem; border-radius: 4px;">00:02 • START</span>
+            </div>
+            <div class="lyric-text" style="font-size: 1.05rem; font-weight: 700; color: #ffffff; line-height: 1.45; text-shadow: 0 0 12px rgba(56, 189, 248, 0.4);">
+              "Welcome to your Sunday Long Run! Today's session is 7 kilometers. Target pace is 7:35 to 7:45 min/km with an RPE of 3. Morning temperature is 20°C with 93% humidity."
+            </div>
+          </div>
+
+          <!-- Lyric Line 2 -->
+          <div class="audio-lyric-line" id="lyric-2" style="transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0.45;">
+            <div style="display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.2rem;">
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 700; color: #94a3b8; background: rgba(255, 255, 255, 0.06); padding: 0.1rem 0.45rem; border-radius: 4px;">1.0 KM • SPLIT</span>
+            </div>
+            <div class="lyric-text" style="font-size: 0.98rem; font-weight: 600; color: #94a3b8; line-height: 1.45;">
+              "Kilometer 1 reached. Gently float into your rhythm. Do not start too fast."
+            </div>
+          </div>
+
+          <!-- Lyric Line 3 -->
+          <div class="audio-lyric-line" id="lyric-3" style="transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0.45;">
+            <div style="display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.2rem;">
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 700; color: #f59e0b; background: rgba(245, 158, 11, 0.12); padding: 0.1rem 0.45rem; border-radius: 4px;">45:00 MIN • FUELING</span>
+            </div>
+            <div class="lyric-text" style="font-size: 0.98rem; font-weight: 600; color: #94a3b8; line-height: 1.45;">
+              "45 minutes elapsed. Take 1 Salt Capsule now with 150 ml water to protect your calves from cramping."
+            </div>
+          </div>
+
+          <!-- Lyric Line 4 -->
+          <div class="audio-lyric-line" id="lyric-4" style="transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0.45;">
+            <div style="display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.2rem;">
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 700; color: #94a3b8; background: rgba(255, 255, 255, 0.06); padding: 0.1rem 0.45rem; border-radius: 4px;">5.0 KM • CHECK</span>
+            </div>
+            <div class="lyric-text" style="font-size: 0.98rem; font-weight: 600; color: #94a3b8; line-height: 1.45;">
+              "Kilometer 5 reached. Check your posture, relax your shoulders, and keep your cadence smooth."
+            </div>
+          </div>
+
+          <!-- Lyric Line 5 -->
+          <div class="audio-lyric-line" id="lyric-5" style="transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0.45;">
+            <div style="display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.2rem;">
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 700; color: #10b981; background: rgba(16, 185, 129, 0.15); padding: 0.1rem 0.45rem; border-radius: 4px;">7.0 KM • FINISH</span>
+            </div>
+            <div class="lyric-text" style="font-size: 0.98rem; font-weight: 600; color: #94a3b8; line-height: 1.45;">
+              "Workout complete! Fantastic work on completing today's 7km long run. Take 500 ml electrolyte water and perform your 10-minute calf and quad flush."
+            </div>
           </div>
         </div>
       </div>

@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -19,7 +20,7 @@ import java.lang.String;
 
 public final class ActivityMainBinding implements ViewBinding {
   @NonNull
-  private final LinearLayout rootView;
+  private final ScrollView rootView;
 
   @NonNull
   public final Button btnFastTest;
@@ -31,7 +32,37 @@ public final class ActivityMainBinding implements ViewBinding {
   public final Button btnSundayTest;
 
   @NonNull
+  public final LinearLayout cardLyric1;
+
+  @NonNull
+  public final LinearLayout cardLyric2;
+
+  @NonNull
+  public final LinearLayout cardLyric3;
+
+  @NonNull
+  public final LinearLayout cardLyric4;
+
+  @NonNull
+  public final LinearLayout cardLyric5;
+
+  @NonNull
   public final Switch switchMetronome;
+
+  @NonNull
+  public final TextView tvLyric1;
+
+  @NonNull
+  public final TextView tvLyric2;
+
+  @NonNull
+  public final TextView tvLyric3;
+
+  @NonNull
+  public final TextView tvLyric4;
+
+  @NonNull
+  public final TextView tvLyric5;
 
   @NonNull
   public final TextView tvStatus;
@@ -45,15 +76,29 @@ public final class ActivityMainBinding implements ViewBinding {
   @NonNull
   public final TextView tvWorkoutTitle;
 
-  private ActivityMainBinding(@NonNull LinearLayout rootView, @NonNull Button btnFastTest,
-      @NonNull Button btnStart, @NonNull Button btnSundayTest, @NonNull Switch switchMetronome,
+  private ActivityMainBinding(@NonNull ScrollView rootView, @NonNull Button btnFastTest,
+      @NonNull Button btnStart, @NonNull Button btnSundayTest, @NonNull LinearLayout cardLyric1,
+      @NonNull LinearLayout cardLyric2, @NonNull LinearLayout cardLyric3,
+      @NonNull LinearLayout cardLyric4, @NonNull LinearLayout cardLyric5,
+      @NonNull Switch switchMetronome, @NonNull TextView tvLyric1, @NonNull TextView tvLyric2,
+      @NonNull TextView tvLyric3, @NonNull TextView tvLyric4, @NonNull TextView tvLyric5,
       @NonNull TextView tvStatus, @NonNull TextView tvTargetPace,
       @NonNull TextView tvWeatherAdvisory, @NonNull TextView tvWorkoutTitle) {
     this.rootView = rootView;
     this.btnFastTest = btnFastTest;
     this.btnStart = btnStart;
     this.btnSundayTest = btnSundayTest;
+    this.cardLyric1 = cardLyric1;
+    this.cardLyric2 = cardLyric2;
+    this.cardLyric3 = cardLyric3;
+    this.cardLyric4 = cardLyric4;
+    this.cardLyric5 = cardLyric5;
     this.switchMetronome = switchMetronome;
+    this.tvLyric1 = tvLyric1;
+    this.tvLyric2 = tvLyric2;
+    this.tvLyric3 = tvLyric3;
+    this.tvLyric4 = tvLyric4;
+    this.tvLyric5 = tvLyric5;
     this.tvStatus = tvStatus;
     this.tvTargetPace = tvTargetPace;
     this.tvWeatherAdvisory = tvWeatherAdvisory;
@@ -62,7 +107,7 @@ public final class ActivityMainBinding implements ViewBinding {
 
   @Override
   @NonNull
-  public LinearLayout getRoot() {
+  public ScrollView getRoot() {
     return rootView;
   }
 
@@ -105,9 +150,69 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.cardLyric1;
+      LinearLayout cardLyric1 = ViewBindings.findChildViewById(rootView, id);
+      if (cardLyric1 == null) {
+        break missingId;
+      }
+
+      id = R.id.cardLyric2;
+      LinearLayout cardLyric2 = ViewBindings.findChildViewById(rootView, id);
+      if (cardLyric2 == null) {
+        break missingId;
+      }
+
+      id = R.id.cardLyric3;
+      LinearLayout cardLyric3 = ViewBindings.findChildViewById(rootView, id);
+      if (cardLyric3 == null) {
+        break missingId;
+      }
+
+      id = R.id.cardLyric4;
+      LinearLayout cardLyric4 = ViewBindings.findChildViewById(rootView, id);
+      if (cardLyric4 == null) {
+        break missingId;
+      }
+
+      id = R.id.cardLyric5;
+      LinearLayout cardLyric5 = ViewBindings.findChildViewById(rootView, id);
+      if (cardLyric5 == null) {
+        break missingId;
+      }
+
       id = R.id.switchMetronome;
       Switch switchMetronome = ViewBindings.findChildViewById(rootView, id);
       if (switchMetronome == null) {
+        break missingId;
+      }
+
+      id = R.id.tvLyric1;
+      TextView tvLyric1 = ViewBindings.findChildViewById(rootView, id);
+      if (tvLyric1 == null) {
+        break missingId;
+      }
+
+      id = R.id.tvLyric2;
+      TextView tvLyric2 = ViewBindings.findChildViewById(rootView, id);
+      if (tvLyric2 == null) {
+        break missingId;
+      }
+
+      id = R.id.tvLyric3;
+      TextView tvLyric3 = ViewBindings.findChildViewById(rootView, id);
+      if (tvLyric3 == null) {
+        break missingId;
+      }
+
+      id = R.id.tvLyric4;
+      TextView tvLyric4 = ViewBindings.findChildViewById(rootView, id);
+      if (tvLyric4 == null) {
+        break missingId;
+      }
+
+      id = R.id.tvLyric5;
+      TextView tvLyric5 = ViewBindings.findChildViewById(rootView, id);
+      if (tvLyric5 == null) {
         break missingId;
       }
 
@@ -135,8 +240,10 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ActivityMainBinding((LinearLayout) rootView, btnFastTest, btnStart, btnSundayTest,
-          switchMetronome, tvStatus, tvTargetPace, tvWeatherAdvisory, tvWorkoutTitle);
+      return new ActivityMainBinding((ScrollView) rootView, btnFastTest, btnStart, btnSundayTest,
+          cardLyric1, cardLyric2, cardLyric3, cardLyric4, cardLyric5, switchMetronome, tvLyric1,
+          tvLyric2, tvLyric3, tvLyric4, tvLyric5, tvStatus, tvTargetPace, tvWeatherAdvisory,
+          tvWorkoutTitle);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

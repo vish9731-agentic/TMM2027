@@ -9,7 +9,17 @@ color warning
 id btnFastTest
 id btnStart
 id btnSundayTest
+id cardLyric1
+id cardLyric2
+id cardLyric3
+id cardLyric4
+id cardLyric5
 id switchMetronome
+id tvLyric1
+id tvLyric2
+id tvLyric3
+id tvLyric4
+id tvLyric5
 id tvStatus
 id tvTargetPace
 id tvWeatherAdvisory

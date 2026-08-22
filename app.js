@@ -4164,8 +4164,10 @@ try {
 // Open/Close Coach Drawer
 function toggleCoachDrawer() {
   const drawer = document.getElementById('ai-coach-drawer');
+  const fab = document.getElementById('coach-fab-container');
   if (!drawer) return;
   const isOpen = drawer.classList.toggle('open');
+  if (fab) fab.style.display = isOpen ? 'none' : 'block';
   if (isOpen) {
     updateCoachStatusDot();
     updateVegaIconEverywhere();
@@ -5217,6 +5219,34 @@ function start60SecondAudioSimulator() {
   }, 1000);
 }
 
+function highlightActiveLyric(lyricId) {
+  const container = document.getElementById('audio-lyrics-container');
+  const allLines = document.querySelectorAll('.audio-lyric-line');
+  allLines.forEach(line => {
+    line.style.opacity = '0.4';
+    line.style.transform = 'scale(0.98)';
+    const text = line.querySelector('.lyric-text');
+    if (text) {
+      text.style.color = '#94a3b8';
+      text.style.textShadow = 'none';
+    }
+  });
+
+  const active = document.getElementById(lyricId);
+  if (active) {
+    active.style.opacity = '1';
+    active.style.transform = 'scale(1.02)';
+    const text = active.querySelector('.lyric-text');
+    if (text) {
+      text.style.color = '#ffffff';
+      text.style.textShadow = '0 0 16px rgba(56, 189, 248, 0.6)';
+    }
+    if (container) {
+      active.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
+}
+
 function startSunday7kmAudioPreview() {
   if (isAudioSimActive) stopAudioSimulator();
 
@@ -5231,6 +5261,7 @@ function startSunday7kmAudioPreview() {
   if (btnStop) btnStop.style.display = 'block';
 
   startBackgroundMusic();
+  highlightActiveLyric('lyric-1');
   if (subEl) subEl.textContent = '🎵 YouTube Music playing at 100% volume... Previewing Sunday 7km Long Run Cues:';
 
   audioSimInterval = setInterval(() => {
@@ -5238,6 +5269,7 @@ function startSunday7kmAudioPreview() {
 
     // T = 2s: Opening Briefing
     if (audioSimElapsed === 2) {
+      highlightActiveLyric('lyric-1');
       setMusicVolumeDucking(10);
       speakWebVoice("Welcome to your Sunday Long Run! Today's session is 7 kilometers. Target pace is 7:35 to 7:45 min/km with an RPE of 3. Morning temperature is 20°C with 93% humidity.", () => {
         setMusicVolumeDucking(100);
@@ -5246,6 +5278,7 @@ function startSunday7kmAudioPreview() {
 
     // T = 15s: Km 1 Split
     if (audioSimElapsed === 15) {
+      highlightActiveLyric('lyric-2');
       setMusicVolumeDucking(10);
       speakWebVoice("Kilometer 1 reached. Gently float into your rhythm. Do not start too fast.", () => {
         setMusicVolumeDucking(100);
@@ -5254,6 +5287,7 @@ function startSunday7kmAudioPreview() {
 
     // T = 25s: 45-Min Fueling Alert
     if (audioSimElapsed === 25) {
+      highlightActiveLyric('lyric-3');
       setMusicVolumeDucking(10);
       speakWebVoice("45 minutes elapsed. Take 1 Salt Capsule now with 150 ml water to protect your calves from cramping.", () => {
         setMusicVolumeDucking(100);
@@ -5262,6 +5296,7 @@ function startSunday7kmAudioPreview() {
 
     // T = 38s: Km 5 Posture & Cadence Check
     if (audioSimElapsed === 38) {
+      highlightActiveLyric('lyric-4');
       setMusicVolumeDucking(10);
       speakWebVoice("Kilometer 5 reached. Check your posture, relax your shoulders, and keep your cadence smooth.", () => {
         setMusicVolumeDucking(100);
@@ -5270,6 +5305,7 @@ function startSunday7kmAudioPreview() {
 
     // T = 50s: Km 7 Finish Congratulations
     if (audioSimElapsed === 50) {
+      highlightActiveLyric('lyric-5');
       setMusicVolumeDucking(10);
       speakWebVoice("Workout complete! Fantastic work on completing today's 7km long run. Take 500 ml electrolyte water and perform your 10-minute calf and quad flush.", () => {
         setMusicVolumeDucking(100);

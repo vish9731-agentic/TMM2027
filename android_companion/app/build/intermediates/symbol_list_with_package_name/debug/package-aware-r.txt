@@ -3228,6 +3228,11 @@ id cache_measures
 id callMeasure
 id cancel_action
 id cancel_button
+id cardLyric1
+id cardLyric2
+id cardLyric3
+id cardLyric4
+id cardLyric5
 id carryVelocity
 id center
 id centerCrop
@@ -3607,6 +3612,11 @@ id transition_position
 id transition_scene_layoutid_cache
 id transition_transform
 id triangle
+id tvLyric1
+id tvLyric2
+id tvLyric3
+id tvLyric4
+id tvLyric5
 id tvStatus
 id tvTargetPace
 id tvWeatherAdvisory
