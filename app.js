@@ -4006,6 +4006,8 @@ Tone: Warm, empathetic, inspiring, analytical, and authoritative. Speak like an 
   }
 }
 
+const VEGA_ATHLETE_SVG = `<svg class="vega-athlete-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 18px; height: 18px; filter: drop-shadow(0 0 4px #00f5d4);"><circle cx="15.5" cy="4.5" r="2.5" fill="#00f5d4" /><path d="M13 7.5L10 11L6 9.5M14 9.5L16.5 13.5L13.5 16.5L15.5 21.5M10.5 14L8 17.5L4 16.5" stroke="#00f5d4" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 4.5L7.5 4.5M2.5 7L5.5 7" stroke="#00bbf9" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+
 // Render Messages & Interactive Plan Diff Cards
 function renderCoachMessages() {
   const container = document.getElementById('coach-messages-container');
@@ -4014,9 +4016,9 @@ function renderCoachMessages() {
   if (coachChatHistory.length === 0) {
     container.innerHTML = `
       <div class="coach-msg bot">
-        <div class="coach-msg-avatar">🏃‍♀️</div>
+        <div class="coach-msg-avatar">${VEGA_ATHLETE_SVG}</div>
         <div class="coach-msg-bubble">
-          <p><strong>Hi! I'm Coach Vega.</strong> 👋</p>
+          <p><strong>Hi! I'm Vega.</strong> 👋</p>
           <p style="margin-top: 0.4rem;">
             I'm your personal marathon coach and recovery specialist for the <strong>Tata Mumbai Marathon 2027</strong>.
           </p>
@@ -4056,7 +4058,7 @@ function renderCoachMessages() {
 
     html += `
       <div class="coach-msg ${isBot ? 'bot' : 'user'}">
-        <div class="coach-msg-avatar">${isBot ? '🏃‍♀️' : '🏃'}</div>
+        <div class="coach-msg-avatar">${isBot ? VEGA_ATHLETE_SVG : '🏃'}</div>
         <div class="coach-msg-bubble">
           <p>${formattedText}</p>
           ${planProposalHtml}
