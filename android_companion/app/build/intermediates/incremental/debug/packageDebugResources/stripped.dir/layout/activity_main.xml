@@ -114,13 +114,24 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <!-- Fast Test Button -->
+    <!-- Sunday 7km Fast Audio Preview -->
+    <Button
+        android:id="@+id/btnSundayTest"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:text="🏃 PREVIEW SUNDAY 7KM RUN AUDIO"
+        android:backgroundTint="#065F46"
+        android:textColor="#34D399"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Fast Interval Test Button -->
     <Button
         android:id="@+id/btnFastTest"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:text="⚡ TEST DUCKING &amp; COUNTDOWN (60s TEST)"
-        android:backgroundTint="#334155"
+        android:layout_height="48dp"
+        android:text="⚡ TEST SPEED INTERVALS &amp; COUNTDOWN (60s)"
+        android:backgroundTint="#1E293B"
         android:textColor="#38BDF8"
         android:textStyle="bold"
         android:layout_marginBottom="12dp" />
@@ -130,7 +141,7 @@
         android:id="@+id/btnStart"
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:text="START RUN"
+        android:text="START RUN (GPS + LIVE CUES)"
         android:backgroundTint="#10B981"
         android:textColor="#000000"
         android:textSize="18sp"

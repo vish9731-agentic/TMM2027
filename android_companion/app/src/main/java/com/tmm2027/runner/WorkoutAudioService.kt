@@ -128,7 +128,7 @@ class WorkoutAudioService : Service(), EarbudMediaReceiver.Companion.EarbudButto
             .build()
     }
 
-    fun startWorkout(manifestJsonStr: String? = null, isFastTestMode: Boolean = false) {
+    fun startWorkout(manifestJsonStr: String? = null, testMode: String = "NONE") {
         if (isRunning) return
         isRunning = true
         isPaused = false
@@ -137,20 +137,31 @@ class WorkoutAudioService : Service(), EarbudMediaReceiver.Companion.EarbudButto
         totalDistanceMeters = 0.0
         triggeredEventIds.clear()
 
-        loadManifest(manifestJsonStr, isFastTestMode)
+        loadManifest(manifestJsonStr, testMode)
 
         startForeground(NOTIFICATION_ID, buildNotification("Starting Workout..."))
         startLocationUpdates()
 
-        // Opening briefing
-        audioCueManager.playDirectCue("Starting workout. YouTube music will duck automatically during cues. Enjoy your run!")
+        if (testMode == "NONE") {
+            audioCueManager.playDirectCue("Starting workout. YouTube music will duck automatically during cues. Enjoy your run!")
+        }
         handler.post(tickerRunnable)
     }
 
-    private fun loadManifest(manifestJsonStr: String?, isFastTestMode: Boolean) {
+    private fun loadManifest(manifestJsonStr: String?, testMode: String) {
         activeTimeline.clear()
 
-        if (isFastTestMode) {
+        if (testMode == "SUNDAY_7KM") {
+            Log.d("WorkoutAudioService", "Loading Sunday 7km Fast Preview Timeline")
+            activeTimeline.add(AudioEvent("sun_start", "START", "TIME", 2, null, "🚀 Sunday Long Run Started", "Welcome to your Sunday Long Run! Today's session is 7 kilometers. Target pace is 7:35 to 7:45 min/km with an RPE of 3. Morning temperature is 20°C with 93% humidity.", 1.5, false))
+            activeTimeline.add(AudioEvent("sun_km1", "SPLIT", "TIME", 15, null, "📍 Kilometer 1 Split", "Kilometer 1 reached. Gently float into your rhythm. Do not start too fast.", 1.5, false))
+            activeTimeline.add(AudioEvent("sun_fuel", "FUELING", "TIME", 25, null, "💧 Salt Capsule Alert (45m)", "45 minutes elapsed. Take 1 Salt Capsule now with 150 ml water to protect your calves from cramping.", 1.5, false))
+            activeTimeline.add(AudioEvent("sun_km5", "SPLIT", "TIME", 38, null, "📍 Kilometer 5 Check", "Kilometer 5 reached. Check your posture, relax your shoulders, and keep your cadence smooth.", 1.5, false))
+            activeTimeline.add(AudioEvent("sun_complete", "COMPLETE", "TIME", 50, null, "🏆 7km Workout Complete", "Workout complete! Fantastic work on completing today's 7km long run. Take 500 ml electrolyte water and perform your 10-minute calf and quad flush.", 1.5, false))
+            return
+        }
+
+        if (testMode == "FAST_INTERVALS") {
             // Fast 60-Second Simulator Mode for testing ducking, intervals and countdowns
             Log.d("WorkoutAudioService", "Loading 60-Second Fast Simulator Timeline")
             activeTimeline.add(AudioEvent("fast_start", "START", "TIME", 0, null, "🚀 Start Run", "Starting fast interval test.", 1.5, false))

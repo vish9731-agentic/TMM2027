@@ -219,7 +219,7 @@
         </p>
 
         <!-- 3 Interactive Race Selector Cards Grid -->
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-top: 1.75rem;">
+        <div class="procam-cards-grid">
           
           <!-- Event 1: VDHM -->
           <div class="procam-select-card" id="procam-card-vdhm" data-race="vdhm" onclick="selectProcamRace('vdhm')">
@@ -459,7 +459,7 @@
         <h2 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 0.5rem;">Anti-Cramp Hydration & Fueling Protocol</h2>
         <p style="color: var(--text-muted); font-size: 0.9rem;">Engineered to overcome sodium depletion in Mumbai's coastal humidity ($65\% - 85\%$).</p>
 
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0;">
+        <div class="fueling-summary-grid">
           <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem;">
             <div style="color: var(--primary); font-weight: 700; font-size: 1.1rem; margin-bottom: 0.3rem;">⚡ Energy Gels</div>
             <div style="font-size: 0.85rem; color: var(--text-muted);">1 Gel every <strong>40–45 minutes</strong> ($30 - 45\text{g}$ carbs/hr). Always wash down with $150\text{ ml}$ plain water.</div>
@@ -750,7 +750,7 @@
           <div id="manual-workout-context-target" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">Prescribed Pace: —</div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+        <div class="manual-ingest-grid">
           <div>
             <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-dim); margin-bottom: 0.3rem;">WORKOUT DATE</label>
             <input type="date" id="manual-run-date" class="search-input" style="width: 100%;" onchange="onManualDateChanged()">
@@ -1225,11 +1225,14 @@
 
       <!-- Action Buttons -->
       <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-        <button class="btn-icon" id="btn-audio-sim-start" onclick="start60SecondAudioSimulator()" style="flex: 1.5; background: linear-gradient(135deg, #0284c7, #0ea5e9); color: #fff; font-weight: 800; padding: 0.85rem 1rem; border: none; font-size: 0.95rem;">
-          ⚡ Test 60s Fast Simulator (Music + Ducking + Countdowns)
+        <button class="btn-icon" id="btn-audio-sim-sunday" onclick="startSunday7kmAudioPreview()" style="flex: 1; background: linear-gradient(135deg, #10b981, #059669); color: #000; font-weight: 800; padding: 0.85rem 1rem; border: none; font-size: 0.95rem;">
+          🏃 Preview Sunday 7km Long Run Cues
         </button>
-        <button class="btn-icon" id="btn-audio-sim-stop" onclick="stopAudioSimulator()" style="flex: 1; background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.4); color: #ef4444; font-weight: 700; padding: 0.85rem 1rem; display: none;">
-          ⏹️ Stop Simulator
+        <button class="btn-icon" id="btn-audio-sim-start" onclick="start60SecondAudioSimulator()" style="flex: 1; background: linear-gradient(135deg, #0284c7, #0ea5e9); color: #fff; font-weight: 800; padding: 0.85rem 1rem; border: none; font-size: 0.95rem;">
+          ⚡ Test Speed Intervals (60s Ducking Test)
+        </button>
+        <button class="btn-icon" id="btn-audio-sim-stop" onclick="stopAudioSimulator()" style="width: 100%; background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.4); color: #ef4444; font-weight: 700; padding: 0.85rem 1rem; display: none;">
+          ⏹️ Stop Audio Simulator
         </button>
       </div>
 

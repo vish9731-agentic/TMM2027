@@ -28,6 +28,9 @@ public final class ActivityMainBinding implements ViewBinding {
   public final Button btnStart;
 
   @NonNull
+  public final Button btnSundayTest;
+
+  @NonNull
   public final Switch switchMetronome;
 
   @NonNull
@@ -43,12 +46,13 @@ public final class ActivityMainBinding implements ViewBinding {
   public final TextView tvWorkoutTitle;
 
   private ActivityMainBinding(@NonNull LinearLayout rootView, @NonNull Button btnFastTest,
-      @NonNull Button btnStart, @NonNull Switch switchMetronome, @NonNull TextView tvStatus,
-      @NonNull TextView tvTargetPace, @NonNull TextView tvWeatherAdvisory,
-      @NonNull TextView tvWorkoutTitle) {
+      @NonNull Button btnStart, @NonNull Button btnSundayTest, @NonNull Switch switchMetronome,
+      @NonNull TextView tvStatus, @NonNull TextView tvTargetPace,
+      @NonNull TextView tvWeatherAdvisory, @NonNull TextView tvWorkoutTitle) {
     this.rootView = rootView;
     this.btnFastTest = btnFastTest;
     this.btnStart = btnStart;
+    this.btnSundayTest = btnSundayTest;
     this.switchMetronome = switchMetronome;
     this.tvStatus = tvStatus;
     this.tvTargetPace = tvTargetPace;
@@ -95,6 +99,12 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.btnSundayTest;
+      Button btnSundayTest = ViewBindings.findChildViewById(rootView, id);
+      if (btnSundayTest == null) {
+        break missingId;
+      }
+
       id = R.id.switchMetronome;
       Switch switchMetronome = ViewBindings.findChildViewById(rootView, id);
       if (switchMetronome == null) {
@@ -125,7 +135,7 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ActivityMainBinding((LinearLayout) rootView, btnFastTest, btnStart,
+      return new ActivityMainBinding((LinearLayout) rootView, btnFastTest, btnStart, btnSundayTest,
           switchMetronome, tvStatus, tvTargetPace, tvWeatherAdvisory, tvWorkoutTitle);
     }
     String missingId = rootView.getResources().getResourceName(id);

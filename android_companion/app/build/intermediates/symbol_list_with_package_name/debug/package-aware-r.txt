@@ -3222,6 +3222,7 @@ id bounceEnd
 id bounceStart
 id btnFastTest
 id btnStart
+id btnSundayTest
 id buttonPanel
 id cache_measures
 id callMeasure

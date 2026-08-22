@@ -1,5 +1,9 @@
 [
     {
+        "merged": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-merged_res-34:/layout_activity_main.xml.flat",
+        "source": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-main-36:/layout/activity_main.xml"
+    },
+    {
         "merged": "com.tmm2027.runner.app-merged_res-34:/layout_activity_main.xml.flat",
         "source": "com.tmm2027.runner.app-main-36:/layout/activity_main.xml"
     }

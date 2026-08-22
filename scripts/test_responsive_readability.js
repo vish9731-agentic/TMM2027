@@ -59,11 +59,19 @@ assert(stylesCss.includes('.modal-content {') && stylesCss.includes('overflow-y:
 assert(stylesCss.includes('.action-pill-btn') && stylesCss.includes('min-height: 32px'), 'Action buttons have adequate touch target height');
 
 // 6. Navigation Actions & Mobile Wrapping
-console.log('\n🧭 6. Navigation Actions Bar:');
+console.log('\n🧭 6. Navigation Actions & Tabs:');
 assert(stylesCss.includes('.nav-actions') && stylesCss.includes('overflow-x: auto'), 'Navbar action buttons scroll smoothly on narrow mobile screens without wrapping');
+assert(stylesCss.includes('.nav-tabs') && stylesCss.includes('overflow-x: auto'), 'Navbar tabs scroll smoothly on mobile without blowing out body width');
+assert(stylesCss.includes('max-width: 100vw') && stylesCss.includes('overflow-x: hidden'), 'Body has strict 100vw max-width preventing horizontal page drift');
 
-// 7. Coach Vega Drawer Mobile Adaptation
-console.log('\n💬 7. Coach Vega Drawer:');
+// 7. Procam Slam & Fueling Grids Mobile Stacking
+console.log('\n🏅 7. Procam Slam & Fueling Responsive Grids:');
+assert(stylesCss.includes('.procam-cards-grid') && stylesCss.includes('@media (max-width: 900px)'), 'Procam Slam race cards collapse to single column on mobile');
+assert(stylesCss.includes('.fueling-summary-grid') && stylesCss.includes('@media (max-width: 800px)'), 'Fueling summary grid collapses to single column on mobile');
+assert(!indexHtml.includes('style="display: grid; grid-template-columns: repeat(3, 1fr)'), 'No hardcoded inline 3-column grids in index.html');
+
+// 8. Coach Vega Drawer Mobile Adaptation
+console.log('\n💬 8. Coach Vega Drawer:');
 assert(stylesCss.includes('.coach-drawer') && stylesCss.includes('100vw'), 'Coach drawer adapts to 100vw full screen on mobile devices');
 
 console.log('\n===============================================================');

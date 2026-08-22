@@ -58,7 +58,16 @@ async function fetchTomorrowWorkout(dateStr) {
         const rows = await res.json();
         if (rows && rows.length > 0) {
           console.log(`✅ [Audio Gen] Retrieved tomorrow's workout from Supabase:`, rows[0].workout_type);
-          return rows[0];
+          return {
+            workout_date: dateStr,
+            workout_type: rows[0].workout_type || rows[0].type,
+            distance_km: parseFloat(rows[0].distance_km || 0),
+            target_pace: rows[0].target_pace || '7:35 - 7:45 min/km',
+            description: rows[0].description || 'Follow prescribed aerobic pace.',
+            strength_prehab: rows[0].strength_prehab || 'Calf armor heel drops',
+            rpe_target: parseFloat(rows[0].rpe_target || rows[0].rpe || 3),
+            fueling_hydration_strategy: rows[0].fueling_hydration_strategy || rows[0].fueling
+          };
         }
       }
     } catch (e) {
@@ -66,46 +75,57 @@ async function fetchTomorrowWorkout(dateStr) {
     }
   }
 
+  // Primary Local Source: training_data.json
+  try {
+    const trainingDataPath = path.join(__dirname, '..', 'training_data.json');
+    if (fs.existsSync(trainingDataPath)) {
+      const raw = JSON.parse(fs.readFileSync(trainingDataPath, 'utf8'));
+      const weeks = raw.training_plan?.weeks || raw.weeks || [];
+      for (const w of weeks) {
+        for (const d of (w.days || [])) {
+          if (d.date === dateStr) {
+            console.log(`✅ [Audio Gen] Loaded from training_data.json for ${dateStr}: ${d.distance_km}km ${d.type}`);
+            return {
+              workout_date: dateStr,
+              workout_type: d.type,
+              distance_km: parseFloat(d.distance_km || 0),
+              target_pace: d.target_pace || '7:35 - 7:45 min/km',
+              description: d.description || 'Week 1 long run.',
+              strength_prehab: d.strength_prehab || 'Post-run calf flush',
+              rpe_target: parseFloat(d.rpe || 3),
+              fueling_hydration_strategy: d.fueling
+            };
+          }
+        }
+      }
+    }
+  } catch (e) {
+    console.warn(`⚠️ Could not parse training_data.json:`, e.message);
+  }
+
   // Fallback: Read app.js
   try {
     const appJsPath = path.join(__dirname, '..', 'app.js');
     if (fs.existsSync(appJsPath)) {
       const content = fs.readFileSync(appJsPath, 'utf8');
-      const dateIdx = content.indexOf(`date: '${dateStr}'`);
-      if (dateIdx !== -1) {
-        const chunk = content.slice(Math.max(0, dateIdx - 100), dateIdx + 500);
-        const typeMatch = chunk.match(/type:\s*'([^']+)'/);
-        const distMatch = chunk.match(/distance_km:\s*([0-9.]+)/);
-        const paceMatch = chunk.match(/target_pace:\s*'([^']+)'/);
-        const descMatch = chunk.match(/description:\s*'([^']+)'/);
-        const prehabMatch = chunk.match(/strength_prehab:\s*'([^']+)'/);
-        const rpeMatch = chunk.match(/rpe_target:\s*([0-9.]+)/);
-
+      const dateMatch = content.match(new RegExp(`"date":\\s*"${dateStr}"[\\s\\S]*?"type":\\s*"([^"]+)"[\\s\\S]*?"distance_km":\\s*([0-9.]+)[\\s\\S]*?"target_pace":\\s*"([^"]+)"[\\s\\S]*?"rpe":\\s*([0-9.]+)[\\s\\S]*?"description":\\s*"([^"]+)"`));
+      if (dateMatch) {
         return {
           workout_date: dateStr,
-          workout_type: typeMatch ? typeMatch[1] : 'Zone 2 Easy Aerobic Run',
-          distance_km: distMatch ? parseFloat(distMatch[1]) : 5.0,
-          target_pace: paceMatch ? paceMatch[1] : '7:20 - 7:35 min/km',
-          description: descMatch ? descMatch[1] : 'Follow prescribed aerobic pace.',
-          strength_prehab: prehabMatch ? prehabMatch[1] : 'Calf armor heel drops',
-          rpe_target: rpeMatch ? parseFloat(rpeMatch[1]) : 3
+          workout_type: dateMatch[1],
+          distance_km: parseFloat(dateMatch[2]),
+          target_pace: dateMatch[3],
+          rpe_target: parseFloat(dateMatch[4]),
+          description: dateMatch[5],
+          strength_prehab: 'Post-run calf flush'
         };
       }
     }
   } catch (e) {
-    console.warn(`⚠️ Could not parse local master plan:`, e.message);
+    console.warn(`⚠️ Could not parse app.js:`, e.message);
   }
 
-  // Default workout
-  return {
-    workout_date: dateStr,
-    workout_type: 'Zone 2 Easy Aerobic Run',
-    distance_km: 6.0,
-    target_pace: '7:20 - 7:35 min/km',
-    description: 'Conversational aerobic endurance building.',
-    strength_prehab: 'Calf armor heel drops (3x15)',
-    rpe_target: 3
-  };
+  throw new Error(`No workout found in training database for date: ${dateStr}`);
 }
 
 // 3. Fetch Tomorrow Morning Weather for Bangalore (or Mumbai)

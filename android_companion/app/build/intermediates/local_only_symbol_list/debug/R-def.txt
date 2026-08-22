@@ -8,6 +8,7 @@ color surface
 color warning
 id btnFastTest
 id btnStart
+id btnSundayTest
 id switchMetronome
 id tvStatus
 id tvTargetPace

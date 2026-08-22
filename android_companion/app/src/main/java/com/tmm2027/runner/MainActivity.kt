@@ -16,14 +16,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import java.io.File
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,9 +33,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvStatus: TextView
     private lateinit var btnStart: Button
     private lateinit var btnFastTest: Button
+    private lateinit var btnSundayTest: Button
     private lateinit var switchMetronome: Switch
 
     private var loadedManifestJson: String? = null
+    private var selectedDateStr: String = ""
 
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -66,6 +64,7 @@ class MainActivity : AppCompatActivity() {
         tvStatus = findViewById(R.id.tvStatus)
         btnStart = findViewById(R.id.btnStart)
         btnFastTest = findViewById(R.id.btnFastTest)
+        btnSundayTest = findViewById(R.id.btnSundayTest)
         switchMetronome = findViewById(R.id.switchMetronome)
 
         btnStart.setOnClickListener {
@@ -76,15 +75,21 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        btnSundayTest.setOnClickListener {
+            startSundayPreview()
+        }
+
         btnFastTest.setOnClickListener {
-            startFastTest()
+            startFastIntervalsTest()
         }
 
         switchMetronome.setOnCheckedChangeListener { _, isChecked ->
             workoutService?.toggleCadenceMetronome(isChecked, 170)
         }
 
-        loadWorkoutManifest()
+        // Auto-load tomorrow's run (or today's run)
+        selectedDateStr = PlanEngine.getTodayOrTomorrowDate(isTomorrow = true)
+        loadWorkoutForDate(selectedDateStr)
     }
 
     private fun checkAndRequestPermissions() {
@@ -104,32 +109,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadWorkoutManifest() {
-        // Look for local manifest file or fetch default
-        tvWorkoutTitle.text = "Loading Tomorrow's Workout..."
+    private fun loadWorkoutForDate(dateStr: String) {
+        tvWorkoutTitle.text = "Loading Workout for $dateStr..."
         
         CoroutineScope(Dispatchers.IO).launch {
-            // Default sample fallback
-            val fallbackJson = """
-            {
-                "workoutType": "Speed Intervals",
-                "distanceKm": 7.0,
-                "targetPace": "5:45 - 6:00 min/km",
-                "rpeTarget": 8,
-                "openingBriefing": {
-                    "title": "Speed Intervals (6x 1m hard / 30s rest)",
-                    "weatherAdvisory": "Morning temperature 21°C, 85% humidity. Take salt capsules on time."
-                }
-            }
-            """.trimIndent()
-            
-            loadedManifestJson = fallbackJson
+            val workout = PlanEngine.getWorkoutForDate(this@MainActivity, dateStr)
+            val manifestJson = PlanEngine.buildManifestJson(workout)
+            loadedManifestJson = manifestJson
 
             withContext(Dispatchers.Main) {
-                tvWorkoutTitle.text = "Speed Intervals • 7.0 km"
-                tvTargetPace.text = "🎯 Target: 5:45 - 6:00 min/km (RPE 8)"
-                tvWeatherAdvisory.text = "🌤️ Morning 21°C (85% humidity) • Salt Capsule @ 45m"
-                tvStatus.text = "Ready to start run. YouTube Music will duck automatically to 10%."
+                val prehabText = workout.strength_prehab ?: "Post-run calf armor flush"
+                tvWorkoutTitle.text = "${workout.type} • ${workout.distance_km} km"
+                tvTargetPace.text = "🎯 Target: ${workout.target_pace} (RPE ${workout.rpe}/10)"
+                tvWeatherAdvisory.text = "📅 ${workout.day}, $dateStr • ${prehabText}"
+                tvStatus.text = "Ready. Start YouTube Music, then tap 'START RUN'."
             }
         }
     }
@@ -144,7 +137,7 @@ class MainActivity : AppCompatActivity() {
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
 
         btnStart.postDelayed({
-            workoutService?.startWorkout(loadedManifestJson, false)
+            workoutService?.startWorkout(loadedManifestJson, "NONE")
             isWorkoutActive = true
             btnStart.text = "STOP WORKOUT"
             btnStart.setBackgroundColor(0xFFE11D48.toInt())
@@ -152,8 +145,27 @@ class MainActivity : AppCompatActivity() {
         }, 300)
     }
 
-    private fun startFastTest() {
-        Toast.makeText(this, "Starting 60s Fast Test. Play YouTube Music now!", Toast.LENGTH_LONG).show()
+    private fun startSundayPreview() {
+        Toast.makeText(this, "Starting Sunday 7km Preview with YouTube Music ducking!", Toast.LENGTH_LONG).show()
+        val intent = Intent(this, WorkoutAudioService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent)
+        } else {
+            startService(intent)
+        }
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+
+        btnSundayTest.postDelayed({
+            workoutService?.startWorkout(null, "SUNDAY_7KM")
+            isWorkoutActive = true
+            btnStart.text = "STOP AUDIO PREVIEW"
+            btnStart.setBackgroundColor(0xFFE11D48.toInt())
+            tvStatus.text = "🏃 Previewing Sunday 7km Long Run Cues (YouTube Music ducking active)"
+        }, 300)
+    }
+
+    private fun startFastIntervalsTest() {
+        Toast.makeText(this, "Starting 60s Interval Test. Play YouTube Music now!", Toast.LENGTH_LONG).show()
         val intent = Intent(this, WorkoutAudioService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(intent)
@@ -163,10 +175,11 @@ class MainActivity : AppCompatActivity() {
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
 
         btnFastTest.postDelayed({
-            workoutService?.startWorkout(null, true)
+            workoutService?.startWorkout(null, "FAST_INTERVALS")
             isWorkoutActive = true
-            btnStart.text = "STOP WORKOUT"
-            tvStatus.text = "⚡ 60-Sec Test Running: Watch YouTube Music duck to 10%!"
+            btnStart.text = "STOP TEST"
+            btnStart.setBackgroundColor(0xFFE11D48.toInt())
+            tvStatus.text = "⚡ 60-Sec Interval Test Running: Watch YouTube Music duck to 10%!"
         }, 300)
     }
 
@@ -177,7 +190,7 @@ class MainActivity : AppCompatActivity() {
             isBound = false
         }
         isWorkoutActive = false
-        btnStart.text = "START RUN"
+        btnStart.text = "START RUN (GPS + LIVE CUES)"
         btnStart.setBackgroundColor(0xFF10B981.toInt())
         tvStatus.text = "Workout Complete! Great job."
     }

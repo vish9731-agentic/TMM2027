@@ -5217,6 +5217,74 @@ function start60SecondAudioSimulator() {
   }, 1000);
 }
 
+function startSunday7kmAudioPreview() {
+  if (isAudioSimActive) stopAudioSimulator();
+
+  isAudioSimActive = true;
+  audioSimElapsed = 0;
+
+  const btnStart = document.getElementById('btn-audio-sim-start');
+  const btnStop = document.getElementById('btn-audio-sim-stop');
+  const subEl = document.getElementById('audio-live-subtitle');
+
+  if (btnStart) btnStart.style.display = 'none';
+  if (btnStop) btnStop.style.display = 'block';
+
+  startBackgroundMusic();
+  if (subEl) subEl.textContent = '🎵 YouTube Music playing at 100% volume... Previewing Sunday 7km Long Run Cues:';
+
+  audioSimInterval = setInterval(() => {
+    audioSimElapsed++;
+
+    // T = 2s: Opening Briefing
+    if (audioSimElapsed === 2) {
+      setMusicVolumeDucking(10);
+      speakWebVoice("Welcome to your Sunday Long Run! Today's session is 7 kilometers. Target pace is 7:35 to 7:45 min/km with an RPE of 3. Morning temperature is 20°C with 93% humidity.", () => {
+        setMusicVolumeDucking(100);
+      });
+    }
+
+    // T = 15s: Km 1 Split
+    if (audioSimElapsed === 15) {
+      setMusicVolumeDucking(10);
+      speakWebVoice("Kilometer 1 reached. Gently float into your rhythm. Do not start too fast.", () => {
+        setMusicVolumeDucking(100);
+      });
+    }
+
+    // T = 25s: 45-Min Fueling Alert
+    if (audioSimElapsed === 25) {
+      setMusicVolumeDucking(10);
+      speakWebVoice("45 minutes elapsed. Take 1 Salt Capsule now with 150 ml water to protect your calves from cramping.", () => {
+        setMusicVolumeDucking(100);
+      });
+    }
+
+    // T = 38s: Km 5 Posture & Cadence Check
+    if (audioSimElapsed === 38) {
+      setMusicVolumeDucking(10);
+      speakWebVoice("Kilometer 5 reached. Check your posture, relax your shoulders, and keep your cadence smooth.", () => {
+        setMusicVolumeDucking(100);
+      });
+    }
+
+    // T = 50s: Km 7 Finish Congratulations
+    if (audioSimElapsed === 50) {
+      setMusicVolumeDucking(10);
+      speakWebVoice("Workout complete! Fantastic work on completing today's 7km long run. Take 500 ml electrolyte water and perform your 10-minute calf and quad flush.", () => {
+        setMusicVolumeDucking(100);
+      });
+    }
+
+    // T = 62s: Complete
+    if (audioSimElapsed >= 62) {
+      stopAudioSimulator();
+      if (subEl) subEl.textContent = "🏆 Sunday 7km Long Run Audio Preview Complete! All cues verified.";
+    }
+
+  }, 1000);
+}
+
 function stopAudioSimulator() {
   isAudioSimActive = false;
   if (audioSimInterval) clearInterval(audioSimInterval);
@@ -5233,3 +5301,4 @@ function stopAudioSimulator() {
   if (btnStop) btnStop.style.display = 'none';
   if (countdownEl) countdownEl.style.display = 'none';
 }
+
