@@ -114,12 +114,25 @@ function buildEventPayload(wo, tomorrow) {
   const isRest = dist === 0;
   const targetPace = wo.target_pace || 'N/A';
   const type = wo.workout_type || wo.type || 'Workout';
-  
+  const rpe = wo.rpe_target || wo.rpe || (isRest ? 1 : 3);
+  const fuelingStrategy = wo.fueling_hydration_strategy || wo.fueling || (dist > 10 ? 'Water sips every 2 km + 1 Gel at km 7' : 'Water sips as needed');
+
   const [startHRaw, startMRaw] = DEFAULT_RUN_TIME.split(':').map(Number);
   const startH = isNaN(startHRaw) ? 6 : startHRaw;
   const startM = isNaN(startMRaw) ? 0 : startMRaw;
-  const durationMins = dist > 0 ? Math.max(30, Math.round(dist * 7.5 + 15)) : 45;
   
+  let durationMins = 45;
+  let estDurationStr = '25 – 35 mins';
+  if (dist > 0) {
+    const minMins = Math.round(dist * 7.1);
+    const maxMins = Math.round(dist * 7.8);
+    durationMins = Math.max(30, Math.round(dist * 7.5 + 15));
+    estDurationStr = `${minMins} – ${maxMins} mins`;
+  } else {
+    durationMins = 40;
+    estDurationStr = '30 – 45 mins';
+  }
+
   const pad = (n) => String(n).padStart(2, '0');
   const totalStartMins = startH * 60 + startM;
   const totalEndMins = totalStartMins + durationMins;
@@ -130,32 +143,90 @@ function buildEventPayload(wo, tomorrow) {
   const startDateTimeStr = `${tomorrow.dateStr}T${pad(startH)}:${pad(startM)}:00+05:30`;
   const endDateTimeStr = `${tomorrow.dateStr}T${endH}:${endM}:00+05:30`;
 
-  const summary = `🏃 TMM 2027: ${dist > 0 ? `${dist}km ` : ''}${type} (${targetPace !== 'N/A' ? targetPace : 'Rest & Prehab'})`;
+  // Event name: e.g. "7km Long Run (7:35 - 7:45 min/km)"
+  const summary = dist > 0 
+    ? `${dist}km ${type}${targetPace && targetPace !== 'N/A' ? ` (${targetPace})` : ''}`
+    : `${type}${targetPace && targetPace !== 'N/A' ? ` (${targetPace})` : ''}`;
+
+  // Stage progression splits
+  const splits = [];
+  if (dist > 0) {
+    if (dist <= 4.0) {
+      splits.push(`  • Km 1: 7:45–8:00 (Gentle Aerobic Warmup float)`);
+      if (dist > 1.0) splits.push(`  • Km 2–${dist}: ${targetPace} (Locked-in Zone 2 Cruise)`);
+    } else if (dist <= 8.0) {
+      splits.push(`  • Km 1: 7:45–8:00 (Gentle Aerobic Warmup float)`);
+      splits.push(`  • Km 2–${Math.floor(dist - 1)}: ${targetPace} (Endurance Cruise)`);
+      splits.push(`  • Km ${Math.floor(dist)}: ${targetPace} (Controlled Finish + Light Strides)`);
+    } else {
+      splits.push(`  • Km 1–2: 7:45–8:00 (Gradual Aerobic Warmup)`);
+      splits.push(`  • Km 3–${Math.floor(dist - 2)}: ${targetPace} (Steady Marathon Endurance)`);
+      splits.push(`  • Km ${Math.floor(dist - 1)}–${dist}: 7:06 min/km (Sub-5:00 Marathon Pace Rehearsal)`);
+    }
+  }
+
+  const prehabDrill = wo.strength_prehab && wo.strength_prehab !== 'N/A' 
+    ? wo.strength_prehab 
+    : 'Post-run eccentric heel drops on a step (3x15 straight leg + 3x15 bent knee) + foam rolling';
+
+  const descriptionLines = [];
   
-  const description = [
-    `🎯 TATA MUMBAI MARATHON 2027 — DAILY WORKOUT BLUEPRINT`,
-    `======================================================`,
-    `• Day & Date: ${tomorrow.dayOfWeek}, ${tomorrow.dateStr}`,
-    `• Session: ${type}`,
-    `• Target Volume: ${dist > 0 ? `${dist} km` : 'Active Recovery / Rest'}`,
-    `• Prescribed Pace: ${targetPace}`,
-    `• TMM Race Goal: 04:59:59 (7:06 min/km)`,
-    ``,
-    `📋 WORKOUT EXECUTION STRATEGY:`,
-    `${wo.description || 'Follow target aerobic heart rate.'}`,
-    ``,
-    `🦵 CALF & ACHILLES ARMOR PROTOCOL:`,
-    `• Pre-Run: 3-min Dynamic Ankle Mobility + Soleus Calve Rockers (2x15)`,
-    `• Post-Run: Eccentric Heel Drops on a step (3x15 straight leg + 3x15 bent knee)`,
-    `• Muscle Care: Foam roll calves, soleus & plantar fascia`,
-    ``,
-    `👟 GEAR & HYDRATION CHECKLIST:`,
-    `• Shoes: Adidas Adizero Evo SL 2`,
-    `• Pre-Run Fueling: 250ml water + pinch of Himalayan pink salt 30 mins before`,
-    `• Post-Run: 500ml electrolyte water + 20g protein`,
-    ``,
-    `✨ Automated nightly sync by TMM 2027 Training Engine.`
-  ].join('\n');
+  if (dist > 0) {
+    descriptionLines.push(
+      `0. ESTIMATED TIME & EXPECTED EFFORT:`,
+      `• Estimated Duration: ${estDurationStr}`,
+      `• Target Effort: RPE ${rpe}/10 (Aerobic Zone 2 / Controlled)`,
+      ``,
+      `1. PRE-RUN HYDRATION & FUELING:`,
+      `• Drink 250ml water with a pinch of Himalayan pink salt 30 mins before heading out.`,
+      dist >= 10 ? `• Optional: 1 banana or 1 slice of toast with honey 45 mins prior.` : `• Light stomach; hydrate steadily.`,
+      ``,
+      `2. PRE-RUN WARMUP PROTOCOL:`,
+      `• 3-min Dynamic Ankle Mobility & Soleus Calf Rockers (2x15 per leg).`,
+      `• Leg swings (front/back & lateral) + high-knee marching.`,
+      `• Start Km 1 as a gentle relaxed warmup float.`,
+      ``,
+      `3. RUNNING STRATEGY & IN-RUN FUELING (MASTER PLAN):`,
+      `• Session Objective: ${wo.description || 'Follow target aerobic heart rate.'}`,
+      `• Target Pacing: ${targetPace}`,
+      splits.length > 0 ? `• Stage Pacing Progression:\n${splits.join('\n')}` : ``,
+      `• In-Run Hydration & Electrolytes: ${fuelingStrategy}`,
+      ``,
+      `4. POST-RUN COOL-DOWN PROTOCOL:`,
+      `• 5-minute easy walking float to bring heart rate below 110 bpm.`,
+      `• Calf Armor Protocol: Eccentric Heel Drops on a step (3x15 straight leg + 3x15 bent knee for Soleus).`,
+      `• Prehab Focus: ${prehabDrill}`,
+      ``,
+      `5. POST-RUN HYDRATION & FUELING:`,
+      `• 500ml electrolyte water within 20 mins.`,
+      `• 20–25g protein + carbohydrates (meal or recovery shake) within 45 mins.`
+    );
+  } else {
+    descriptionLines.push(
+      `0. ESTIMATED TIME & EXPECTED EFFORT:`,
+      `• Estimated Duration: ${estDurationStr}`,
+      `• Target Effort: RPE ${rpe}/10 (Recovery / Mobility)`,
+      ``,
+      `1. HYDRATION & DAILY FUELING:`,
+      `• Drink 2.0–2.5L of water/fluids throughout the day.`,
+      `• Focus on anti-inflammatory nutrition and adequate protein intake.`,
+      ``,
+      `2. WARMUP & JOINT MOBILITY PROTOCOL:`,
+      `• 5-min gentle joint circles, hip openers, and ankle alphabets.`,
+      ``,
+      `3. STRATEGY (MASTER PLAN):`,
+      `• Objective: ${wo.description || 'Rest and muscle tissue recovery.'}`,
+      `• Hydration & Electrolytes: ${fuelingStrategy}`,
+      ``,
+      `4. PREHAB & RECOVERY PROTOCOL:`,
+      `• Protocol: ${prehabDrill}`,
+      ``,
+      `5. POST-WORKOUT RECOVERY:`,
+      `• Rest, elevate legs, and get 7–8 hours of quality sleep.`
+    );
+  }
+
+  const description = descriptionLines.filter(Boolean).join('\n');
 
   return {
     summary,
