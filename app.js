@@ -4651,21 +4651,92 @@ function getStoredPendingCoachQuery() {
   }
 }
 
+function updateCoachStatusDot() {
+  const dot = document.getElementById('coach-fab-status-dot');
+  const navPulse = document.querySelector('.coach-live-pulse');
+  const isOnline = Boolean(geminiApiKey && geminiApiKey.length > 5);
+  if (dot) {
+    dot.style.background = isOnline ? '#10b981' : '#f59e0b';
+    dot.title = isOnline ? 'Vega AI Online' : 'Vega Key Needed';
+  }
+  if (navPulse) {
+    navPulse.style.background = isOnline ? '#10b981' : '#f59e0b';
+  }
+}
+window.updateCoachStatusDot = updateCoachStatusDot;
+
+function getEffectiveApiKey() {
+  if (geminiApiKey && geminiApiKey.length > 5) return geminiApiKey;
+  const inputVal = document.getElementById('gemini-api-key-input')?.value?.trim();
+  if (inputVal && inputVal.length > 5) {
+    geminiApiKey = inputVal;
+    localStorage.setItem('tmm_gemini_api_key', inputVal);
+    updateCoachStatusDot();
+    return geminiApiKey;
+  }
+  const inlineVal = document.getElementById('inline-coach-key-input')?.value?.trim();
+  if (inlineVal && inlineVal.length > 5) {
+    geminiApiKey = inlineVal;
+    localStorage.setItem('tmm_gemini_api_key', inlineVal);
+    updateCoachStatusDot();
+    return geminiApiKey;
+  }
+  const stored = localStorage.getItem('tmm_gemini_api_key')?.trim();
+  if (stored && stored.length > 5) {
+    geminiApiKey = stored;
+    updateCoachStatusDot();
+    return geminiApiKey;
+  }
+  return '';
+}
+
+function handleCoachApiKeyInput(val) {
+  const cleanVal = (val || '').trim();
+  if (cleanVal.length > 5) {
+    geminiApiKey = cleanVal;
+    localStorage.setItem('tmm_gemini_api_key', cleanVal);
+    updateCoachStatusDot();
+    syncCoachSettingsToCloud(geminiApiKey, geminiModel, getActiveVegaIconId());
+  }
+}
+window.handleCoachApiKeyInput = handleCoachApiKeyInput;
+
+function closeCoachSettingsModal() {
+  const keyInput = document.getElementById('gemini-api-key-input');
+  if (keyInput && keyInput.value.trim().length > 5) {
+    geminiApiKey = keyInput.value.trim();
+    localStorage.setItem('tmm_gemini_api_key', geminiApiKey);
+    updateCoachStatusDot();
+    syncCoachSettingsToCloud(geminiApiKey, geminiModel, getActiveVegaIconId());
+  }
+  const modal = document.getElementById('ai-coach-settings-modal');
+  if (modal) modal.classList.remove('open');
+}
+
 // Test Connection strictly with chosen model
 async function testCoachApiConnection() {
-  const key = document.getElementById('gemini-api-key-input')?.value.trim();
+  const keyInput = document.getElementById('gemini-api-key-input');
+  const key = keyInput?.value?.trim() || geminiApiKey;
   const model = getActiveCoachModel();
   const statusEl = document.getElementById('coach-api-test-status');
 
-  if (!key) {
+  if (!key || key.length < 5) {
     if (statusEl) {
       statusEl.style.display = 'block';
       statusEl.style.background = 'rgba(239, 68, 68, 0.15)';
       statusEl.style.color = 'var(--accent-red)';
-      statusEl.textContent = '❌ Please enter an API key first.';
+      statusEl.textContent = '❌ Please enter a valid Gemini API key first.';
     }
     return;
   }
+
+  // AUTO-SAVE IMMEDIATELY on test so the key is never lost when closing the modal
+  geminiApiKey = key;
+  geminiModel = model;
+  localStorage.setItem('tmm_gemini_api_key', geminiApiKey);
+  localStorage.setItem('tmm_gemini_model', geminiModel);
+  updateCoachStatusDot();
+  syncCoachSettingsToCloud(geminiApiKey, geminiModel, getActiveVegaIconId());
 
   if (statusEl) {
     statusEl.style.display = 'block';
@@ -4684,7 +4755,7 @@ async function testCoachApiConnection() {
     if (statusEl) {
       statusEl.style.background = 'rgba(16, 185, 129, 0.15)';
       statusEl.style.color = 'var(--primary)';
-      statusEl.textContent = `✅ Connection successful! Coach Vega is ready strictly on ${model}.`;
+      statusEl.textContent = `✅ Connection successful! Key auto-saved & Coach Vega is active strictly on ${model}.`;
     }
   } else {
     if (statusEl) {
@@ -4719,7 +4790,9 @@ async function processCoachQuery(userText, attempt = 1) {
   currentPendingPrompt = userText;
   currentPendingAttempt = attempt;
 
-  if (!geminiApiKey) {
+  let effectiveKey = getEffectiveApiKey();
+
+  if (!effectiveKey) {
     // Try auto-fetching from Supabase cloud just-in-time
     if (supabaseClient) {
       try {
@@ -4730,6 +4803,7 @@ async function processCoachQuery(userText, attempt = 1) {
             geminiApiKey = cfg.gemini_api_key;
             localStorage.setItem('tmm_gemini_api_key', geminiApiKey);
             updateCoachStatusDot();
+            effectiveKey = geminiApiKey;
             console.log('⚡ Retrieved API key from Supabase cloud just-in-time');
           }
         }
@@ -4737,7 +4811,7 @@ async function processCoachQuery(userText, attempt = 1) {
     }
   }
 
-  if (!geminiApiKey) {
+  if (!effectiveKey) {
     localStorage.removeItem('tmm_coach_pending_query');
     hideCoachQueue();
     coachChatHistory.push({
