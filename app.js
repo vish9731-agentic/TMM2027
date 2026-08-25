@@ -2188,18 +2188,44 @@ let supabaseClient = null;
 
 try {
   const urlParams = new URLSearchParams(window.location.search);
-  const qUrl = urlParams.get('supabase_url') || urlParams.get('sb_url');
-  const qKey = urlParams.get('supabase_key') || urlParams.get('sb_key');
+  let hashKey = '';
+  let hashSbUrl = '';
+  let hashSbKey = '';
+  if (window.location.hash) {
+    const hashStr = window.location.hash.startsWith('#') ? window.location.hash.substring(1) : window.location.hash;
+    const hashParams = new URLSearchParams(hashStr);
+    hashKey = hashParams.get('gk') || hashParams.get('gemini_key') || hashParams.get('key') || '';
+    hashSbUrl = hashParams.get('sb_url') || hashParams.get('supabase_url') || '';
+    hashSbKey = hashParams.get('sb_key') || hashParams.get('supabase_key') || '';
+  }
+
+  const qUrl = urlParams.get('supabase_url') || urlParams.get('sb_url') || hashSbUrl;
+  const qKey = urlParams.get('supabase_key') || urlParams.get('sb_key') || hashSbKey;
   if (qUrl && qKey) {
     supabaseUrl = qUrl.startsWith('http') ? qUrl : `https://${qUrl}.supabase.co`;
     supabaseAnonKey = qKey;
     localStorage.setItem('tmm_supabase_url', supabaseUrl);
     localStorage.setItem('tmm_supabase_key', supabaseAnonKey);
-    if (window.history && window.history.replaceState) {
-      window.history.replaceState({}, document.title, window.location.pathname);
+    console.log('☁️ Supabase credentials synced from URL parameter');
+  }
+
+  const qGeminiKey = urlParams.get('gemini_key') || urlParams.get('gk') || urlParams.get('key') || hashKey;
+  if (qGeminiKey) {
+    const cleanKey = decodeURIComponent(qGeminiKey).trim();
+    if (cleanKey) {
+      geminiApiKey = cleanKey;
+      localStorage.setItem('tmm_gemini_api_key', cleanKey);
+      console.log('🔑 Gemini API Key successfully synced from mobile link');
     }
   }
-} catch (e) {}
+
+  // Clean URL query and hash params without refreshing to keep address bar clean & secure
+  if ((qUrl || qKey || qGeminiKey) && window.history && window.history.replaceState) {
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+} catch (e) {
+  console.warn('URL sync param handling error:', e);
+}
 
 // Initialize App on DOM Load
 document.addEventListener('DOMContentLoaded', () => {
@@ -2224,6 +2250,15 @@ document.addEventListener('DOMContentLoaded', () => {
   updateCoachStatusDot();
   pruneCoachChatHistory();
   checkAndResumePendingCoachQuery();
+
+  // Register PWA Service Worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(err => {
+        console.log('SW registration notice:', err);
+      });
+    });
+  }
 });
 
 // Also trigger immediate icon sync if DOM is already parsed
@@ -3488,6 +3523,32 @@ async function initSupabase(url, key) {
       });
 
       workoutRows.forEach(row => {
+        // Intercept dedicated Cloud App Config row (id = 9999) for cross-device synchronization
+        if (row.id === 9999 || row.workout_type === 'AppSyncConfig') {
+          try {
+            const config = JSON.parse(row.description);
+            if (config && config.gemini_api_key && (!geminiApiKey || geminiApiKey.length < 5)) {
+              geminiApiKey = config.gemini_api_key;
+              localStorage.setItem('tmm_gemini_api_key', geminiApiKey);
+              console.log('☁️ Auto-synced Gemini API key from Supabase cloud');
+              updateCoachStatusDot();
+              const keyInput = document.getElementById('gemini-api-key-input');
+              if (keyInput) keyInput.value = geminiApiKey;
+            }
+            if (config && config.model && !localStorage.getItem('tmm_gemini_model')) {
+              geminiModel = config.model;
+              localStorage.setItem('tmm_gemini_model', geminiModel);
+            }
+            if (config && config.vega_icon_id && !localStorage.getItem('tmm_vega_icon_id')) {
+              localStorage.setItem('tmm_vega_icon_id', config.vega_icon_id.toString());
+              updateVegaIconEverywhere();
+            }
+          } catch (e) {
+            console.warn('Could not parse cloud sync config:', e);
+          }
+          return; // Do NOT process or display config row as a training workout
+        }
+
         const wNum = row.week_number;
         if (weeksMap[wNum]) {
           weeksMap[wNum].workouts.push({
@@ -4298,6 +4359,131 @@ function closeCoachSettingsModal() {
   if (modal) modal.classList.remove('open');
 }
 
+async function syncCoachSettingsToCloud(apiKey, model, iconId) {
+  if (!supabaseClient) return;
+  try {
+    const payload = {
+      id: 9999,
+      week_number: 22,
+      day_of_week: 'SyncConfig',
+      workout_date: '2099-12-31',
+      workout_type: 'AppSyncConfig',
+      distance_km: 0,
+      description: JSON.stringify({
+        gemini_api_key: apiKey || geminiApiKey,
+        model: model || geminiModel,
+        vega_icon_id: iconId || getActiveVegaIconId(),
+        updated_at: new Date().toISOString()
+      })
+    };
+    await supabaseClient.from('daily_workouts').upsert(payload);
+    console.log('☁️ Synced Coach Vega settings to Supabase cloud');
+  } catch (e) {
+    console.warn('Could not sync coach settings to Supabase:', e);
+  }
+}
+
+function getMobileSyncUrl() {
+  const currentKey = (geminiApiKey || document.getElementById('gemini-api-key-input')?.value || '').trim();
+  const baseUrl = 'https://vish9731-agentic.github.io/TMM2027/';
+  if (!currentKey) return baseUrl;
+  return `${baseUrl}#gk=${encodeURIComponent(currentKey)}`;
+}
+
+function copyMobileSyncLink() {
+  const currentKey = (geminiApiKey || document.getElementById('gemini-api-key-input')?.value || '').trim();
+  if (!currentKey) {
+    alert('Please enter and save your Gemini API key first before copying your mobile sync link.');
+    return;
+  }
+  const url = getMobileSyncUrl();
+  navigator.clipboard.writeText(url).then(() => {
+    alert('📋 Direct Mobile Sync Link copied to clipboard!\n\nPaste or send this link to your phone (via WhatsApp, Notes, Email, etc.) to immediately authenticate Vega with zero typing.');
+  }).catch(() => {
+    prompt('Copy this mobile sync link:', url);
+  });
+}
+
+function generateMobileSyncQR() {
+  const currentKey = (geminiApiKey || document.getElementById('gemini-api-key-input')?.value || '').trim();
+  if (!currentKey) {
+    alert('Please enter and save your Gemini API key first to generate a mobile sync QR code.');
+    return;
+  }
+  const container = document.getElementById('mobile-sync-qr-container');
+  const imgDiv = document.getElementById('mobile-sync-qr-img');
+  if (!container || !imgDiv) return;
+  
+  const url = getMobileSyncUrl();
+  container.style.display = 'block';
+  imgDiv.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(url)}&bgcolor=15-23-42&color=255-204-0" alt="Mobile Sync QR Code" style="width: 160px; height: 160px; border-radius: 8px; border: 2px solid rgba(255,204,0,0.4);">`;
+}
+
+async function saveInlineCoachApiKey() {
+  const input = document.getElementById('inline-coach-key-input');
+  if (!input || !input.value.trim()) {
+    alert('Please paste your Gemini API key.');
+    return;
+  }
+  const key = input.value.trim();
+  geminiApiKey = key;
+  localStorage.setItem('tmm_gemini_api_key', key);
+  updateCoachStatusDot();
+  await syncCoachSettingsToCloud(geminiApiKey, geminiModel, getActiveVegaIconId());
+  
+  if (currentPendingPrompt) {
+    processCoachQuery(currentPendingPrompt, 1);
+  } else {
+    coachChatHistory.push({
+      role: 'bot',
+      content: `🎉 **Vega Activated Successfully!**\n\nYour API key is saved and synced across all your devices via cloud. How can I assist your marathon training today?`,
+      timestamp: new Date().toISOString()
+    });
+    renderCoachMessages();
+  }
+}
+
+async function fetchCoachKeyFromCloud() {
+  if (!supabaseClient) {
+    alert('Connecting to Supabase cloud... please wait 2 seconds and try again or paste your key below.');
+    return;
+  }
+  const btn = event?.target;
+  const origText = btn ? btn.innerHTML : '';
+  if (btn) btn.innerHTML = '⏳ Fetching from cloud...';
+  try {
+    const { data, error } = await supabaseClient.from('daily_workouts').select('description').eq('id', 9999).maybeSingle();
+    if (data && data.description) {
+      const cfg = JSON.parse(data.description);
+      if (cfg && cfg.gemini_api_key) {
+        geminiApiKey = cfg.gemini_api_key;
+        localStorage.setItem('tmm_gemini_api_key', geminiApiKey);
+        if (cfg.model) {
+          geminiModel = cfg.model;
+          localStorage.setItem('tmm_gemini_model', geminiModel);
+        }
+        updateCoachStatusDot();
+        if (currentPendingPrompt) {
+          processCoachQuery(currentPendingPrompt, 1);
+        } else {
+          coachChatHistory.push({
+            role: 'bot',
+            content: `☁️ **Cloud Key Found & Synced!**\n\nVega is now active with model **${geminiModel}**. Ask me anything about your training plan or injuries!`,
+            timestamp: new Date().toISOString()
+          });
+          renderCoachMessages();
+        }
+        return;
+      }
+    }
+    alert('No key was found in cloud sync yet. Please paste your key once on this screen (or save it on desktop) and it will automatically sync forever!');
+  } catch (e) {
+    alert('Cloud sync query: ' + e.message);
+  } finally {
+    if (btn) btn.innerHTML = origText || '☁️ Fetch from Desktop Cloud Sync';
+  }
+}
+
 function saveCoachApiSettings() {
   const keyInput = document.getElementById('gemini-api-key-input');
   const modelSelect = document.getElementById('gemini-model-select');
@@ -4318,9 +4504,18 @@ function saveCoachApiSettings() {
   }
 
   updateCoachStatusDot();
+  syncCoachSettingsToCloud(geminiApiKey, geminiModel, getActiveVegaIconId());
   closeCoachSettingsModal();
-  alert(`Coach Vega settings saved successfully!\nModel: ${geminiModel}`);
+  alert(`Coach Vega settings saved successfully!\nModel: ${geminiModel}\nCloud Sync: Active across all your devices.`);
 }
+
+window.saveCoachApiSettings = saveCoachApiSettings;
+window.syncCoachSettingsToCloud = syncCoachSettingsToCloud;
+window.getMobileSyncUrl = getMobileSyncUrl;
+window.copyMobileSyncLink = copyMobileSyncLink;
+window.generateMobileSyncQR = generateMobileSyncQR;
+window.saveInlineCoachApiKey = saveInlineCoachApiKey;
+window.fetchCoachKeyFromCloud = fetchCoachKeyFromCloud;
 
 // Clean & Prune Chat History older than 48 hours (2 days)
 function pruneCoachChatHistory() {
@@ -4525,11 +4720,30 @@ async function processCoachQuery(userText, attempt = 1) {
   currentPendingAttempt = attempt;
 
   if (!geminiApiKey) {
+    // Try auto-fetching from Supabase cloud just-in-time
+    if (supabaseClient) {
+      try {
+        const { data: configData } = await supabaseClient.from('daily_workouts').select('description').eq('id', 9999).maybeSingle();
+        if (configData && configData.description) {
+          const cfg = JSON.parse(configData.description);
+          if (cfg && cfg.gemini_api_key) {
+            geminiApiKey = cfg.gemini_api_key;
+            localStorage.setItem('tmm_gemini_api_key', geminiApiKey);
+            updateCoachStatusDot();
+            console.log('⚡ Retrieved API key from Supabase cloud just-in-time');
+          }
+        }
+      } catch (e) {}
+    }
+  }
+
+  if (!geminiApiKey) {
     localStorage.removeItem('tmm_coach_pending_query');
     hideCoachQueue();
     coachChatHistory.push({
       role: 'bot',
-      content: `👋 **Welcome! I'm Coach Vega.** 🏃‍♀️\n\nTo activate my real-time diagnostic AI engine, please click **⚙️ Settings** at the top right of this drawer and enter your free **Google AI Studio / Gemini API Key**.\n\nOnce connected, I will have full live intelligence to diagnose your running mechanics, calf strain, pacing variances, and can adjust a single day, an entire week, or a full month of your plan!`,
+      content: `👋 **Welcome! I'm Coach Vega.** 🏃‍♀️\n\nTo activate real-time marathon coaching & workout adjustments on this device, click **☁️ Fetch from Desktop Cloud Sync** below (or paste your free Google Gemini API key):`,
+      showKeyInput: true,
       timestamp: new Date().toISOString()
     });
     pruneCoachChatHistory();
@@ -4670,12 +4884,37 @@ function renderCoachMessages() {
 
   const currentIconSvg = getVegaIconSvg(18);
 
+  const renderKeyActivatorSnippet = () => `
+    <div class="coach-key-activator-box" style="margin-top: 0.85rem; background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 183, 3, 0.35); border-radius: 10px; padding: 0.85rem;">
+      <div style="font-size: 0.82rem; font-weight: 800; color: #ffb703; margin-bottom: 0.4rem; display: flex; align-items: center; justify-content: space-between;">
+        <span>⚡ Instant Mobile Activation</span>
+        <span style="font-size: 0.68rem; font-weight: 600; color: #94a3b8;">Zero-Typing Cloud Sync</span>
+      </div>
+      <div style="font-size: 0.76rem; color: #cbd5e1; line-height: 1.4; margin-bottom: 0.65rem;">
+        Click below to auto-fetch your key from desktop cloud sync, or paste your free Google Gemini key:
+      </div>
+      <button type="button" onclick="fetchCoachKeyFromCloud()" style="width: 100%; margin-bottom: 0.6rem; background: rgba(99, 102, 241, 0.25); border: 1px solid rgba(99, 102, 241, 0.5); color: #a5b4fc; font-weight: 700; font-size: 0.76rem; padding: 0.5rem; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.4rem;">
+        ☁️ Fetch from Desktop Cloud Sync
+      </button>
+      <div style="display: flex; gap: 0.4rem;">
+        <input type="password" id="inline-coach-key-input" placeholder="Or paste AIzaSy... key here" style="flex: 1; font-size: 0.78rem; padding: 0.45rem 0.6rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.5); color: #fff; font-family: monospace;">
+        <button type="button" onclick="saveInlineCoachApiKey()" style="background: #ffcc00; color: #000; font-weight: 800; font-size: 0.75rem; padding: 0.45rem 0.85rem; border: none; border-radius: 6px; cursor: pointer; white-space: nowrap;">
+          Activate
+        </button>
+      </div>
+      <div style="margin-top: 0.5rem; font-size: 0.7rem; color: var(--text-dim); text-align: right;">
+        <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color: var(--primary); text-decoration: underline;">Get free Gemini API key ↗</a>
+      </div>
+    </div>
+  `;
+
   if (coachChatHistory.length === 0) {
+    const welcomeKeyBox = !geminiApiKey ? renderKeyActivatorSnippet() : '';
     container.innerHTML = `
       <div class="coach-msg bot">
         <div class="coach-msg-avatar">${currentIconSvg}</div>
         <div class="coach-msg-bubble">
-          <p><strong>Hi! I'm Vega.</strong> 👋</p>
+          <p><strong>Hi! I'm Coach Vega.</strong> 👋</p>
           <p style="margin-top: 0.4rem;">
             I'm your personal marathon coach and recovery specialist for the <strong>Tata Mumbai Marathon 2027</strong>.
           </p>
@@ -4683,6 +4922,7 @@ function renderCoachMessages() {
             I have full live visibility into your 22-week plan, your recent Strava runs, and your training variance. 
             If your calves feel tight, you miss a workout, or you want to deload an entire week or month, just tell me! I will investigate what happened and suggest tailored plan changes.
           </p>
+          ${welcomeKeyBox}
         </div>
       </div>
     `;
@@ -4713,12 +4953,15 @@ function renderCoachMessages() {
       .replace(/\n\n/g, '</p><p>')
       .replace(/\n/g, '<br>');
 
+    const inlineKeyBox = (isBot && msg.showKeyInput && !geminiApiKey) ? renderKeyActivatorSnippet() : '';
+
     html += `
       <div class="coach-msg ${isBot ? 'bot' : 'user'}">
         <div class="coach-msg-avatar">${isBot ? currentIconSvg : '🏃'}</div>
         <div class="coach-msg-bubble">
           <p>${formattedText}</p>
           ${planProposalHtml}
+          ${inlineKeyBox}
         </div>
       </div>
     `;

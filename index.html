@@ -2,9 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>22-Week Marathon Training Master Plan | Tata Mumbai Marathon 2027</title>
   <meta name="description" content="A periodized 22-week marathon training plan tailored for a sub-5:00:00 finish at the Tata Mumbai Marathon 2027 with calf cramp elimination protocols and 3-day strength training.">
+  
+  <!-- PWA & Native Mobile Web App Meta -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#090e17">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="TMM 2027">
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="apple-touch-icon" href="icons/icon.svg">
+
   <link rel="stylesheet" href="styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1061,6 +1072,31 @@
         </div>
       </div>
 
+      <!-- Instant Mobile Sync Card -->
+      <div style="background: linear-gradient(135deg, rgba(255, 140, 0, 0.08), rgba(245, 158, 11, 0.08)); border: 1px solid rgba(255, 140, 0, 0.3); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.35rem;">
+          <div style="font-size: 0.85rem; font-weight: 800; color: #ffb703;">📲 Instant Mobile Sync (QR &amp; Link)</div>
+          <span style="font-size: 0.68rem; font-weight: 700; background: rgba(255, 183, 3, 0.2); color: #ffb703; padding: 0.15rem 0.45rem; border-radius: 4px;">Zero-Typing</span>
+        </div>
+        <div style="font-size: 0.76rem; color: var(--text-dim); line-height: 1.4; margin-bottom: 0.65rem;">
+          Open the app on your phone without re-entering your API key. Scan the QR code or copy the 1-click auto-login link.
+        </div>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button type="button" onclick="generateMobileSyncQR()" style="flex: 1; min-width: 130px; background: #ffcc00; color: #000; font-weight: 800; font-size: 0.75rem; padding: 0.45rem 0.75rem; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.35rem;">
+            📷 Show QR Code
+          </button>
+          <button type="button" onclick="copyMobileSyncLink()" style="flex: 1; min-width: 130px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18); color: #fff; font-weight: 700; font-size: 0.75rem; padding: 0.45rem 0.75rem; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.35rem;">
+            📋 Copy Mobile Link
+          </button>
+        </div>
+        <div id="mobile-sync-qr-container" style="display: none; text-align: center; margin-top: 0.85rem; padding: 0.75rem; background: rgba(0,0,0,0.5); border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+          <div id="mobile-sync-qr-img" style="margin: 0 auto; display: flex; justify-content: center;"></div>
+          <div style="font-size: 0.72rem; color: #cbd5e1; margin-top: 0.5rem;">
+            📱 Scan with your phone's camera to immediately authenticate Vega!
+          </div>
+        </div>
+      </div>
+
       <div id="coach-api-test-status" style="display: none; padding: 0.65rem 0.85rem; border-radius: var(--radius-sm); font-size: 0.8rem; margin-bottom: 1rem;"></div>
 
       <!-- Google Calendar Sync Settings -->
@@ -1362,6 +1398,6 @@
     <p style="margin-top: 0.3rem;">Kickoff: Monday, August 17, 2026 • Race Day: Sunday, January 17, 2027</p>
   </footer>
 
-  <script src="app.js?v=3.7.6"></script>
+  <script src="app.js?v=3.7.7"></script>
 </body>
 </html>
