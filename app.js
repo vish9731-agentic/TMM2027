@@ -2219,8 +2219,40 @@ try {
     }
   }
 
+  const qGhToken = urlParams.get('github_token') || urlParams.get('gh') || urlParams.get('pat');
+  if (qGhToken) {
+    const cleanGh = decodeURIComponent(qGhToken).trim();
+    if (cleanGh) {
+      githubToken = cleanGh;
+      localStorage.setItem('tmm_github_pat', cleanGh);
+      console.log('⚡ GitHub PAT successfully synced from transfer link');
+    }
+  }
+
+  const syncPayload = urlParams.get('sync_payload') || urlParams.get('sync');
+  if (syncPayload) {
+    try {
+      const decoded = JSON.parse(decodeURIComponent(atob(syncPayload)));
+      if (decoded.githubToken) {
+        githubToken = decoded.githubToken;
+        localStorage.setItem('tmm_github_pat', decoded.githubToken);
+      }
+      if (decoded.geminiKey) {
+        geminiApiKey = decoded.geminiKey;
+        localStorage.setItem('tmm_gemini_api_key', decoded.geminiKey);
+      }
+      if (decoded.vegaIcon) {
+        localStorage.setItem('tmm_vega_icon_concept', decoded.vegaIcon);
+      }
+      if (decoded.gcalTime) {
+        localStorage.setItem('tmm_gcal_run_time', decoded.gcalTime);
+      }
+      console.log('📱 All device tokens and preferences synced successfully!');
+    } catch (err) {}
+  }
+
   // Clean URL query and hash params without refreshing to keep address bar clean & secure
-  if ((qUrl || qKey || qGeminiKey) && window.history && window.history.replaceState) {
+  if ((qUrl || qKey || qGeminiKey || qGhToken || syncPayload) && window.history && window.history.replaceState) {
     window.history.replaceState({}, document.title, window.location.pathname);
   }
 } catch (e) {
@@ -6055,10 +6087,36 @@ async function triggerStravaSyncWorkflow(isSilent = false) {
   }
 }
 
+function generateDeviceSyncLink() {
+  const payload = {
+    githubToken: localStorage.getItem('tmm_github_pat') || '',
+    geminiKey: localStorage.getItem('tmm_gemini_api_key') || '',
+    vegaIcon: localStorage.getItem('tmm_vega_icon_concept') || 'sunset_runner',
+    gcalTime: localStorage.getItem('tmm_gcal_run_time') || '06:00'
+  };
+  const b64 = btoa(encodeURIComponent(JSON.stringify(payload)));
+  return `${window.location.origin}${window.location.pathname}?sync_payload=${b64}`;
+}
+
+function copyDeviceSyncLink() {
+  const link = generateDeviceSyncLink();
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(link).then(() => {
+      showToastNotification('📋 1-Click Phone Sync Link copied to clipboard! Send to your phone via WhatsApp/Message.', 'success', 6000);
+    }).catch(() => {
+      prompt('Copy this 1-Click Phone Sync Link and open it on your phone:', link);
+    });
+  } else {
+    prompt('Copy this 1-Click Phone Sync Link and open it on your phone:', link);
+  }
+}
+
 window.openGitHubTokenModal = openGitHubTokenModal;
 window.closeGitHubTokenModal = closeGitHubTokenModal;
 window.saveAndTriggerStravaSync = saveAndTriggerStravaSync;
 window.disconnectGitHubToken = disconnectGitHubToken;
 window.triggerStravaSyncWorkflow = triggerStravaSyncWorkflow;
 window.showToastNotification = showToastNotification;
+window.generateDeviceSyncLink = generateDeviceSyncLink;
+window.copyDeviceSyncLink = copyDeviceSyncLink;
 
