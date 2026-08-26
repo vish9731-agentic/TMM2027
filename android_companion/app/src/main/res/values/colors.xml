@@ -1,8 +1,27 @@
 <resources>
-    <color name="primary">#10B981</color>
-    <color name="primary_variant">#059669</color>
-    <color name="background">#0A0F1D</color>
-    <color name="surface">#131C31</color>
-    <color name="accent">#38BDF8</color>
-    <color name="warning">#F59E0B</color>
+    <!-- Canvas / Background: Full Clean White -->
+    <color name="swiss_canvas">#FFFFFF</color>
+    <color name="background">#FFFFFF</color>
+
+    <!-- Subtle Rustic Parchment Flavour (Warm Artisan Hint) -->
+    <color name="swiss_card_rustic_yellow">#FAF8F3</color>
+    <color name="swiss_input_rustic_yellow">#F2EFE6</color>
+    <color name="swiss_pill_rustic_yellow">#EAE6DA</color>
+    <color name="surface">#FAF8F3</color>
+
+    <!-- Typography & Accents -->
+    <color name="swiss_white">#FFFFFF</color>
+    <color name="swiss_black">#111111</color>
+    <color name="swiss_orange">#F95700</color>
+    <color name="swiss_gray_light">#F4F4F6</color>
+    <color name="swiss_text_muted">#6B7280</color>
+    <color name="swiss_border">#111111</color>
+    <color name="swiss_divider">#EBE8DC</color>
+    <color name="swiss_emerald">#10B981</color>
+    <color name="swiss_crimson">#E11D48</color>
+
+    <color name="primary">#F95700</color>
+    <color name="primary_variant">#E04E00</color>
+    <color name="accent">#F95700</color>
+    <color name="warning">#F95700</color>
 </resources>

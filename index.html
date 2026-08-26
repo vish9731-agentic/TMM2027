@@ -22,8 +22,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
   <!-- Supabase JS Client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-</head>
 <body>
+  <!-- Sam Kolder Animated 35mm Film Grain Overlay -->
+  <div class="kold-grain-overlay"></div>
 
   <!-- Top Navigation Header -->
   <header class="navbar">
@@ -72,6 +73,11 @@
           <span id="supabase-status-indicator">⚡</span>
           <span id="supabase-status-label">Connect Supabase</span>
         </button>
+
+        <!-- Live Phone Simulator Button -->
+        <a href="simulator.html" target="_blank" class="btn-icon" style="border-color: rgba(229, 169, 60, 0.45); background: linear-gradient(135deg, rgba(229, 169, 60, 0.15), rgba(197, 139, 36, 0.15)); color: #E5A93C; font-weight: 800; text-decoration: none;">
+          <span>📱 Live Phone Emulator</span>
+        </a>
 
         <!-- Audio Companion Button -->
         <button class="btn-icon" id="btn-audio-companion-nav" onclick="openAudioCompanionModal()" style="border-color: rgba(56, 189, 248, 0.45); background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(14, 165, 233, 0.15)); color: #38bdf8; font-weight: 800;">
@@ -1177,28 +1183,64 @@
         <div style="display: flex; align-items: center; gap: 0.75rem;">
           <div style="font-size: 1.8rem; background: rgba(56, 189, 248, 0.15); padding: 0.4rem 0.6rem; border-radius: 12px; border: 1px solid rgba(56, 189, 248, 0.3);">🎧</div>
           <div>
-            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 900; color: #fff; display: flex; align-items: center; gap: 0.5rem;">
-              TMM 2027 Audio Coach &amp; Ducking Engine
-              <span style="font-size: 0.65rem; background: #10b981; color: #000; font-weight: 800; padding: 0.15rem 0.5rem; border-radius: 999px;">READY</span>
+            <div style="font-size: 0.72rem; font-weight: 800; color: #e5a93c; letter-spacing: 0.2em; text-transform: uppercase;">
+              T M M  2 0 2 7
+            </div>
+            <h3 style="margin: 0.2rem 0; font-size: 1.25rem; font-weight: 900; color: #fff; display: flex; align-items: center; gap: 0.5rem;">
+              Cinematic Audio Coach &amp; Precision GPS
+              <span style="font-size: 0.65rem; background: #e5a93c; color: #000; font-weight: 800; padding: 0.15rem 0.5rem; border-radius: 999px;">WEEK 1</span>
             </h3>
-            <div style="font-size: 0.78rem; color: #38bdf8; font-weight: 600;">Automated 8:00 PM Pre-Generation • 10% YouTube Music Ducking • 5-4-3-2-1 Countdowns</div>
+            <div style="font-size: 0.78rem; color: #94a3b8;">10% YouTube Music Ducking • Dynamic Auto-Cadence • Strava-Grade GPS</div>
           </div>
         </div>
       </div>
 
+      <!-- Current Week Monday-to-Sunday Selector -->
+      <div style="background: #0d0d14; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 0.85rem 1rem; margin-bottom: 1rem;">
+        <div style="font-size: 0.72rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem;">
+          📅 Select Run From Current Week (Mon – Sun)
+        </div>
+        <select id="audio-week-workout-select" class="kold-select" onchange="onWebWeekRunSelected(this.value)">
+          <option value="2026-08-23" selected>Sunday, Aug 23: Long Run • 7.0 km (Pace 7:35 - 7:45)</option>
+          <option value="2026-08-17">Monday, Aug 17: Kickoff Easy Run • 5.0 km (Pace 7:20 - 7:35)</option>
+          <option value="2026-08-18">Tuesday, Aug 18: Strength &amp; Calf Prehab (Lower Body)</option>
+          <option value="2026-08-19">Wednesday, Aug 19: Aerobic Base Run • 5.0 km (Pace 7:20 - 7:35)</option>
+          <option value="2026-08-20">Thursday, Aug 20: Scheduled Rest &amp; Glycogen Recovery</option>
+          <option value="2026-08-21">Friday, Aug 21: Speed Intervals • 6.0 km (6x 1-Min at 5:45)</option>
+          <option value="2026-08-22">Saturday, Aug 22: Rest &amp; Foam Rolling Prep</option>
+        </select>
+      </div>
+
+      <!-- Cadence Selector (Auto-Pace Governor) -->
+      <div style="background: #0d0d14; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 0.85rem 1rem; margin-bottom: 1rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+          <div style="font-size: 0.72rem; font-weight: 800; color: #38bdf8; text-transform: uppercase; letter-spacing: 0.08em;">
+            🥁 Cadence Metronome Mode
+          </div>
+          <span style="font-size: 0.72rem; color: #e5a93c; font-weight: 800;">AUTO SYNC (170 SPM)</span>
+        </div>
+        <select id="audio-cadence-select" class="kold-select">
+          <option value="AUTO" selected>⚡ Auto-Pace Sync (Smart Governor — shifts BPM based on live pace)</option>
+          <option value="165">🥁 165 SPM (Easy Aerobic Base)</option>
+          <option value="168">🥁 168 SPM (Marathon Steady Cruising)</option>
+          <option value="170">🥁 170 SPM (Optimal Efficiency)</option>
+          <option value="172">🥁 172 SPM (Threshold Pace)</option>
+          <option value="175">🥁 175 SPM (Interval Drive)</option>
+          <option value="180">🥁 180 SPM (Speed Sprint)</option>
+          <option value="OFF">❌ Metronome Off</option>
+        </select>
+      </div>
+
       <!-- Workout Briefing Banner -->
-      <div id="audio-workout-briefing-card" style="background: rgba(19, 28, 49, 0.7); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 10px; padding: 1rem; margin-bottom: 1rem;">
+      <div id="audio-workout-briefing-card" style="background: rgba(14, 18, 30, 0.9); border: 1px solid rgba(229, 169, 60, 0.25); border-radius: 10px; padding: 1rem; margin-bottom: 1rem;">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
           <div>
-            <div id="audio-modal-workout-type" style="font-size: 1.1rem; font-weight: 800; color: #fff;">Speed Intervals • 7.0 km</div>
-            <div id="audio-modal-pace-target" style="font-size: 0.85rem; color: #f59e0b; font-weight: 700; margin-top: 0.2rem;">🎯 Target Pace: 5:45 – 6:00 min/km (RPE 8)</div>
+            <div id="audio-modal-workout-type" style="font-size: 1.15rem; font-weight: 800; color: #fff;">Long Run • 7.0 km</div>
+            <div id="audio-modal-pace-target" style="font-size: 0.85rem; color: #e5a93c; font-weight: 700; margin-top: 0.2rem;">🎯 Target Pace: 7:35 – 7:45 min/km (RPE 3/10)</div>
           </div>
-          <button class="btn-icon" onclick="regenerateAudioManifest()" style="font-size: 0.72rem; padding: 0.3rem 0.7rem; background: rgba(56,189,248,0.1); border-color: rgba(56,189,248,0.3); color: #38bdf8;">
-            🔄 Refresh 8PM Manifest
-          </button>
         </div>
         <div id="audio-modal-weather-adv" style="font-size: 0.78rem; color: #94a3b8; line-height: 1.4;">
-          🌤️ <strong>Weather &amp; Hydration:</strong> Morning 21°C, 85% humidity. Take Salt capsule at 45m mark.
+          🌤️ <strong>Weather &amp; Hydration:</strong> Morning 20°C, 93% humidity. Take Salt capsule at 45m mark. Post-run 10-min calf flush.
         </div>
       </div>
 
@@ -1375,14 +1417,11 @@
 
       <!-- Action Buttons -->
       <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-        <button class="btn-icon" id="btn-audio-sim-sunday" onclick="startSunday7kmAudioPreview()" style="flex: 1; background: linear-gradient(135deg, #10b981, #059669); color: #000; font-weight: 800; padding: 0.85rem 1rem; border: none; font-size: 0.95rem;">
-          🏃 Preview Sunday 7km Long Run Cues
-        </button>
-        <button class="btn-icon" id="btn-audio-sim-start" onclick="start60SecondAudioSimulator()" style="flex: 1; background: linear-gradient(135deg, #0284c7, #0ea5e9); color: #fff; font-weight: 800; padding: 0.85rem 1rem; border: none; font-size: 0.95rem;">
-          ⚡ Test Speed Intervals (60s Ducking Test)
+        <button class="btn-icon" id="btn-audio-sim-start" onclick="startSunday7kmAudioPreview()" style="flex: 1; background: linear-gradient(135deg, #10b981, #059669); color: #000; font-weight: 800; padding: 0.85rem 1rem; border: none; font-size: 0.95rem;">
+          ▶️ Play Audio Coach Preview
         </button>
         <button class="btn-icon" id="btn-audio-sim-stop" onclick="stopAudioSimulator()" style="width: 100%; background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.4); color: #ef4444; font-weight: 700; padding: 0.85rem 1rem; display: none;">
-          ⏹️ Stop Audio Simulator
+          ⏹️ Stop Audio Playback
         </button>
       </div>
 

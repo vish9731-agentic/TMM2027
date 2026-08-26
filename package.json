@@ -1,0 +1,26 @@
+{
+  "name": "procam-afterthought",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "node tests/responsive_test.js",
+    "test:python": "python3 tests/test_responsiveness.py",
+    "test:debug": "node tests/debug_overflow.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vish9731-agentic/TMM2027.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/vish9731-agentic/TMM2027/issues"
+  },
+  "homepage": "https://github.com/vish9731-agentic/TMM2027#readme",
+  "devDependencies": {
+    "puppeteer-core": "^25.9.0"
+  }
+}

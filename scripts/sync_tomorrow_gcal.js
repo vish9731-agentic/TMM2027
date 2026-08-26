@@ -108,6 +108,241 @@ async function fetchTomorrowWorkout(dateStr) {
   throw new Error(`No workout found in Master Plan or Supabase for scheduled date: ${dateStr}`);
 }
 
+// Universal Intelligent Workout Split & Stage Strategy Parser
+function generateWorkoutSplits(wo) {
+  const desc = (wo.description || '').trim();
+  const descLower = desc.toLowerCase();
+  const type = (wo.type || wo.workout_type || 'Workout').trim();
+  const typeLower = type.toLowerCase();
+  const dist = Number(wo.distance_km) || 0;
+  const targetPace = wo.target_pace || 'N/A';
+
+  if (dist === 0) {
+    return [
+      { km: 'Prehab 1', phase: 'Ankle & Foot Mobility', pace: '10 Mins', desc: 'Ankle alphabets, plantar roll with lacrosse ball', color: '#10b981' },
+      { km: 'Prehab 2', phase: 'Eccentric Calf Loading', pace: '15 Mins', desc: 'Heel drops on a step (3x15 straight leg + 3x15 bent knee)', color: '#ffcc00' },
+      { km: 'Prehab 3', phase: 'Foam Rolling & Recovery', pace: '10 Mins', desc: 'Soleus, gastrocnemius, and quads myofascial release', color: '#38bdf8' }
+    ];
+  }
+
+  const splits = [];
+
+  // 1. Hill Workouts (e.g. Hill Intro, Hill Repeats, Hill Attack, Pedder Road)
+  if (typeLower.includes('hill') || descLower.includes('uphill') || descLower.includes('hill repeat') || descLower.includes('hill attack')) {
+    const warmupMatch = desc.match(/([\d\.]+)\s*km\s*warmup/i);
+    const cooldownMatch = desc.match(/([\d\.]+)\s*km\s*cooldown/i);
+    const warmupKm = warmupMatch ? parseFloat(warmupMatch[1]) : 2.0;
+    const cooldownKm = cooldownMatch ? parseFloat(cooldownMatch[1]) : 2.0;
+    
+    const repMatch = desc.match(/(\d+\s*x\s*[0-9\-]+(?:sec|s|min|m)?\s*[a-zA-Z\s\-]+repeats?)/i) ||
+                     desc.match(/(\d+\s*x\s*[^\,\.]+)/i);
+    const repText = repMatch ? repMatch[0].trim() : 'Uphill Repeats with Jog-Down Recovery';
+
+    splits.push({
+      km: `Km 1 – ${warmupKm}`,
+      phase: 'Warm-up Float',
+      pace: '7:45 – 8:00 min/km',
+      desc: 'Gentle aerobic warmup on flat ground, dynamic ankle mobility',
+      color: '#10b981'
+    });
+    splits.push({
+      km: 'Main Set',
+      phase: 'Hill Repeats',
+      pace: 'RPE 7–8 (Hard Effort)',
+      desc: `${repText} (Drive knees & glutes, upright chest, easy jog-down recovery)`,
+      color: '#ff3b00'
+    });
+    splits.push({
+      km: `Final ${cooldownKm} km`,
+      phase: 'Cool-down Float',
+      pace: '7:50 – 8:15 min/km',
+      desc: 'Easy recovery flush to clear lactate from calves and quads',
+      color: '#38bdf8'
+    });
+    return splits;
+  }
+
+  // 2. Strides (e.g. 5x100m strides, 4x100m strides)
+  if (typeLower.includes('stride') || descLower.includes('strides')) {
+    const warmupMatch = desc.match(/([\d\.]+)\s*km\s*warmup/i) || desc.match(/([\d\.]+)\s*km\s*easy/i);
+    const cooldownMatch = desc.match(/([\d\.]+)\s*km\s*cooldown/i) || desc.match(/([\d\.]+)\s*km\s*easy/i);
+    const warmupKm = warmupMatch ? parseFloat(warmupMatch[1]) : 1.5;
+    const cooldownKm = cooldownMatch ? parseFloat(cooldownMatch[1]) : Math.max(1.5, dist - warmupKm - 0.5);
+
+    const strideMatch = desc.match(/(\d+\s*x\s*\d+\s*m[^\,\.]*)/i);
+    const strideText = strideMatch ? strideMatch[1].trim() : '5x100m Fast Relaxed Strides';
+
+    splits.push({
+      km: `Km 1 – ${warmupKm}`,
+      phase: 'Warm-up Float',
+      pace: '7:45 – 8:00 min/km',
+      desc: 'Easy aerobic jog, loose shoulders, warm up achilles & soleus',
+      color: '#10b981'
+    });
+    splits.push({
+      km: 'Main Set',
+      phase: 'Speed Strides',
+      pace: '5:20 – 5:45 min/km',
+      desc: `${strideText} (Accelerate to 90% top speed with 90s walk rest between reps)`,
+      color: '#ffcc00'
+    });
+    splits.push({
+      km: `Final ${cooldownKm.toFixed(1)} km`,
+      phase: 'Cool-down Flush',
+      pace: '7:50 – 8:15 min/km',
+      desc: 'Gentle aerobic flush + 5 mins walking cool-down',
+      color: '#38bdf8'
+    });
+    return splits;
+  }
+
+  // 3. Intervals / 400m / 1K Repeats (e.g. 4x400m, 1K repeats)
+  if (typeLower.includes('interval') || typeLower.includes('repeat') || descLower.includes('400m') || descLower.includes('1k repeats') || descLower.includes('1 km @')) {
+    const warmupMatch = desc.match(/([\d\.]+)\s*km\s*warmup/i);
+    const cooldownMatch = desc.match(/([\d\.]+)\s*km\s*cooldown/i);
+    const warmupKm = warmupMatch ? parseFloat(warmupMatch[1]) : 1.5;
+    const cooldownKm = cooldownMatch ? parseFloat(cooldownMatch[1]) : 2.0;
+
+    const intervalMatch = desc.match(/(\d+\s*x\s*[^,\.]+)/i);
+    const intervalText = intervalMatch ? intervalMatch[1].trim() : 'Interval Repeats';
+
+    splits.push({
+      km: `Km 1 – ${warmupKm}`,
+      phase: 'Warm-up Float',
+      pace: '7:45 – 8:00 min/km',
+      desc: 'Gradual heart rate ramp, dynamic mobility drills',
+      color: '#10b981'
+    });
+    splits.push({
+      km: 'Main Set',
+      phase: 'Speed Intervals',
+      pace: targetPace !== 'N/A' ? targetPace : '5:50 – 6:15 min/km',
+      desc: `${intervalText} (High cadence, maintain relaxed face & shoulders)`,
+      color: '#ff3b00'
+    });
+    splits.push({
+      km: `Final ${cooldownKm} km`,
+      phase: 'Cool-down',
+      pace: '7:50 – 8:15 min/km',
+      desc: 'Controlled jog to flush legs and lower core body temperature',
+      color: '#38bdf8'
+    });
+    return splits;
+  }
+
+  // 4. Tempo / Threshold / MP Blocks
+  if (typeLower.includes('tempo') || typeLower.includes('threshold') || typeLower.includes('mp') || descLower.includes('tempo') || descLower.includes('threshold') || descLower.includes('mp')) {
+    const warmupKm = 1.5;
+    const cooldownKm = 1.5;
+    const tempoKm = Math.max(1.0, dist - warmupKm - cooldownKm);
+
+    splits.push({
+      km: `Km 1 – ${warmupKm}`,
+      phase: 'Warm-up Float',
+      pace: '7:45 – 8:00 min/km',
+      desc: 'Gentle aerobic warmup, activate glutes & soleus',
+      color: '#10b981'
+    });
+    splits.push({
+      km: `Km ${(warmupKm + 0.1).toFixed(1)} – ${(warmupKm + tempoKm).toFixed(1)}`,
+      phase: 'Tempo / MP Block',
+      pace: targetPace,
+      desc: 'Sustained lactate threshold effort, locked-in breathing rhythm (2:2 pattern)',
+      color: '#ff7700'
+    });
+    splits.push({
+      km: `Final ${cooldownKm} km`,
+      phase: 'Cool-down Flush',
+      pace: '7:50 – 8:15 min/km',
+      desc: 'Easy flush jog and walking transition',
+      color: '#38bdf8'
+    });
+    return splits;
+  }
+
+  // 5. Races / Time Trials (10K Time Trial, Half Marathon, Kolkata 25K, TMM 2027)
+  if (typeLower.includes('time trial') || typeLower.includes('simulation') || typeLower.includes('hm') || typeLower.includes('vdhm') || typeLower.includes('25k') || typeLower.includes('race') || dist >= 20) {
+    const startKm = Math.min(2.0, Math.max(1.0, Math.round(dist * 0.15)));
+    const finishKm = Math.min(3.0, Math.max(1.0, Math.round(dist * 0.15)));
+    const cruiseKmStart = startKm + 1;
+    const cruiseKmEnd = dist - finishKm;
+
+    splits.push({
+      km: `Km 1 – ${startKm}`,
+      phase: 'Controlled Start',
+      pace: '7:15 – 7:25 min/km',
+      desc: 'Disciplined start, resist surging with adrenaline, settle heart rate',
+      color: '#10b981'
+    });
+    splits.push({
+      km: `Km ${cruiseKmStart} – ${cruiseKmEnd}`,
+      phase: 'Target Pace Lock',
+      pace: targetPace,
+      desc: 'Locked-in goal cadence (170+ SPM), take sips of hydration every 2.5 km',
+      color: '#00f5d4'
+    });
+    splits.push({
+      km: `Km ${cruiseKmEnd + 1} – ${dist}`,
+      phase: 'Negative Split Finish',
+      pace: '7:00 – 7:06 min/km',
+      desc: 'Strong finish, maintain tall posture, empty the tank over final km',
+      color: '#ff3b00'
+    });
+    return splits;
+  }
+
+  // 6. Long Runs (8km - 19km)
+  if (typeLower.includes('long run') || dist >= 8) {
+    const warmupKm = 2.0;
+    const finishKm = 1.0;
+    const cruiseKmEnd = dist - finishKm;
+
+    splits.push({
+      km: `Km 1 – ${warmupKm}`,
+      phase: 'Aerobic Warmup',
+      pace: '7:45 – 8:00 min/km',
+      desc: 'Gentle aerobic float, loosen up hips & calves, stay in Zone 2',
+      color: '#10b981'
+    });
+    splits.push({
+      km: `Km 3 – ${cruiseKmEnd}`,
+      phase: 'Endurance Cruise',
+      pace: targetPace,
+      desc: 'Rhythmic marathon aerobic base, take salt & water according to plan',
+      color: '#00f5d4'
+    });
+    splits.push({
+      km: `Km ${cruiseKmEnd + 1} – ${dist}`,
+      phase: 'Sub-5:00 Finish',
+      pace: '7:06 min/km',
+      desc: 'TMM 2027 goal pace rehearsal, strong posture & quick ground contact',
+      color: '#ff7700'
+    });
+    return splits;
+  }
+
+  // 7. Standard Easy / Recovery Runs (3km - 7km)
+  splits.push({
+    km: 'Km 1',
+    phase: 'Warm-up Float',
+    pace: '7:45 – 8:00 min/km',
+    desc: 'Very gentle warmup, nasal breathing only, shake out calves',
+    color: '#10b981'
+  });
+  if (dist > 1) {
+    splits.push({
+      km: `Km 2 – ${dist.toFixed(0)}`,
+      phase: typeLower.includes('recovery') ? 'Recovery Cruise' : 'Zone 2 Base Cruise',
+      pace: targetPace,
+      desc: typeLower.includes('recovery') 
+        ? 'Ultra-light effort to promote blood flow without neuromuscular fatigue'
+        : 'Smooth conversational pace to expand mitochondrial density',
+      color: '#00f5d4'
+    });
+  }
+  return splits;
+}
+
 // 3. Build Rich Google Calendar Event Payload
 function buildEventPayload(wo, tomorrow) {
   const dist = wo.distance_km || 0;
@@ -149,21 +384,8 @@ function buildEventPayload(wo, tomorrow) {
     : `${type}${targetPace && targetPace !== 'N/A' ? ` (${targetPace})` : ''}`;
 
   // Stage progression splits
-  const splits = [];
-  if (dist > 0) {
-    if (dist <= 4.0) {
-      splits.push(`  • Km 1: 7:45–8:00 (Warmup Float)`);
-      if (dist > 1.0) splits.push(`  • Km 2–${dist}: ${targetPace} (Zone 2 Cruise)`);
-    } else if (dist <= 8.0) {
-      splits.push(`  • Km 1: 7:45–8:00 (Warmup Float)`);
-      splits.push(`  • Km 2–${Math.floor(dist - 1)}: ${targetPace} (Endurance Cruise)`);
-      splits.push(`  • Km ${Math.floor(dist)}: ${targetPace} (Controlled Finish)`);
-    } else {
-      splits.push(`  • Km 1–2: 7:45–8:00 (Aerobic Warmup)`);
-      splits.push(`  • Km 3–${Math.floor(dist - 2)}: ${targetPace} (Marathon Rhythm)`);
-      splits.push(`  • Km ${Math.floor(dist - 1)}–${dist}: 7:06 min/km (Race Pace Rehearsal)`);
-    }
-  }
+  const splitsData = generateWorkoutSplits(wo);
+  const splits = splitsData.map(s => `  • ${s.km} (${s.phase}): ${s.pace} — ${s.desc}`);
 
   const prehabDrill = wo.strength_prehab && wo.strength_prehab !== 'N/A' 
     ? wo.strength_prehab 

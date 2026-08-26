@@ -1,0 +1,1232 @@
+{
+  "timestamp": "2026-08-25T17:49:07.863Z",
+  "totalTests": 28,
+  "passedTests": 28,
+  "failedTests": 0,
+  "passRate": "100%",
+  "results": [
+    {
+      "page": "index.html",
+      "pageId": "index",
+      "profile": "Mobile XS (iPhone SE 1st Gen)",
+      "profileId": "mobile-xs",
+      "category": "Mobile",
+      "viewport": "320x568",
+      "scrollWidth": 320,
+      "innerWidth": 320,
+      "overflowDelta": 0,
+      "hasHorizontalOverflow": false,
+      "overflowingElements": [
+        {
+          "selector": "button.week-jump-btn.peak-btn",
+          "right": 1610,
+          "width": 128,
+          "excess": 1290
+        },
+        {
+          "selector": "button.week-jump-btn.milestone-btn",
+          "right": 1476,
+          "width": 63,
+          "excess": 1156
+        },
+        {
+          "selector": "div#day-1_Sunday_2026-08-23.day-card",
+          "right": 1435,
+          "width": 190,
+          "excess": 1115
+        },
+        {
+          "selector": "div#day-2_Sunday_2026-08-30.day-card",
+          "right": 1435,
+          "width": 190,
+          "excess": 1115
+        },
+        {
+          "selector": "div#day-3_Sunday_2026-09-06.day-card",
+          "right": 1435,
+          "width": 190,
+          "excess": 1115
+        }
+      ],
+      "touchTargetIssues": [
+        {
+          "tag": "button",
+          "text": "Browse File",
+          "width": 84,
+          "height": 26
+        },
+        {
+          "tag": "a",
+          "text": "Google AI Studio ↗",
+          "width": 98,
+          "height": 13
+        }
+      ],
+      "visibilityChecks": {
+        "navbarVisible": true,
+        "heroVisible": true,
+        "tabsVisible": true,
+        "countdownVisible": true
+      },
+      "tabSwitchPassed": true,
+      "screenshot": "tests/screenshots/index/mobile-xs.png",
+      "status": "PASS"
+    },
+    {
+      "page": "index.html",
+      "pageId": "index",
+      "profile": "Android Standard (Samsung Galaxy S22/S23)",
+      "profileId": "mobile-android-std",
+      "category": "Mobile",
+      "viewport": "360x800",
+      "scrollWidth": 360,
+      "innerWidth": 360,
+      "overflowDelta": 0,
+      "hasHorizontalOverflow": false,
+      "overflowingElements": [
+        {
+          "selector": "button.week-jump-btn.peak-btn",
+          "right": 1610,
+          "width": 128,
+          "excess": 1250
+        },
+        {
+          "selector": "button.week-jump-btn.milestone-btn",
+          "right": 1476,
+          "width": 63,
+          "excess": 1116
+        },
+        {
+          "selector": "div#day-1_Sunday_2026-08-23.day-card",
+          "right": 1435,
+          "width": 190,
+          "excess": 1075
+        },
+        {
+          "selector": "div#day-2_Sunday_2026-08-30.day-card",
+          "right": 1435,
+          "width": 190,
+          "excess": 1075
+        },
+        {
+          "selector": "div#day-3_Sunday_2026-09-06.day-card",
+          "right": 1435,
+          "width": 190,
+          "excess": 1075
+        }
+      ],
+      "touchTargetIssues": [
+        {
+          "tag": "button",
+          "text": "Browse File",
+          "width": 84,
+          "height": 26
+        },
+        {
+          "tag": "a",
+          "text": "Google AI Studio ↗",
+          "width": 98,
+          "height": 13
+        }
+      ],
+      "visibilityChecks": {
+        "navbarVisible": true,
+        "heroVisible": true,
+        "tabsVisible": true,
+        "countdownVisible": true
+      },
+      "tabSwitchPassed": true,
+      "screenshot": "tests/screenshots/index/mobile-android-std.png",
+      "status": "PASS"
+    },
+    {
+      "page": "index.html",
+      "pageId": "index",
+      "profile": "Mobile Standard (iPhone 8 / SE 2/3)",
+      "profileId": "mobile-std",
+      "category": "Mobile",
+      "viewport": "375x667",
+      "scrollWidth": 375,
+      "innerWidth": 375,
+      "overflowDelta": 0,
+      "hasHorizontalOverflow": false,
+      "overflowingElements": [
+        {
+          "selector": "button.week-jump-btn.peak-btn",
+          "right": 1616,
+          "width": 128,
+          "excess": 1241
+        },
+        {
+          "selector": "button.week-jump-btn.milestone-btn",
+          "right": 1482,
+          "width": 63,
+          "excess": 1107
+        },
+        {
+          "selector": "div#day-1_Sunday_2026-08-23.day-card",
+          "right": 1441,
+          "width": 190,
+          "excess": 1066
+        },
+        {
+          "selector": "div#day-2_Sunday_2026-08-30.day-card",
+          "right": 1441,
+          "width": 190,
+          "excess": 1066
+        },
+        {
+          "selector": "div#day-3_Sunday_2026-09-06.day-card",
+          "right": 1441,
+          "width": 190,
+          "excess": 1066
+        }
+      ],
+      "touchTargetIssues": [
+        {
+          "tag": "button",
+          "text": "Browse File",
+          "width": 84,
+          "height": 26
+        },
+        {
+          "tag": "a",
+          "text": "Google AI Studio ↗",
+          "width": 98,
+          "height": 13
+        }
+      ],
+      "visibilityChecks": {
+        "navbarVisible": true,
+        "heroVisible": true,
+        "tabsVisible": true,
+        "countdownVisible": true
+      },
+      "tabSwitchPassed": true,
+      "screenshot": "tests/screenshots/index/mobile-std.png",
+      "status": "PASS"
+    },
+    {
+      "page": "index.html",
+      "pageId": "index",
+      "profile": "Mobile Modern (iPhone 12/13/14/15)",
+      "profileId": "mobile-ios-modern",
+      "category": "Mobile",
+      "viewport": "390x844",
+      "scrollWidth": 390,
+      "innerWidth": 390,
+      "overflowDelta": 0,
+      "hasHorizontalOverflow": false,
+      "overflowingElements": [
+        {
+          "selector": "button.week-jump-btn.peak-btn",
+          "right": 1616,
+          "width": 128,
+          "excess": 1226
+        },
+        {
+          "selector": "button.week-jump-btn.milestone-btn",
+          "right": 1482,
+          "width": 63,
+          "excess": 1092
+        },
+        {
+          "selector": "div#day-1_Sunday_2026-08-23.day-card",
+          "right": 1441,
+          "width": 190,
+          "excess": 1051
+        },
+        {
+          "selector": "div#day-2_Sunday_2026-08-30.day-card",
+          "right": 1441,
+          "width": 190,
+          "excess": 1051
+        },
+        {
+          "selector": "div#day-3_Sunday_2026-09-06.day-card",
+          "right": 1441,
+          "width": 190,
+          "excess": 1051
+        }
+      ],
+      "touchTargetIssues": [
+        {
+          "tag": "button",
+          "text": "Browse File",
+          "width": 84,
+          "height": 26
+        },
+        {
+          "tag": "a",
+          "text": "Google AI Studio ↗",
+          "width": 98,
+          "height": 13
+        }
+      ],
+      "visibilityChecks": {
+        "navbarVisible": true,
+        "heroVisible": true,
+        "tabsVisible": true,
+        "countdownVisible": true
+      },
+      "tabSwitchPassed": true,
+      "screenshot": "tests/screenshots/index/mobile-ios-modern.png",
+      "status": "PASS"
+    },
+    {
+      "page": "index.html",
+      "pageId": "index",
+      "profile": "Android Large (Google Pixel 7/8)",
+      "profileId": "mobile-pixel",
+      "category": "Mobile",
+      "viewport": "412x915",
+      "scrollWidth": 412,
+      "innerWidth": 412,
+      "overflowDelta": 0,
+      "hasHorizontalOverflow": false,
+      "overflowingElements": [
+        {
+          "selector": "button.week-jump-btn.peak-btn",
+          "right": 1616,
+          "width": 128,
+          "excess": 1204
+        },
+        {
+          "selector": "button.week-jump-btn.milestone-btn",
+          "right": 1482,
+          "width": 63,
+          "excess": 1070
+        },
+        {
+          "selector": "div#day-1_Sunday_2026-08-23.day-card",
+          "right": 1441,
+          "width": 190,
+          "excess": 1029
+        },
+        {
+          "selector": "div#day-2_Sunday_2026-08-30.day-card",
+          "right": 1441,
+          "width": 190,
+          "excess": 1029
+        },
+        {
+          "selector": "div#day-3_Sunday_2026-09-06.day-card",
+          "right": 1441,
+          "width": 190,
+          "excess": 1029
+        }
+      ],
+      "touchTargetIssues": [
+        {
+          "tag": "button",
+          "text": "Browse File",
+          "width": 84,
+          "height": 26
+        },
+        {
+          "tag": "a",
+          "text": "Google AI Studio ↗",
+          "width": 98,
+          "height": 13
+        },
+        {
+          "tag": "button",
+          "text": "🗑️ Clear Memory",
+          "width": 102,
+          "height": 25
+        }
+      ],
+      "visibilityChecks": {
+        "navbarVisible": true,
+        "heroVisible": true,
+        "tabsVisible": true,
+        "countdownVisible": true
+      },
+      "tabSwitchPassed": true,
+      "screenshot": "tests/screenshots/index/mobile-pixel.png",
+      "status": "PASS"
+    },
+    {
+      "page": "index.html",
+      "pageId": "index",
+      "profile": "Mobile Max (iPhone 14/15/16 Pro Max)",
+      "profileId": "mobile-max",
+      "category": "Mobile",
+      "viewport": "430x932",
+      "scrollWidth": 430,
+      "innerWidth": 430,
+      "overflowDelta": 0,
+      "hasHorizontalOverflow": false,
+      "overflowingElements": [
+        {
+          "selector": "button.week-jump-btn.peak-btn",
+          "right": 1616,
+          "width": 128,
+          "excess": 1186
+        },
+        {
+          "selector": "button.week-jump-btn.milestone-btn",
+          "right": 1482,
+          "width": 63,
+          "excess": 1052
+        },
+        {
+          "selector": "div#day-1_Sunday_2026-08-23.day-card",
+          "right": 1441,
+          "width": 190,
+          "excess": 1011
+        },
+        {
+          "selector": "div#day-2_Sunday_2026-08-30.day-card",
+          "right": 1441,
+          "width": 190,
+          "excess": 1011
+        },
+        {
+          "selector": "div#day-3_Sunday_2026-09-06.day-card",
+          "right": 1441,
+          "width": 190,
+          "excess": 1011
+        }
+      ],
+      "touchTargetIssues": [
+        {
+          "tag": "button",
+          "text": "Browse File",
+          "width": 84,
+          "height": 26
+        },
+        {
+          "tag": "a",
+          "text": "Google AI Studio ↗",
+          "width": 98,
+          "height": 13
+        },
+        {
+          "tag": "button",
+          "text": "🗑️ Clear Memory",
+          "width": 102,
+          "height": 25
+        }
+      ],
+      "visibilityChecks": {
+        "navbarVisible": true,
+        "heroVisible": true,
+        "tabsVisible": true,
+        "countdownVisible": true
+      },
+      "tabSwitchPassed": true,
+      "screenshot": "tests/screenshots/index/mobile-max.png",
+      "status": "PASS"
+    },
+    {
+      "page": "index.html",
+      "pageId": "index",
+      "profile": "Mobile Modern Landscape",
+      "profileId": "mobile-landscape",
+      "category": "Mobile Landscape",
+      "viewport": "844x390",
+      "scrollWidth": 844,
+      "innerWidth": 844,
+      "overflowDelta": 0,
+      "hasHorizontalOverflow": false,
+      "overflowingElements": [
+        {
+          "selector": "button.week-jump-btn.peak-btn",
+          "right": 1626,
+          "width": 128,
+          "excess": 782
+        },
+        {
+          "selector": "div#day-1_Sunday_2026-08-23.day-card",
+          "right": 1591,
+          "width": 210,
+          "excess": 747
+        },
+        {
+          "selector": "div#day-2_Sunday_2026-08-30.day-card",
+          "right": 1591,
+          "width": 210,
+          "excess": 747
+        },
+        {
+          "selector": "div#day-3_Sunday_2026-09-06.day-card",
+          "right": 1591,
+          "width": 210,
+          "excess": 747
+        },
+        {
+          "selector": "div#day-4_Sunday_2026-09-13.day-card",
+          "right": 1591,
+          "width": 210,
+          "excess": 747
+        }
+      ],
+      "touchTargetIssues": [],
+      "visibilityChecks": {
+        "navbarVisible": true,
+        "heroVisible": true,
+        "tabsVisible": true,
+        "countdownVisible": true
+      },
+      "tabSwitchPassed": true,
+      "screenshot": "tests/screenshots/index/mobile-landscape.png",
+      "status": "PASS"
+    },
+    {
+      "page": "index.html",
+      "pageId": "index",
+      "profile": "Small Tablet (7\" e-Reader / Compact)",
+      "profileId": "tablet-sm",
+      "category": "Tablet",
+      "viewport": "600x960",
+      "scrollWidth": 600,
+      "innerWidth": 600,
+      "overflowDelta": 0,
+      "hasHorizontalOverflow": false,
+      "overflowingElements": [
+        {
+          "selector": "button.week-jump-btn.peak-btn",
+          "right": 1616,
+          "width": 128,
+          "excess": 1016
+        },
+        {
+          "selector": "div#day-1_Sunday_2026-08-23.day-card",
+          "right": 1581,
+          "width": 210,
+          "excess": 981
+        },
+        {
+          "selector": "div#day-2_Sunday_2026-08-30.day-card",
+          "right": 1581,
+          "width": 210,
+          "excess": 981
+        },
+        {
+          "selector": "div#day-3_Sunday_2026-09-06.day-card",
+          "right": 1581,
+          "width": 210,
+          "excess": 981
+        },
+        {
+          "selector": "div#day-4_Sunday_2026-09-13.day-card",
+          "right": 1581,
+          "width": 210,
+          "excess": 981
+        }
+      ],
+      "touchTargetIssues": [
+        {
+          "tag": "a",
+          "text": "Google AI Studio ↗",
+          "width": 98,
+          "height": 13
+        },
+        {
+          "tag": "button",
+          "text": "🗑️ Clear Memory",
+          "width": 102,
+          "height": 25
+        }
+      ],
+      "visibilityChecks": {
+        "navbarVisible": true,
+        "heroVisible": true,
+        "tabsVisible": true,
+        "countdownVisible": true
+      },
+      "tabSwitchPassed": true,
+      "screenshot": "tests/screenshots/index/tablet-sm.png",
+      "status": "PASS"
+    },
+    {
+      "page": "index.html",
+      "pageId": "index",
+      "profile": "Tablet Portrait (iPad Mini / Standard 10.2\")",
+      "profileId": "tablet-portrait",
+      "category": "Tablet",
+      "viewport": "768x1024",
+      "scrollWidth": 768,
+      "innerWidth": 768,
+      "overflowDelta": 0,
+      "hasHorizontalOverflow": false,
+      "overflowingElements": [
+        {
+          "selector": "button.week-jump-btn.peak-btn",
+          "right": 1616,
+          "width": 128,
+          "excess": 848
+        },
+        {
+          "selector": "div#day-1_Sunday_2026-08-23.day-card",
+          "right": 1581,
+          "width": 210,
+          "excess": 813
+        },
+        {
+          "selector": "div#day-2_Sunday_2026-08-30.day-card",
+          "right": 1581,
+          "width": 210,
+          "excess": 813
+        },
+        {
+          "selector": "div#day-3_Sunday_2026-09-06.day-card",
+          "right": 1581,
+          "width": 210,
+          "excess": 813
+        },
+        {
+          "selector": "div#day-4_Sunday_2026-09-13.day-card",
+          "right": 1581,
+          "width": 210,
+          "excess": 813
+        }
+      ],
+      "touchTargetIssues": [],
+      "visibilityChecks": {
+        "navbarVisible": true,
+        "heroVisible": true,
+        "tabsVisible": true,
+        "countdownVisible": true
+      },
+      "tabSwitchPassed": true,
+      "screenshot": "tests/screenshots/index/tablet-portrait.png",
+      "status": "PASS"
+    },
+    {
+      "page": "index.html",
+      "pageId": "index",
+      "profile": "Tablet Pro Portrait (iPad Air / Pro 11\")",
+      "profileId": "tablet-pro",
+      "category": "Tablet",
+      "viewport": "820x1180",
+      "scrollWidth": 820,
+      "innerWidth": 820,
+      "overflowDelta": 0,
+      "hasHorizontalOverflow": false,
+      "overflowingElements": [
+        {
+          "selector": "button.week-jump-btn.peak-btn",
+          "right": 1626,
+          "width": 128,
+          "excess": 806
+        },
+        {
+          "selector": "div#day-1_Sunday_2026-08-23.day-card",
+          "right": 1591,
+          "width": 210,
+          "excess": 771
+        },
+        {
+          "selector": "div#day-2_Sunday_2026-08-30.day-card",
+          "right": 1591,
+          "width": 210,
+          "excess": 771
+        },
+        {
+          "selector": "div#day-3_Sunday_2026-09-06.day-card",
+          "right": 1591,
+          "width": 210,
+          "excess": 771
+        },
+        {
+          "selector": "div#day-4_Sunday_2026-09-13.day-card",
+          "right": 1591,
+          "width": 210,
+          "excess": 771
+        }
+      ],
+      "touchTargetIssues": [],
+      "visibilityChecks": {
+        "navbarVisible": true,
+        "heroVisible": true,
+        "tabsVisible": true,
+        "countdownVisible": true
+      },
+      "tabSwitchPassed": true,
+      "screenshot": "tests/screenshots/index/tablet-pro.png",
+      "status": "PASS"
+    },
+    {
+      "page": "index.html",
+      "pageId": "index",
+      "profile": "Tablet Landscape (iPad 10.2\" / Pro Landscape)",
+      "profileId": "tablet-landscape",
+      "category": "Tablet Landscape",
+      "viewport": "1024x768",
+      "scrollWidth": 1024,
+      "innerWidth": 1024,
+      "overflowDelta": 0,
+      "hasHorizontalOverflow": false,
+      "overflowingElements": [
+        {
+          "selector": "button.week-jump-btn.peak-btn",
+          "right": 1626,
+          "width": 128,
+          "excess": 602
+        },
+        {
+          "selector": "div#day-1_Sunday_2026-08-23.day-card",
+          "right": 1591,
+          "width": 210,
+          "excess": 567
+        },
+        {
+          "selector": "div#day-2_Sunday_2026-08-30.day-card",
+          "right": 1591,
+          "width": 210,
+          "excess": 567
+        },
+        {
+          "selector": "div#day-3_Sunday_2026-09-06.day-card",
+          "right": 1591,
+          "width": 210,
+          "excess": 567
+        },
+        {
+          "selector": "div#day-4_Sunday_2026-09-13.day-card",
+          "right": 1591,
+          "width": 210,
+          "excess": 567
+        }
+      ],
+      "touchTargetIssues": [],
+      "visibilityChecks": {
+        "navbarVisible": true,
+        "heroVisible": true,
+        "tabsVisible": true,
+        "countdownVisible": true
+      },
+      "tabSwitchPassed": true,
+      "screenshot": "tests/screenshots/index/tablet-landscape.png",
+      "status": "PASS"
+    },
+    {
+      "page": "index.html",
+      "pageId": "index",
+      "profile": "Laptop 13\" (MacBook Air / Compact Desktop)",
+      "profileId": "laptop-13",
+      "category": "Desktop",
+      "viewport": "1280x800",
+      "scrollWidth": 1280,
+      "innerWidth": 1280,
+      "overflowDelta": 0,
+      "hasHorizontalOverflow": false,
+      "overflowingElements": [
+        {
+          "selector": "button.week-jump-btn.peak-btn",
+          "right": 1626,
+          "width": 128,
+          "excess": 346
+        },
+        {
+          "selector": "button.week-jump-btn.milestone-btn",
+          "right": 1492,
+          "width": 63,
+          "excess": 212
+        },
+        {
+          "selector": "button.week-jump-btn.milestone-btn",
+          "right": 1422,
+          "width": 67,
+          "excess": 142
+        },
+        {
+          "selector": "button.week-jump-btn",
+          "right": 1349,
+          "width": 46,
+          "excess": 69
+        },
+        {
+          "selector": "button.week-jump-btn.peak-btn",
+          "right": 1296,
+          "width": 121,
+          "excess": 16
+        }
+      ],
+      "touchTargetIssues": [],
+      "visibilityChecks": {
+        "navbarVisible": true,
+        "heroVisible": true,
+        "tabsVisible": true,
+        "countdownVisible": true
+      },
+      "tabSwitchPassed": true,
+      "screenshot": "tests/screenshots/index/laptop-13.png",
+      "status": "PASS"
+    },
+    {
+      "page": "index.html",
+      "pageId": "index",
+      "profile": "Desktop Standard 15\" (MacBook Pro / 1440p)",
+      "profileId": "desktop-fhd",
+      "category": "Desktop",
+      "viewport": "1440x900",
+      "scrollWidth": 1440,
+      "innerWidth": 1440,
+      "overflowDelta": 0,
+      "hasHorizontalOverflow": false,
+      "overflowingElements": [
+        {
+          "selector": "button.week-jump-btn.peak-btn",
+          "right": 1626,
+          "width": 128,
+          "excess": 186
+        },
+        {
+          "selector": "button.week-jump-btn.milestone-btn",
+          "right": 1492,
+          "width": 63,
+          "excess": 52
+        }
+      ],
+      "touchTargetIssues": [],
+      "visibilityChecks": {
+        "navbarVisible": true,
+        "heroVisible": true,
+        "tabsVisible": true,
+        "countdownVisible": true
+      },
+      "tabSwitchPassed": true,
+      "screenshot": "tests/screenshots/index/desktop-fhd.png",
+      "status": "PASS"
+    },
+    {
+      "page": "index.html",
+      "pageId": "index",
+      "profile": "Desktop Wide (1080p Full HD Monitor)",
+      "profileId": "desktop-wide",
+      "category": "Desktop",
+      "viewport": "1920x1080",
+      "scrollWidth": 1920,
+      "innerWidth": 1920,
+      "overflowDelta": 0,
+      "hasHorizontalOverflow": false,
+      "overflowingElements": [],
+      "touchTargetIssues": [],
+      "visibilityChecks": {
+        "navbarVisible": true,
+        "heroVisible": true,
+        "tabsVisible": true,
+        "countdownVisible": true
+      },
+      "tabSwitchPassed": true,
+      "screenshot": "tests/screenshots/index/desktop-wide.png",
+      "status": "PASS"
+    },
+    {
+      "page": "simulator.html",
+      "pageId": "simulator",
+      "profile": "Mobile XS (iPhone SE 1st Gen)",
+      "profileId": "mobile-xs",
+      "category": "Mobile",
+      "viewport": "320x568",
+      "scrollWidth": 567,
+      "innerWidth": 567,
+      "overflowDelta": 0,
+      "hasHorizontalOverflow": false,
+      "overflowingElements": [],
+      "touchTargetIssues": [
+        {
+          "tag": "button",
+          "text": "←",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "tag": "button",
+          "text": "→",
+          "width": 24,
+          "height": 24
+        }
+      ],
+      "visibilityChecks": {
+        "phoneDeviceVisible": true,
+        "heroCardVisible": true,
+        "masterBtnVisible": true,
+        "controlPanelVisible": true
+      },
+      "tabSwitchPassed": true,
+      "screenshot": "tests/screenshots/simulator/mobile-xs.png",
+      "status": "PASS"
+    },
+    {
+      "page": "simulator.html",
+      "pageId": "simulator",
+      "profile": "Android Standard (Samsung Galaxy S22/S23)",
+      "profileId": "mobile-android-std",
+      "category": "Mobile",
+      "viewport": "360x800",
+      "scrollWidth": 587,
+      "innerWidth": 587,
+      "overflowDelta": 0,
+      "hasHorizontalOverflow": false,
+      "overflowingElements": [],
+      "touchTargetIssues": [
+        {
+          "tag": "button",
+          "text": "←",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "tag": "button",
+          "text": "→",
+          "width": 24,
+          "height": 24
+        }
+      ],
+      "visibilityChecks": {
+        "phoneDeviceVisible": true,
+        "heroCardVisible": true,
+        "masterBtnVisible": true,
+        "controlPanelVisible": true
+      },
+      "tabSwitchPassed": true,
+      "screenshot": "tests/screenshots/simulator/mobile-android-std.png",
+      "status": "PASS"
+    },
+    {
+      "page": "simulator.html",
+      "pageId": "simulator",
+      "profile": "Mobile Standard (iPhone 8 / SE 2/3)",
+      "profileId": "mobile-std",
+      "category": "Mobile",
+      "viewport": "375x667",
+      "scrollWidth": 594,
+      "innerWidth": 594,
+      "overflowDelta": 0,
+      "hasHorizontalOverflow": false,
+      "overflowingElements": [],
+      "touchTargetIssues": [
+        {
+          "tag": "button",
+          "text": "←",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "tag": "button",
+          "text": "→",
+          "width": 24,
+          "height": 24
+        }
+      ],
+      "visibilityChecks": {
+        "phoneDeviceVisible": true,
+        "heroCardVisible": true,
+        "masterBtnVisible": true,
+        "controlPanelVisible": true
+      },
+      "tabSwitchPassed": true,
+      "screenshot": "tests/screenshots/simulator/mobile-std.png",
+      "status": "PASS"
+    },
+    {
+      "page": "simulator.html",
+      "pageId": "simulator",
+      "profile": "Mobile Modern (iPhone 12/13/14/15)",
+      "profileId": "mobile-ios-modern",
+      "category": "Mobile",
+      "viewport": "390x844",
+      "scrollWidth": 602,
+      "innerWidth": 602,
+      "overflowDelta": 0,
+      "hasHorizontalOverflow": false,
+      "overflowingElements": [],
+      "touchTargetIssues": [
+        {
+          "tag": "button",
+          "text": "←",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "tag": "button",
+          "text": "→",
+          "width": 24,
+          "height": 24
+        }
+      ],
+      "visibilityChecks": {
+        "phoneDeviceVisible": true,
+        "heroCardVisible": true,
+        "masterBtnVisible": true,
+        "controlPanelVisible": true
+      },
+      "tabSwitchPassed": true,
+      "screenshot": "tests/screenshots/simulator/mobile-ios-modern.png",
+      "status": "PASS"
+    },
+    {
+      "page": "simulator.html",
+      "pageId": "simulator",
+      "profile": "Android Large (Google Pixel 7/8)",
+      "profileId": "mobile-pixel",
+      "category": "Mobile",
+      "viewport": "412x915",
+      "scrollWidth": 613,
+      "innerWidth": 613,
+      "overflowDelta": 0,
+      "hasHorizontalOverflow": false,
+      "overflowingElements": [],
+      "touchTargetIssues": [
+        {
+          "tag": "button",
+          "text": "←",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "tag": "button",
+          "text": "→",
+          "width": 24,
+          "height": 24
+        }
+      ],
+      "visibilityChecks": {
+        "phoneDeviceVisible": true,
+        "heroCardVisible": true,
+        "masterBtnVisible": true,
+        "controlPanelVisible": true
+      },
+      "tabSwitchPassed": true,
+      "screenshot": "tests/screenshots/simulator/mobile-pixel.png",
+      "status": "PASS"
+    },
+    {
+      "page": "simulator.html",
+      "pageId": "simulator",
+      "profile": "Mobile Max (iPhone 14/15/16 Pro Max)",
+      "profileId": "mobile-max",
+      "category": "Mobile",
+      "viewport": "430x932",
+      "scrollWidth": 622,
+      "innerWidth": 622,
+      "overflowDelta": 0,
+      "hasHorizontalOverflow": false,
+      "overflowingElements": [],
+      "touchTargetIssues": [
+        {
+          "tag": "button",
+          "text": "←",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "tag": "button",
+          "text": "→",
+          "width": 24,
+          "height": 24
+        }
+      ],
+      "visibilityChecks": {
+        "phoneDeviceVisible": true,
+        "heroCardVisible": true,
+        "masterBtnVisible": true,
+        "controlPanelVisible": true
+      },
+      "tabSwitchPassed": true,
+      "screenshot": "tests/screenshots/simulator/mobile-max.png",
+      "status": "PASS"
+    },
+    {
+      "page": "simulator.html",
+      "pageId": "simulator",
+      "profile": "Mobile Modern Landscape",
+      "profileId": "mobile-landscape",
+      "category": "Mobile Landscape",
+      "viewport": "844x390",
+      "scrollWidth": 844,
+      "innerWidth": 844,
+      "overflowDelta": 0,
+      "hasHorizontalOverflow": false,
+      "overflowingElements": [],
+      "touchTargetIssues": [],
+      "visibilityChecks": {
+        "phoneDeviceVisible": true,
+        "heroCardVisible": true,
+        "masterBtnVisible": true,
+        "controlPanelVisible": true
+      },
+      "tabSwitchPassed": true,
+      "screenshot": "tests/screenshots/simulator/mobile-landscape.png",
+      "status": "PASS"
+    },
+    {
+      "page": "simulator.html",
+      "pageId": "simulator",
+      "profile": "Small Tablet (7\" e-Reader / Compact)",
+      "profileId": "tablet-sm",
+      "category": "Tablet",
+      "viewport": "600x960",
+      "scrollWidth": 707,
+      "innerWidth": 707,
+      "overflowDelta": 0,
+      "hasHorizontalOverflow": false,
+      "overflowingElements": [],
+      "touchTargetIssues": [
+        {
+          "tag": "button",
+          "text": "←",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "tag": "button",
+          "text": "→",
+          "width": 24,
+          "height": 24
+        }
+      ],
+      "visibilityChecks": {
+        "phoneDeviceVisible": true,
+        "heroCardVisible": true,
+        "masterBtnVisible": true,
+        "controlPanelVisible": true
+      },
+      "tabSwitchPassed": true,
+      "screenshot": "tests/screenshots/simulator/tablet-sm.png",
+      "status": "PASS"
+    },
+    {
+      "page": "simulator.html",
+      "pageId": "simulator",
+      "profile": "Tablet Portrait (iPad Mini / Standard 10.2\")",
+      "profileId": "tablet-portrait",
+      "category": "Tablet",
+      "viewport": "768x1024",
+      "scrollWidth": 791,
+      "innerWidth": 791,
+      "overflowDelta": 0,
+      "hasHorizontalOverflow": false,
+      "overflowingElements": [],
+      "touchTargetIssues": [],
+      "visibilityChecks": {
+        "phoneDeviceVisible": true,
+        "heroCardVisible": true,
+        "masterBtnVisible": true,
+        "controlPanelVisible": true
+      },
+      "tabSwitchPassed": true,
+      "screenshot": "tests/screenshots/simulator/tablet-portrait.png",
+      "status": "PASS"
+    },
+    {
+      "page": "simulator.html",
+      "pageId": "simulator",
+      "profile": "Tablet Pro Portrait (iPad Air / Pro 11\")",
+      "profileId": "tablet-pro",
+      "category": "Tablet",
+      "viewport": "820x1180",
+      "scrollWidth": 820,
+      "innerWidth": 820,
+      "overflowDelta": 0,
+      "hasHorizontalOverflow": false,
+      "overflowingElements": [],
+      "touchTargetIssues": [],
+      "visibilityChecks": {
+        "phoneDeviceVisible": true,
+        "heroCardVisible": true,
+        "masterBtnVisible": true,
+        "controlPanelVisible": true
+      },
+      "tabSwitchPassed": true,
+      "screenshot": "tests/screenshots/simulator/tablet-pro.png",
+      "status": "PASS"
+    },
+    {
+      "page": "simulator.html",
+      "pageId": "simulator",
+      "profile": "Tablet Landscape (iPad 10.2\" / Pro Landscape)",
+      "profileId": "tablet-landscape",
+      "category": "Tablet Landscape",
+      "viewport": "1024x768",
+      "scrollWidth": 1024,
+      "innerWidth": 1024,
+      "overflowDelta": 0,
+      "hasHorizontalOverflow": false,
+      "overflowingElements": [],
+      "touchTargetIssues": [],
+      "visibilityChecks": {
+        "phoneDeviceVisible": true,
+        "heroCardVisible": true,
+        "masterBtnVisible": true,
+        "controlPanelVisible": true
+      },
+      "tabSwitchPassed": true,
+      "screenshot": "tests/screenshots/simulator/tablet-landscape.png",
+      "status": "PASS"
+    },
+    {
+      "page": "simulator.html",
+      "pageId": "simulator",
+      "profile": "Laptop 13\" (MacBook Air / Compact Desktop)",
+      "profileId": "laptop-13",
+      "category": "Desktop",
+      "viewport": "1280x800",
+      "scrollWidth": 1280,
+      "innerWidth": 1280,
+      "overflowDelta": 0,
+      "hasHorizontalOverflow": false,
+      "overflowingElements": [],
+      "touchTargetIssues": [],
+      "visibilityChecks": {
+        "phoneDeviceVisible": true,
+        "heroCardVisible": true,
+        "masterBtnVisible": true,
+        "controlPanelVisible": true
+      },
+      "tabSwitchPassed": true,
+      "screenshot": "tests/screenshots/simulator/laptop-13.png",
+      "status": "PASS"
+    },
+    {
+      "page": "simulator.html",
+      "pageId": "simulator",
+      "profile": "Desktop Standard 15\" (MacBook Pro / 1440p)",
+      "profileId": "desktop-fhd",
+      "category": "Desktop",
+      "viewport": "1440x900",
+      "scrollWidth": 1440,
+      "innerWidth": 1440,
+      "overflowDelta": 0,
+      "hasHorizontalOverflow": false,
+      "overflowingElements": [],
+      "touchTargetIssues": [],
+      "visibilityChecks": {
+        "phoneDeviceVisible": true,
+        "heroCardVisible": true,
+        "masterBtnVisible": true,
+        "controlPanelVisible": true
+      },
+      "tabSwitchPassed": true,
+      "screenshot": "tests/screenshots/simulator/desktop-fhd.png",
+      "status": "PASS"
+    },
+    {
+      "page": "simulator.html",
+      "pageId": "simulator",
+      "profile": "Desktop Wide (1080p Full HD Monitor)",
+      "profileId": "desktop-wide",
+      "category": "Desktop",
+      "viewport": "1920x1080",
+      "scrollWidth": 1920,
+      "innerWidth": 1920,
+      "overflowDelta": 0,
+      "hasHorizontalOverflow": false,
+      "overflowingElements": [],
+      "touchTargetIssues": [],
+      "visibilityChecks": {
+        "phoneDeviceVisible": true,
+        "heroCardVisible": true,
+        "masterBtnVisible": true,
+        "controlPanelVisible": true
+      },
+      "tabSwitchPassed": true,
+      "screenshot": "tests/screenshots/simulator/desktop-wide.png",
+      "status": "PASS"
+    }
+  ]
+}

@@ -5,14 +5,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.Switch;
+import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
+import com.tmm2027.runner.ConicalSteelBadgeView;
 import com.tmm2027.runner.R;
 import java.lang.NullPointerException;
 import java.lang.Override;
@@ -20,55 +22,46 @@ import java.lang.String;
 
 public final class ActivityMainBinding implements ViewBinding {
   @NonNull
-  private final ScrollView rootView;
+  private final FrameLayout rootView;
 
   @NonNull
-  public final Button btnFastTest;
+  public final AppCompatButton btnNextDay;
+
+  @NonNull
+  public final AppCompatButton btnPrevDay;
 
   @NonNull
   public final Button btnStart;
 
   @NonNull
-  public final Button btnSundayTest;
+  public final ConicalSteelBadgeView conicalSteelBadge;
 
   @NonNull
-  public final LinearLayout cardLyric1;
+  public final LinearLayout layoutLyricsContainer;
 
   @NonNull
-  public final LinearLayout cardLyric2;
+  public final LinearLayout layoutTimelineContainer;
 
   @NonNull
-  public final LinearLayout cardLyric3;
+  public final Spinner spinnerCadence;
 
   @NonNull
-  public final LinearLayout cardLyric4;
+  public final TextView tvDayLabel;
 
   @NonNull
-  public final LinearLayout cardLyric5;
+  public final TextView tvHeroDistanceNum;
 
   @NonNull
-  public final Switch switchMetronome;
+  public final TextView tvHeroDistanceUnit;
 
   @NonNull
-  public final TextView tvLyric1;
-
-  @NonNull
-  public final TextView tvLyric2;
-
-  @NonNull
-  public final TextView tvLyric3;
-
-  @NonNull
-  public final TextView tvLyric4;
-
-  @NonNull
-  public final TextView tvLyric5;
-
-  @NonNull
-  public final TextView tvStatus;
+  public final TextView tvLiveCadenceBpm;
 
   @NonNull
   public final TextView tvTargetPace;
+
+  @NonNull
+  public final TextView tvTimelineCount;
 
   @NonNull
   public final TextView tvWeatherAdvisory;
@@ -76,38 +69,35 @@ public final class ActivityMainBinding implements ViewBinding {
   @NonNull
   public final TextView tvWorkoutTitle;
 
-  private ActivityMainBinding(@NonNull ScrollView rootView, @NonNull Button btnFastTest,
-      @NonNull Button btnStart, @NonNull Button btnSundayTest, @NonNull LinearLayout cardLyric1,
-      @NonNull LinearLayout cardLyric2, @NonNull LinearLayout cardLyric3,
-      @NonNull LinearLayout cardLyric4, @NonNull LinearLayout cardLyric5,
-      @NonNull Switch switchMetronome, @NonNull TextView tvLyric1, @NonNull TextView tvLyric2,
-      @NonNull TextView tvLyric3, @NonNull TextView tvLyric4, @NonNull TextView tvLyric5,
-      @NonNull TextView tvStatus, @NonNull TextView tvTargetPace,
+  private ActivityMainBinding(@NonNull FrameLayout rootView, @NonNull AppCompatButton btnNextDay,
+      @NonNull AppCompatButton btnPrevDay, @NonNull Button btnStart,
+      @NonNull ConicalSteelBadgeView conicalSteelBadge, @NonNull LinearLayout layoutLyricsContainer,
+      @NonNull LinearLayout layoutTimelineContainer, @NonNull Spinner spinnerCadence,
+      @NonNull TextView tvDayLabel, @NonNull TextView tvHeroDistanceNum,
+      @NonNull TextView tvHeroDistanceUnit, @NonNull TextView tvLiveCadenceBpm,
+      @NonNull TextView tvTargetPace, @NonNull TextView tvTimelineCount,
       @NonNull TextView tvWeatherAdvisory, @NonNull TextView tvWorkoutTitle) {
     this.rootView = rootView;
-    this.btnFastTest = btnFastTest;
+    this.btnNextDay = btnNextDay;
+    this.btnPrevDay = btnPrevDay;
     this.btnStart = btnStart;
-    this.btnSundayTest = btnSundayTest;
-    this.cardLyric1 = cardLyric1;
-    this.cardLyric2 = cardLyric2;
-    this.cardLyric3 = cardLyric3;
-    this.cardLyric4 = cardLyric4;
-    this.cardLyric5 = cardLyric5;
-    this.switchMetronome = switchMetronome;
-    this.tvLyric1 = tvLyric1;
-    this.tvLyric2 = tvLyric2;
-    this.tvLyric3 = tvLyric3;
-    this.tvLyric4 = tvLyric4;
-    this.tvLyric5 = tvLyric5;
-    this.tvStatus = tvStatus;
+    this.conicalSteelBadge = conicalSteelBadge;
+    this.layoutLyricsContainer = layoutLyricsContainer;
+    this.layoutTimelineContainer = layoutTimelineContainer;
+    this.spinnerCadence = spinnerCadence;
+    this.tvDayLabel = tvDayLabel;
+    this.tvHeroDistanceNum = tvHeroDistanceNum;
+    this.tvHeroDistanceUnit = tvHeroDistanceUnit;
+    this.tvLiveCadenceBpm = tvLiveCadenceBpm;
     this.tvTargetPace = tvTargetPace;
+    this.tvTimelineCount = tvTimelineCount;
     this.tvWeatherAdvisory = tvWeatherAdvisory;
     this.tvWorkoutTitle = tvWorkoutTitle;
   }
 
   @Override
   @NonNull
-  public ScrollView getRoot() {
+  public FrameLayout getRoot() {
     return rootView;
   }
 
@@ -132,9 +122,15 @@ public final class ActivityMainBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
-      id = R.id.btnFastTest;
-      Button btnFastTest = ViewBindings.findChildViewById(rootView, id);
-      if (btnFastTest == null) {
+      id = R.id.btnNextDay;
+      AppCompatButton btnNextDay = ViewBindings.findChildViewById(rootView, id);
+      if (btnNextDay == null) {
+        break missingId;
+      }
+
+      id = R.id.btnPrevDay;
+      AppCompatButton btnPrevDay = ViewBindings.findChildViewById(rootView, id);
+      if (btnPrevDay == null) {
         break missingId;
       }
 
@@ -144,87 +140,63 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.btnSundayTest;
-      Button btnSundayTest = ViewBindings.findChildViewById(rootView, id);
-      if (btnSundayTest == null) {
+      id = R.id.conicalSteelBadge;
+      ConicalSteelBadgeView conicalSteelBadge = ViewBindings.findChildViewById(rootView, id);
+      if (conicalSteelBadge == null) {
         break missingId;
       }
 
-      id = R.id.cardLyric1;
-      LinearLayout cardLyric1 = ViewBindings.findChildViewById(rootView, id);
-      if (cardLyric1 == null) {
+      id = R.id.layoutLyricsContainer;
+      LinearLayout layoutLyricsContainer = ViewBindings.findChildViewById(rootView, id);
+      if (layoutLyricsContainer == null) {
         break missingId;
       }
 
-      id = R.id.cardLyric2;
-      LinearLayout cardLyric2 = ViewBindings.findChildViewById(rootView, id);
-      if (cardLyric2 == null) {
+      id = R.id.layoutTimelineContainer;
+      LinearLayout layoutTimelineContainer = ViewBindings.findChildViewById(rootView, id);
+      if (layoutTimelineContainer == null) {
         break missingId;
       }
 
-      id = R.id.cardLyric3;
-      LinearLayout cardLyric3 = ViewBindings.findChildViewById(rootView, id);
-      if (cardLyric3 == null) {
+      id = R.id.spinnerCadence;
+      Spinner spinnerCadence = ViewBindings.findChildViewById(rootView, id);
+      if (spinnerCadence == null) {
         break missingId;
       }
 
-      id = R.id.cardLyric4;
-      LinearLayout cardLyric4 = ViewBindings.findChildViewById(rootView, id);
-      if (cardLyric4 == null) {
+      id = R.id.tvDayLabel;
+      TextView tvDayLabel = ViewBindings.findChildViewById(rootView, id);
+      if (tvDayLabel == null) {
         break missingId;
       }
 
-      id = R.id.cardLyric5;
-      LinearLayout cardLyric5 = ViewBindings.findChildViewById(rootView, id);
-      if (cardLyric5 == null) {
+      id = R.id.tvHeroDistanceNum;
+      TextView tvHeroDistanceNum = ViewBindings.findChildViewById(rootView, id);
+      if (tvHeroDistanceNum == null) {
         break missingId;
       }
 
-      id = R.id.switchMetronome;
-      Switch switchMetronome = ViewBindings.findChildViewById(rootView, id);
-      if (switchMetronome == null) {
+      id = R.id.tvHeroDistanceUnit;
+      TextView tvHeroDistanceUnit = ViewBindings.findChildViewById(rootView, id);
+      if (tvHeroDistanceUnit == null) {
         break missingId;
       }
 
-      id = R.id.tvLyric1;
-      TextView tvLyric1 = ViewBindings.findChildViewById(rootView, id);
-      if (tvLyric1 == null) {
-        break missingId;
-      }
-
-      id = R.id.tvLyric2;
-      TextView tvLyric2 = ViewBindings.findChildViewById(rootView, id);
-      if (tvLyric2 == null) {
-        break missingId;
-      }
-
-      id = R.id.tvLyric3;
-      TextView tvLyric3 = ViewBindings.findChildViewById(rootView, id);
-      if (tvLyric3 == null) {
-        break missingId;
-      }
-
-      id = R.id.tvLyric4;
-      TextView tvLyric4 = ViewBindings.findChildViewById(rootView, id);
-      if (tvLyric4 == null) {
-        break missingId;
-      }
-
-      id = R.id.tvLyric5;
-      TextView tvLyric5 = ViewBindings.findChildViewById(rootView, id);
-      if (tvLyric5 == null) {
-        break missingId;
-      }
-
-      id = R.id.tvStatus;
-      TextView tvStatus = ViewBindings.findChildViewById(rootView, id);
-      if (tvStatus == null) {
+      id = R.id.tvLiveCadenceBpm;
+      TextView tvLiveCadenceBpm = ViewBindings.findChildViewById(rootView, id);
+      if (tvLiveCadenceBpm == null) {
         break missingId;
       }
 
       id = R.id.tvTargetPace;
       TextView tvTargetPace = ViewBindings.findChildViewById(rootView, id);
       if (tvTargetPace == null) {
+        break missingId;
+      }
+
+      id = R.id.tvTimelineCount;
+      TextView tvTimelineCount = ViewBindings.findChildViewById(rootView, id);
+      if (tvTimelineCount == null) {
         break missingId;
       }
 
@@ -240,10 +212,10 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ActivityMainBinding((ScrollView) rootView, btnFastTest, btnStart, btnSundayTest,
-          cardLyric1, cardLyric2, cardLyric3, cardLyric4, cardLyric5, switchMetronome, tvLyric1,
-          tvLyric2, tvLyric3, tvLyric4, tvLyric5, tvStatus, tvTargetPace, tvWeatherAdvisory,
-          tvWorkoutTitle);
+      return new ActivityMainBinding((FrameLayout) rootView, btnNextDay, btnPrevDay, btnStart,
+          conicalSteelBadge, layoutLyricsContainer, layoutTimelineContainer, spinnerCadence,
+          tvDayLabel, tvHeroDistanceNum, tvHeroDistanceUnit, tvLiveCadenceBpm, tvTargetPace,
+          tvTimelineCount, tvWeatherAdvisory, tvWorkoutTitle);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

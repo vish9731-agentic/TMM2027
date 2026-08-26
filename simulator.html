@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TMM 2027 • Swiss Industrial Live Phone Emulator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-canvas: #0E0E12;
+      --phone-outer: #1E1E24;
+      --card-white: 
+        url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="cardNoise"><feTurbulence type="fractalNoise" baseFrequency="0.95" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23cardNoise)" opacity="0.05"/></svg>'),
+        #FAF8F3;
+      --card-rustic-yellow: #FAF8F3;
+      --card-input: #F2EFE6;
+      --card-pill: #EAE6DA;
+      --ink-black: #111111;
+      --ink-muted: #6B7280;
+      --ink-dim: #9CA3AF;
+      --brand-orange: #F95700;
+      --brand-orange-hover: #E04E00;
+      --border-black: #111111;
+      --border-light: #EBE8DC;
+      --status-emerald: #10B981;
+      --status-crimson: #E11D48;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--ink-black);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2.5rem 1rem;
+      background-image: radial-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    .emulator-workspace {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 3.5rem;
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    /* Phone Device Chassis */
+    .phone-device {
+      width: 400px;
+      height: 840px;
+      background: #FFFFFF;
+      border-radius: 48px;
+      border: 12px solid var(--phone-outer);
+      box-shadow: 
+        0 0 0 2px rgba(0,0,0,0.3),
+        0 25px 60px rgba(0, 0, 0, 0.4),
+        0 4px 12px rgba(0, 0, 0, 0.2);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    /* 35mm Living Film Grain Layer */
+    .film-grain-layer {
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: transparent url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.06"/></svg>') repeat;
+      animation: swissFilmGrain 0.3s steps(6) infinite;
+      pointer-events: none;
+      z-index: 500;
+      opacity: 0.75;
+    }
+
+    @keyframes swissFilmGrain {
+      0% { transform: translate(0, 0); }
+      15% { transform: translate(-5%, -5%); }
+      30% { transform: translate(7%, 3%); }
+      45% { transform: translate(-4%, 6%); }
+      60% { transform: translate(6%, -4%); }
+      75% { transform: translate(-3%, 2%); }
+      90% { transform: translate(4%, 5%); }
+      100% { transform: translate(0, 0); }
+    }
+
+    /* Dynamic Island */
+    .phone-dynamic-island {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 26px;
+      background: #0A0A0E;
+      border-radius: 20px;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+    }
+
+    .island-cam {
+      width: 10px;
+      height: 10px;
+      background: #1f1f2e;
+      border-radius: 50%;
+    }
+
+    .island-sensor {
+      width: 6px;
+      height: 6px;
+      background: #141420;
+      border-radius: 50%;
+    }
+
+    /* Status Bar */
+    .phone-status-bar {
+      height: 48px;
+      padding: 12px 24px 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #111111;
+      z-index: 999;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Screen Scrollable Body */
+    .phone-screen-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 18px 28px 18px;
+      scrollbar-width: none;
+      position: relative;
+      background: #FFFFFF;
+    }
+
+    .phone-screen-content::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* --- SWISS INDUSTRIAL UI MODULES --- */
+    
+    /* 1. Header Box with Conical Brushed Steel */
+    .swiss-header-card {
+      display: grid;
+      grid-template-columns: 1fr 68px;
+      background: var(--card-white);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 2.5px solid var(--border-black);
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 0.75rem;
+    }
+
+    .header-brand-box {
+      padding: 1rem 1.1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .brand-logo {
+      font-size: 1.6rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      color: var(--ink-black);
+      line-height: 1;
+    }
+
+    .brand-dot {
+      color: var(--brand-orange);
+      display: inline-block;
+    }
+
+    .brand-sub {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--ink-muted);
+      margin-top: 0.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Conical Brushed Metal Texture */
+    .brushed-metal-badge {
+      background: conic-gradient(
+        from 0deg,
+        #E4E4E8 0deg,
+        #B8B8C0 60deg,
+        #FAFAFC 120deg,
+        #9E9EA8 180deg,
+        #E4E4E8 240deg,
+        #B0B0B8 300deg,
+        #E4E4E8 360deg
+      );
+      border-left: 2.5px solid var(--border-black);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem;
+      position: relative;
+    }
+
+    .metal-badge-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 900;
+      color: #111111;
+      text-align: center;
+      background: var(--card-input);
+      border: 1.5px solid var(--border-black);
+      border-radius: 6px;
+      padding: 0.15rem 0.35rem;
+    }
+
+    /* 2. Signature Split Hero Card (Hatch + Orange Metric + Main Content) */
+    .swiss-hero-card {
+      display: grid;
+      grid-template-columns: 105px 1fr;
+      background: var(--card-white);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 2.5px solid var(--border-black);
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero-left-column {
+      display: flex;
+      flex-direction: column;
+      border-right: 2.5px solid var(--border-black);
+    }
+
+    /* 45° Diagonal Industrial Hatching Pattern */
+    .hatch-pattern-block {
+      height: 72px;
+      background: repeating-linear-gradient(
+        -45deg,
+        #111111 0px,
+        #111111 3.5px,
+        #FAF8F3 3.5px,
+        #FAF8F3 8.5px
+      );
+      border-bottom: 2.5px solid var(--border-black);
+    }
+
+    /* Solid International Orange Metric Block */
+    .orange-metric-block {
+      flex: 1;
+      background: var(--brand-orange);
+      color: var(--ink-black);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem 0.5rem;
+    }
+
+    .giant-metric-num {
+      font-size: 2.8rem;
+      font-weight: 900;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+    }
+
+    .metric-unit-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      font-weight: 900;
+      margin-top: 0.2rem;
+      letter-spacing: 0.05em;
+    }
+
+    .hero-right-content {
+      padding: 1rem 1.1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* Monospaced Week Day Switcher */
+    .day-switcher-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+      font-weight: 800;
+      color: var(--ink-muted);
+      border-bottom: 1.5px solid rgba(0, 0, 0, 0.08);
+      padding-bottom: 0.6rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .arrow-btn {
+      background: var(--card-input);
+      border: 1.5px solid var(--border-black);
+      border-radius: 6px;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-weight: 900;
+      color: var(--ink-black);
+      transition: background 0.15s ease;
+    }
+
+    .arrow-btn:hover {
+      background: var(--brand-orange);
+      color: #fff;
+    }
+
+    .workout-name {
+      font-size: 1.35rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      color: var(--ink-black);
+      line-height: 1.15;
+    }
+
+    .target-pace-row {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--brand-orange);
+      margin-top: 0.4rem;
+    }
+
+    .workout-subtext {
+      font-size: 0.73rem;
+      color: var(--ink-muted);
+      line-height: 1.35;
+      margin-top: 0.5rem;
+    }
+
+    /* 3. Cadence & GPS Modular Row */
+    .swiss-modular-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .swiss-mini-card {
+      background: var(--card-white);
+      border: 2.5px solid var(--border-black);
+      border-radius: 16px;
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .mini-card-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      font-weight: 800;
+      color: var(--ink-muted);
+      text-transform: uppercase;
+      margin-bottom: 0.35rem;
+    }
+
+    .mini-card-val {
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: var(--ink-black);
+      letter-spacing: -0.02em;
+    }
+
+    .mini-card-sub {
+      font-size: 0.68rem;
+      color: var(--ink-muted);
+      margin-top: 0.2rem;
+    }
+
+    /* Custom Minimal Select */
+    .swiss-select {
+      width: 100%;
+      background: var(--card-input);
+      border: 1.5px solid var(--border-black);
+      border-radius: 8px;
+      padding: 0.45rem 0.55rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--ink-black);
+      outline: none;
+      cursor: pointer;
+      margin-top: 0.3rem;
+    }
+
+    /* 4. Audio Trigger Timeline Box */
+    .swiss-section-card {
+      background: var(--card-white);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 2.5px solid var(--border-black);
+      border-radius: 20px;
+      padding: 1.1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .section-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: var(--ink-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1.5px solid rgba(0, 0, 0, 0.08);
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 24px 1fr auto;
+      gap: 0.6rem;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .timeline-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .timeline-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 900;
+      color: var(--brand-orange);
+    }
+
+    .timeline-title {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--ink-black);
+    }
+
+    .timeline-desc {
+      font-size: 0.7rem;
+      color: var(--ink-muted);
+      margin-top: 0.1rem;
+    }
+
+    .timeline-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      font-weight: 800;
+      background: var(--card-pill);
+      border: 1.5px solid var(--border-black);
+      padding: 0.15rem 0.4rem;
+      border-radius: 6px;
+      color: var(--ink-black);
+    }
+
+    .timeline-tag.orange {
+      background: var(--brand-orange);
+      color: #FFFFFF;
+      border-color: var(--border-black);
+    }
+
+    /* 5. Spoken Audio Lyrics (Swiss Box) */
+    .lyrics-stream-box {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .swiss-lyric-card {
+      background: var(--card-input);
+      border: 1.5px solid #E5E1D5;
+      border-radius: 10px;
+      padding: 0.7rem 0.85rem;
+      transition: all 0.2s ease;
+    }
+
+    .swiss-lyric-card.active {
+      background: #FAF8F3;
+      border: 2px solid var(--border-black);
+      box-shadow: 0 4px 12px rgba(249, 87, 0, 0.12);
+    }
+
+    .lyric-meta-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      font-weight: 800;
+      color: var(--brand-orange);
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .swiss-lyric-card.active .lyric-meta-pill::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: var(--brand-orange);
+      border-radius: 50%;
+    }
+
+    .lyric-body-text {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--ink-muted);
+      line-height: 1.35;
+    }
+
+    .swiss-lyric-card.active .lyric-body-text {
+      color: var(--ink-black);
+      font-weight: 800;
+    }
+
+    /* 6. Master Industrial Action Button */
+    .swiss-master-btn {
+      width: 100%;
+      height: 60px;
+      background: var(--ink-black);
+      color: #FFFFFF;
+      border: 2.5px solid var(--border-black);
+      border-radius: 18px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.92rem;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 0.4rem;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    .swiss-master-btn:hover {
+      background: var(--brand-orange);
+      color: var(--ink-black);
+      transform: translateY(-2px);
+    }
+
+    .swiss-master-btn.active-stop {
+      background: var(--status-crimson);
+      color: #FFFFFF;
+    }
+
+    /* Control Panel (Side Desk) */
+    .control-panel {
+      width: 460px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .panel-card {
+      background: var(--card-white);
+      border: 2.5px solid var(--border-black);
+      border-radius: 24px;
+      padding: 1.6rem;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.06);
+    }
+
+    .panel-title {
+      font-size: 1.2rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      color: var(--ink-black);
+      margin-bottom: 0.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .panel-desc {
+      font-size: 0.84rem;
+      color: var(--ink-muted);
+      line-height: 1.5;
+      margin-bottom: 1.25rem;
+    }
+
+    .preset-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .tool-btn {
+      background: var(--card-input);
+      border: 2px solid var(--border-black);
+      color: var(--ink-black);
+      padding: 0.75rem 0.85rem;
+      border-radius: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .tool-btn:hover, .tool-btn.active {
+      background: var(--brand-orange);
+      color: #FFFFFF;
+      transform: translateY(-2px);
+    }
+
+    .slider-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      border-top: 1.5px solid rgba(0, 0, 0, 0.08);
+      padding-top: 1rem;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    input[type=range] {
+      width: 100%;
+      accent-color: var(--brand-orange);
+    }
+
+    .apk-card {
+      background: var(--brand-orange);
+      border: 2.5px solid var(--border-black);
+      border-radius: 24px;
+      padding: 1.6rem;
+      color: var(--ink-black);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="emulator-workspace">
+    
+    <!-- Real Mobile Phone Emulator -->
+    <div class="phone-device">
+      
+      <!-- Top Dynamic Island -->
+      <div class="phone-dynamic-island">
+        <div class="island-sensor"></div>
+        <div class="island-cam"></div>
+      </div>
+
+      <!-- Native Status Bar -->
+      <div class="phone-status-bar">
+        <span>09:41</span>
+        <span>5G • 100%</span>
+      </div>
+
+      <!-- 35mm Analog Film Grain Layer -->
+      <div class="film-grain-layer"></div>
+
+      <!-- Scrollable App Screen -->
+      <div class="phone-screen-content" id="screenContent">
+        
+        <!-- 1. Header Box with Brushed Metal Badge -->
+        <div class="swiss-header-card">
+          <div class="header-brand-box">
+            <div class="brand-logo">TMM 2027<span class="brand-dot">.</span></div>
+            <div class="brand-sub">Marathon Audio Companion</div>
+          </div>
+          <div class="brushed-metal-badge">
+            <div class="metal-badge-text" id="simWeekBadge">WK 01</div>
+          </div>
+        </div>
+
+        <!-- 2. Signature Split Hero Card (Hatch + Orange Metric + Main Info) -->
+        <div class="swiss-hero-card">
+          
+          <div class="hero-left-column">
+            <!-- 45° Diagonal Industrial Hatch -->
+            <div class="hatch-pattern-block"></div>
+            <!-- Giant Orange Metric -->
+            <div class="orange-metric-block">
+              <div class="giant-metric-num" id="simDistanceNum">7.0</div>
+              <div class="metric-unit-tag" id="simDistanceUnit">KM</div>
+            </div>
+          </div>
+
+          <div class="hero-right-content">
+            <!-- Monospaced Day Carousel -->
+            <div class="day-switcher-row">
+              <button class="arrow-btn" onclick="prevWorkout()">←</button>
+              <span id="simDayLabel">day: SUNDAY (AUG 23)</span>
+              <button class="arrow-btn" onclick="nextWorkout()">→</button>
+            </div>
+
+            <div>
+              <div class="workout-name" id="simWorkoutTitle">Long Run</div>
+              <div class="target-pace-row" id="simTargetPace">Target: 7:35 – 7:45 min/km</div>
+              <div class="workout-subtext" id="simWeatherDesc">
+                RPE 3/10 • Morning 20°C, 93% humidity. Post-run 10-min calf flush.
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 3. Cadence Metronome Modular Card (Full Width) -->
+        <div class="swiss-section-card" style="margin-bottom: 0.75rem; padding: 0.95rem 1.1rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; font-weight: 800; color: var(--ink-muted); text-transform: uppercase;">
+              cadence: metronome
+            </div>
+            <div class="mini-card-val" id="simCadenceVal" style="color: var(--brand-orange); font-size: 1.1rem; font-weight: 900;">
+              170 SPM
+            </div>
+          </div>
+          <select class="swiss-select" id="simCadenceSelect" onchange="onCadenceSelectChange(this.value)">
+            <option value="AUTO" selected>AUTO GOVERNOR</option>
+            <option value="165">165 SPM BASE</option>
+            <option value="168">168 SPM CRUISE</option>
+            <option value="170">170 SPM OPTIMAL</option>
+            <option value="172">172 SPM THRESHOLD</option>
+            <option value="175">175 SPM INTERVAL</option>
+            <option value="OFF">METRONOME OFF</option>
+          </select>
+          <div style="font-size: 0.68rem; color: var(--ink-muted); margin-top: 0.35rem;">
+            In Auto-Pace mode, cadence dynamically shifts if you're slower/faster than goal pace.
+          </div>
+        </div>
+
+        <!-- 4. Audio Trigger Timeline Box -->
+        <div class="swiss-section-card">
+          <div class="section-header-row">
+            <span>audio triggers &amp; splits</span>
+            <span id="simMilestoneCount">5 Milestones</span>
+          </div>
+
+          <div id="simTimelineList">
+            <!-- Dynamic Items -->
+          </div>
+        </div>
+
+        <!-- 5. Spoken Audio Lyrics Box -->
+        <div class="swiss-section-card">
+          <div class="section-header-row">
+            <span>spoken audio stream</span>
+            <span style="color: var(--brand-orange);">LIVE SYNC</span>
+          </div>
+
+          <div class="lyrics-stream-box" id="simLyricsList">
+            <!-- Dynamic Lyrics -->
+          </div>
+        </div>
+
+        <!-- 6. Master Industrial Action Button -->
+        <button class="swiss-master-btn" id="simMasterBtn" onclick="toggleSimulatorRun()">
+          START RUN [GPS + AUDIO] →
+        </button>
+
+      </div>
+    </div>
+
+    <!-- Desktop Test & Control Console -->
+    <div class="control-panel">
+      
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>📐</span> Swiss Industrial Design System
+        </div>
+        <div class="panel-desc">
+          High-contrast architectural layout inspired by Swiss typography, Bauhaus minimalism, and Dieter Rams / Teenage Engineering. Features solid International Orange accents, 45° diagonal industrial hatching, and crisp 2.5px structural borders.
+        </div>
+
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; font-weight: 800; color: var(--ink-muted); text-transform: uppercase; margin-bottom: 0.5rem;">
+          Select Workout Preset (Mon – Sun)
+        </div>
+        <div class="preset-grid">
+          <button class="tool-btn active" id="btn_sun" onclick="applyPreset(0)">Sun: 7.0km Long Run</button>
+          <button class="tool-btn" id="btn_fri" onclick="applyPreset(5)">Fri: 6.0km Intervals</button>
+          <button class="tool-btn" id="btn_wed" onclick="applyPreset(3)">Wed: 5.0km Base Run</button>
+          <button class="tool-btn" id="btn_tue" onclick="applyPreset(2)">Tue: Strength Prehab</button>
+        </div>
+
+        <!-- Live Pace Governor Slider -->
+        <div class="slider-row">
+          <div class="slider-header">
+            <span>SIMULATE GPS ROLLING PACE</span>
+            <span id="sliderPaceVal" style="color: var(--brand-orange);">7:40 MIN/KM</span>
+          </div>
+          <input type="range" id="paceSlider" min="300" max="600" value="460" oninput="onPaceSliderChange(this.value)">
+          <div style="display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--ink-muted); margin-top: 0.2rem;">
+            <span>FAST (5:00)</span>
+            <span>TARGET (7:35)</span>
+            <span>SLOW (10:00)</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- APK Download Quick Access -->
+      <div class="apk-card">
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.08em;">
+          ANDROID COMPANION BUILD
+        </div>
+        <div style="font-size: 1.35rem; font-weight: 900; letter-spacing: -0.02em; margin-top: 0.2rem;">
+          TMM2027_Audio_Coach.apk
+        </div>
+        <div style="font-size: 0.82rem; font-weight: 600; margin-top: 0.4rem; line-height: 1.4;">
+          Features 10% YouTube Music background ducking, live GPS pace smoother, and 45-minute compulsory salt capsule alarms.
+        </div>
+        <div style="margin-top: 1.1rem;">
+          <a href="TMM2027_Audio_Coach.apk" download style="display: inline-block; background: #111111; color: #FFFFFF; font-family: 'JetBrains Mono', monospace; font-weight: 900; font-size: 0.85rem; padding: 0.8rem 1.4rem; border-radius: 12px; text-decoration: none; border: 2px solid #111111;">
+            ⬇️ DOWNLOAD APK (6.9 MB)
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    const workoutList = [
+      {
+        dayLabel: "day: SUNDAY (AUG 23)",
+        distNum: "7.0",
+        distUnit: "KM",
+        title: "Long Run",
+        targetPace: "Target: 7:35 – 7:45 min/km",
+        desc: "RPE 3/10 • Morning 20°C, 93% humidity. Post-run 10-min calf flush.",
+        timeline: [
+          { num: "01", title: "0.0 KM • Session Kickoff", tag: "10% DUCKING", orange: false, desc: "Opening briefing & target pace 7:35-7:45 min/km." },
+          { num: "02", title: "1.0 KM • Split Rhythm Check", tag: "SPLIT", orange: false, desc: "Float into rhythm. Do not start too fast." },
+          { num: "03", title: "45:00 MIN • Anti-Cramp Salt", tag: "COMPULSORY", orange: true, desc: "Take 1 Salt Capsule now with 150ml water to protect calves." },
+          { num: "04", title: "5.0 KM • Form & Posture", tag: "SPLIT", orange: false, desc: "Relax neck & shoulders, breathe into belly." },
+          { num: "05", title: "7.0 KM • Finish & Prehab", tag: "COMPLETE", orange: true, desc: "Take 500ml electrolyte water & begin 10-min calf flush." }
+        ],
+        lyrics: [
+          { meta: "00:02 • START", text: "Welcome to your Sunday Long Run! Today's session is 7 kilometers. Target pace is 7:35 to 7:45 min/km with an RPE of 3." },
+          { meta: "1.0 KM • SPLIT", text: "Kilometer 1 reached. Gently float into your rhythm. Do not start too fast." },
+          { meta: "45:00 MIN • FUEL", text: "45 minutes elapsed. Take 1 Salt Capsule now with 150 ml water to protect your calves from cramping." },
+          { meta: "5.0 KM • CHECK", text: "Kilometer 5 reached. Check your posture, relax your shoulders, and keep your cadence smooth." },
+          { meta: "7.0 KM • FINISH", text: "Workout complete! Fantastic work on completing today's 7km long run. Take 500 ml electrolyte water and perform your 10-minute calf flush." }
+        ]
+      },
+      {
+        dayLabel: "day: MONDAY (AUG 17)",
+        distNum: "5.0",
+        distUnit: "KM",
+        title: "Kickoff Easy Run",
+        targetPace: "Target: 7:20 – 7:35 min/km",
+        desc: "RPE 3/10 • Week 1 opening aerobic run. Smooth rhythm lock.",
+        timeline: [
+          { num: "01", title: "0.0 KM • Session Kickoff", tag: "10% DUCKING", orange: false, desc: "Settle into an easy conversational rhythm." },
+          { num: "02", title: "1.0 KM • Cadence Check", tag: "SPLIT", orange: false, desc: "Lock into 168-170 SPM." },
+          { num: "03", title: "5.0 KM • Finish", tag: "COMPLETE", orange: true, desc: "5km completed. Hydrate and stretch." }
+        ],
+        lyrics: [
+          { meta: "00:02 • START", text: "Starting Week 1 Kickoff Easy Run. 5 kilometers at 7:20 to 7:35 min/km." },
+          { meta: "1.0 KM • SPLIT", text: "Kilometer 1 reached. Keep foot strikes light and smooth." },
+          { meta: "5.0 KM • FINISH", text: "Workout complete! Great job on your 5km kickoff run." }
+        ]
+      },
+      {
+        dayLabel: "day: TUESDAY (AUG 18)",
+        distNum: "STR",
+        distUnit: "GYM",
+        title: "Strength & Prehab",
+        targetPace: "Target: Non-Running Day (RPE 5/10)",
+        desc: "Eccentric calf heel drops (3x15), seated soleus raises, glute bridges.",
+        timeline: [
+          { num: "01", title: "Calf Armor Protocol", tag: "STRENGTH", orange: true, desc: "Eccentric heel drops (3x15) and seated soleus raises." },
+          { num: "02", title: "Posterior Chain & Core", tag: "STRENGTH", orange: false, desc: "Glute bridges, split squats, tibialis raises." }
+        ],
+        lyrics: [
+          { meta: "00:00 • BRIEFING", text: "Today is Strength Day. Focus on single-leg calf raises, eccentric heel drops, and core stability for lower back endurance." }
+        ]
+      },
+      {
+        dayLabel: "day: WEDNESDAY (AUG 19)",
+        distNum: "5.0",
+        distUnit: "KM",
+        title: "Aerobic Base Run",
+        targetPace: "Target: 7:20 – 7:35 min/km",
+        desc: "RPE 3/10 • Cruising aerobic base miles. Time on feet.",
+        timeline: [
+          { num: "01", title: "0.0 KM • Session Kickoff", tag: "10% DUCKING", orange: false, desc: "Smooth aerobic cruising pace." },
+          { num: "02", title: "3.0 KM • Midpoint Check", tag: "SPLIT", orange: false, desc: "Cadence lock at 170 SPM." },
+          { num: "03", title: "5.0 KM • Finish", tag: "COMPLETE", orange: true, desc: "5km finished. Hydrate with electrolytes." }
+        ],
+        lyrics: [
+          { meta: "00:02 • START", text: "Starting Aerobic Base Run of 5 kilometers. Target pace is 7:20 to 7:35 min/km." },
+          { meta: "3.0 KM • CHECK", text: "Kilometer 3 reached. Smooth aerobic cruising rhythm." },
+          { meta: "5.0 KM • FINISH", text: "Workout complete! Fantastic work on today's session." }
+        ]
+      },
+      {
+        dayLabel: "day: THURSDAY (AUG 20)",
+        distNum: "OFF",
+        distUnit: "REST",
+        title: "Scheduled Rest Day",
+        targetPace: "Target: Full Recovery (RPE 1/10)",
+        desc: "Hydrate with 2.5L water, light foam rolling, glycogen recovery.",
+        timeline: [
+          { num: "01", title: "Recovery Protocol", tag: "REST", orange: false, desc: "Muscle repair & soft tissue recovery." }
+        ],
+        lyrics: [
+          { meta: "00:00 • REST", text: "Today is a scheduled Rest Day. Hydrate well, foam roll, and allow glycogen synthesis." }
+        ]
+      },
+      {
+        dayLabel: "day: FRIDAY (AUG 21)",
+        distNum: "6.0",
+        distUnit: "KM",
+        title: "Speed Intervals",
+        targetPace: "Target: 5:45 min/km (RPE 8/10)",
+        desc: "6x (1-Min Hard / 30s Walk) • VO2 max speed development.",
+        timeline: [
+          { num: "01", title: "0.0 KM • Warmup (10 Min)", tag: "10% DUCKING", orange: false, desc: "10-minute easy jog warmup at RPE 3." },
+          { num: "02", title: "Interval 1 Pre-Cue", tag: "COUNTDOWN", orange: true, desc: "1 minute hard effort starts in 5 seconds." },
+          { num: "03", title: "Interval 1 GO!", tag: "GO", orange: true, desc: "Push to 5:45 min/km." },
+          { num: "04", title: "Recovery 1", tag: "REST", orange: false, desc: "30 seconds easy walk or slow jog." },
+          { num: "05", title: "Cooldown & Complete", tag: "COMPLETE", orange: true, desc: "10 minutes easy cooldown jog." }
+        ],
+        lyrics: [
+          { meta: "00:00 • WARMUP", text: "Starting Speed Intervals workout. Begin with a 10-minute easy jog warmup." },
+          { meta: "10:00 • PRE-CUE", text: "Get ready: Interval 1 of 6. 1 minute hard effort. Target pace 5:45 min/km, RPE 8." },
+          { meta: "10:05 • GO", text: "GO! Push to 5:45 min/km." },
+          { meta: "11:05 • REST", text: "Rest for 30 seconds. Catch your breath, RPE 2." },
+          { meta: "25:00 • FINISH", text: "Workout complete! Fantastic effort on today's intervals." }
+        ]
+      },
+      {
+        dayLabel: "day: SATURDAY (AUG 22)",
+        distNum: "OFF",
+        distUnit: "REST",
+        title: "Rest & Long Run Prep",
+        targetPace: "Target: Pre-Long Run Rest",
+        desc: "Prepare hydration pack, salt capsules, and electrolyte bottles.",
+        timeline: [
+          { num: "01", title: "Long Run Prep", tag: "PREP", orange: false, desc: "Pack 1 salt capsule & 500ml water bottle." }
+        ],
+        lyrics: [
+          { meta: "00:00 • PREP", text: "Rest today before tomorrow's 7km Sunday Long Run. Prepare your salt capsules and hydration." }
+        ]
+      }
+    ];
+
+    let currentIdx = 0;
+    let isRunning = false;
+    let runTimer = null;
+    let activeLyricIdx = 0;
+
+    function renderUI() {
+      const wo = workoutList[currentIdx];
+      document.getElementById('simDayLabel').textContent = wo.dayLabel;
+      document.getElementById('simDistanceNum').textContent = wo.distNum;
+      document.getElementById('simDistanceUnit').textContent = wo.distUnit;
+      document.getElementById('simWorkoutTitle').textContent = wo.title;
+      document.getElementById('simTargetPace').textContent = wo.targetPace;
+      document.getElementById('simWeatherDesc').textContent = wo.desc;
+      document.getElementById('simMilestoneCount').textContent = `${wo.timeline.length} Milestones`;
+
+      // Timeline
+      const tl = document.getElementById('simTimelineList');
+      tl.innerHTML = '';
+      wo.timeline.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'timeline-item';
+        row.innerHTML = `
+          <div class="timeline-num">${item.num}</div>
+          <div>
+            <div class="timeline-title">${item.title}</div>
+            <div class="timeline-desc">${item.desc}</div>
+          </div>
+          <div class="timeline-tag ${item.orange ? 'orange' : ''}">${item.tag}</div>
+        `;
+        tl.appendChild(row);
+      });
+
+      // Lyrics
+      const ly = document.getElementById('simLyricsList');
+      ly.innerHTML = '';
+      wo.lyrics.forEach((item, idx) => {
+        const card = document.createElement('div');
+        card.className = `swiss-lyric-card ${idx === activeLyricIdx ? 'active' : ''}`;
+        card.id = `swissLyric_${idx}`;
+        card.innerHTML = `
+          <div class="lyric-meta-pill">${item.meta}</div>
+          <div class="lyric-body-text">"${item.text}"</div>
+        `;
+        ly.appendChild(card);
+      });
+    }
+
+    function prevWorkout() {
+      currentIdx = (currentIdx - 1 + workoutList.length) % workoutList.length;
+      activeLyricIdx = 0;
+      renderUI();
+    }
+
+    function nextWorkout() {
+      currentIdx = (currentIdx + 1) % workoutList.length;
+      activeLyricIdx = 0;
+      renderUI();
+    }
+
+    function applyPreset(idx) {
+      currentIdx = idx;
+      activeLyricIdx = 0;
+      renderUI();
+    }
+
+    function onCadenceSelectChange(val) {
+      const cadLabel = document.getElementById('simCadenceVal');
+      if (val === 'AUTO') {
+        cadLabel.textContent = '170 SPM';
+        cadLabel.style.color = 'var(--brand-orange)';
+      } else if (val === 'OFF') {
+        cadLabel.textContent = 'OFF';
+        cadLabel.style.color = 'var(--ink-muted)';
+      } else {
+        cadLabel.textContent = `${val} SPM`;
+        cadLabel.style.color = 'var(--ink-black)';
+      }
+    }
+
+    function onPaceSliderChange(val) {
+      const paceSec = parseInt(val);
+      const mins = Math.floor(paceSec / 60);
+      const secs = paceSec % 60;
+      const formatted = `${mins}:${secs < 10 ? '0' : ''}${secs} MIN/KM`;
+      
+      const paceLabel = document.getElementById('sliderPaceVal');
+      const cadLabel = document.getElementById('simCadenceVal');
+
+      if (paceSec > 475) {
+        paceLabel.textContent = `${formatted} (SLOW)`;
+        paceLabel.style.color = '#ef4444';
+        if (document.getElementById('simCadenceSelect').value === 'AUTO') {
+          cadLabel.textContent = '174 SPM (+4)';
+        }
+      } else if (paceSec < 435) {
+        paceLabel.textContent = `${formatted} (FAST)`;
+        paceLabel.style.color = '#38bdf8';
+        if (document.getElementById('simCadenceSelect').value === 'AUTO') {
+          cadLabel.textContent = '166 SPM (-4)';
+        }
+      } else {
+        paceLabel.textContent = `${formatted} (TARGET)`;
+        paceLabel.style.color = 'var(--brand-orange)';
+        if (document.getElementById('simCadenceSelect').value === 'AUTO') {
+          cadLabel.textContent = '170 SPM';
+        }
+      }
+    }
+
+    function toggleSimulatorRun() {
+      const btn = document.getElementById('simMasterBtn');
+      isRunning = !isRunning;
+
+      if (isRunning) {
+        btn.textContent = 'STOP WORKOUT [X]';
+        btn.className = 'swiss-master-btn active-stop';
+
+        activeLyricIdx = 0;
+        renderUI();
+
+        const wo = workoutList[currentIdx];
+        runTimer = setInterval(() => {
+          activeLyricIdx = (activeLyricIdx + 1) % wo.lyrics.length;
+          renderUI();
+          const activeCard = document.getElementById(`swissLyric_${activeLyricIdx}`);
+          if (activeCard) {
+            activeCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 3200);
+      } else {
+        btn.textContent = 'START RUN [GPS + AUDIO] →';
+        btn.className = 'swiss-master-btn';
+        if (runTimer) clearInterval(runTimer);
+        runTimer = null;
+        activeLyricIdx = 0;
+        renderUI();
+      }
+    }
+
+    // Initialize
+    renderUI();
+  </script>
+
+</body>
+</html>

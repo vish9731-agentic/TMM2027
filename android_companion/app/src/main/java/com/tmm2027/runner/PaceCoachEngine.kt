@@ -4,32 +4,44 @@ import android.location.Location
 import android.util.Log
 
 /**
- * Real-Time Rolling GPS Pace Monitor & Anti-Nagging Dynamic Coach.
- * Compares current 20-second moving pace against target pace zone.
+ * High-Precision Rolling GPS Pace Engine & Smart Auto-Cadence Governor.
+ *
+ * Implements Strava/NRC grade distance-delta smoothing with accuracy filtering
+ * and outlier rejection to eliminate the "consistently slow" pocket-lag artifact.
  */
 class PaceCoachEngine(
     private val audioCueManager: AudioCueManager
 ) {
-    private val recentSpeedSamples = mutableListOf<Float>()
-    private var lastPaceAlertTimestamp = 0L
-    private val alertCooldownMs = 60_000L // 60s cooldown to prevent nagging
+    var cadenceMetronome: CadenceMetronome? = null
 
-    var minTargetPaceSecKm: Int = 440 // 7:20 min/km in seconds
-    var maxTargetPaceSecKm: Int = 455 // 7:35 min/km in seconds
+    // Target Pace Zone (in seconds per km)
+    var minTargetPaceSecKm: Int = 440 // 7:20 min/km default
+    var maxTargetPaceSecKm: Int = 455 // 7:35 min/km default
+
+    private var lastValidLocation: Location? = null
+    private val recentSpeedEstimates = mutableListOf<Float>() // m/s
+    private var lastAlertTimestamp = 0L
+    private val alertCooldownMs = 60_000L // 60s anti-nagging cooldown
+
+    private var paceFormattedString: String = "--:--"
+    var currentSmoothedSpeedMs: Float = 0.0f
+        private set
+    var gpsAccuracyMeters: Float = 0.0f
+        private set
 
     fun setTargetPace(paceStr: String) {
         try {
-            // e.g. "7:20 - 7:35 min/km" or "5:45 - 6:00 min/km"
+            // e.g. "7:35 - 7:45 min/km" or "5:45 - 6:00 min/km"
             val parts = paceStr.split("-").map { it.replace("min/km", "").trim() }
             if (parts.isNotEmpty()) {
                 val minP = parsePaceToSeconds(parts[0])
                 val maxP = if (parts.size > 1) parsePaceToSeconds(parts[1]) else minP + 15
                 minTargetPaceSecKm = minOf(minP, maxP)
                 maxTargetPaceSecKm = maxOf(minP, maxP)
-                Log.d("PaceCoachEngine", "Set target pace zone: $minTargetPaceSecKm to $maxTargetPaceSecKm sec/km")
+                Log.d("PaceCoachEngine", "Set target pace zone: $minTargetPaceSecKm - $maxTargetPaceSecKm sec/km ($paceStr)")
             }
         } catch (e: Exception) {
-            Log.w("PaceCoachEngine", "Could not parse pace: $paceStr")
+            Log.w("PaceCoachEngine", "Could not parse target pace: $paceStr")
         }
     }
 
@@ -40,65 +52,111 @@ class PaceCoachEngine(
         return mins * 60 + secs
     }
 
+    /**
+     * High-precision location processor matching Strava / NRC smoothing.
+     */
     fun onLocationUpdate(location: Location) {
-        if (location.hasSpeed() && location.speed > 0.5f) {
-            recentSpeedSamples.add(location.speed)
-            if (recentSpeedSamples.size > 20) {
-                recentSpeedSamples.removeAt(0)
+        gpsAccuracyMeters = location.accuracy
+
+        // 1. Discard low-accuracy fixes (> 14m) to prevent erratic pace spikes
+        if (location.hasAccuracy() && location.accuracy > 14.0f) {
+            Log.d("PaceCoachEngine", "Skipping low accuracy fix: ±${location.accuracy}m")
+            return
+        }
+
+        var calculatedSpeedMs = 0f
+
+        // 2. High-Precision Distance-Delta Speed Calculation
+        if (lastValidLocation != null) {
+            val deltaDistM = lastValidLocation!!.distanceTo(location)
+            val deltaTimeS = (location.time - lastValidLocation!!.time) / 1000.0f
+
+            if (deltaTimeS in 0.5f..5.0f && deltaDistM > 0.3f) {
+                val computedSpeed = deltaDistM / deltaTimeS
+                // Cap realistic human running speed (max 8.5 m/s = 2:00 min/km)
+                if (computedSpeed in 0.5f..8.5f) {
+                    calculatedSpeedMs = computedSpeed
+                }
+            }
+        }
+
+        // 3. Fallback to hardware Doppler speed if delta-time is fresh and valid
+        if (calculatedSpeedMs <= 0.5f && location.hasSpeed() && location.speed > 0.5f) {
+            calculatedSpeedMs = location.speed
+        }
+
+        lastValidLocation = location
+
+        if (calculatedSpeedMs > 0.5f) {
+            recentSpeedEstimates.add(calculatedSpeedMs)
+            // Maintain 15-second rolling sliding window
+            if (recentSpeedEstimates.size > 15) {
+                recentSpeedEstimates.removeAt(0)
             }
 
-            checkPaceThresholds()
+            // Exponential Weighted Moving Average (EWMA) with median smoothing
+            val sorted = recentSpeedEstimates.sorted()
+            val medianSpeed = sorted[sorted.size / 2]
+            
+            // 70% weight on median, 30% on latest speed
+            currentSmoothedSpeedMs = (medianSpeed * 0.70f) + (calculatedSpeedMs * 0.30f)
+
+            val paceSecKm = (1000.0f / currentSmoothedSpeedMs).toInt()
+            val mins = paceSecKm / 60
+            val secs = paceSecKm % 60
+            paceFormattedString = String.format("%d:%02d", mins, secs)
+
+            checkPaceAndAutoGovernCadence(paceSecKm)
         }
     }
 
-    private fun checkPaceThresholds() {
+    private fun checkPaceAndAutoGovernCadence(currentPaceSecKm: Int) {
         val now = System.currentTimeMillis()
-        if (now - lastPaceAlertTimestamp < alertCooldownMs) return
-        if (recentSpeedSamples.size < 5) return
+        if (now - lastAlertTimestamp < alertCooldownMs) return
+        if (recentSpeedEstimates.size < 6) return // Wait for 6s steady samples
 
-        // Calculate average speed in m/s
-        val avgSpeed = recentSpeedSamples.average().toFloat()
-        if (avgSpeed <= 0.8f) return // Below 3 km/h (walking/stopped)
+        val targetMid = (minTargetPaceSecKm + maxTargetPaceSecKm) / 2
+        val delta = currentPaceSecKm - targetMid
 
-        // Convert speed (m/s) to Pace (seconds per km)
-        val currentPaceSecKm = (1000f / avgSpeed).toInt()
-        val currentPaceFormatted = formatPace(currentPaceSecKm)
+        // Running Too Slow (15+ seconds slower than max target zone)
+        if (currentPaceSecKm > maxTargetPaceSecKm + 15) {
+            lastAlertTimestamp = now
+            val currentFormatted = paceFormattedString
+            val targetFormatted = String.format("%d:%02d", maxTargetPaceSecKm / 60, maxTargetPaceSecKm % 60)
 
-        // Tolerance buffer: +/- 15 sec/km
-        val fastThreshold = minTargetPaceSecKm - 15
-        val slowThreshold = maxTargetPaceSecKm + 15
+            // Auto-Cadence Adjustment: +3 SPM to pick up step rate
+            val newBpm = cadenceMetronome?.adjustCadenceForPace(+3)
 
-        if (currentPaceSecKm < fastThreshold) {
-            // Running too fast
-            lastPaceAlertTimestamp = now
-            val targetFormatted = formatPace(minTargetPaceSecKm)
-            Log.d("PaceCoachEngine", "Pace Alert: Too Fast ($currentPaceFormatted vs target $targetFormatted)")
-            audioCueManager.playDirectCue("Pace check: You are running $currentPaceFormatted. Ease off and slow down to $targetFormatted to save your energy.")
-        } else if (currentPaceSecKm > slowThreshold) {
-            // Running too slow
-            lastPaceAlertTimestamp = now
-            val targetFormatted = formatPace(maxTargetPaceSecKm)
-            Log.d("PaceCoachEngine", "Pace Alert: Too Slow ($currentPaceFormatted vs target $targetFormatted)")
-            audioCueManager.playDirectCue("Pace check: Running $currentPaceFormatted. Pick up your cadence to reach $targetFormatted.")
+            if (newBpm != null && cadenceMetronome?.currentMode == CadenceMetronome.Mode.AUTO_PACE_SYNC) {
+                audioCueManager.playDirectCue(
+                    "Pace is $currentFormatted, target is $targetFormatted. Picking up cadence to $newBpm steps per minute to hit target pace."
+                )
+            } else {
+                audioCueManager.playDirectCue(
+                    "Pace is $currentFormatted min per km. Target is $targetFormatted. Pick up the cadence slightly."
+                )
+            }
+        }
+        // Running Too Fast (15+ seconds faster than min target zone on easy/long runs)
+        else if (currentPaceSecKm < minTargetPaceSecKm - 15) {
+            lastAlertTimestamp = now
+            val currentFormatted = paceFormattedString
+            val targetFormatted = String.format("%d:%02d", minTargetPaceSecKm / 60, minTargetPaceSecKm % 60)
+
+            // Auto-Cadence Adjustment: -3 SPM to relax step rate
+            val newBpm = cadenceMetronome?.adjustCadenceForPace(-3)
+
+            if (newBpm != null && cadenceMetronome?.currentMode == CadenceMetronome.Mode.AUTO_PACE_SYNC) {
+                audioCueManager.playDirectCue(
+                    "Pacing fast at $currentFormatted min per km. Easing cadence to $newBpm steps per minute. Relax your stride."
+                )
+            } else {
+                audioCueManager.playDirectCue(
+                    "Pace is $currentFormatted min per km. Target is $targetFormatted. Settle back into an easy rhythm."
+                )
+            }
         }
     }
 
-    fun getCurrentPaceFormatted(): String {
-        if (recentSpeedSamples.isEmpty()) return "--:--"
-        val avgSpeed = recentSpeedSamples.average().toFloat()
-        if (avgSpeed <= 0.5f) return "--:--"
-        val secKm = (1000f / avgSpeed).toInt()
-        return formatPace(secKm)
-    }
-
-    private fun formatPace(secKm: Int): String {
-        val m = secKm / 60
-        val s = secKm % 60
-        return String.format("%d:%02d min/km", m, s)
-    }
-
-    fun reset() {
-        recentSpeedSamples.clear()
-        lastPaceAlertTimestamp = 0L
-    }
+    fun getCurrentPaceFormatted(): String = paceFormattedString
 }

@@ -1,5 +1,6 @@
 package com.tmm2027.runner
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -25,16 +26,17 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import java.io.File
 
 /**
- * Android Foreground Service managing the active workout run:
- * - Keeps CPU awake via WakeLock
- * - Streams GPS data in background
- * - Orchestrates YouTube Music 10% audio ducking & 5-4-3-2-1 countdowns
- * - Handles distance & time triggers + compulsory fueling
+ * Production Android Foreground Service for marathon audio coaching.
+ * Manages 10% YouTube Music audio ducking, zero-latency countdowns, GPS pace smoothing,
+ * and compulsory fueling alarms with screen off / phone in pocket.
  */
-class WorkoutAudioService : Service(), EarbudMediaReceiver.Companion.EarbudButtonListener {
+class WorkoutAudioService : Service() {
+
+    inner class LocalBinder : Binder() {
+        fun getService(): WorkoutAudioService = this@WorkoutAudioService
+    }
 
     private val binder = LocalBinder()
     private val handler = Handler(Looper.getMainLooper())
@@ -48,44 +50,34 @@ class WorkoutAudioService : Service(), EarbudMediaReceiver.Companion.EarbudButto
     private var isRunning = false
     private var isPaused = false
 
-    private var startTimeMs = 0L
-    private var elapsedSeconds = 0
-    private var totalDistanceMeters = 0.0
+    private var startTimeMs: Long = 0
+    private var elapsedSeconds: Long = 0
     private var lastLocation: Location? = null
-
-    private var lastSpokenCue = "Workout Started"
-    private var activeTimeline = mutableListOf<AudioEvent>()
-    private val triggeredEventIds = mutableSetOf<String>()
+    private var totalDistanceMeters: Double = 0.0
 
     data class AudioEvent(
         val id: String,
         val type: String,
         val triggerType: String,
-        val triggerSeconds: Int? = null,
-        val triggerDistanceKm: Double? = null,
+        val triggerSeconds: Int?,
+        val triggerDistanceKm: Double?,
         val title: String,
         val text: String,
-        val duckMusicSeconds: Double = 1.5,
-        val hasCountdown: Boolean = false,
+        val duckMusicSeconds: Double,
+        val hasCountdown: Boolean,
         val countdownStartSecond: Int? = null
     )
 
-    inner class LocalBinder : Binder() {
-        fun getService(): WorkoutAudioService = this@WorkoutAudioService
-    }
-
-    override fun onBind(intent: Intent?): IBinder = binder
+    private val activeTimeline = mutableListOf<AudioEvent>()
+    private val triggeredEventIds = mutableSetOf<String>()
 
     override fun onCreate() {
         super.onCreate()
-        Log.d("WorkoutAudioService", "Creating WorkoutAudioService...")
-
         audioCueManager = AudioCueManager(this)
         paceCoachEngine = PaceCoachEngine(audioCueManager)
         cadenceMetronome = CadenceMetronome(audioCueManager)
+        paceCoachEngine.cadenceMetronome = cadenceMetronome
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
-        EarbudMediaReceiver.listener = this
 
         val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "TMM2027::RunningServiceWakeLock")
@@ -128,7 +120,7 @@ class WorkoutAudioService : Service(), EarbudMediaReceiver.Companion.EarbudButto
             .build()
     }
 
-    fun startWorkout(manifestJsonStr: String? = null, testMode: String = "NONE") {
+    fun startWorkout(manifestJsonStr: String? = null) {
         if (isRunning) return
         isRunning = true
         isPaused = false
@@ -137,42 +129,17 @@ class WorkoutAudioService : Service(), EarbudMediaReceiver.Companion.EarbudButto
         totalDistanceMeters = 0.0
         triggeredEventIds.clear()
 
-        loadManifest(manifestJsonStr, testMode)
+        loadManifest(manifestJsonStr)
 
         startForeground(NOTIFICATION_ID, buildNotification("Starting Workout..."))
         startLocationUpdates()
 
-        if (testMode == "NONE") {
-            audioCueManager.playDirectCue("Starting workout. YouTube music will duck automatically during cues. Enjoy your run!")
-        }
+        audioCueManager.playDirectCue("Starting workout. YouTube music will duck automatically during cues. Enjoy your run!")
         handler.post(tickerRunnable)
     }
 
-    private fun loadManifest(manifestJsonStr: String?, testMode: String) {
+    private fun loadManifest(manifestJsonStr: String?) {
         activeTimeline.clear()
-
-        if (testMode == "SUNDAY_7KM") {
-            Log.d("WorkoutAudioService", "Loading Sunday 7km Fast Preview Timeline")
-            activeTimeline.add(AudioEvent("sun_start", "START", "TIME", 2, null, "🚀 Sunday Long Run Started", "Welcome to your Sunday Long Run! Today's session is 7 kilometers. Target pace is 7:35 to 7:45 min/km with an RPE of 3. Morning temperature is 20°C with 93% humidity.", 1.5, false))
-            activeTimeline.add(AudioEvent("sun_km1", "SPLIT", "TIME", 15, null, "📍 Kilometer 1 Split", "Kilometer 1 reached. Gently float into your rhythm. Do not start too fast.", 1.5, false))
-            activeTimeline.add(AudioEvent("sun_fuel", "FUELING", "TIME", 25, null, "💧 Salt Capsule Alert (45m)", "45 minutes elapsed. Take 1 Salt Capsule now with 150 ml water to protect your calves from cramping.", 1.5, false))
-            activeTimeline.add(AudioEvent("sun_km5", "SPLIT", "TIME", 38, null, "📍 Kilometer 5 Check", "Kilometer 5 reached. Check your posture, relax your shoulders, and keep your cadence smooth.", 1.5, false))
-            activeTimeline.add(AudioEvent("sun_complete", "COMPLETE", "TIME", 50, null, "🏆 7km Workout Complete", "Workout complete! Fantastic work on completing today's 7km long run. Take 500 ml electrolyte water and perform your 10-minute calf and quad flush.", 1.5, false))
-            return
-        }
-
-        if (testMode == "FAST_INTERVALS") {
-            // Fast 60-Second Simulator Mode for testing ducking, intervals and countdowns
-            Log.d("WorkoutAudioService", "Loading 60-Second Fast Simulator Timeline")
-            activeTimeline.add(AudioEvent("fast_start", "START", "TIME", 0, null, "🚀 Start Run", "Starting fast interval test.", 1.5, false))
-            activeTimeline.add(AudioEvent("fast_int_pre", "INTERVAL_PRE_CUE", "TIME", 8, null, "🔥 Interval 1 (Pre-Cue)", "1 minute hard effort starts in 5 seconds. Target pace 5:45.", 1.5, true, 10))
-            activeTimeline.add(AudioEvent("fast_int_start", "INTERVAL_START", "TIME", 15, null, "⚡ Interval 1 Started", "GO! Push the pace.", 0.5, false))
-            activeTimeline.add(AudioEvent("fast_fuel", "FUELING", "TIME", 30, null, "💧 Fueling Alert", "Fueling check: take 1 salt capsule with water.", 1.5, false))
-            activeTimeline.add(AudioEvent("fast_rest_pre", "REST_PRE_CUE", "TIME", 40, null, "🧘 Rest (Pre-Cue)", "Rest in 5 seconds. 30 seconds easy walk.", 1.5, true, 42))
-            activeTimeline.add(AudioEvent("fast_rest_start", "REST_START", "TIME", 47, null, "🧘 Rest Started", "Rest and recover.", 1.0, false))
-            activeTimeline.add(AudioEvent("fast_complete", "COMPLETE", "TIME", 58, null, "🏆 Test Complete", "60-second test completed successfully!", 1.5, false))
-            return
-        }
 
         if (!manifestJsonStr.isNullOrEmpty()) {
             try {
@@ -181,6 +148,11 @@ class WorkoutAudioService : Service(), EarbudMediaReceiver.Companion.EarbudButto
                 val map: Map<String, Any> = gson.fromJson(manifestJsonStr, mapType)
                 val timelineList = map["timeline"] as? List<Map<String, Any>>
                 
+                val targetPace = map["targetPace"] as? String
+                if (!targetPace.isNullOrEmpty()) {
+                    paceCoachEngine.setTargetPace(targetPace)
+                }
+
                 timelineList?.forEach { item ->
                     activeTimeline.add(
                         AudioEvent(
@@ -211,7 +183,7 @@ class WorkoutAudioService : Service(), EarbudMediaReceiver.Companion.EarbudButto
             checkTriggers()
 
             // Update Notification every 5 seconds
-            if (elapsedSeconds % 5 == 0) {
+            if (elapsedSeconds % 5 == 0L) {
                 val distKm = totalDistanceMeters / 1000.0
                 val pace = paceCoachEngine.getCurrentPaceFormatted()
                 val mins = elapsedSeconds / 60
@@ -233,77 +205,99 @@ class WorkoutAudioService : Service(), EarbudMediaReceiver.Companion.EarbudButto
 
             var shouldTrigger = false
 
-            // Check Time-based trigger
-            if (event.triggerType == "TIME" || event.triggerType == "DISTANCE_OR_TIME") {
-                if (event.triggerSeconds != null && elapsedSeconds >= event.triggerSeconds) {
+            // Time Trigger
+            if (event.triggerType == "TIME" && event.triggerSeconds != null) {
+                if (elapsedSeconds >= event.triggerSeconds) {
                     shouldTrigger = true
                 }
             }
 
-            // Check Distance-based trigger
-            if (event.triggerType == "DISTANCE" || event.triggerType == "DISTANCE_OR_TIME") {
-                if (event.triggerDistanceKm != null && currentDistKm >= event.triggerDistanceKm) {
+            // Distance Trigger
+            if (event.triggerType == "DISTANCE" && event.triggerDistanceKm != null) {
+                if (currentDistKm >= event.triggerDistanceKm) {
+                    shouldTrigger = true
+                }
+            }
+
+            // Distance or Time (e.g. Finish)
+            if (event.triggerType == "DISTANCE_OR_TIME") {
+                if ((event.triggerDistanceKm != null && currentDistKm >= event.triggerDistanceKm) ||
+                    (event.triggerSeconds != null && elapsedSeconds >= event.triggerSeconds)) {
                     shouldTrigger = true
                 }
             }
 
             if (shouldTrigger) {
                 triggeredEventIds.add(event.id)
-                lastSpokenCue = event.text
-                Log.d("WorkoutAudioService", "🔥 Triggered Event: ${event.title}")
-
-                if (event.hasCountdown) {
-                    audioCueManager.playCueWithCountdown(event.text) {
-                        Log.d("WorkoutAudioService", "Interval Started - Audio Focus Released")
-                    }
-                } else {
-                    audioCueManager.playDirectCue(event.text)
-                }
-                break // Handle one cue per second to avoid collisions
+                fireAudioEvent(event)
             }
+        }
+    }
+
+    private fun fireAudioEvent(event: AudioEvent) {
+        Log.d("WorkoutAudioService", "Firing Audio Event: ${event.title} - ${event.text}")
+
+        if (event.hasCountdown) {
+            audioCueManager.playCueWithCountdown(
+                promptText = event.text,
+                onStartGo = {}
+            )
+        } else {
+            audioCueManager.playDirectCue(
+                promptText = event.text
+            )
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun startLocationUpdates() {
+        val locationRequest = LocationRequest.Builder(
+            Priority.PRIORITY_HIGH_ACCURACY,
+            2000L
+        ).setMinUpdateIntervalMillis(1000L).build()
+
+        try {
+            fusedLocationClient.requestLocationUpdates(
+                locationRequest,
+                locationCallback,
+                Looper.getMainLooper()
+            )
+        } catch (e: Exception) {
+            Log.w("WorkoutAudioService", "Location permission missing or error: ${e.message}")
         }
     }
 
     private val locationCallback = object : LocationCallback() {
-        override fun onLocationResult(result: LocationResult) {
-            for (location in result.locations) {
-                if (lastLocation != null) {
-                    val dist = lastLocation!!.distanceTo(location)
-                    if (dist > 0.5f && dist < 50f) { // Filter GPS jumps
-                        totalDistanceMeters += dist
-                    }
+        override fun onLocationResult(locationResult: LocationResult) {
+            val location = locationResult.lastLocation ?: return
+
+            if (lastLocation != null) {
+                val distanceStep = lastLocation!!.distanceTo(location)
+                if (distanceStep > 0 && distanceStep < 100) { // filter GPS jitter
+                    totalDistanceMeters += distanceStep
                 }
-                lastLocation = location
-                paceCoachEngine.onLocationUpdate(location)
             }
+            lastLocation = location
+
+            // Send location to Pace Coach smoothing engine
+            paceCoachEngine.onLocationUpdate(location)
         }
     }
 
-    private fun startLocationUpdates() {
-        try {
-            val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 2000L)
-                .setMinUpdateIntervalMillis(1000L)
-                .build()
-
-            fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
-        } catch (e: SecurityException) {
-            Log.e("WorkoutAudioService", "Location permission missing: ${e.message}")
+    fun setCadenceMode(mode: CadenceMetronome.Mode, bpm: Int = 170) {
+        when (mode) {
+            CadenceMetronome.Mode.OFF -> cadenceMetronome.stop()
+            CadenceMetronome.Mode.FIXED_BPM -> cadenceMetronome.startFixed(bpm)
+            CadenceMetronome.Mode.AUTO_PACE_SYNC -> cadenceMetronome.startAutoPaceSync(bpm)
         }
     }
 
-    override fun onDoubleTap() {
-        Log.d("WorkoutAudioService", "Earbud Double Tap -> Replaying last cue")
-        audioCueManager.playDirectCue("Replaying: $lastSpokenCue")
-    }
-
-    override fun onTripleTap() {
-        Log.d("WorkoutAudioService", "Earbud Triple Tap -> Skipping current interval")
-        audioCueManager.playDirectCue("Skipping to next interval.")
-        // Fast-forward to next uncompleted interval trigger
-    }
-
-    fun toggleCadenceMetronome(enable: Boolean, bpm: Int = 170) {
-        if (enable) cadenceMetronome.start(bpm) else cadenceMetronome.stop()
+    fun toggleCadenceMetronome(enabled: Boolean, bpm: Int = 170) {
+        if (enabled) {
+            cadenceMetronome.startAutoPaceSync(bpm)
+        } else {
+            cadenceMetronome.stop()
+        }
     }
 
     fun stopWorkout() {
@@ -311,20 +305,33 @@ class WorkoutAudioService : Service(), EarbudMediaReceiver.Companion.EarbudButto
         handler.removeCallbacks(tickerRunnable)
         fusedLocationClient.removeLocationUpdates(locationCallback)
         cadenceMetronome.stop()
-        audioCueManager.playDirectCue("Workout finished! Fantastic job.")
+        audioCueManager.shutdown()
+
+        try {
+            wakeLock?.let {
+                if (it.isHeld) it.release()
+            }
+        } catch (e: Exception) {
+            // ignore
+        }
+
         stopForeground(STOP_FOREGROUND_REMOVE)
-        wakeLock?.release()
         stopSelf()
+    }
+
+    override fun onBind(intent: Intent?): IBinder = binder
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        return START_STICKY
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        audioCueManager.shutdown()
-        if (wakeLock?.isHeld == true) wakeLock?.release()
+        stopWorkout()
     }
 
     companion object {
-        const val CHANNEL_ID = "tmm_workout_channel"
+        const val CHANNEL_ID = "tmm_workout_audio_channel"
         const val NOTIFICATION_ID = 2027
     }
 }

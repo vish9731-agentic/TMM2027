@@ -1,10 +1,66 @@
 [
     {
-        "merged": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-merged_res-34:/layout_activity_main.xml.flat",
-        "source": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-main-36:/layout/activity_main.xml"
+        "merged": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-merged_res-34:/drawable_bg_kold_card_active.xml.flat",
+        "source": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-main-36:/drawable/bg_kold_card_active.xml"
+    },
+    {
+        "merged": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-merged_res-34:/drawable_bg_kold_pill.xml.flat",
+        "source": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-main-36:/drawable/bg_kold_pill.xml"
+    },
+    {
+        "merged": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-merged_res-34:/drawable_bg_swiss_input.xml.flat",
+        "source": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-main-36:/drawable/bg_swiss_input.xml"
+    },
+    {
+        "merged": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-merged_res-34:/drawable_bg_swiss_card.xml.flat",
+        "source": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-main-36:/drawable/bg_swiss_card.xml"
+    },
+    {
+        "merged": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-merged_res-34:/drawable_bg_swiss_square_btn.xml.flat",
+        "source": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-main-36:/drawable/bg_swiss_square_btn.xml"
+    },
+    {
+        "merged": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-merged_res-34:/drawable_bg_swiss_btn_red.xml.flat",
+        "source": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-main-36:/drawable/bg_swiss_btn_red.xml"
+    },
+    {
+        "merged": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-merged_res-34:/drawable_bg_swiss_orange_block.xml.flat",
+        "source": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-main-36:/drawable/bg_swiss_orange_block.xml"
     },
     {
         "merged": "com.tmm2027.runner.app-merged_res-34:/layout_activity_main.xml.flat",
         "source": "com.tmm2027.runner.app-main-36:/layout/activity_main.xml"
+    },
+    {
+        "merged": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-merged_res-34:/drawable_bg_kold_gold_btn.xml.flat",
+        "source": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-main-36:/drawable/bg_kold_gold_btn.xml"
+    },
+    {
+        "merged": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-merged_res-34:/drawable_bg_kold_spinner.xml.flat",
+        "source": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-main-36:/drawable/bg_kold_spinner.xml"
+    },
+    {
+        "merged": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-merged_res-34:/drawable_bg_swiss_pill.xml.flat",
+        "source": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-main-36:/drawable/bg_swiss_pill.xml"
+    },
+    {
+        "merged": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-merged_res-34:/drawable_bg_swiss_btn_black.xml.flat",
+        "source": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-main-36:/drawable/bg_swiss_btn_black.xml"
+    },
+    {
+        "merged": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-merged_res-34:/drawable_bg_kold_card.xml.flat",
+        "source": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-main-36:/drawable/bg_kold_card.xml"
+    },
+    {
+        "merged": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-merged_res-34:/layout_activity_main.xml.flat",
+        "source": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-main-36:/layout/activity_main.xml"
+    },
+    {
+        "merged": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-merged_res-34:/drawable_bg_swiss_pill_orange.xml.flat",
+        "source": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-main-36:/drawable/bg_swiss_pill_orange.xml"
+    },
+    {
+        "merged": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-merged_res-34:/drawable_bg_kold_red_btn.xml.flat",
+        "source": "/Users/altcreative/.gradle/daemon/8.5/com.tmm2027.runner.app-main-36:/drawable/bg_kold_red_btn.xml"
     }
 ]

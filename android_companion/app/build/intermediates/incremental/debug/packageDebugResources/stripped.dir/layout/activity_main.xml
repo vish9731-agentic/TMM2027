@@ -1,579 +1,494 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0A0F1D"
-    android:fillViewport="true">
+    android:background="@color/swiss_canvas">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="none">
 
-        <!-- Header -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="🏃 TMM 2027 AUDIO COMPANION"
-            android:textColor="#38BDF8"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:letterSpacing="0.08" />
-
-        <TextView
-            android:id="@+id/tvWorkoutTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Long Run • 7.0 km"
-            android:textColor="#FFFFFF"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:layout_marginTop="6dp" />
-
-        <TextView
-            android:id="@+id/tvTargetPace"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="🎯 Target: 7:35 - 7:45 min/km (RPE 3/10)"
-            android:textColor="#F59E0B"
-            android:textSize="15sp"
-            android:layout_marginTop="3dp" />
-
-        <TextView
-            android:id="@+id/tvWeatherAdvisory"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="📅 Sunday, Aug 23 • Post-run calf armor flush"
-            android:textColor="#94A3B8"
-            android:textSize="13sp"
-            android:layout_marginTop="4dp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#1E293B"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp" />
-
-        <!-- Feature Toggle: Metronome -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="🥁 Cadence Metronome (170 SPM)"
-                android:textColor="#E2E8F0"
-                android:textSize="14sp" />
-
-            <Switch
-                android:id="@+id/switchMetronome"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="🎧 YouTube Music will automatically duck to 10% 1.5s before cues."
-            android:textColor="#64748B"
-            android:textSize="12sp"
-            android:layout_marginTop="4dp" />
-
-        <!-- Status Card -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#131C31"
-            android:padding="14dp"
             android:orientation="vertical"
-            android:layout_marginTop="16dp">
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="36dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="SESSION STATUS"
-                android:textColor="#38BDF8"
-                android:textSize="11sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvStatus"
+            <!-- 1. Swiss Header Card with Brushed Conical Steel Badge -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Ready. Start YouTube Music, then tap 'START RUN'."
-                android:textColor="#F8FAFC"
+                app:cardCornerRadius="20dp"
+                app:strokeWidth="2.5dp"
+                app:strokeColor="@color/swiss_border"
+                app:cardBackgroundColor="@color/swiss_card_rustic_yellow"
+                app:cardElevation="0dp"
+                app:cardPreventCornerOverlap="false"
+                android:layout_marginBottom="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="64dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="12dp"
+                        android:paddingTop="14dp"
+                        android:paddingBottom="14dp">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="TMM 2027"
+                                android:textColor="#111111"
+                                android:textSize="22sp"
+                                android:textStyle="bold"
+                                android:letterSpacing="-0.03" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="."
+                                android:textColor="#F95700"
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="MARATHON AUDIO COMPANION"
+                            android:textColor="#6B7280"
+                            android:textSize="9sp"
+                            android:textStyle="bold"
+                            android:fontFamily="monospace"
+                            android:letterSpacing="0.06"
+                            android:layout_marginTop="2dp" />
+                    </LinearLayout>
+
+                    <!-- Conical Brushed Steel Metallic Badge -->
+                    <com.tmm2027.runner.ConicalSteelBadgeView
+                        android:id="@+id/conicalSteelBadge"
+                        android:layout_width="68dp"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 2. Signature Split Hero Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="20dp"
+                app:strokeWidth="2.5dp"
+                app:strokeColor="@color/swiss_border"
+                app:cardBackgroundColor="@color/swiss_card_rustic_yellow"
+                app:cardElevation="0dp"
+                app:cardPreventCornerOverlap="false"
+                android:layout_marginBottom="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="136dp"
+                    android:orientation="horizontal">
+
+                    <!-- Left Column: 45° Hatch + Orange Metric -->
+                    <LinearLayout
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <!-- 45° Diagonal Industrial Hatching -->
+                        <com.tmm2027.runner.DiagonalHatchView
+                            android:layout_width="match_parent"
+                            android:layout_height="44dp" />
+
+                        <!-- Horizontal 2.5dp divider -->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="2.5dp"
+                            android:background="#111111" />
+
+                        <!-- Orange Metric Box -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:minHeight="75dp"
+                            android:orientation="vertical"
+                            android:background="#F95700"
+                            android:gravity="center"
+                            android:paddingTop="8dp"
+                            android:paddingBottom="8dp"
+                            android:paddingStart="4dp"
+                            android:paddingEnd="4dp">
+
+                            <TextView
+                                android:id="@+id/tvHeroDistanceNum"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="7.0"
+                                android:textColor="#111111"
+                                android:textSize="32sp"
+                                android:textStyle="bold"
+                                android:includeFontPadding="false"
+                                android:letterSpacing="-0.03"
+                                android:gravity="center" />
+
+                            <TextView
+                                android:id="@+id/tvHeroDistanceUnit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="KM"
+                                android:textColor="#111111"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:includeFontPadding="false"
+                                android:fontFamily="monospace"
+                                android:letterSpacing="0.05"
+                                android:layout_marginTop="2dp"
+                                android:gravity="center" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Vertical 2.5dp black divider -->
+                    <View
+                        android:layout_width="2.5dp"
+                        android:layout_height="match_parent"
+                        android:background="#111111" />
+
+                    <!-- Right Column: Day Carousel & Info -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp"
+                        android:paddingTop="12dp"
+                        android:paddingBottom="14dp">
+
+                        <!-- Monospaced Day Carousel Row -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:paddingBottom="6dp">
+
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/btnPrevDay"
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:text="←"
+                                android:textColor="#111111"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:background="@drawable/bg_swiss_square_btn"
+                                app:backgroundTint="@null"
+                                android:padding="0dp"
+                                android:minWidth="0dp"
+                                android:minHeight="0dp"
+                                android:gravity="center" />
+
+                            <TextView
+                                android:id="@+id/tvDayLabel"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="day: SUNDAY (AUG 23)"
+                                android:textColor="#6B7280"
+                                android:textSize="10.5sp"
+                                android:textStyle="bold"
+                                android:fontFamily="monospace"
+                                android:gravity="center" />
+
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/btnNextDay"
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:text="→"
+                                android:textColor="#111111"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:background="@drawable/bg_swiss_square_btn"
+                                app:backgroundTint="@null"
+                                android:padding="0dp"
+                                android:minWidth="0dp"
+                                android:minHeight="0dp"
+                                android:gravity="center" />
+                        </LinearLayout>
+
+                        <!-- Hairline divider below carousel -->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1.5dp"
+                            android:background="@color/swiss_divider"
+                            android:layout_marginBottom="8dp" />
+
+                        <TextView
+                            android:id="@+id/tvWorkoutTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Long Run"
+                            android:textColor="#111111"
+                            android:textSize="19sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="-0.02" />
+
+                        <TextView
+                            android:id="@+id/tvTargetPace"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Target: 7:35 – 7:45 min/km"
+                            android:textColor="#F95700"
+                            android:textSize="12.5sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="2dp" />
+
+                        <TextView
+                            android:id="@+id/tvWeatherAdvisory"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="RPE 3/10 • Post-run 10-min calf flush"
+                            android:textColor="#6B7280"
+                            android:textSize="11sp"
+                            android:lineSpacingExtra="2dp"
+                            android:layout_marginTop="4dp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+            <!-- 3. Cadence Metronome Module -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="20dp"
+                app:strokeWidth="2.5dp"
+                app:strokeColor="@color/swiss_border"
+                app:cardBackgroundColor="@color/swiss_card_rustic_yellow"
+                app:cardElevation="0dp"
+                android:layout_marginBottom="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="14dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="4dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="CADENCE: METRONOME"
+                            android:textColor="#6B7280"
+                            android:textSize="9sp"
+                            android:textStyle="bold"
+                            android:fontFamily="monospace"
+                            android:letterSpacing="0.05" />
+
+                        <TextView
+                            android:id="@+id/tvLiveCadenceBpm"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="170 SPM"
+                            android:textColor="#F95700"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:fontFamily="monospace" />
+                    </LinearLayout>
+
+                    <Spinner
+                        android:id="@+id/spinnerCadence"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="@drawable/bg_swiss_input"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:spinnerMode="dropdown"
+                        android:layout_marginTop="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="In Auto-Pace mode, cadence dynamically shifts if you're slower/faster than goal pace."
+                        android:textColor="#6B7280"
+                        android:textSize="10sp"
+                        android:lineSpacingExtra="1dp"
+                        android:layout_marginTop="6dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 4. Audio Trigger Timeline Box -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="20dp"
+                app:strokeWidth="2.5dp"
+                app:strokeColor="@color/swiss_border"
+                app:cardBackgroundColor="@color/swiss_card_rustic_yellow"
+                app:cardElevation="0dp"
+                android:layout_marginBottom="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="14dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingBottom="8dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="AUDIO TRIGGERS &amp; SPLITS"
+                            android:textColor="#6B7280"
+                            android:textSize="9sp"
+                            android:textStyle="bold"
+                            android:fontFamily="monospace"
+                            android:letterSpacing="0.05" />
+
+                        <TextView
+                            android:id="@+id/tvTimelineCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="5 MILESTONES"
+                            android:textColor="#6B7280"
+                            android:textSize="9sp"
+                            android:textStyle="bold"
+                            android:fontFamily="monospace"
+                            android:letterSpacing="0.05" />
+                    </LinearLayout>
+
+                    <!-- Hairline divider below header -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1.5dp"
+                        android:background="@color/swiss_divider"
+                        android:layout_marginBottom="10dp" />
+
+                    <LinearLayout
+                        android:id="@+id/layoutTimelineContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 5. Spoken Audio Lyrics Box -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="20dp"
+                app:strokeWidth="2.5dp"
+                app:strokeColor="@color/swiss_border"
+                app:cardBackgroundColor="@color/swiss_card_rustic_yellow"
+                app:cardElevation="0dp"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="14dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingBottom="8dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="SPOKEN AUDIO STREAM"
+                            android:textColor="#6B7280"
+                            android:textSize="9sp"
+                            android:textStyle="bold"
+                            android:fontFamily="monospace"
+                            android:letterSpacing="0.05" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="LIVE SYNC"
+                            android:textColor="#F95700"
+                            android:textSize="9sp"
+                            android:textStyle="bold"
+                            android:fontFamily="monospace"
+                            android:letterSpacing="0.05" />
+                    </LinearLayout>
+
+                    <!-- Hairline divider below header -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1.5dp"
+                        android:background="@color/swiss_divider"
+                        android:layout_marginBottom="10dp" />
+
+                    <LinearLayout
+                        android:id="@+id/layoutLyricsContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 6. Master Industrial Action Button -->
+            <Button
+                android:id="@+id/btnStart"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="START RUN [GPS + AUDIO] →"
+                android:background="@drawable/bg_swiss_btn_black"
+                android:textColor="#FFFFFF"
                 android:textSize="14sp"
-                android:layout_marginTop="4dp" />
-        </LinearLayout>
-
-        <!-- ============================================================= -->
-        <!-- SECTION 1: VISUAL RUN AUDIO TIMELINE                          -->
-        <!-- ============================================================= -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="#0F172A"
-            android:padding="16dp"
-            android:layout_marginTop="20dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="12dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="📍 AUDIO TRIGGER TIMELINE"
-                    android:textColor="#38BDF8"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="7 Milestones"
-                    android:textColor="#94A3B8"
-                    android:textSize="11sp"
-                    android:background="#1E293B"
-                    android:paddingStart="6dp"
-                    android:paddingEnd="6dp"
-                    android:paddingTop="2dp"
-                    android:paddingBottom="2dp" />
-            </LinearLayout>
-
-            <!-- Timeline Node 0: Start -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="10dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🟢"
-                    android:textSize="12sp"
-                    android:layout_marginEnd="8dp" />
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0.0 km (00:00) • Kickoff Briefing (10% Ducking)"
-                        android:textColor="#FFFFFF"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Morning weather advisory &amp; 7:35-7:45 min/km pace target."
-                        android:textColor="#94A3B8"
-                        android:textSize="12sp" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Timeline Node 1: Km 1 Split -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="10dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🔵"
-                    android:textSize="12sp"
-                    android:layout_marginEnd="8dp" />
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="1.0 km • Rhythm Check"
-                        android:textColor="#FFFFFF"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Gently float into rhythm. Do not start too fast."
-                        android:textColor="#94A3B8"
-                        android:textSize="12sp" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Timeline Node 2: Km 3 Split -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="10dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🔵"
-                    android:textSize="12sp"
-                    android:layout_marginEnd="8dp" />
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="3.0 km • Cadence Sync (168-172 SPM)"
-                        android:textColor="#FFFFFF"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Smooth aerobic cruising pace."
-                        android:textColor="#94A3B8"
-                        android:textSize="12sp" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Timeline Node 3: 45 Min Salt Capsule (COMPULSORY) -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="10dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🟡"
-                    android:textSize="12sp"
-                    android:layout_marginEnd="8dp" />
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="45:00 Min • Anti-Cramp Salt Capsule (COMPULSORY)"
-                        android:textColor="#F59E0B"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Take 1 Salt Capsule now with 150ml water to protect calves."
-                        android:textColor="#E2E8F0"
-                        android:textSize="12sp" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Timeline Node 4: Km 5 Form Check -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="10dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🔵"
-                    android:textSize="12sp"
-                    android:layout_marginEnd="8dp" />
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="5.0 km • Form &amp; Shoulder Check"
-                        android:textColor="#FFFFFF"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Relax neck &amp; shoulders, breathe into belly."
-                        android:textColor="#94A3B8"
-                        android:textSize="12sp" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Timeline Node 5: Km 7 Finish -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🏁"
-                    android:textSize="12sp"
-                    android:layout_marginEnd="8dp" />
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="7.0 km • Finish &amp; 10-Min Calf Flush"
-                        android:textColor="#10B981"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Take 500ml electrolyte water &amp; begin calf prehab flush."
-                        android:textColor="#94A3B8"
-                        android:textSize="12sp" />
-                </LinearLayout>
-            </LinearLayout>
+                android:textStyle="bold"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.04" />
 
         </LinearLayout>
+    </ScrollView>
 
-        <!-- ============================================================= -->
-        <!-- SECTION 2: YOUTUBE MUSIC STYLE SPOKEN AUDIO LYRICS VIEW      -->
-        <!-- ============================================================= -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="#060913"
-            android:padding="16dp"
-            android:layout_marginTop="20dp">
+    <!-- 35mm Analog Film Grain Overlay on Clean White Canvas -->
+    <com.tmm2027.runner.GrainOverlayView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="false"
+        android:focusable="false" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="12dp">
+</FrameLayout>
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="📜 SPOKEN AUDIO LYRICS"
-                    android:textColor="#F8FAFC"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🔴 YOUTUBE MUSIC SYNC VIEW"
-                    android:textColor="#EF4444"
-                    android:textSize="10sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <!-- Lyric Item 1 -->
-            <LinearLayout
-                android:id="@+id/cardLyric1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="#131D33"
-                android:padding="12dp"
-                android:layout_marginBottom="8dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="00:02 • START"
-                    android:textColor="#38BDF8"
-                    android:textSize="10sp"
-                    android:textStyle="bold"
-                    android:background="#1E293B"
-                    android:paddingStart="4dp"
-                    android:paddingEnd="4dp"
-                    android:paddingTop="1dp"
-                    android:paddingBottom="1dp" />
-                <TextView
-                    android:id="@+id/tvLyric1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="&quot;Welcome to your Sunday Long Run! Today's session is 7 kilometers. Target pace is 7:35 to 7:45 min/km with an RPE of 3. Morning temperature is 20°C with 93% humidity.&quot;"
-                    android:textColor="#FFFFFF"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:layout_marginTop="4dp" />
-            </LinearLayout>
-
-            <!-- Lyric Item 2 -->
-            <LinearLayout
-                android:id="@+id/cardLyric2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="#0A0F1D"
-                android:padding="12dp"
-                android:layout_marginBottom="8dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="1.0 KM • SPLIT"
-                    android:textColor="#94A3B8"
-                    android:textSize="10sp"
-                    android:textStyle="bold"
-                    android:background="#1E293B"
-                    android:paddingStart="4dp"
-                    android:paddingEnd="4dp"
-                    android:paddingTop="1dp"
-                    android:paddingBottom="1dp" />
-                <TextView
-                    android:id="@+id/tvLyric2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="&quot;Kilometer 1 reached. Gently float into your rhythm. Do not start too fast.&quot;"
-                    android:textColor="#64748B"
-                    android:textSize="14sp"
-                    android:layout_marginTop="4dp" />
-            </LinearLayout>
-
-            <!-- Lyric Item 3 -->
-            <LinearLayout
-                android:id="@+id/cardLyric3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="#0A0F1D"
-                android:padding="12dp"
-                android:layout_marginBottom="8dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="45:00 MIN • FUELING"
-                    android:textColor="#F59E0B"
-                    android:textSize="10sp"
-                    android:textStyle="bold"
-                    android:background="#27272A"
-                    android:paddingStart="4dp"
-                    android:paddingEnd="4dp"
-                    android:paddingTop="1dp"
-                    android:paddingBottom="1dp" />
-                <TextView
-                    android:id="@+id/tvLyric3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="&quot;45 minutes elapsed. Take 1 Salt Capsule now with 150 ml water to protect your calves from cramping.&quot;"
-                    android:textColor="#64748B"
-                    android:textSize="14sp"
-                    android:layout_marginTop="4dp" />
-            </LinearLayout>
-
-            <!-- Lyric Item 4 -->
-            <LinearLayout
-                android:id="@+id/cardLyric4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="#0A0F1D"
-                android:padding="12dp"
-                android:layout_marginBottom="8dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="5.0 KM • CHECK"
-                    android:textColor="#94A3B8"
-                    android:textSize="10sp"
-                    android:textStyle="bold"
-                    android:background="#1E293B"
-                    android:paddingStart="4dp"
-                    android:paddingEnd="4dp"
-                    android:paddingTop="1dp"
-                    android:paddingBottom="1dp" />
-                <TextView
-                    android:id="@+id/tvLyric4"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="&quot;Kilometer 5 reached. Check your posture, relax your shoulders, and keep your cadence smooth.&quot;"
-                    android:textColor="#64748B"
-                    android:textSize="14sp"
-                    android:layout_marginTop="4dp" />
-            </LinearLayout>
-
-            <!-- Lyric Item 5 -->
-            <LinearLayout
-                android:id="@+id/cardLyric5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="#0A0F1D"
-                android:padding="12dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="7.0 KM • FINISH"
-                    android:textColor="#10B981"
-                    android:textSize="10sp"
-                    android:textStyle="bold"
-                    android:background="#1E293B"
-                    android:paddingStart="4dp"
-                    android:paddingEnd="4dp"
-                    android:paddingTop="1dp"
-                    android:paddingBottom="1dp" />
-                <TextView
-                    android:id="@+id/tvLyric5"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="&quot;Workout complete! Fantastic work on completing today's 7km long run. Take 500 ml electrolyte water and perform your 10-minute calf and quad flush.&quot;"
-                    android:textColor="#64748B"
-                    android:textSize="14sp"
-                    android:layout_marginTop="4dp" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="24dp" />
-
-        <!-- Action Buttons -->
-        <Button
-            android:id="@+id/btnSundayTest"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:text="🏃 PREVIEW SUNDAY 7KM RUN AUDIO"
-            android:backgroundTint="#065F46"
-            android:textColor="#34D399"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
-
-        <Button
-            android:id="@+id/btnFastTest"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="⚡ TEST SPEED INTERVALS &amp; COUNTDOWN (60s)"
-            android:backgroundTint="#1E293B"
-            android:textColor="#38BDF8"
-            android:textStyle="bold"
-            android:layout_marginBottom="12dp" />
-
-        <Button
-            android:id="@+id/btnStart"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:text="START RUN (GPS + LIVE CUES)"
-            android:backgroundTint="#10B981"
-            android:textColor="#000000"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
-</ScrollView>
