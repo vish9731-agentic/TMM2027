@@ -327,14 +327,21 @@ class VegaDebriefBottomSheet : BottomSheetDialogFragment() {
 
                 val prompt = """
                 You are Coach Vega — elite Olympic marathon coach and physical therapist for TMM 2027 (Target: Sub-5:00 at 7:06 min/km).
-                Athlete is in Adidas Adizero Evo SL 2.
+                Athlete is training in Adidas Adizero Evo SL 2.
                 
                 WEEKLY TELEMETRY DATA:
                 $telemetryJson
                 
-                DIRECTIVES:
-                1. NO GENERIC TEMPLATES. Give a concise 3-4 sentence clinical debrief of how this week went.
-                2. Formulate 2-3 sharp, diagnostic check-in questions directly addressing the Wednesday 6:38 pace spike and Friday calf strain.
+                YOUR RESPONSE MUST STRICTLY FOLLOW THIS 3-SECTION ARCHITECTURE:
+                
+                ### 📋 Section 1: Weekly Performance Brief
+                - Provide a concise 3-4 sentence clinical debrief of how this week went based on the exact telemetry (volume adherence, pace discipline, anomalies like the Wednesday 6:38 pace spike, and Friday calf tightness).
+                
+                ### ❓ Section 2: Dynamic Diagnostic Questions
+                - Formulate 2-3 sharp, bespoke check-in questions directly addressing what happened in the data. Zero templates and zero canned questions.
+                
+                ### 🔄 Section 3: Adaptive Plan Next Steps
+                - Explain that upon receiving the runner's feedback below, you will adapt Week ${weekNumber + 1}'s plan with customized recovery and prehab, and ask for their approval before committing to cloud.
                 """.trimIndent()
 
                 val requestJson = JSONObject().apply {
