@@ -858,17 +858,17 @@
         distUnit: "KM",
         title: "Long Run",
         targetPace: "Target: 7:35 – 7:45 min/km",
-        desc: "RPE 3/10 • Morning 20°C, 93% humidity. Post-run 10-min calf flush.",
+        desc: "RPE 3/10 • Progressive marathon endurance. Post-run 10-min calf flush.",
         timeline: [
-          { num: "01", title: "0.0 KM • Session Kickoff", tag: "10% DUCKING", orange: false, desc: "Opening briefing & target pace 7:35-7:45 min/km." },
-          { num: "02", title: "1.0 KM • Split Rhythm Check", tag: "SPLIT", orange: false, desc: "Float into rhythm. Do not start too fast." },
+          { num: "01", title: "0.0 KM • Session Kickoff", tag: "10% DUCKING", orange: false, desc: "Opening briefing & conservative 1.0 km float." },
+          { num: "02", title: "1.0 KM • Marathon Cruise Start", tag: "CRUISE", orange: true, desc: "Settle into marathon rhythm at 7:35-7:45 min/km." },
           { num: "03", title: "45:00 MIN • Anti-Cramp Salt", tag: "COMPULSORY", orange: true, desc: "Take 1 Salt Capsule now with 150ml water to protect calves." },
-          { num: "04", title: "5.0 KM • Form & Posture", tag: "SPLIT", orange: false, desc: "Relax neck & shoulders, breathe into belly." },
+          { num: "04", title: "5.0 KM • Posture Check", tag: "5.0 KM", orange: false, desc: "Relax neck & drop shoulders. Cadence at 170 SPM." },
           { num: "05", title: "7.0 KM • Finish & Prehab", tag: "COMPLETE", orange: true, desc: "Take 500ml electrolyte water & begin 10-min calf flush." }
         ],
         lyrics: [
-          { meta: "00:02 • START", text: "Welcome to your Sunday Long Run! Today's session is 7 kilometers. Target pace is 7:35 to 7:45 min/km with an RPE of 3." },
-          { meta: "1.0 KM • SPLIT", text: "Kilometer 1 reached. Gently float into your rhythm. Do not start too fast." },
+          { meta: "00:02 • START", text: "Welcome to your Sunday Long Run! Today's session is 7 kilometers. Settle into a conservative float for the first kilometer." },
+          { meta: "1.0 KM • CRUISE", text: "1 kilometer reached. Gently transition into your Marathon Cruise target pace: 7:35 to 7:45 min/km, RPE 3." },
           { meta: "45:00 MIN • FUEL", text: "45 minutes elapsed. Take 1 Salt Capsule now with 150 ml water to protect your calves from cramping." },
           { meta: "5.0 KM • CHECK", text: "Kilometer 5 reached. Check your posture, relax your shoulders, and keep your cadence smooth." },
           { meta: "7.0 KM • FINISH", text: "Workout complete! Fantastic work on completing today's 7km long run. Take 500 ml electrolyte water and perform your 10-minute calf flush." }
@@ -878,18 +878,22 @@
         dayLabel: "day: MONDAY (AUG 17)",
         distNum: "5.0",
         distUnit: "KM",
-        title: "Kickoff Easy Run",
-        targetPace: "Target: 7:20 – 7:35 min/km",
-        desc: "RPE 3/10 • Week 1 opening aerobic run. Smooth rhythm lock.",
+        title: "Recovery Run (3 Phases)",
+        targetPace: "Target: 7:35 – 7:50 min/km",
+        desc: "3-Phase Strategy: Warmup (1.0km) -> Cruise (3.2km) -> Cooldown (0.8km).",
         timeline: [
-          { num: "01", title: "0.0 KM • Session Kickoff", tag: "10% DUCKING", orange: false, desc: "Settle into an easy conversational rhythm." },
-          { num: "02", title: "1.0 KM • Cadence Check", tag: "SPLIT", orange: false, desc: "Lock into 168-170 SPM." },
-          { num: "03", title: "5.0 KM • Finish", tag: "COMPLETE", orange: true, desc: "5km completed. Hydrate and stretch." }
+          { num: "01", title: "Phase 1: Warmup (1.0 km)", tag: "WARMUP", orange: false, desc: "Gentle warm-up jog at RPE 2 (~8:00 min/km). Lubricate joints." },
+          { num: "02", title: "Phase 2: Main Cruise (3.2 km)", tag: "CRUISE", orange: true, desc: "Settle into main cruise at 7:35-7:50 min/km. Active vascular flush." },
+          { num: "03", title: "Cruise Midpoint (2.6 km)", tag: "SPLIT", orange: false, desc: "Smooth aerobic breathing, light foot strikes." },
+          { num: "04", title: "Phase 3: Cooldown (0.8 km)", tag: "COOLDOWN", orange: false, desc: "Gradually ease effort to RPE 1, transition down to walk." },
+          { num: "05", title: "Recovery Run Complete!", tag: "COMPLETE", orange: true, desc: "5km recovery finished. Begin post-run calf release." }
         ],
         lyrics: [
-          { meta: "00:02 • START", text: "Starting Week 1 Kickoff Easy Run. 5 kilometers at 7:20 to 7:35 min/km." },
-          { meta: "1.0 KM • SPLIT", text: "Kilometer 1 reached. Keep foot strikes light and smooth." },
-          { meta: "5.0 KM • FINISH", text: "Workout complete! Great job on your 5km kickoff run." }
+          { meta: "00:02 • START", text: "Starting Recovery Run of 5.0 km. Phase 1: 1.0 km gentle warm-up. Keep it super light and relaxed at RPE 2." },
+          { meta: "1.0 KM • CRUISE", text: "Warm-up complete! Phase 2: Main Cruise for 3.2 km. Lock into 7:35 to 7:50 min/km, cadence 168. Relax shoulders." },
+          { meta: "2.6 KM • MIDPOINT", text: "Cruise midpoint reached. Smooth aerobic rhythm. Breathe comfortably through nose and mouth." },
+          { meta: "4.2 KM • COOLDOWN", text: "Cruise complete! Phase 3: 800m easy cooldown. Gradually lower your effort to RPE 1 and ease down to walking pace." },
+          { meta: "5.0 KM • FINISH", text: "Recovery run complete! Great aerobic vascular flushing today. Begin your 10-minute calf armor release protocol." }
         ]
       },
       {
@@ -913,15 +917,17 @@
         distUnit: "KM",
         title: "Aerobic Base Run",
         targetPace: "Target: 7:20 – 7:35 min/km",
-        desc: "RPE 3/10 • Cruising aerobic base miles. Time on feet.",
+        desc: "3-Phase Strategy: Warmup (1.0km) -> Aerobic Cruise (3.2km) -> Cooldown (0.8km).",
         timeline: [
-          { num: "01", title: "0.0 KM • Session Kickoff", tag: "10% DUCKING", orange: false, desc: "Smooth aerobic cruising pace." },
-          { num: "02", title: "3.0 KM • Midpoint Check", tag: "SPLIT", orange: false, desc: "Cadence lock at 170 SPM." },
-          { num: "03", title: "5.0 KM • Finish", tag: "COMPLETE", orange: true, desc: "5km finished. Hydrate with electrolytes." }
+          { num: "01", title: "Phase 1: Warmup (1.0 km)", tag: "WARMUP", orange: false, desc: "Warmup jog at 7:35 min/km." },
+          { num: "02", title: "Phase 2: Aerobic Cruise (3.2 km)", tag: "CRUISE", orange: true, desc: "Lock into 7:20-7:35 min/km, cadence 170 SPM." },
+          { num: "03", title: "Phase 3: Cooldown (0.8 km)", tag: "COOLDOWN", orange: false, desc: "Easy cooldown jog to flush lactic acid." },
+          { num: "04", title: "Aerobic Run Complete!", tag: "COMPLETE", orange: true, desc: "5km finished. Hydrate with electrolytes." }
         ],
         lyrics: [
-          { meta: "00:02 • START", text: "Starting Aerobic Base Run of 5 kilometers. Target pace is 7:20 to 7:35 min/km." },
-          { meta: "3.0 KM • CHECK", text: "Kilometer 3 reached. Smooth aerobic cruising rhythm." },
+          { meta: "00:02 • START", text: "Starting Aerobic Base Run of 5.0 km. Phase 1: 1 km warmup at 7:35 min/km." },
+          { meta: "1.0 KM • CRUISE", text: "Warmup complete. Phase 2: Aerobic Cruise for 3.2 km. Lock into 7:20 to 7:35 min/km, cadence 170 SPM." },
+          { meta: "4.2 KM • COOLDOWN", text: "Cruise complete. Phase 3: 800m easy cooldown jog. Ease your breathing." },
           { meta: "5.0 KM • FINISH", text: "Workout complete! Fantastic work on today's session." }
         ]
       },
@@ -943,22 +949,38 @@
         dayLabel: "day: FRIDAY (AUG 21)",
         distNum: "6.0",
         distUnit: "KM",
-        title: "Speed Intervals",
-        targetPace: "Target: 5:45 min/km (RPE 8/10)",
-        desc: "6x (1-Min Hard / 30s Walk) • VO2 max speed development.",
+        title: "Speed Intervals (4x400m)",
+        targetPace: "Target: 5:50 min/km (RPE 8/10)",
+        desc: "4x 400m @ 5:50 min/km (200m rest) • VO2 max speed development.",
         timeline: [
-          { num: "01", title: "0.0 KM • Warmup (10 Min)", tag: "10% DUCKING", orange: false, desc: "10-minute easy jog warmup at RPE 3." },
-          { num: "02", title: "Interval 1 Pre-Cue", tag: "COUNTDOWN", orange: true, desc: "1 minute hard effort starts in 5 seconds." },
-          { num: "03", title: "Interval 1 GO!", tag: "GO", orange: true, desc: "Push to 5:45 min/km." },
-          { num: "04", title: "Recovery 1", tag: "REST", orange: false, desc: "30 seconds easy walk or slow jog." },
-          { num: "05", title: "Cooldown & Complete", tag: "COMPLETE", orange: true, desc: "10 minutes easy cooldown jog." }
+          { num: "01", title: "Phase 1: Warmup Jog (1.0 km)", tag: "WARMUP", orange: false, desc: "1.0 km easy warmup jog at RPE 3." },
+          { num: "02", title: "400m Rep 1 @ 5:50 min/km", tag: "GO! 5:50", orange: true, desc: "Rep 1: Push to 5:50 min/km, cadence 175 SPM." },
+          { num: "03", title: "200m Recovery Jog 1", tag: "REST", orange: false, desc: "Recover for 200m. Catch breath, RPE 2." },
+          { num: "04", title: "400m Rep 2 @ 5:50 min/km", tag: "GO! 5:50", orange: true, desc: "Rep 2: Push to 5:50 min/km, drive knees." },
+          { num: "05", title: "200m Recovery Jog 2", tag: "REST", orange: false, desc: "Recover for 200m. Deep belly breaths." },
+          { num: "06", title: "400m Rep 3 @ 5:50 min/km", tag: "GO! 5:50", orange: true, desc: "Rep 3: Push to 5:50 min/km, stay strong." },
+          { num: "07", title: "200m Recovery Jog 3", tag: "REST", orange: false, desc: "Recover for 200m. Lower heart rate." },
+          { num: "08", title: "400m Rep 4 @ 5:50 min/km", tag: "GO! 5:50", orange: true, desc: "Final Rep: Empty the tank! 5:50 min/km." },
+          { num: "09", title: "200m Recovery Jog 4", tag: "REST", orange: false, desc: "Final recovery jog. Slow down." },
+          { num: "10", title: "Phase 3: Cooldown Jog (1.0 km)", tag: "COOLDOWN", orange: false, desc: "1.0 km easy cooldown jog to flush lactic acid." },
+          { num: "11", title: "Interval Session Complete!", tag: "COMPLETE", orange: true, desc: "Outstanding intervals! Hydrate with 500ml electrolytes." }
         ],
         lyrics: [
-          { meta: "00:00 • WARMUP", text: "Starting Speed Intervals workout. Begin with a 10-minute easy jog warmup." },
-          { meta: "10:00 • PRE-CUE", text: "Get ready: Interval 1 of 6. 1 minute hard effort. Target pace 5:45 min/km, RPE 8." },
-          { meta: "10:05 • GO", text: "GO! Push to 5:45 min/km." },
-          { meta: "11:05 • REST", text: "Rest for 30 seconds. Catch your breath, RPE 2." },
-          { meta: "25:00 • FINISH", text: "Workout complete! Fantastic effort on today's intervals." }
+          { meta: "00:00 • WARMUP", text: "Starting Speed Intervals session. Phase 1: 1.0 km easy warmup jog at RPE 3." },
+          { meta: "10:00 • PRE-CUE", text: "Get ready: Rep 1 of 4. 400 meters hard effort at 5:50 min/km, RPE 8." },
+          { meta: "10:05 • GO! REP 1", text: "GO! Push to 5:50 min/km. Drive knees, keep cadence high at 175 steps per minute." },
+          { meta: "12:25 • REST 1", text: "Recover for 200 meters. Slow down, deep belly breaths, RPE 2." },
+          { meta: "14:00 • PRE-CUE", text: "Get ready: Rep 2 of 4. 400 meters at 5:50 min/km." },
+          { meta: "14:05 • GO! REP 2", text: "GO! Rep 2. Push to 5:50 min/km." },
+          { meta: "16:25 • REST 2", text: "Rest for 200 meters. Catch your breath." },
+          { meta: "18:00 • PRE-CUE", text: "Get ready: Rep 3 of 4. 400 meters at 5:50 min/km." },
+          { meta: "18:05 • GO! REP 3", text: "GO! Rep 3. Maintain your pace and cadence." },
+          { meta: "20:25 • REST 3", text: "Rest for 200 meters." },
+          { meta: "22:00 • PRE-CUE", text: "Final Rep! 400 meters at 5:50 min/km." },
+          { meta: "22:05 • GO! REP 4", text: "GO! Final rep. Empty the tank!" },
+          { meta: "24:25 • REST 4", text: "Final recovery jog." },
+          { meta: "26:00 • COOLDOWN", text: "All intervals complete! Phase 3: 1.0 km easy cooldown jog to flush lactic acid." },
+          { meta: "36:00 • FINISH", text: "Interval workout complete! Outstanding discipline. Take 500ml electrolyte water and complete your 10-minute stretch." }
         ]
       },
       {

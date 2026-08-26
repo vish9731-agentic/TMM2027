@@ -99,9 +99,38 @@
 
 ### 6. Master Industrial Start Button
 * Bold rectangular action block with `2.5px` solid black border.
-* Background: Solid International Orange (`#F95700`) or Pitch Black (`#111111`) with white text:  
+* Background: Solid Pitch Black (`#111111`) with white text:  
   **`START RUN [GPS + AUDIO] →`**
 
 ---
 
-*Document Version: 5.0.0 • Swiss Industrial Athletic Edition • TMM 2027 Master Plan*
+## 4. Workout Strategy & Sub-Section Architecture
+
+### A. Recovery Runs (3-Phase Stratification)
+1. **Phase 1: Warmup (~15% of total distance / 0.8–1.0 km):** Conversational pace at RPE 2 (~8:00 min/km) to lubricate joint capsules and ease calves into motion.
+2. **Phase 2: Main Cruise (~70% of total distance / 3.0–4.0 km):** Steady aerobic base cruise at RPE 3 (7:35–7:50 min/km) with 168 SPM cadence lock for active vascular capillary flushing.
+3. **Phase 3: Cooldown (~15% of total distance / 0.8–1.0 km):** Gradual deceleration to RPE 1–2 easing down to a brisk walk before transitioning to calf release.
+
+### B. Speed & Interval Runs (Discrete Granular Sub-Sections)
+Every work rep and recovery interval is decomposed into discrete, step-by-step numbered sub-sections:
+* **Phase 1: Warmup:** `1.0 km Easy Warmup Jog @ 7:30 min/km (RPE 3)`
+* **Discrete Interval Pairs (e.g. 4x 400m / 200m rest):**
+  * `Sub-Section 1: 400m Rep 1 @ 5:50 min/km (RPE 8)`
+  * `Sub-Section 2: 200m Recovery Jog 1 (RPE 2)`
+  * `Sub-Section 3: 400m Rep 2 @ 5:50 min/km (RPE 8)`
+  * `Sub-Section 4: 200m Recovery Jog 2 (RPE 2)`
+  * `Sub-Section 5: 400m Rep 3 @ 5:50 min/km (RPE 8)`
+  * `Sub-Section 6: 200m Recovery Jog 3 (RPE 2)`
+  * `Sub-Section 7: 400m Rep 4 @ 5:50 min/km (RPE 8)`
+  * `Sub-Section 8: 200m Recovery Jog 4 (RPE 2)`
+* **Phase 3: Cooldown:** `1.0 km Easy Cooldown Jog (RPE 2)`
+* **Session Complete:** Electrolytes & Lower-body stretch protocol.
+
+### C. Long Runs (Multi-Stage Pacing & Fueling)
+* **Stage 1 (First 15%):** Conservative float preventing early glycogen burn.
+* **Stage 2 (Middle 70%):** Marathon cruising ($7:35 - 7:45\text{ min/km}$) with **compulsory 45-minute salt capsule anti-cramp alerts** and 90-minute gel alerts.
+* **Stage 3 (Final 15%):** Controlled finish holding cadence under fatigue, followed by the 10-minute calf armor release protocol.
+
+---
+
+*Document Version: 6.0.0 • Swiss Industrial Athletic Edition • TMM 2027 Master Plan*

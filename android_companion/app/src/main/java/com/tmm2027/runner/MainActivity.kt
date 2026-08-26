@@ -321,6 +321,21 @@ class MainActivity : AppCompatActivity() {
 
             if (type == "SESSION_START") {
                 triggerBadge = "10% DUCKING"
+            } else if (type == "INTERVAL_START") {
+                triggerBadge = "GO! 5:50"
+                isOrange = true
+            } else if (type == "REST_START") {
+                triggerBadge = "REST"
+            } else if (type == "WARMUP") {
+                triggerBadge = "WARMUP"
+            } else if (type == "CRUISE_START") {
+                triggerBadge = "CRUISE"
+                isOrange = true
+            } else if (type == "COOLDOWN") {
+                triggerBadge = "COOLDOWN"
+            } else if (type == "INTERVAL_PRE_CUE" || type == "REST_PRE_CUE") {
+                triggerBadge = "COUNTDOWN"
+                isOrange = true
             } else if (type == "FUELING") {
                 triggerBadge = "COMPULSORY"
                 isOrange = true
@@ -328,7 +343,7 @@ class MainActivity : AppCompatActivity() {
                 triggerBadge = "COMPLETE"
                 isOrange = true
             } else if (triggerType == "DISTANCE" && triggerKm != null) {
-                triggerBadge = "${triggerKm} KM SPLIT"
+                triggerBadge = "${String.format(Locale.US, "%.1f", triggerKm)} KM"
             } else if (triggerSec != null) {
                 val mins = triggerSec / 60
                 val secs = triggerSec % 60

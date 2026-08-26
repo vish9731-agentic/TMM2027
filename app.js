@@ -5019,6 +5019,59 @@ async function sendCoachMessage() {
   processCoachQuery(userText, 1);
 }
 
+function buildCoachContext() {
+  const today = new Date();
+  const todayStr = today.toISOString().split('T')[0];
+
+  const upcomingWeeks = (rawWeeksData || []).slice(0, 4).map(w => ({
+    week_number: w.week_number,
+    phase: w.phase,
+    focus: w.focus,
+    total_km: w.total_planned_km,
+    workouts: (w.workouts || []).map(wo => ({
+      day: wo.day,
+      date: wo.date,
+      type: wo.type,
+      distance_km: wo.distance_km,
+      target_pace: wo.target_pace,
+      rpe: wo.rpe,
+      description: wo.description,
+      strength_prehab: wo.strength_prehab
+    }))
+  }));
+
+  const completedLog = [];
+  try {
+    for (const [key, val] of Object.entries(completedWorkouts || {})) {
+      if (val && val.done) {
+        completedLog.push({
+          key,
+          actualDistanceKm: val.dist,
+          plannedDistanceKm: val.plannedDist,
+          actualPace: val.actualPace,
+          targetPace: val.targetPace,
+          scorePct: val.scorePct,
+          notes: val.notes
+        });
+      }
+    }
+  } catch (e) {}
+
+  return {
+    athlete: {
+      name: "TMM 2027 Runner",
+      target_race: "Tata Mumbai Marathon 2027 (Jan 17, 2027)",
+      goal: "Sub-5:00:00 (7:06 min/km pace)",
+      interim_milestone: "Vedanta Delhi Half Marathon (VDHM) Oct 18, 2026",
+      current_gear: "Adidas Adizero Evo SL 2",
+      tracking_hardware: "Galaxy Watch / Strava Sync"
+    },
+    today_date: todayStr,
+    current_mesocycle_weeks: upcomingWeeks,
+    recent_workout_history: completedLog.slice(-10)
+  };
+}
+
 // Core Async Processing Engine with Persistence
 async function processCoachQuery(userText, attempt = 1) {
   currentPendingPrompt = userText;
@@ -5121,24 +5174,32 @@ Tone: Warm, empathetic, inspiring, analytical, and authoritative. Speak like an 
       { role: 'model', parts: [{ text: "Understood. I am Coach Vega, your marathon coach and sports physiotherapist for TMM 2027. I am ready to analyze your telemetry, diagnose your setbacks, and optimize your master plan across days, weeks, or full months." }] }
     ];
 
-    // Include recent conversational turns (within 48-hour active memory)
+    // Sanitize conversation history to guarantee strictly alternating user/model turns
+    const sanitizedHistory = [];
     coachChatHistory.slice(-14).forEach(msg => {
-      contents.push({
-        role: msg.role === 'user' ? 'user' : 'model',
-        parts: [{ text: msg.content }]
-      });
+      if (msg.showKeyInput) return; // Ignore activation UI bubble in prompt
+      const role = msg.role === 'user' ? 'user' : 'model';
+      const text = (msg.content || '').trim();
+      if (!text) return;
+
+      if (sanitizedHistory.length > 0 && sanitizedHistory[sanitizedHistory.length - 1].role === role) {
+        sanitizedHistory[sanitizedHistory.length - 1].parts[0].text += '\n\n' + text;
+      } else {
+        sanitizedHistory.push({ role, parts: [{ text }] });
+      }
     });
 
+    sanitizedHistory.forEach(turn => contents.push(turn));
+
     const modelToUse = geminiModel || 'gemini-3.7-flash';
-    const result = await executeGeminiStrictRequest(modelToUse, geminiApiKey, contents);
+    const result = await executeGeminiStrictRequest(modelToUse, effectiveKey, contents);
 
     if (result.ok) {
-      // Succeeded on Gemini 3.7! Clear pending task
       localStorage.removeItem('tmm_coach_pending_query');
       currentPendingPrompt = null;
       hideCoachQueue();
 
-      const botResponseText = result.data.candidates?.[0]?.content?.parts?.[0]?.text || "I'm reviewing your monthly plan. How are your legs feeling today?";
+      const botResponseText = result.data.candidates?.[0]?.content?.parts?.[0]?.text || "I'm reviewing your training schedule. How are your legs feeling today?";
       coachChatHistory.push({
         role: 'bot',
         content: botResponseText,
@@ -5147,16 +5208,15 @@ Tone: Warm, empathetic, inspiring, analytical, and authoritative. Speak like an 
       pruneCoachChatHistory();
       renderCoachMessages();
     } else {
-      if (result.status === 503 || result.status === 429) {
-        // High Demand on 3.7: Calculate exact wait seconds (e.g. 10s, 15s, 20s, 25s, 30s)
-        const waitSec = Math.min(10 + (attempt - 1) * 5, 30);
+      if ((result.status === 503 || result.status === 429) && attempt <= 5) {
+        const waitSec = Math.min(8 + (attempt - 1) * 4, 25);
         showCoachQueue(waitSec, attempt, userText);
       } else {
         localStorage.removeItem('tmm_coach_pending_query');
         hideCoachQueue();
         coachChatHistory.push({
           role: 'bot',
-          content: `⚠️ **API Error (${result.status}):** ${result.message}`,
+          content: `⚠️ **API Error (${result.status || 'Request Failed'}):** ${result.message || 'Unable to connect to model.'}`,
           timestamp: new Date().toISOString()
         });
         pruneCoachChatHistory();
@@ -5164,8 +5224,16 @@ Tone: Warm, empathetic, inspiring, analytical, and authoritative. Speak like an 
       }
     }
   } catch (err) {
-    // Network disconnect or timeout: wait 12s and retry
-    showCoachQueue(12, attempt, userText);
+    console.error('Vega query execution error:', err);
+    localStorage.removeItem('tmm_coach_pending_query');
+    hideCoachQueue();
+    coachChatHistory.push({
+      role: 'bot',
+      content: `⚠️ **Processing Error:** ${err.message || 'An unexpected error occurred.'}`,
+      timestamp: new Date().toISOString()
+    });
+    pruneCoachChatHistory();
+    renderCoachMessages();
   } finally {
     if (typingIndicator && !coachCountdownInterval) {
       typingIndicator.style.display = 'none';
