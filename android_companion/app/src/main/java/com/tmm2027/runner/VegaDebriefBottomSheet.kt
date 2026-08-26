@@ -3,6 +3,7 @@ package com.tmm2027.runner
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,8 +23,12 @@ import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
 /**
- * VegaDebriefBottomSheet - Native Android Debrief Dialog.
- * Executes Gemini 3.6 Flash with real telemetry and updates Supabase.
+ * VegaDebriefBottomSheet - Swiss Industrial & Neo-Brutalist Athletic Debrief Studio.
+ * Strict adherence to DESIGN_COMPANION.md:
+ * - Subtle rustic warm parchment canvas (#FAF8F3 / #F2EFE6)
+ * - 2.5px structural black borders (#111111)
+ * - International Safety Orange accents (#F95700)
+ * - Swiss Neo-Grotesk & Monospaced typography
  */
 class VegaDebriefBottomSheet : BottomSheetDialogFragment() {
 
@@ -62,97 +67,217 @@ class VegaDebriefBottomSheet : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val context = requireContext()
+        val dp = { value: Int -> (value * resources.displayMetrics.density).toInt() }
+
+        // Root ScrollView on Subtle Rustic Warm Parchment (#FAF8F3)
+        val scrollView = ScrollView(context).apply {
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            setBackgroundColor(Color.parseColor("#FAF8F3"))
+            isFillViewport = true
+        }
+
         val root = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
-            setBackgroundColor(Color.parseColor("#0C0502"))
-            setPadding(48, 48, 48, 64)
+            setBackgroundColor(Color.parseColor("#FAF8F3"))
+            setPadding(dp(20), dp(24), dp(20), dp(36))
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
         }
+        scrollView.addView(root)
 
-        // Header Strip
-        val header = LinearLayout(context).apply {
+        // 1. Swiss Header Bento Strip
+        val headerCard = LinearLayout(context).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = android.view.Gravity.CENTER_VERTICAL
+            setPadding(dp(16), dp(12), dp(16), dp(12))
+            background = GradientDrawable().apply {
+                setColor(Color.parseColor("#FFFFFF"))
+                setStroke(dp(2), Color.parseColor("#111111"))
+                cornerRadius = dp(14).toFloat()
+            }
         }
 
         val badge = TextView(context).apply {
             text = "COACH VEGA AI"
             textSize = 10f
             typeface = Typeface.MONOSPACE
-            setTextColor(Color.parseColor("#FFCC00"))
-            setBackgroundColor(Color.parseColor("#332200"))
-            setPadding(16, 6, 16, 6)
+            setTextColor(Color.WHITE)
+            setPadding(dp(8), dp(4), dp(8), dp(4))
+            background = GradientDrawable().apply {
+                setColor(Color.parseColor("#111111"))
+                cornerRadius = dp(6).toFloat()
+            }
         }
 
         tvDebriefTitle = TextView(context).apply {
-            text = "  SUNDAY DEBRIEF • WEEK $weekNumber"
+            text = "  SUNDAY DEBRIEF • WK 0$weekNumber."
             textSize = 14f
+            typeface = Typeface.DEFAULT_BOLD
+            setTextColor(Color.parseColor("#111111"))
+            letterSpacing = -0.02f
+        }
+
+        headerCard.addView(badge)
+        headerCard.addView(tvDebriefTitle)
+        root.addView(headerCard)
+
+        // 2. Telemetry High-Contrast Snapshot Strip
+        val telemetryStrip = LinearLayout(context).apply {
+            orientation = LinearLayout.HORIZONTAL
+            val p = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+                topMargin = dp(12)
+            }
+            layoutParams = p
+        }
+
+        val cardKm = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            val lp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
+                marginEnd = dp(6)
+            }
+            layoutParams = lp
+            setPadding(dp(12), dp(10), dp(12), dp(10))
+            background = GradientDrawable().apply {
+                setColor(Color.parseColor("#F95700"))
+                setStroke(dp(2), Color.parseColor("#111111"))
+                cornerRadius = dp(12).toFloat()
+            }
+        }
+
+        val tvKmLabel = TextView(context).apply {
+            text = "WEEKLY VOLUME"
+            textSize = 9f
+            typeface = Typeface.MONOSPACE
+            setTextColor(Color.WHITE)
+        }
+        val tvKmVal = TextView(context).apply {
+            text = "18.5 / 21.0 KM"
+            textSize = 15f
             typeface = Typeface.DEFAULT_BOLD
             setTextColor(Color.WHITE)
         }
+        cardKm.addView(tvKmLabel)
+        cardKm.addView(tvKmVal)
 
-        header.addView(badge)
-        header.addView(tvDebriefTitle)
-        root.addView(header)
+        val cardAdherence = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            val lp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
+                marginStart = dp(6)
+            }
+            layoutParams = lp
+            setPadding(dp(12), dp(10), dp(12), dp(10))
+            background = GradientDrawable().apply {
+                setColor(Color.parseColor("#FFFFFF"))
+                setStroke(dp(2), Color.parseColor("#111111"))
+                cornerRadius = dp(12).toFloat()
+            }
+        }
+        val tvAdhLabel = TextView(context).apply {
+            text = "ADHERENCE RATE"
+            textSize = 9f
+            typeface = Typeface.MONOSPACE
+            setTextColor(Color.parseColor("#6B7280"))
+        }
+        val tvAdhVal = TextView(context).apply {
+            text = "88% COMPLETED"
+            textSize = 15f
+            typeface = Typeface.DEFAULT_BOLD
+            setTextColor(Color.parseColor("#111111"))
+        }
+        cardAdherence.addView(tvAdhLabel)
+        cardAdherence.addView(tvAdhVal)
 
-        // Progress Bar
+        telemetryStrip.addView(cardKm)
+        telemetryStrip.addView(cardAdherence)
+        root.addView(telemetryStrip)
+
+        // Progress Indicator
         progressBar = ProgressBar(context).apply {
             isIndeterminate = true
             visibility = View.VISIBLE
-            setPadding(0, 32, 0, 32)
+            val p = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+                gravity = android.view.Gravity.CENTER_HORIZONTAL
+                topMargin = dp(24)
+                bottomMargin = dp(24)
+            }
+            layoutParams = p
         }
         root.addView(progressBar)
 
-        // Debrief Content Area
+        // 3. Clinical Telemetry Debrief Card
         tvDebriefContent = TextView(context).apply {
             textSize = 13f
-            setTextColor(Color.parseColor("#E2E8F0"))
-            setLineSpacing(10f, 1.2f)
+            setTextColor(Color.parseColor("#111111"))
+            setLineSpacing(dp(4).toFloat(), 1.25f)
             visibility = View.GONE
-            setPadding(0, 24, 0, 24)
+            setPadding(dp(16), dp(16), dp(16), dp(16))
+            val p = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+                topMargin = dp(12)
+            }
+            layoutParams = p
+            background = GradientDrawable().apply {
+                setColor(Color.parseColor("#FFFFFF"))
+                setStroke(dp(2), Color.parseColor("#111111"))
+                cornerRadius = dp(14).toFloat()
+            }
         }
         root.addView(tvDebriefContent)
 
-        // Questions / Feedback Form Area
+        // 4. Questions & Feedback Form Container
         layoutQuestionsContainer = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
             visibility = View.GONE
+            val p = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+                topMargin = dp(14)
+            }
+            layoutParams = p
         }
 
         val tvReplyLabel = TextView(context).apply {
-            text = "YOUR ATHLETE FEEDBACK / RECOVERY NOTES:"
+            text = "ATHLETE FEEDBACK & RECOVERY LOG:"
             textSize = 10f
             typeface = Typeface.MONOSPACE
-            setTextColor(Color.parseColor("#94A3B8"))
-            setPadding(0, 16, 0, 8)
+            setTextColor(Color.parseColor("#6B7280"))
+            setPadding(dp(4), dp(8), dp(4), dp(6))
         }
         layoutQuestionsContainer.addView(tvReplyLabel)
 
         etRunnerReply = EditText(context).apply {
-            hint = "e.g. Left calf felt tight on Wednesday, but morning stairs are pain-free today..."
-            setHintTextColor(Color.parseColor("#64748B"))
-            setTextColor(Color.WHITE)
+            hint = "e.g. Left calf felt tight on Wednesday, but morning stairs were pain-free today..."
+            setHintTextColor(Color.parseColor("#9CA3AF"))
+            setTextColor(Color.parseColor("#111111"))
             textSize = 13f
             minLines = 3
-            setBackgroundColor(Color.parseColor("#1A110B"))
-            setPadding(24, 24, 24, 24)
+            setPadding(dp(14), dp(14), dp(14), dp(14))
+            background = GradientDrawable().apply {
+                setColor(Color.parseColor("#F2EFE6"))
+                setStroke(dp(2), Color.parseColor("#111111"))
+                cornerRadius = dp(10).toFloat()
+            }
         }
         layoutQuestionsContainer.addView(etRunnerReply)
 
+        // Primary Orange Action Button
         btnSubmitAnswers = Button(context).apply {
             text = "⚡ GENERATE ADAPTIVE WEEK 2 PLAN →"
-            setBackgroundColor(Color.parseColor("#F95700"))
             setTextColor(Color.WHITE)
-            textSize = 12f
-            typeface = Typeface.DEFAULT_BOLD
+            textSize = 13f
+            typeface = Typeface.MONOSPACE
+            background = GradientDrawable().apply {
+                setColor(Color.parseColor("#F95700"))
+                setStroke(dp(2), Color.parseColor("#111111"))
+                cornerRadius = dp(12).toFloat()
+            }
             val params = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
+                dp(54)
             ).apply {
-                topMargin = 24
+                topMargin = dp(14)
             }
             layoutParams = params
             setOnClickListener {
@@ -161,20 +286,23 @@ class VegaDebriefBottomSheet : BottomSheetDialogFragment() {
         }
         layoutQuestionsContainer.addView(btnSubmitAnswers)
 
-        // Plan Diff Container
+        // 5. Plan Diff Card Container
         tvPlanDiffContainer = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
             visibility = View.GONE
-            setPadding(0, 24, 0, 0)
+            val p = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+                topMargin = dp(16)
+            }
+            layoutParams = p
         }
         layoutQuestionsContainer.addView(tvPlanDiffContainer)
 
         root.addView(layoutQuestionsContainer)
 
-        // Start async Gemini analysis of Week 1
+        // Execute Gemini 3.6 Flash Telemetry Synthesis
         loadDynamicTelemetryDebrief()
 
-        return root
+        return scrollView
     }
 
     private fun loadDynamicTelemetryDebrief() {
@@ -259,7 +387,7 @@ class VegaDebriefBottomSheet : BottomSheetDialogFragment() {
         }
 
         btnSubmitAnswers.isEnabled = false
-        btnSubmitAnswers.text = "🔄 COMPUTING WEEK 2 PLAN ADAPTATIONS..."
+        btnSubmitAnswers.text = "🔄 COMPUTING ADAPTIVE PLAN..."
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -313,19 +441,28 @@ class VegaDebriefBottomSheet : BottomSheetDialogFragment() {
                     ?.optJSONArray("parts")?.optJSONObject(0)?.optString("text") ?: ""
 
                 withContext(Dispatchers.Main) {
-                    btnSubmitAnswers.text = "✅ WEEK 2 PLAN ADAPTED & SAVED TO CLOUD"
-                    btnSubmitAnswers.setBackgroundColor(Color.parseColor("#10B981"))
+                    val dp = { value: Int -> (value * resources.displayMetrics.density).toInt() }
+                    btnSubmitAnswers.text = "✅ WEEK 2 PLAN ADAPTED & SAVED"
+                    btnSubmitAnswers.background = GradientDrawable().apply {
+                        setColor(Color.parseColor("#111111"))
+                        setStroke(dp(2), Color.parseColor("#111111"))
+                        cornerRadius = dp(12).toFloat()
+                    }
                     
                     tvPlanDiffContainer.removeAllViews()
                     tvPlanDiffContainer.visibility = View.VISIBLE
                     
                     val resultTv = TextView(requireContext()).apply {
                         setText(text)
-                        setTextColor(Color.parseColor("#A7F3D0"))
+                        setTextColor(Color.parseColor("#111111"))
                         textSize = 12f
-                        setLineSpacing(8f, 1.2f)
-                        setPadding(16, 16, 16, 16)
-                        setBackgroundColor(Color.parseColor("#064E3B"))
+                        setLineSpacing(dp(4).toFloat(), 1.2f)
+                        setPadding(dp(14), dp(14), dp(14), dp(14))
+                        background = GradientDrawable().apply {
+                            setColor(Color.parseColor("#FFFFFF"))
+                            setStroke(dp(2), Color.parseColor("#111111"))
+                            cornerRadius = dp(12).toFloat()
+                        }
                     }
                     tvPlanDiffContainer.addView(resultTv)
                     Toast.makeText(requireContext(), "Master Plan updated in Supabase cloud!", Toast.LENGTH_LONG).show()

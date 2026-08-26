@@ -133,4 +133,49 @@ Every work rep and recovery interval is decomposed into discrete, step-by-step n
 
 ---
 
-*Document Version: 6.0.0 • Swiss Industrial Athletic Edition • TMM 2027 Master Plan*
+## 5. Proactive Sunday 6:00 PM Weekly Debrief & AI Coach Vega Studio
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 🏃 COACH VEGA • SUNDAY 6:00 PM DEBRIEF (WEEK 01)                            │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ ┌─────────────────────────┐  ┌────────────────────────────────────────────┐ │
+│ │ 18.5 / 21.0 KM  (88%)   │  │ ⚡ WEDNESDAY PACE SPIKE: 6:38 min/km       │ │
+│ │ [88% ADHERENCE BADGE]   │  │ 🩺 FRIDAY PREHAB: LEFT CALF STRAIN FLAGGED │ │
+│ └─────────────────────────┘  └────────────────────────────────────────────┘ │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 📋 CLINICAL PERFORMANCE SUMMARY (DYNAMIC & UN-TEMPLATED):                   │
+│ "Solid foundation work (18.5km logged). Wednesday's 6:38 pace spike placed   │
+│ excessive eccentric load in Evo SL 2s, triggering Friday's calf tightness." │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 💬 DIAGNOSTIC CHECK-IN QUESTIONS:                                           │
+│ 1. Is the tightness in the soleus or upper gastrocnemius?                   │
+│ 2. Can you do 10 single-leg calf raises without sharp pain?                 │
+│ 3. Did morning stairs feel stiff today?                                     │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ ✍️ ATHLETE FEEDBACK INPUT:                                                  │
+│ [ Type or voice-dictate your response...                                  ] │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ [ ⚡ GENERATE ADAPTIVE WEEK 2 PLAN (SWISS ORANGE #F95700) → ]               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ 🔄 PROPOSED SCHEDULE MODIFICATIONS (BEFORE ➔ AFTER DIFF):                   │
+│ • Tuesday: Speedwork ➔ 4.0km Gentle Recovery Shakeout + Soleus Eccentrics   │
+│ [ ✅ APPROVE & COMMIT TO MASTER PLAN (SOLID BLACK #111111) ]                │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Visual Specifications & Design Rules for Debrief Studio:
+1. **Canvas & Surfaces:**
+   * Sheet Backdrop: Subtle Rustic Warm Parchment (`#FAF8F3`).
+   * Card Enclosures: Crisp `2.5px` solid black border (`#111111`) with `16px` corner radius.
+2. **Typography & Hierarchies:**
+   * Headlines: Swiss Neo-Grotesk (`Inter` / `Helvetica Neue`, weight 800) with mono badge (`COACH VEGA AI`).
+   * Telemetry Deltas: Monospaced high-contrast chips (`JetBrains Mono`, `#111111` on `#FAF8F3`).
+3. **Accent Colors & Action Triggers:**
+   * Primary Action (`GENERATE ADAPTIVE PLAN`): Solid International Orange (`#F95700`) with bold white text.
+   * Approval Action (`APPROVE & COMMIT`): Solid Pitch Black (`#111111`) or Forest Emerald (`#059669`) badge.
+   * Lock Screen Notification: Pure Swiss White icon with High-Priority reminder badge.
+
+---
+
+*Document Version: 7.0.0 • Swiss Industrial Athletic Edition • TMM 2027 Master Plan*
