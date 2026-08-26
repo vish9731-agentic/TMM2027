@@ -2962,19 +2962,19 @@ function generateGoogleCalendarUrl(wo, customTime = null) {
     ].filter(Boolean).join('\n');
   }
 
-  const startIso = formatGCalDate(startDt);
-  const endIso = formatGCalDate(endDt);
+  const encodedTitle = encodeURIComponent(title);
+  const encodedDetails = encodeURIComponent(details);
+  const dates = `${formatGCalDate(startDt)}/${formatGCalDate(endDt)}`;
 
-  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${startIso}/${endIso}&details=${encodeURIComponent(details)}&location=${encodeURIComponent('Mumbai / Training Course')}`;
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodedTitle}&dates=${dates}&details=${encodedDetails}&sf=true&output=xml`;
 }
 
-// Universal Intelligent Workout Split & Stage Strategy Parser
 function generateWorkoutSplits(wo) {
-  const desc = (wo.description || '').trim();
+  if (!wo || typeof wo !== 'object') return [];
+  const dist = parseFloat(wo.distance_km || 0);
+  const typeLower = (wo.type || '').toLowerCase();
+  const desc = wo.description || '';
   const descLower = desc.toLowerCase();
-  const type = (wo.type || wo.workout_type || 'Workout').trim();
-  const typeLower = type.toLowerCase();
-  const dist = Number(wo.distance_km) || 0;
   const targetPace = wo.target_pace || 'N/A';
 
   if (dist === 0) {
@@ -2987,123 +2987,192 @@ function generateWorkoutSplits(wo) {
 
   const splits = [];
 
-  // 1. Hill Workouts (e.g. Hill Intro, Hill Repeats, Hill Attack, Pedder Road)
-  if (typeLower.includes('hill') || descLower.includes('uphill') || descLower.includes('hill repeat') || descLower.includes('hill attack')) {
+  // A. Hybrid: Hills + Tempo
+  if (descLower.includes('hill') && descLower.includes('tempo')) {
     const warmupMatch = desc.match(/([\d\.]+)\s*km\s*warmup/i);
-    const cooldownMatch = desc.match(/([\d\.]+)\s*km\s*cooldown/i);
     const warmupKm = warmupMatch ? parseFloat(warmupMatch[1]) : 2.0;
-    const cooldownKm = cooldownMatch ? parseFloat(cooldownMatch[1]) : 2.0;
-    
-    const repMatch = desc.match(/(\d+\s*x\s*[0-9\-]+(?:sec|s|min|m)?\s*[a-zA-Z\s\-]+repeats?)/i) ||
-                     desc.match(/(\d+\s*x\s*[^\,\.]+)/i);
-    const repText = repMatch ? repMatch[0].trim() : 'Uphill Repeats with Jog-Down Recovery';
-
-    splits.push({
-      km: `Km 1 – ${warmupKm}`,
-      phase: 'Warm-up Float',
-      pace: '7:45 – 8:00 min/km',
-      desc: 'Gentle aerobic warmup on flat ground, dynamic ankle mobility',
-      color: '#10b981'
-    });
-    splits.push({
-      km: 'Main Set',
-      phase: 'Hill Repeats',
-      pace: 'RPE 7–8 (Hard Effort)',
-      desc: `${repText} (Drive knees & glutes, upright chest, easy jog-down recovery)`,
-      color: '#ff3b00'
-    });
-    splits.push({
-      km: `Final ${cooldownKm} km`,
-      phase: 'Cool-down Float',
-      pace: '7:50 – 8:15 min/km',
-      desc: 'Easy recovery flush to clear lactate from calves and quads',
-      color: '#38bdf8'
-    });
-    return splits;
-  }
-
-  // 2. Strides (e.g. 5x100m strides, 4x100m strides)
-  if (typeLower.includes('stride') || descLower.includes('strides')) {
-    const warmupMatch = desc.match(/([\d\.]+)\s*km\s*warmup/i) || desc.match(/([\d\.]+)\s*km\s*easy/i);
-    const cooldownMatch = desc.match(/([\d\.]+)\s*km\s*cooldown/i) || desc.match(/([\d\.]+)\s*km\s*easy/i);
-    const warmupKm = warmupMatch ? parseFloat(warmupMatch[1]) : 1.5;
-    const cooldownKm = cooldownMatch ? parseFloat(cooldownMatch[1]) : Math.max(1.5, dist - warmupKm - 0.5);
-
-    const strideMatch = desc.match(/(\d+\s*x\s*\d+\s*m[^\,\.]*)/i);
-    const strideText = strideMatch ? strideMatch[1].trim() : '5x100m Fast Relaxed Strides';
-
-    splits.push({
-      km: `Km 1 – ${warmupKm}`,
-      phase: 'Warm-up Float',
-      pace: '7:45 – 8:00 min/km',
-      desc: 'Easy aerobic jog, loose shoulders, warm up achilles & soleus',
-      color: '#10b981'
-    });
-    splits.push({
-      km: 'Main Set',
-      phase: 'Speed Strides',
-      pace: '5:20 – 5:45 min/km',
-      desc: `${strideText} (Accelerate to 90% top speed with 90s walk rest between reps)`,
-      color: '#ffcc00'
-    });
-    splits.push({
-      km: `Final ${cooldownKm.toFixed(1)} km`,
-      phase: 'Cool-down Flush',
-      pace: '7:50 – 8:15 min/km',
-      desc: 'Gentle aerobic flush + 5 mins walking cool-down',
-      color: '#38bdf8'
-    });
-    return splits;
-  }
-
-  // 3. Intervals / 400m / 1K Repeats (e.g. 4x400m, 1K repeats, time intervals)
-  if (typeLower.includes('interval') || typeLower.includes('repeat') || descLower.includes('400m') || descLower.includes('1k repeats') || descLower.includes('1 km @') || descLower.includes('x (')) {
-    const warmupKm = 1.0;
-    const cooldownKm = 1.0;
-
     splits.push({
       km: `Km 0 – ${warmupKm.toFixed(1)}`,
-      phase: 'Phase 1: Warmup Jog',
-      pace: '7:30 – 7:45 min/km',
-      desc: 'Gradual heart rate ramp, dynamic mobility drills (RPE 3)',
+      phase: 'Phase 1: Warm-up Float',
+      pace: '7:45 – 8:00 min/km',
+      desc: 'Easy aerobic warmup on flat ground, dynamic ankle mobility (RPE 3)',
       color: '#10b981'
     });
 
-    // Detect rep pattern (e.g. 4x400m or 6x1-min or default 4x400m)
-    let repCount = 4;
-    let repDist = '400m';
-    let restDist = '200m';
-    let repPace = targetPace !== 'N/A' ? targetPace : '5:50 min/km';
-
-    const matchX = desc.match(/(\d+)\s*x\s*(\d+\s*m|\d+\s*km|\d+\s*min|\d+-\w+)/i);
-    if (matchX) {
-      repCount = parseInt(matchX[1], 10) || 4;
-      repDist = matchX[2].trim();
-    }
-
-    const matchRest = desc.match(/(\d+\s*m|\d+\s*s|\d+\s*sec|\d+\s*min)\s*(?:jog|walk|rest|recovery)/i);
-    if (matchRest) {
-      restDist = matchRest[1].trim();
-    }
+    const hillMatch = desc.match(/(\d+)\s*[x×X]\s*([0-9\-]+(?:sec|s|min|m)?\s*[a-zA-Z\s\-]*repeats?|[0-9\-]+(?:sec|s|min|m)?)/i);
+    const repCount = hillMatch ? parseInt(hillMatch[1], 10) : 4;
+    const durationStr = hillMatch ? (hillMatch[2].match(/\d+\s*(?:sec|s|min|m)/i)?.[0] || '75-sec') : '75-sec';
 
     let subSectionIdx = 1;
     for (let i = 1; i <= repCount; i++) {
-      // Work Rep Sub-Section
       splits.push({
-        km: `${subSectionIdx}. ${repDist} Rep ${i}`,
-        phase: `Interval Rep ${i}/${repCount}`,
-        pace: repPace,
-        desc: `Rep ${i} of ${repCount}: Drive knees, tall posture, cadence 175+ SPM (RPE 8)`,
+        km: `${subSectionIdx}. ${durationStr} Hill ${i}`,
+        phase: `Hill Rep ${i}/${repCount}`,
+        pace: 'Uphill Sprint (RPE 8)',
+        desc: `Rep ${i} of ${repCount}: Powerful glute drive, high knees, upright torso (RPE 8)`,
         color: '#ff3b00'
       });
       subSectionIdx++;
 
-      // Recovery Rest Sub-Section
       splits.push({
-        km: `${subSectionIdx}. ${restDist} Rest ${i}`,
+        km: `${subSectionIdx}. Jog-Down Rest ${i}`,
         phase: `Recovery ${i}/${repCount}`,
-        pace: 'Easy Jog / Walk',
-        desc: `Rest ${i} of ${repCount}: Slow down, deep belly breaths, lower heart rate (RPE 2)`,
+        pace: 'Walk / Easy Jog',
+        desc: `Rest ${i} of ${repCount}: Controlled jog down to hill base, reset heart rate (RPE 2)`,
+        color: '#38bdf8'
+      });
+      subSectionIdx++;
+    }
+
+    const tempoMatch = desc.match(/([\d\.]+)\s*km\s*@\s*tempo\s*(?:\(([^)]+)\))?/i);
+    const tempoKm = tempoMatch ? parseFloat(tempoMatch[1]) : 2.0;
+    const tempoPace = tempoMatch && tempoMatch[2] ? tempoMatch[2] : '6:30 min/km';
+    const tempoStartKm = warmupKm;
+    const tempoEndKm = warmupKm + tempoKm;
+
+    splits.push({
+      km: `Km ${tempoStartKm.toFixed(1)} – ${tempoEndKm.toFixed(1)}`,
+      phase: 'Phase 2: Continuous Tempo Block',
+      pace: tempoPace,
+      desc: `${tempoKm.toFixed(1)} km sustained threshold lock post-hills. Lock into 172+ SPM rhythm (RPE 7)`,
+      color: '#ff7700'
+    });
+
+    const cooldownMatch = desc.match(/([\d\.]+)\s*km\s*cooldown/i);
+    const cooldownKm = cooldownMatch ? parseFloat(cooldownMatch[1]) : 1.5;
+    splits.push({
+      km: `Final ${cooldownKm.toFixed(1)} km`,
+      phase: 'Phase 3: Cool-down Flush',
+      pace: '7:50 – 8:15 min/km',
+      desc: 'Easy recovery flush to clear lactate from calves and quads (RPE 2)',
+      color: '#a855f7'
+    });
+
+    return splits;
+  }
+
+  // B. Continuous Tempo / Threshold / Marathon Pace
+  const hasContinuousKeyword = descLower.includes('continuous') || 
+                               (typeLower.includes('tempo') && !/[0-9]+\s*[x×X]\s*/.test(desc)) ||
+                               (typeLower.includes('threshold') && !/[0-9]+\s*[x×X]\s*/.test(desc)) ||
+                               (typeLower.includes('mp') && !/[0-9]+\s*[x×X]\s*/.test(desc));
+
+  if (hasContinuousKeyword) {
+    const warmupMatch = desc.match(/([\d\.]+)\s*km\s*(?:warmup|warm-up|easy)/i);
+    const cooldownMatch = desc.match(/([\d\.]+)\s*km\s*(?:cooldown|cool-down|flush|easy)/i);
+    const warmupKm = warmupMatch ? parseFloat(warmupMatch[1]) : (dist >= 6 ? 2.0 : 1.5);
+    const cooldownKm = cooldownMatch ? parseFloat(cooldownMatch[1]) : (dist >= 6 ? 2.0 : 1.5);
+    
+    const tempoDistMatch = desc.match(/([\d\.]+)\s*km\s*(?:continuous|@\s*tempo|tempo|@\s*marathon\s*pace|@\s*mp)/i);
+    const tempoKm = tempoDistMatch ? parseFloat(tempoDistMatch[1]) : Math.max(1.0, dist - warmupKm - cooldownKm);
+    const tempoEndKm = warmupKm + tempoKm;
+
+    const tempoPaceMatch = desc.match(/\(([0-9]:[0-9]{2}(?:\s*-\s*[0-9]:[0-9]{2})?\s*min\/km)\)/i) ||
+                           targetPace.match(/([0-9]:[0-9]{2}(?:\s*-\s*[0-9]:[0-9]{2})?)/);
+    const tempoPaceStr = tempoPaceMatch ? (tempoPaceMatch[1].includes('min/km') ? tempoPaceMatch[1] : `${tempoPaceMatch[1]} min/km`) : targetPace;
+
+    splits.push({
+      km: `Km 0 – ${warmupKm.toFixed(1)}`,
+      phase: 'Phase 1: Warm-up Float',
+      pace: '7:45 – 8:00 min/km',
+      desc: 'Easy aerobic warmup, activate glutes, loosen ankles & soleus (RPE 3)',
+      color: '#10b981'
+    });
+
+    splits.push({
+      km: `Km ${warmupKm.toFixed(1)} – ${tempoEndKm.toFixed(1)}`,
+      phase: typeLower.includes('mp') || descLower.includes('marathon pace') ? 'Phase 2: Marathon Pace Block' : 'Phase 2: Continuous Tempo Block',
+      pace: tempoPaceStr,
+      desc: `${tempoKm.toFixed(1)} km continuous locked-in effort, 172+ SPM, 2:2 rhythmic breathing (RPE 6-7)`,
+      color: '#ff7700'
+    });
+
+    splits.push({
+      km: `Km ${tempoEndKm.toFixed(1)} – ${dist.toFixed(1)}`,
+      phase: 'Phase 3: Cool-down Flush',
+      pace: '7:50 – 8:15 min/km',
+      desc: `${cooldownKm.toFixed(1)} km easy flush jog and walking transition to clear lactate (RPE 2)`,
+      color: '#38bdf8'
+    });
+
+    return splits;
+  }
+
+  // C. Repetition & Speed Workouts
+  const repMatchPattern = desc.match(/(\d+)\s*[x×X]\s*([0-9a-zA-Z\-\s]+?)(?:with|,|\.|\+|$)/i);
+  if (repMatchPattern || /[0-9]+\s*[x×X]\s*/.test(desc) || descLower.includes('pickups') || descLower.includes('strides')) {
+    const warmupMatch = desc.match(/([\d\.]+)\s*km\s*(?:warmup|easy|warm-up|shakeout)/i);
+    const cooldownMatch = desc.match(/([\d\.]+)\s*km\s*(?:cooldown|flush|cool-down|easy|shakeout)/i);
+    const warmupKm = warmupMatch ? parseFloat(warmupMatch[1]) : (dist >= 6 ? 2.0 : 1.5);
+    const cooldownKm = cooldownMatch ? parseFloat(cooldownMatch[1]) : Math.max(1.0, dist - warmupKm - 0.5);
+
+    splits.push({
+      km: `Km 0 – ${warmupKm.toFixed(1)}`,
+      phase: 'Phase 1: Warm-up Float',
+      pace: '7:45 – 8:00 min/km',
+      desc: 'Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)',
+      color: '#10b981'
+    });
+
+    let repCount = 4;
+    let repLabel = 'Interval';
+    let repPace = targetPace !== 'N/A' ? targetPace : '5:50 min/km';
+    let isHill = typeLower.includes('hill') || descLower.includes('uphill') || descLower.includes('hill repeat');
+
+    const strideMatch = desc.match(/(\d+)\s*[x×X]\s*(\d+m|\d+sec|\d+s|\d+min|\d+km|[0-9\-]+s|[0-9\.]+\s*km)\s*([a-zA-Z\s\-@\(\):0-9\/]+?)(?:with|,|\.|\+|$)/i);
+    if (strideMatch) {
+      repCount = parseInt(strideMatch[1], 10) || 4;
+      const unit = strideMatch[2].trim();
+      const name = strideMatch[3].trim();
+      if (name.includes('stride') || typeLower.includes('stride')) {
+        repLabel = `${unit} Stride`;
+      } else if (name.includes('hill') || isHill) {
+        repLabel = `${unit} Hill Repeat`;
+      } else if (name.includes('tempo') || typeLower.includes('tempo')) {
+        repLabel = `${unit} Tempo Rep`;
+      } else if (name.includes('pickup') || descLower.includes('pickup')) {
+        repLabel = `${unit} Pickup`;
+      } else {
+        repLabel = `${unit} Rep`;
+      }
+    } else {
+      const matchX = desc.match(/(\d+)\s*[x×X]\s*/i);
+      if (matchX) {
+        repCount = parseInt(matchX[1], 10) || 4;
+      }
+    }
+
+    if (isHill) {
+      repPace = 'Uphill Sprint (RPE 8)';
+    } else if (descLower.includes('stride') || typeLower.includes('stride')) {
+      const stridePaceMatch = targetPace.match(/~?([0-9]:[0-9]{2})\s*strides?/i);
+      repPace = stridePaceMatch ? `${stridePaceMatch[1]} min/km` : '5:20 – 5:45 min/km';
+    } else {
+      const paceMatch = desc.match(/\(([0-9]:[0-9]{2}(?:\s*-\s*[0-9]:[0-9]{2})?\s*min\/km)\)/i) ||
+                        targetPace.match(/~?([0-9]:[0-9]{2}(?:\s*-\s*[0-9]:[0-9]{2})?)/);
+      if (paceMatch) repPace = paceMatch[1].includes('min/km') ? paceMatch[1] : `${paceMatch[1]} min/km`;
+    }
+
+    const restMatch = desc.match(/(\d+\s*s|\d+\s*sec|\d+\s*m|\d+\s*min)\s*(?:walk|jog|rest|recovery)/i);
+    const restDuration = restMatch ? restMatch[1].trim() : (isHill ? 'Jog-Down' : (descLower.includes('stride') ? '90s' : '200m'));
+    const restType = isHill ? 'Jog-Down Rest' : (descLower.includes('walk') ? 'Walk Rest' : 'Recovery Jog');
+
+    let subSectionIdx = 1;
+    for (let i = 1; i <= repCount; i++) {
+      splits.push({
+        km: `${subSectionIdx}. ${repLabel} ${i}`,
+        phase: `Rep ${i}/${repCount}`,
+        pace: repPace,
+        desc: isHill ? `Rep ${i} of ${repCount}: Powerful glute drive, high knees, upright torso (RPE 8)` : `Rep ${i} of ${repCount}: High-quality target effort, tall posture, light foot strikes (RPE 7-8)`,
+        color: '#ff3b00'
+      });
+      subSectionIdx++;
+
+      splits.push({
+        km: `${subSectionIdx}. ${restDuration} ${restType} ${i}`,
+        phase: `Recovery ${i}/${repCount}`,
+        pace: 'Walk / Easy Jog',
+        desc: isHill ? `Rest ${i} of ${repCount}: Controlled jog down to hill base, reset heart rate (RPE 2)` : `Rest ${i} of ${repCount}: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)`,
         color: '#38bdf8'
       });
       subSectionIdx++;
@@ -3111,45 +3180,15 @@ function generateWorkoutSplits(wo) {
 
     splits.push({
       km: `Final ${cooldownKm.toFixed(1)} km`,
-      phase: 'Phase 3: Cooldown Jog',
-      pace: '7:45 – 8:15 min/km',
-      desc: 'Controlled jog to flush lactic acid and lower core temperature (RPE 2)',
+      phase: 'Phase 3: Cool-down Flush',
+      pace: '7:50 – 8:15 min/km',
+      desc: 'Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)',
       color: '#a855f7'
     });
     return splits;
   }
 
-  // 4. Tempo / Threshold / MP Blocks
-  if (typeLower.includes('tempo') || typeLower.includes('threshold') || typeLower.includes('mp') || descLower.includes('tempo') || descLower.includes('threshold') || descLower.includes('mp')) {
-    const warmupKm = 1.5;
-    const cooldownKm = 1.5;
-    const tempoKm = Math.max(1.0, dist - warmupKm - cooldownKm);
-
-    splits.push({
-      km: `Km 0 – ${warmupKm.toFixed(1)}`,
-      phase: 'Phase 1: Warmup Float',
-      pace: '7:45 – 8:00 min/km',
-      desc: 'Gentle aerobic warmup, activate glutes & soleus (RPE 3)',
-      color: '#10b981'
-    });
-    splits.push({
-      km: `Km ${(warmupKm + 0.1).toFixed(1)} – ${(warmupKm + tempoKm).toFixed(1)}`,
-      phase: 'Phase 2: Tempo / MP Block',
-      pace: targetPace,
-      desc: 'Sustained lactate threshold effort, locked-in breathing rhythm (2:2 pattern)',
-      color: '#ff7700'
-    });
-    splits.push({
-      km: `Final ${cooldownKm.toFixed(1)} km`,
-      phase: 'Phase 3: Cooldown Flush',
-      pace: '7:50 – 8:15 min/km',
-      desc: 'Easy flush jog and walking transition',
-      color: '#38bdf8'
-    });
-    return splits;
-  }
-
-  // 5. Races / Time Trials (10K Time Trial, Half Marathon, Kolkata 25K, TMM 2027)
+  // D. Races / Time Trials
   if (typeLower.includes('time trial') || typeLower.includes('simulation') || typeLower.includes('hm') || typeLower.includes('vdhm') || typeLower.includes('25k') || typeLower.includes('race') || dist >= 20) {
     const startKm = Math.min(2.0, Math.max(1.0, Math.round(dist * 0.15)));
     const finishKm = Math.min(3.0, Math.max(1.0, Math.round(dist * 0.15)));
@@ -3180,7 +3219,7 @@ function generateWorkoutSplits(wo) {
     return splits;
   }
 
-  // 6. Long Runs (7km - 19km)
+  // E. Long Runs
   if (typeLower.includes('long run') || dist >= 7) {
     const warmupKm = 1.0;
     const finishKm = 1.0;
@@ -3210,7 +3249,7 @@ function generateWorkoutSplits(wo) {
     return splits;
   }
 
-  // 7. Recovery & Easy Runs (3-Phase Stratification: Warmup -> Cruise [Majority] -> Cooldown)
+  // F. Recovery Runs
   const warmupKm = dist <= 4 ? 0.8 : 1.0;
   const cooldownKm = dist <= 4 ? 0.8 : 0.8;
   const cruiseKm = Math.max(1.0, dist - warmupKm - cooldownKm);
@@ -3223,15 +3262,13 @@ function generateWorkoutSplits(wo) {
     desc: 'Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.',
     color: '#10b981'
   });
-
   splits.push({
     km: `${warmupKm.toFixed(1)} – ${cruiseEnd.toFixed(1)} km`,
     phase: 'Phase 2: Main Cruise (Majority)',
-    pace: targetPace !== 'N/A' ? targetPace : '7:35 – 7:50 min/km',
+    pace: targetPace !== 'N/A' ? targetPace : '7:35 - 7:50 min/km',
     desc: `Main aerobic base cruise (RPE 3, ${cruiseKm.toFixed(1)} km). 168 SPM cadence lock for active vascular capillary flushing.`,
     color: '#00f5d4'
   });
-
   splits.push({
     km: `${cruiseEnd.toFixed(1)} – ${dist.toFixed(1)} km`,
     phase: 'Phase 3: Cooldown',
@@ -5240,7 +5277,7 @@ Tone: Warm, empathetic, inspiring, analytical, and authoritative. Speak like an 
 
     sanitizedHistory.forEach(turn => contents.push(turn));
 
-    const modelToUse = geminiModel || 'gemini-3.7-flash';
+    const modelToUse = normalizeGeminiModel(geminiModel) || 'gemini-3.6-flash';
     const result = await executeGeminiStrictRequest(modelToUse, effectiveKey, contents);
 
     if (result.ok) {
@@ -5289,6 +5326,160 @@ Tone: Warm, empathetic, inspiring, analytical, and authoritative. Speak like an 
     }
   }
 }
+
+// Trigger Live Sunday 6:00 PM Weekly Debrief Demo
+async function triggerWeeklyDebriefDemo(weekNumber = 1) {
+  // 1. Open Vega Drawer
+  const drawer = document.getElementById('ai-coach-drawer');
+  if (drawer && !drawer.classList.contains('open')) {
+    toggleCoachDrawer();
+  }
+
+  // 2. Simulate native phone/browser notification
+  if ('Notification' in window) {
+    if (Notification.permission === 'granted') {
+      try {
+        new Notification(`🏃 Coach Vega • Sunday 6:00 PM Debrief (Week ${weekNumber})`, {
+          body: `Week ${weekNumber} telemetry analysis complete. Tap to view your performance brief & diagnostic check-in.`,
+          icon: 'icons/icon.svg'
+        });
+      } catch (e) {}
+    } else if (Notification.permission !== 'denied') {
+      Notification.requestPermission().then(permission => {
+        if (permission === 'granted') {
+          try {
+            new Notification(`🏃 Coach Vega • Sunday 6:00 PM Debrief (Week ${weekNumber})`, {
+              body: `Week ${weekNumber} telemetry analysis complete. Tap to view your performance brief & diagnostic check-in.`,
+              icon: 'icons/icon.svg'
+            });
+          } catch (e) {}
+        }
+      });
+    }
+  }
+
+  // 3. Assemble Week Telemetry Data
+  const targetWeek = (rawWeeksData || []).find(w => w.week_number === weekNumber) || (rawWeeksData || [])[0];
+  const nextWeek = (rawWeeksData || []).find(w => w.week_number === weekNumber + 1) || (rawWeeksData || [])[1];
+
+  if (!targetWeek) {
+    alert('No training data found for Week ' + weekNumber);
+    return;
+  }
+
+  const weeklyWorkouts = (targetWeek.workouts || []).map(wo => {
+    const logKey = `${targetWeek.week_number}_${wo.day}_${wo.date}`;
+    const log = (typeof completedWorkouts !== 'undefined' && completedWorkouts[logKey]) ? completedWorkouts[logKey] : null;
+    return {
+      day: wo.day,
+      date: wo.date,
+      type: wo.type,
+      planned_distance_km: wo.distance_km,
+      actual_distance_km: log && log.done ? (log.dist || wo.distance_km) : 0,
+      target_pace: wo.target_pace,
+      actual_pace: log && log.done ? (log.actualPace || wo.target_pace) : (log ? 'Missed' : 'Pending'),
+      completed: log ? !!log.done : false,
+      variance_score: log ? log.scorePct : null,
+      notes: log ? log.notes : (wo.day === 'Friday' ? 'Marked left calf tightness on Friday' : null)
+    };
+  });
+
+  const plannedTotalKm = targetWeek.total_planned_km || weeklyWorkouts.reduce((acc, w) => acc + w.planned_distance_km, 0);
+  const actualTotalKm = weeklyWorkouts.reduce((acc, w) => acc + (w.actual_distance_km || 0), 0);
+  const adherencePct = plannedTotalKm > 0 ? Math.round((actualTotalKm / plannedTotalKm) * 100) : 0;
+
+  const telemetryPayload = {
+    evaluated_week_number: targetWeek.week_number,
+    phase: targetWeek.phase,
+    focus: targetWeek.focus,
+    total_planned_km: plannedTotalKm,
+    total_completed_km: actualTotalKm,
+    adherence_percentage: adherencePct + '%',
+    workouts: weeklyWorkouts,
+    next_week_scheduled_workouts: nextWeek ? nextWeek.workouts : []
+  };
+
+  const userPromptText = `[AUTOMATED SUNDAY 6:00 PM DEBRIEF TRIGGER]\nPlease evaluate my performance for Week ${weekNumber} using my exact telemetry. Give me a short, un-templated clinical brief on how this week went, and ask me 2–3 bespoke diagnostic questions tailored specifically to what occurred in my data.`;
+
+  coachChatHistory.push({
+    role: 'user',
+    content: `📊 **Sunday 6:00 PM Weekly Debrief Trigger (Week ${weekNumber})**\n\n*Gathered 7-day GPS logs, pace adherence, and calf recovery events. Analyzing telemetry...*`,
+    timestamp: new Date().toISOString()
+  });
+  renderCoachMessages();
+
+  processCoachWeeklyDebrief(telemetryPayload, userPromptText);
+}
+window.triggerWeeklyDebriefDemo = triggerWeeklyDebriefDemo;
+
+async function processCoachWeeklyDebrief(telemetryPayload, userPromptText) {
+  const typingIndicator = document.getElementById('coach-typing-indicator');
+  const typingText = document.getElementById('coach-typing-text');
+  if (typingIndicator) {
+    typingIndicator.style.display = 'flex';
+    if (typingText) typingText.textContent = `Coach Vega is analyzing Week ${telemetryPayload.evaluated_week_number} telemetry...`;
+  }
+
+  const effectiveKey = getEffectiveApiKey();
+  if (!effectiveKey) {
+    hideCoachQueue();
+    if (typingIndicator) typingIndicator.style.display = 'none';
+    coachChatHistory.push({
+      role: 'bot',
+      content: `👋 **Welcome! I'm Coach Vega.** 🏃‍♀️\n\nPlease activate your Google Gemini API Key first to run your dynamic Sunday Debrief.`,
+      showKeyInput: true,
+      timestamp: new Date().toISOString()
+    });
+    renderCoachMessages();
+    return;
+  }
+
+  const systemPrompt = `You are Coach Vega — elite Olympic marathon coach, exercise physiologist, and physical therapist for an athlete targeting Sub-5:00 (7:06 min/km pace) at the Tata Mumbai Marathon 2027.
+The athlete is training in Adidas Adizero Evo SL 2 shoes.
+
+WEEKLY TELEMETRY DATA (EXACT 7-DAY COMPLIANCE LOGS):
+${JSON.stringify(telemetryPayload, null, 2)}
+
+YOUR DIRECTIVES:
+1. **NO GENERIC TEMPLATES & NO CANNED QUESTIONS**:
+   - Review the exact 7-day table above.
+   - Summarize the week in a concise, punchy 3-4 sentence clinical debrief (highlighting exact volume adherence, pace discipline, anomalies such as pace spikes or skipped strength).
+2. **GENERATE 2-3 SHARP, BESPOKE CHECK-IN QUESTIONS**:
+   - The questions MUST directly connect to what happened in the data (e.g. if pace on Wednesday was fast, ask about the impact on lower leg muscles; if Friday strength was skipped or calf tightness noted, ask specific questions about pain location and single-leg calf raise ability; if long run was executed well, ask about fueling/hydration).
+3. **EXPLAIN THAT YOUR ANSWERS WILL ADAPT NEXT WEEK**:
+   - Tell the runner that once they reply to these questions in the chat, you will immediately generate a customized plan adjustment for Week ${telemetryPayload.evaluated_week_number + 1} (e.g. deloading, pacing adjustment, eccentric prehab) with 1-tap approval.
+
+Tone: Warm, empathetic, analytical, inspiring, and authoritative.`;
+
+  const contents = [
+    { role: 'user', parts: [{ text: systemPrompt + '\n\n' + userPromptText }] }
+  ];
+
+  const modelToUse = normalizeGeminiModel(geminiModel) || 'gemini-3.6-flash';
+  const result = await executeGeminiStrictRequest(modelToUse, effectiveKey, contents);
+
+  if (typingIndicator) typingIndicator.style.display = 'none';
+
+  if (result.ok) {
+    const botText = result.data.candidates?.[0]?.content?.parts?.[0]?.text || "Weekly telemetry analyzed. How did your legs feel on Sunday's long run?";
+    coachChatHistory.push({
+      role: 'bot',
+      content: botText,
+      timestamp: new Date().toISOString()
+    });
+    pruneCoachChatHistory();
+    renderCoachMessages();
+  } else {
+    coachChatHistory.push({
+      role: 'bot',
+      content: `⚠️ **Debrief Error (${result.status || 'Failed'}):** ${result.message || 'Unable to analyze week.'}`,
+      timestamp: new Date().toISOString()
+    });
+    pruneCoachChatHistory();
+    renderCoachMessages();
+  }
+}
+window.processCoachWeeklyDebrief = processCoachWeeklyDebrief;
 
 // Auto-Resume Pending Coach Query on Page Load (even if user closed browser or reloaded)
 function checkAndResumePendingCoachQuery() {
@@ -5642,17 +5833,29 @@ async function loadAudioManifestIntoModal() {
 }
 
 function onWebWeekRunSelected(dateStr) {
-  if (!trainingData || !trainingData.weeks) return;
-  
   let selectedWorkout = null;
-  for (const w of trainingData.weeks) {
-    for (const d of w.workouts) {
-      if (d.date === dateStr) {
-        selectedWorkout = d;
-        break;
+  if (trainingData && Array.isArray(trainingData.weeks)) {
+    for (const w of trainingData.weeks) {
+      for (const d of w.workouts) {
+        if (d.date === dateStr) {
+          selectedWorkout = d;
+          break;
+        }
       }
+      if (selectedWorkout) break;
     }
-    if (selectedWorkout) break;
+  }
+
+  if (!selectedWorkout && Array.isArray(rawWeeksData)) {
+    for (const w of rawWeeksData) {
+      for (const d of w.workouts) {
+        if (d.date === dateStr) {
+          selectedWorkout = d;
+          break;
+        }
+      }
+      if (selectedWorkout) break;
+    }
   }
 
   if (!selectedWorkout) return;
@@ -5667,6 +5870,22 @@ function onWebWeekRunSelected(dateStr) {
   if (weatherEl) {
     const prehab = selectedWorkout.strength_prehab || "Post-run calf flush";
     weatherEl.innerHTML = `📅 <strong>${selectedWorkout.day}, ${dateStr}:</strong> ${selectedWorkout.description} • ${prehab}`;
+  }
+
+  // Dynamically update audio timeline track
+  const timelineTrack = document.querySelector('#audio-companion-modal .audio-timeline-track');
+  if (timelineTrack) {
+    const splits = generateWorkoutSplits(selectedWorkout);
+    timelineTrack.innerHTML = splits.map((s, idx) => `
+      <div class="audio-timeline-node" style="position: relative; margin-bottom: 1rem;">
+        <div style="position: absolute; left: -31px; top: 2px; width: 12px; height: 12px; border-radius: 50%; background: ${s.color}; box-shadow: 0 0 8px ${s.color};"></div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 0.8rem; font-weight: 700; color: #f8fafc;">${s.km} • ${s.phase}</span>
+          <span style="font-size: 0.68rem; color: ${s.color}; font-weight: 700; background: ${s.color}20; padding: 0.1rem 0.4rem; border-radius: 4px;">${s.pace}</span>
+        </div>
+        <div style="font-size: 0.73rem; color: #94a3b8; margin-top: 0.15rem;">${s.desc}</div>
+      </div>
+    `).join('');
   }
 }
 

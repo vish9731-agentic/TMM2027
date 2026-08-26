@@ -111,10 +111,21 @@ object PlanEngine {
 
     fun buildManifestJson(wo: WorkoutDay): String {
         val dist = wo.distance_km
-        val isInterval = wo.type.contains("Interval", ignoreCase = true) || 
-                         wo.type.contains("Speed", ignoreCase = true) ||
-                         wo.description.contains("x (", ignoreCase = true) ||
-                         wo.description.contains("400m", ignoreCase = true)
+        val hasHillsAndTempo = wo.description.contains("hill", ignoreCase = true) && wo.description.contains("tempo", ignoreCase = true)
+        val hasContinuous = !hasHillsAndTempo && (
+            wo.description.contains("continuous", ignoreCase = true) || 
+            (wo.type.contains("Tempo", ignoreCase = true) && !Regex("[0-9]+\\s*[x×X]\\s*").containsMatchIn(wo.description)) ||
+            (wo.type.contains("Threshold", ignoreCase = true) && !Regex("[0-9]+\\s*[x×X]\\s*").containsMatchIn(wo.description))
+        )
+
+        val isRepetition = !hasHillsAndTempo && !hasContinuous && (
+            wo.type.contains("Interval", ignoreCase = true) || 
+            wo.type.contains("Stride", ignoreCase = true) ||
+            wo.description.contains("stride", ignoreCase = true) ||
+            wo.description.contains("400m", ignoreCase = true) ||
+            wo.description.contains("100m", ignoreCase = true) ||
+            Regex("[0-9]+\\s*[x×X]\\s*").containsMatchIn(wo.description)
+        )
         val isRecovery = wo.type.contains("Recovery", ignoreCase = true) || wo.type.contains("Easy", ignoreCase = true)
         val isLongRun = wo.type.contains("Long", ignoreCase = true)
         val isRest = wo.type.contains("Rest", ignoreCase = true) || (wo.distance_km == 0.0 && !wo.type.contains("Strength", ignoreCase = true))
@@ -144,36 +155,277 @@ object PlanEngine {
                 "duckMusicSeconds" to 1.5,
                 "hasCountdown" to false
             ))
-        } else if (isInterval) {
+        } else if (hasHillsAndTempo) {
             // =========================================================================
-            // SPEED & INTERVALS: GRANULAR DISSECTED SUB-SECTIONS (Rep 1, Rest 1, Rep 2...)
+            // HYBRID: HILLS + CONTINUOUS TEMPO BLOCK
             // =========================================================================
+            var warmupKm = 2.0
+            val warmupMatch = Regex("([\\d\\.]+)\\s*km\\s*warmup", RegexOption.IGNORE_CASE).find(wo.description)
+            if (warmupMatch != null) warmupKm = warmupMatch.groupValues[1].toDoubleOrNull() ?: 2.0
+
+            timeline.add(mapOf(
+                "id" to "start_run",
+                "type" to "SESSION_START",
+                "triggerType" to "TIME",
+                "triggerSeconds" to 0,
+                "title" to "Hills + Tempo Started",
+                "text" to "Starting Hybrid session: 4 Hill Repeats followed by a 2 km Tempo Block. Begin with your ${warmupKm} km easy warmup float.",
+                "duckMusicSeconds" to 1.5,
+                "hasCountdown" to false
+            ))
+
+            // 1. Warmup
+            timeline.add(mapOf(
+                "id" to "warmup",
+                "type" to "WARMUP",
+                "triggerType" to "TIME",
+                "triggerSeconds" to 3,
+                "title" to "Phase 1: Warmup Float (${warmupKm} km)",
+                "text" to "Phase 1: Warmup float for ${warmupKm} km at 7:45 min/km, RPE 3. Dynamic mobility for ankles and Achilles.",
+                "duckMusicSeconds" to 1.5,
+                "hasCountdown" to false
+            ))
+
+            var currentSec = (warmupKm * 465).toInt()
+            val totalHillReps = 4
+
+            for (rep in 1..totalHillReps) {
+                // Hill Pre-Cue
+                timeline.add(mapOf(
+                    "id" to "hill_precue_$rep",
+                    "type" to "INTERVAL_PRE_CUE",
+                    "triggerType" to "TIME",
+                    "triggerSeconds" to currentSec - 10,
+                    "title" to "Hill Repeat $rep of $totalHillReps (Pre-Cue)",
+                    "text" to "Get ready: 75-second Uphill Repeat $rep of $totalHillReps. Drive glutes and knees, RPE 8.",
+                    "duckMusicSeconds" to 1.5,
+                    "hasCountdown" to true,
+                    "countdownStartSecond" to currentSec - 5
+                ))
+
+                // Hill Start
+                timeline.add(mapOf(
+                    "id" to "hill_start_$rep",
+                    "type" to "INTERVAL_START",
+                    "triggerType" to "TIME",
+                    "triggerSeconds" to currentSec,
+                    "title" to "75s Uphill Repeat $rep (RPE 8)",
+                    "text" to "ATTACK THE HILL! Drive your knees, keep chest proud and tall, push at RPE 8.",
+                    "duckMusicSeconds" to 0.8,
+                    "hasCountdown" to false
+                ))
+
+                currentSec += 75
+
+                // Rest Pre-Cue
+                timeline.add(mapOf(
+                    "id" to "hill_rest_precue_$rep",
+                    "type" to "REST_PRE_CUE",
+                    "triggerType" to "TIME",
+                    "triggerSeconds" to currentSec - 8,
+                    "title" to "Jog-Down Rest $rep of $totalHillReps",
+                    "text" to "Rest in 5 seconds. Easy jog-down recovery to hill base.",
+                    "duckMusicSeconds" to 1.5,
+                    "hasCountdown" to true,
+                    "countdownStartSecond" to currentSec - 5
+                ))
+
+                // Rest Start
+                timeline.add(mapOf(
+                    "id" to "hill_rest_start_$rep",
+                    "type" to "REST_START",
+                    "triggerType" to "TIME",
+                    "triggerSeconds" to currentSec,
+                    "title" to "Jog-Down Rest $rep",
+                    "text" to "Easy jog down to the base. Shake out arms and reset your breathing, RPE 2.",
+                    "duckMusicSeconds" to 1.0,
+                    "hasCountdown" to false
+                ))
+
+                currentSec += 90
+            }
+
+            // Phase 2: Tempo Block
+            timeline.add(mapOf(
+                "id" to "hybrid_tempo_start",
+                "type" to "CRUISE_START",
+                "triggerType" to "TIME",
+                "triggerSeconds" to currentSec,
+                "title" to "Phase 2: Continuous Tempo Block (2.0 km)",
+                "text" to "Hills complete! Now immediately transition into Phase 2: 2.0 km continuous Tempo at 6:30 min/km. Lock into 172 steps per minute.",
+                "duckMusicSeconds" to 1.5,
+                "hasCountdown" to false
+            ))
+
+            currentSec += (2.0 * 390).toInt() // ~13 mins for 2km @ 6:30
+
+            // Phase 3: Cooldown
+            timeline.add(mapOf(
+                "id" to "cooldown",
+                "type" to "COOLDOWN",
+                "triggerType" to "TIME",
+                "triggerSeconds" to currentSec,
+                "title" to "Phase 3: Cooldown Flush (1.5 km)",
+                "text" to "Tempo block finished! Phase 3: 1.5 km gentle cooldown flush jog to clear lactate.",
+                "duckMusicSeconds" to 1.5,
+                "hasCountdown" to false
+            ))
+
+            // Completion
+            timeline.add(mapOf(
+                "id" to "complete",
+                "type" to "SESSION_COMPLETE",
+                "triggerType" to "TIME",
+                "triggerSeconds" to currentSec + 720,
+                "title" to "Hybrid Session Complete!",
+                "text" to "Hybrid Hills and Tempo session complete! Sensational mental grit today. Drink 500ml electrolyte water and complete your full calf armor routine.",
+                "duckMusicSeconds" to 1.5,
+                "hasCountdown" to false
+            ))
+
+        } else if (hasContinuous) {
+            // =========================================================================
+            // CONTINUOUS SUSTAINED TEMPO / THRESHOLD BLOCK
+            // =========================================================================
+            var warmupKm = 1.5
+            var cooldownKm = 1.5
+            val warmupMatch = Regex("([\\d\\.]+)\\s*km\\s*(?:warmup|warm-up|easy)", RegexOption.IGNORE_CASE).find(wo.description)
+            val cooldownMatch = Regex("([\\d\\.]+)\\s*km\\s*(?:cooldown|cool-down|flush|easy)", RegexOption.IGNORE_CASE).find(wo.description)
+            if (warmupMatch != null) warmupKm = warmupMatch.groupValues[1].toDoubleOrNull() ?: 1.5
+            if (cooldownMatch != null) cooldownKm = cooldownMatch.groupValues[1].toDoubleOrNull() ?: 1.5
+
+            val tempoDistMatch = Regex("([\\d\\.]+)\\s*km\\s*(?:continuous|@\\s*tempo|tempo|@\\s*mp)", RegexOption.IGNORE_CASE).find(wo.description)
+            val tempoKm = tempoDistMatch?.groupValues?.get(1)?.toDoubleOrNull() ?: (dist - warmupKm - cooldownKm).coerceAtLeast(1.0)
+            val tempoEndKm = warmupKm + tempoKm
+
+            val tempoPaceMatch = Regex("\\(([0-9]:[0-9]{2}(?:\\s*-\\s*[0-9]:[0-9]{2})?\\s*min/km)\\)", RegexOption.IGNORE_CASE).find(wo.description)
+            val tempoPaceStr = tempoPaceMatch?.groupValues?.get(1) ?: wo.target_pace
+
+            timeline.add(mapOf(
+                "id" to "start_run",
+                "type" to "SESSION_START",
+                "triggerType" to "TIME",
+                "triggerSeconds" to 0,
+                "title" to "Continuous Tempo Started",
+                "text" to "Starting Continuous Tempo session: ${wo.type}. ${wo.description} Begin with your ${warmupKm} km easy warmup float.",
+                "duckMusicSeconds" to 1.5,
+                "hasCountdown" to false
+            ))
+
+            // 1. Warmup
+            timeline.add(mapOf(
+                "id" to "warmup",
+                "type" to "WARMUP",
+                "triggerType" to "TIME",
+                "triggerSeconds" to 3,
+                "title" to "Phase 1: Warmup Float (${warmupKm} km)",
+                "text" to "Phase 1: Warmup float for ${warmupKm} km at 7:45 min/km, RPE 3. Loosen up hips, ankles, and Achilles.",
+                "duckMusicSeconds" to 1.5,
+                "hasCountdown" to false
+            ))
+
+            // 2. Continuous Tempo Block
+            timeline.add(mapOf(
+                "id" to "tempo_start",
+                "type" to "CRUISE_START",
+                "triggerType" to "DISTANCE",
+                "triggerDistanceKm" to warmupKm,
+                "title" to "Phase 2: Continuous Tempo (${tempoKm} km)",
+                "text" to "Warmup complete! Lock into Continuous Tempo: ${tempoKm} km at $tempoPaceStr. 172 steps per minute, 2:2 breathing pattern, RPE 7.",
+                "duckMusicSeconds" to 1.5,
+                "hasCountdown" to false
+            ))
+
+            // 3. Cooldown Flush
+            timeline.add(mapOf(
+                "id" to "cooldown",
+                "type" to "COOLDOWN",
+                "triggerType" to "DISTANCE",
+                "triggerDistanceKm" to tempoEndKm,
+                "title" to "Phase 3: Cooldown Flush (${cooldownKm} km)",
+                "text" to "Tempo block finished! Phase 3: ${cooldownKm} km easy cooldown flush jog and walking transition to clear lactate.",
+                "duckMusicSeconds" to 1.5,
+                "hasCountdown" to false
+            ))
+
+            // 4. Complete
+            timeline.add(mapOf(
+                "id" to "complete",
+                "type" to "SESSION_COMPLETE",
+                "triggerType" to "DISTANCE",
+                "triggerDistanceKm" to dist,
+                "title" to "Tempo Session Complete!",
+                "text" to "Tempo session complete! Outstanding lactate threshold discipline. Take 500ml electrolyte water and complete your 10-minute calf and quad stretches.",
+                "duckMusicSeconds" to 1.5,
+                "hasCountdown" to false
+            ))
+
+        } else if (isRepetition) {
+            // =========================================================================
+            // SPEED, STRIDES & INTERVALS: GRANULAR DISSECTED SUB-SECTIONS
+            // =========================================================================
+            var warmupKm = 1.0
+            var cooldownKm = 1.0
+            if (wo.distance_km >= 5.0) {
+                warmupKm = 1.5
+                cooldownKm = 2.0
+            }
+
+            val warmupSec = (warmupKm * 465).toInt()
+
             timeline.add(mapOf(
                 "id" to "start_run",
                 "type" to "SESSION_START",
                 "triggerType" to "TIME",
                 "triggerSeconds" to 0,
                 "title" to "Workout Started",
-                "text" to "Starting Speed Intervals session. ${wo.description} Begin with your 1 km easy warmup jog.",
+                "text" to "Starting Speed session: ${wo.type}. ${wo.description} Begin with your ${warmupKm} km easy warmup float.",
                 "duckMusicSeconds" to 1.5,
                 "hasCountdown" to false
             ))
 
-            // 1. Warm-Up Sub-Section (10 mins / 1.0 km)
+            // 1. Warm-Up Sub-Section
             timeline.add(mapOf(
                 "id" to "warmup",
                 "type" to "WARMUP",
                 "triggerType" to "TIME",
                 "triggerSeconds" to 3,
-                "title" to "Phase 1: Warmup Jog (1.0 km)",
-                "text" to "Phase 1: Warmup jog for 1.0 kilometer at 7:30 min/km, RPE 3. Gradually elevate heart rate.",
+                "title" to "Phase 1: Warmup Jog (${warmupKm} km)",
+                "text" to "Phase 1: Warmup float for ${warmupKm} km at 7:45 min/km, RPE 3. Loosen up hips, ankles, and Achilles.",
                 "duckMusicSeconds" to 1.5,
                 "hasCountdown" to false
             ))
 
-            // Interval repetitions: default 4x 400m with 200m rest or 6x 1-min hard / 30s rest
-            var currentSec = 600
-            val totalReps = 4
+            // Parse rep parameters
+            var totalReps = 4
+            var repLabel = "Interval"
+            var repPace = "5:50 min/km"
+            var restType = "Recovery Jog"
+            var repDurationSec = 140
+            var restDurationSec = 90
+
+            val strideMatch = Regex("(\\d+)\\s*[x×X]\\s*(\\d+m|\\d+sec|\\d+s|\\d+min|\\d+km|[0-9\\-]+s)\\s*([a-zA-Z\\s\\-]+)").find(wo.description)
+            if (strideMatch != null) {
+                totalReps = strideMatch.groupValues[1].toIntOrNull() ?: 4
+                val unit = strideMatch.groupValues[2].trim()
+                val name = strideMatch.groupValues[3].trim()
+                val isStride = name.contains("stride", ignoreCase = true) || wo.type.contains("stride", ignoreCase = true)
+                repLabel = "$unit ${if (isStride) "Stride" else "Rep"}"
+
+                if (isStride) {
+                    repPace = "5:30 min/km"
+                    repDurationSec = 25
+                    restDurationSec = 90
+                    restType = "Walk Rest"
+                }
+            } else {
+                val matchX = Regex("(\\d+)\\s*[x×X]\\s*").find(wo.description)
+                if (matchX != null) {
+                    totalReps = matchX.groupValues[1].toIntOrNull() ?: 4
+                }
+            }
+
+            var currentSec = warmupSec
 
             for (rep in 1..totalReps) {
                 // Sub-Section: Interval Rep Pre-Cue (10s before)
@@ -182,8 +434,8 @@ object PlanEngine {
                     "type" to "INTERVAL_PRE_CUE",
                     "triggerType" to "TIME",
                     "triggerSeconds" to currentSec - 10,
-                    "title" to "Sub-Section: Rep $rep of $totalReps (Pre-Cue)",
-                    "text" to "Get ready: Rep $rep of $totalReps. 400 meters hard effort at 5:50 min/km, RPE 8.",
+                    "title" to "Rep $rep of $totalReps (Pre-Cue)",
+                    "text" to "Get ready: $repLabel $rep of $totalReps. Accelerate to $repPace.",
                     "duckMusicSeconds" to 1.5,
                     "hasCountdown" to true,
                     "countdownStartSecond" to currentSec - 5
@@ -195,13 +447,13 @@ object PlanEngine {
                     "type" to "INTERVAL_START",
                     "triggerType" to "TIME",
                     "triggerSeconds" to currentSec,
-                    "title" to "400m Rep $rep @ 5:50 min/km",
-                    "text" to "GO! Push to 5:50 min/km. Drive knees, keep cadence high at 175 steps per minute.",
+                    "title" to "$repLabel $rep @ $repPace",
+                    "text" to "GO! Push to $repPace. Fast relaxed effort, tall posture, light foot strikes.",
                     "duckMusicSeconds" to 0.8,
                     "hasCountdown" to false
                 ))
 
-                currentSec += 140 // ~2 min 20s for 400m @ 5:50
+                currentSec += repDurationSec
 
                 // Sub-Section: Rest Pre-Cue
                 timeline.add(mapOf(
@@ -210,7 +462,7 @@ object PlanEngine {
                     "triggerType" to "TIME",
                     "triggerSeconds" to currentSec - 8,
                     "title" to "Rest $rep of $totalReps (Pre-Cue)",
-                    "text" to "Rest in 5 seconds. 200 meters easy recovery jog.",
+                    "text" to "Rest in 5 seconds. $restDurationSec seconds $restType.",
                     "duckMusicSeconds" to 1.5,
                     "hasCountdown" to true,
                     "countdownStartSecond" to currentSec - 5
@@ -222,13 +474,13 @@ object PlanEngine {
                     "type" to "REST_START",
                     "triggerType" to "TIME",
                     "triggerSeconds" to currentSec,
-                    "title" to "200m Recovery Jog $rep",
-                    "text" to "Recover for 200 meters. Slow down, deep belly breaths, RPE 2.",
+                    "title" to "$restDurationSec s $restType $rep",
+                    "text" to "Recover for $restDurationSec seconds. Full recovery, deep belly breaths, lower heart rate, RPE 2.",
                     "duckMusicSeconds" to 1.0,
                     "hasCountdown" to false
                 ))
 
-                currentSec += 90 // 1.5 mins for 200m rest
+                currentSec += restDurationSec
             }
 
             // Cooldown Sub-Section
@@ -237,8 +489,8 @@ object PlanEngine {
                 "type" to "COOLDOWN",
                 "triggerType" to "TIME",
                 "triggerSeconds" to currentSec,
-                "title" to "Phase 3: Cooldown Jog (1.0 km)",
-                "text" to "All intervals complete! Phase 3: 1.0 kilometer easy cooldown jog to flush lactic acid.",
+                "title" to "Phase 3: Cooldown Flush (${cooldownKm} km)",
+                "text" to "All reps complete! Phase 3: ${cooldownKm} km easy cooldown jog to flush lactic acid.",
                 "duckMusicSeconds" to 1.5,
                 "hasCountdown" to false
             ))
@@ -248,9 +500,9 @@ object PlanEngine {
                 "id" to "complete",
                 "type" to "SESSION_COMPLETE",
                 "triggerType" to "TIME",
-                "triggerSeconds" to currentSec + 450,
-                "title" to "Interval Session Complete!",
-                "text" to "Interval workout complete! Outstanding discipline. Take 500ml electrolyte water and complete your 10-minute lower body stretch.",
+                "triggerSeconds" to currentSec + (cooldownKm * 480).toInt(),
+                "title" to "Session Complete!",
+                "text" to "Speed workout complete! Outstanding discipline today. Take 500ml electrolyte water and complete your 10-minute hamstring and calf stretches.",
                 "duckMusicSeconds" to 1.5,
                 "hasCountdown" to false
             ))
