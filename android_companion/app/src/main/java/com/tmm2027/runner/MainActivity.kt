@@ -129,6 +129,15 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        val btnSundayDebriefTest: Button? = findViewById(R.id.btnSundayDebriefTest)
+        btnSundayDebriefTest?.setOnClickListener {
+            VegaDebriefManager.showSundayDebriefNotification(this, 1)
+            Toast.makeText(this, "🔔 Sunday 6:00 PM Notification triggered! Check your notification bar.", Toast.LENGTH_LONG).show()
+        }
+
+        VegaDebriefManager.scheduleSunday6PmAlarm(this)
+        handleDebriefIntent(intent)
+
         setupCadenceSpinner()
         loadWeekWorkouts()
 
@@ -138,6 +147,18 @@ class MainActivity : AppCompatActivity() {
             } else {
                 stopFullWorkout()
             }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        handleDebriefIntent(intent)
+    }
+
+    private fun handleDebriefIntent(intent: Intent?) {
+        if (intent?.getBooleanExtra(VegaDebriefManager.EXTRA_TRIGGER_DEBRIEF, false) == true) {
+            val weekNum = intent.getIntExtra(VegaDebriefManager.EXTRA_WEEK_NUMBER, 1)
+            VegaDebriefBottomSheet.newInstance(weekNum).show(supportFragmentManager, "vega_debrief")
         }
     }
 

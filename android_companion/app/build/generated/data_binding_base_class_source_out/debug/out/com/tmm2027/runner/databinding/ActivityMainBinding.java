@@ -34,6 +34,9 @@ public final class ActivityMainBinding implements ViewBinding {
   public final Button btnStart;
 
   @NonNull
+  public final Button btnSundayDebriefTest;
+
+  @NonNull
   public final ConicalSteelBadgeView conicalSteelBadge;
 
   @NonNull
@@ -71,16 +74,18 @@ public final class ActivityMainBinding implements ViewBinding {
 
   private ActivityMainBinding(@NonNull FrameLayout rootView, @NonNull AppCompatButton btnNextDay,
       @NonNull AppCompatButton btnPrevDay, @NonNull Button btnStart,
-      @NonNull ConicalSteelBadgeView conicalSteelBadge, @NonNull LinearLayout layoutLyricsContainer,
-      @NonNull LinearLayout layoutTimelineContainer, @NonNull Spinner spinnerCadence,
-      @NonNull TextView tvDayLabel, @NonNull TextView tvHeroDistanceNum,
-      @NonNull TextView tvHeroDistanceUnit, @NonNull TextView tvLiveCadenceBpm,
-      @NonNull TextView tvTargetPace, @NonNull TextView tvTimelineCount,
-      @NonNull TextView tvWeatherAdvisory, @NonNull TextView tvWorkoutTitle) {
+      @NonNull Button btnSundayDebriefTest, @NonNull ConicalSteelBadgeView conicalSteelBadge,
+      @NonNull LinearLayout layoutLyricsContainer, @NonNull LinearLayout layoutTimelineContainer,
+      @NonNull Spinner spinnerCadence, @NonNull TextView tvDayLabel,
+      @NonNull TextView tvHeroDistanceNum, @NonNull TextView tvHeroDistanceUnit,
+      @NonNull TextView tvLiveCadenceBpm, @NonNull TextView tvTargetPace,
+      @NonNull TextView tvTimelineCount, @NonNull TextView tvWeatherAdvisory,
+      @NonNull TextView tvWorkoutTitle) {
     this.rootView = rootView;
     this.btnNextDay = btnNextDay;
     this.btnPrevDay = btnPrevDay;
     this.btnStart = btnStart;
+    this.btnSundayDebriefTest = btnSundayDebriefTest;
     this.conicalSteelBadge = conicalSteelBadge;
     this.layoutLyricsContainer = layoutLyricsContainer;
     this.layoutTimelineContainer = layoutTimelineContainer;
@@ -137,6 +142,12 @@ public final class ActivityMainBinding implements ViewBinding {
       id = R.id.btnStart;
       Button btnStart = ViewBindings.findChildViewById(rootView, id);
       if (btnStart == null) {
+        break missingId;
+      }
+
+      id = R.id.btnSundayDebriefTest;
+      Button btnSundayDebriefTest = ViewBindings.findChildViewById(rootView, id);
+      if (btnSundayDebriefTest == null) {
         break missingId;
       }
 
@@ -213,9 +224,9 @@ public final class ActivityMainBinding implements ViewBinding {
       }
 
       return new ActivityMainBinding((FrameLayout) rootView, btnNextDay, btnPrevDay, btnStart,
-          conicalSteelBadge, layoutLyricsContainer, layoutTimelineContainer, spinnerCadence,
-          tvDayLabel, tvHeroDistanceNum, tvHeroDistanceUnit, tvLiveCadenceBpm, tvTargetPace,
-          tvTimelineCount, tvWeatherAdvisory, tvWorkoutTitle);
+          btnSundayDebriefTest, conicalSteelBadge, layoutLyricsContainer, layoutTimelineContainer,
+          spinnerCadence, tvDayLabel, tvHeroDistanceNum, tvHeroDistanceUnit, tvLiveCadenceBpm,
+          tvTargetPace, tvTimelineCount, tvWeatherAdvisory, tvWorkoutTitle);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

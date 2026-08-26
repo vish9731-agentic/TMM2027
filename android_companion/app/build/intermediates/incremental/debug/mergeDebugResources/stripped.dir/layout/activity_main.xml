@@ -467,6 +467,20 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- 5b. Sunday 6:00 PM Proactive Debrief Notification Trigger Button -->
+            <Button
+                android:id="@+id/btnSundayDebriefTest"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:text="🧪 TEST SUNDAY 6:00 PM PHONE NOTIFICATION →"
+                android:background="@drawable/bg_swiss_btn_red"
+                android:textColor="#FFFFFF"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.04"
+                android:layout_marginBottom="12dp" />
+
             <!-- 6. Master Industrial Action Button -->
             <Button
                 android:id="@+id/btnStart"

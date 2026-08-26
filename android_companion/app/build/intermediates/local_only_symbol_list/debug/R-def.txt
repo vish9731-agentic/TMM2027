@@ -36,6 +36,7 @@ drawable bg_swiss_square_btn
 id btnNextDay
 id btnPrevDay
 id btnStart
+id btnSundayDebriefTest
 id conicalSteelBadge
 id layoutLyricsContainer
 id layoutTimelineContainer
