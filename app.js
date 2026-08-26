@@ -3820,6 +3820,7 @@ async function initSupabase(url, key) {
         .channel('schema-db-changes')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'daily_workouts' }, (payload) => {
           console.log('⚡ Real-time Supabase update received:', payload);
+          showToastNotification('⚡ Live Cloud Sync: Workout updated from Strava!', 'success', 5000);
           // Re-fetch and re-render seamlessly
           initSupabase(url, key);
         })
@@ -5891,5 +5892,173 @@ function stopAudioSimulator() {
   if (btnStart) btnStart.style.display = 'block';
   if (btnStop) btnStop.style.display = 'none';
   if (countdownEl) countdownEl.style.display = 'none';
+
+  // Automatically trigger instant Strava sync upon stopping run
+  if (githubToken) {
+    showToastNotification('🏁 Run stopped! Automatically triggering Strava cloud sync...', 'success');
+    triggerStravaSyncWorkflow(true);
+  } else {
+    showToastNotification('🏁 Run stopped! Tap "⚡ Sync Strava" in the navbar to sync your Strava activity.', 'info');
+  }
 }
+
+// ==============================================================================
+// GITHUB ACTIONS: INSTANT STRAVA ACTIVITY SYNC ENGINE
+// ==============================================================================
+let githubToken = localStorage.getItem('tmm_github_pat') || '';
+
+function showToastNotification(message, type = 'info', durationMs = 4000) {
+  let container = document.getElementById('tmm-toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'tmm-toast-container';
+    document.body.appendChild(container);
+  }
+
+  const toast = document.createElement('div');
+  toast.className = `tmm-toast ${type}`;
+  
+  let icon = 'ℹ️';
+  if (type === 'success') icon = '✅';
+  if (type === 'error') icon = '❌';
+
+  toast.innerHTML = `<span>${icon}</span><span style="flex:1;">${message}</span>`;
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(15px)';
+    setTimeout(() => toast.remove(), 300);
+  }, durationMs);
+}
+
+function openGitHubTokenModal() {
+  const modal = document.getElementById('github-sync-modal');
+  const input = document.getElementById('github-pat-input');
+  const fb = document.getElementById('github-sync-feedback');
+  if (input) input.value = githubToken;
+  if (fb) fb.style.display = 'none';
+  if (modal) modal.classList.add('open');
+}
+
+function closeGitHubTokenModal() {
+  const modal = document.getElementById('github-sync-modal');
+  if (modal) modal.classList.remove('open');
+}
+
+function disconnectGitHubToken() {
+  localStorage.removeItem('tmm_github_pat');
+  githubToken = '';
+  const fb = document.getElementById('github-sync-feedback');
+  if (fb) {
+    fb.style.display = 'block';
+    fb.style.background = 'rgba(239, 68, 68, 0.15)';
+    fb.style.border = '1px solid var(--accent-red)';
+    fb.style.color = 'var(--accent-red)';
+    fb.innerHTML = '🗑️ GitHub Token removed.';
+  }
+  showToastNotification('GitHub Token removed.', 'info');
+  setTimeout(() => closeGitHubTokenModal(), 1200);
+}
+
+async function saveAndTriggerStravaSync() {
+  const input = document.getElementById('github-pat-input');
+  const fb = document.getElementById('github-sync-feedback');
+  const val = (input?.value || '').trim();
+
+  if (!val) {
+    if (fb) {
+      fb.style.display = 'block';
+      fb.style.background = 'rgba(239, 68, 68, 0.15)';
+      fb.style.border = '1px solid var(--accent-red)';
+      fb.style.color = 'var(--accent-red)';
+      fb.innerHTML = '❌ Please enter your GitHub Personal Access Token.';
+    }
+    return;
+  }
+
+  githubToken = val;
+  localStorage.setItem('tmm_github_pat', val);
+  
+  if (fb) {
+    fb.style.display = 'block';
+    fb.style.background = 'rgba(16, 185, 129, 0.15)';
+    fb.style.border = '1px solid var(--primary)';
+    fb.style.color = 'var(--primary)';
+    fb.innerHTML = '✅ Token saved! Triggering workflow dispatch...';
+  }
+
+  setTimeout(() => {
+    closeGitHubTokenModal();
+    triggerStravaSyncWorkflow(false);
+  }, 1000);
+}
+
+async function triggerStravaSyncWorkflow(isSilent = false) {
+  const btn = document.getElementById('btn-strava-sync');
+  const icon = document.getElementById('strava-sync-icon');
+  const label = document.getElementById('strava-sync-label');
+
+  if (!githubToken) {
+    if (!isSilent) {
+      openGitHubTokenModal();
+    } else {
+      showToastNotification('🏁 Run stopped! Tap "⚡ Sync Strava" in the navbar to connect GitHub token and auto-sync.', 'info');
+    }
+    return;
+  }
+
+  if (icon) icon.textContent = '🔄';
+  if (label) label.textContent = 'Triggering...';
+  if (btn) btn.disabled = true;
+
+  try {
+    const repo = 'vish9731-agentic/TMM2027';
+    const workflowFile = 'strava_scraper_sync.yml';
+
+    const res = await fetch(`https://api.github.com/repos/${repo}/actions/workflows/${workflowFile}/dispatches`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/vnd.github+json',
+        'Authorization': `Bearer ${githubToken}`,
+        'X-GitHub-Api-Version': '2022-11-28'
+      },
+      body: JSON.stringify({ ref: 'main' })
+    });
+
+    if (res.status === 204 || res.ok) {
+      if (icon) icon.textContent = '⏳';
+      if (label) label.textContent = 'Scraping Strava...';
+      showToastNotification('🚀 Triggered "Sync Strava Activities" GitHub Action! Scraping Strava...', 'info', 6000);
+
+      // Poll Supabase or re-fetch after 12s to catch synced run
+      setTimeout(() => {
+        if (icon) icon.textContent = '⚡';
+        if (label) label.textContent = 'Sync Strava';
+        if (btn) btn.disabled = false;
+        if (supabaseUrl && supabaseAnonKey) initSupabase(supabaseUrl, supabaseAnonKey);
+      }, 14000);
+    } else {
+      const errJson = await res.json().catch(() => ({}));
+      throw new Error(errJson.message || `HTTP ${res.status}`);
+    }
+  } catch (err) {
+    console.error('Strava sync trigger failed:', err);
+    if (icon) icon.textContent = '❌';
+    if (label) label.textContent = 'Sync Failed';
+    if (btn) btn.disabled = false;
+    showToastNotification(`❌ Strava sync trigger failed: ${err.message}. Please check your GitHub Token.`, 'error', 6000);
+    setTimeout(() => {
+      if (icon) icon.textContent = '⚡';
+      if (label) label.textContent = 'Sync Strava';
+    }, 4000);
+  }
+}
+
+window.openGitHubTokenModal = openGitHubTokenModal;
+window.closeGitHubTokenModal = closeGitHubTokenModal;
+window.saveAndTriggerStravaSync = saveAndTriggerStravaSync;
+window.disconnectGitHubToken = disconnectGitHubToken;
+window.triggerStravaSyncWorkflow = triggerStravaSyncWorkflow;
+window.showToastNotification = showToastNotification;
 

@@ -2420,3 +2420,61 @@ h1, h2, h3, h4, .brand-font {
   box-shadow: 0 0 0 2px rgba(229, 169, 60, 0.25);
 }
 
+/* ==============================================================================
+   INSTANT STRAVA SYNC & FLOATING TOAST NOTIFICATIONS
+   ============================================================================== */
+#tmm-toast-container {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  pointer-events: none;
+  width: 90%;
+  max-width: 440px;
+}
+
+.tmm-toast {
+  pointer-events: auto;
+  background: #0d1322;
+  color: #fff;
+  border: 1px solid rgba(255, 140, 0, 0.4);
+  border-radius: 12px;
+  padding: 0.85rem 1.15rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.4;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 140, 0, 0.25);
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  animation: toastSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.3s ease;
+}
+
+@keyframes toastSlideUp {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.tmm-toast.success {
+  border-color: rgba(16, 185, 129, 0.5);
+  background: linear-gradient(135deg, #091a14 0%, #0d1322 100%);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+.tmm-toast.error {
+  border-color: rgba(239, 68, 68, 0.5);
+  background: linear-gradient(135deg, #1c0808 0%, #0d1322 100%);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(239, 68, 68, 0.3);
+}
+
+.tmm-toast.info {
+  border-color: rgba(56, 189, 248, 0.5);
+  background: linear-gradient(135deg, #081724 0%, #0d1322 100%);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(56, 189, 248, 0.3);
+}
+

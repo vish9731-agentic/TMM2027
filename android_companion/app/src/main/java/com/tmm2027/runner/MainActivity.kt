@@ -515,6 +515,40 @@ class MainActivity : AppCompatActivity() {
         btnStart.text = "START RUN [GPS + AUDIO] →"
         btnStart.setBackgroundResource(R.drawable.bg_swiss_btn_black)
         highlightLyric(0)
+
+        // Trigger instant Strava sync via GitHub API in background
+        triggerInstantStravaSync()
+    }
+
+    private fun triggerInstantStravaSync() {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val token = getSharedPreferences("tmm_prefs", Context.MODE_PRIVATE)
+                    .getString("github_pat", null)
+                
+                if (!token.isNullOrEmpty()) {
+                    val url = java.net.URL("https://api.github.com/repos/vish9731-agentic/TMM2027/actions/workflows/strava_scraper_sync.yml/dispatches")
+                    val conn = url.openConnection() as java.net.HttpURLConnection
+                    conn.requestMethod = "POST"
+                    conn.setRequestProperty("Accept", "application/vnd.github+json")
+                    conn.setRequestProperty("Authorization", "Bearer $token")
+                    conn.setRequestProperty("X-GitHub-Api-Version", "2022-11-28")
+                    conn.setRequestProperty("Content-Type", "application/json")
+                    conn.doOutput = true
+                    val body = "{\"ref\":\"main\"}"
+                    conn.outputStream.write(body.toByteArray())
+                    val code = conn.responseCode
+                    withContext(Dispatchers.Main) {
+                        if (code in 200..299) {
+                            Toast.makeText(this@MainActivity, "⚡ Triggered Strava sync! Syncing to master plan...", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    conn.disconnect()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 
     override fun onDestroy() {

@@ -74,6 +74,12 @@
           <span id="supabase-status-label">Connect Supabase</span>
         </button>
 
+        <!-- Instant Strava Cloud Sync Button -->
+        <button class="btn-icon" id="btn-strava-sync" onclick="triggerStravaSyncWorkflow()" style="border-color: rgba(252, 76, 2, 0.5); background: linear-gradient(135deg, rgba(252, 76, 2, 0.18), rgba(255, 140, 0, 0.15)); color: #fc4c02; font-weight: 800;" title="Instantly trigger GitHub Action to scrape Strava and sync workouts to Supabase">
+          <span id="strava-sync-icon">⚡</span>
+          <span id="strava-sync-label">Sync Strava</span>
+        </button>
+
         <!-- Live Phone Simulator Button -->
         <a href="simulator.html" target="_blank" class="btn-icon" style="border-color: rgba(229, 169, 60, 0.45); background: linear-gradient(135deg, rgba(229, 169, 60, 0.15), rgba(197, 139, 36, 0.15)); color: #E5A93C; font-weight: 800; text-decoration: none;">
           <span>📱 Live Phone Emulator</span>
@@ -1430,6 +1436,52 @@
       </div>
     </div>
   </div>
+
+  <!-- Instant Strava Sync & GitHub Actions Dispatch Modal -->
+  <div class="modal-overlay" id="github-sync-modal" onclick="if(event.target===this) closeGitHubTokenModal()">
+    <div class="modal-content" style="max-width: 520px;">
+      <button class="modal-close-btn" onclick="closeGitHubTokenModal()">✕</button>
+      <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1rem;">
+        <div style="width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(252, 76, 2, 0.15); border: 1px solid rgba(252, 76, 2, 0.35); font-size: 1.2rem;">
+          ⚡
+        </div>
+        <div>
+          <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: var(--text-main);">Instant Strava Activity Sync</h3>
+          <div style="font-size: 0.8rem; color: var(--text-muted);">Triggers GitHub Actions to scrape &amp; sync Strava in seconds</div>
+        </div>
+      </div>
+
+      <div style="background: rgba(252, 76, 2, 0.08); border: 1px solid rgba(252, 76, 2, 0.25); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1rem;">
+        <div style="font-size: 0.82rem; color: var(--text-main); line-height: 1.45;">
+          Whenever you stop a run, this triggers the <code>Sync Strava Activities</code> GitHub workflow. It pulls your GPS data, calculates compliance vs target pace, and updates Supabase live.
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="github-pat-input" style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.4rem;">
+          GitHub Personal Access Token (PAT)
+        </label>
+        <input type="password" id="github-pat-input" placeholder="ghp_xxxxxxxxxxxx or github_pat_xxxxxxxxxxxx" class="search-input" style="width: 100%; font-family: monospace;">
+        <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.35rem;">
+          Need a token? <a href="https://github.com/settings/tokens/new?scopes=repo,workflow&description=TMM2027+Strava+Instant+Sync" target="_blank" style="color: #fc4c02; font-weight: 700; text-decoration: underline;">Create a token on GitHub ↗</a> (Scope: <code>repo</code> or <code>workflow</code> / <code>actions:write</code>).
+        </div>
+      </div>
+
+      <div id="github-sync-feedback" style="display: none; border-radius: var(--radius-md); padding: 0.75rem 1rem; font-size: 0.82rem; margin-top: 1rem;"></div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem;">
+        <button type="button" class="btn-icon" onclick="disconnectGitHubToken()" style="color: var(--accent-red); border-color: rgba(239,68,68,0.3); font-size: 0.8rem;">
+          🗑️ Remove Token
+        </button>
+        <button type="button" class="btn-icon" id="btn-save-github-token" onclick="saveAndTriggerStravaSync()" style="background: linear-gradient(135deg, #fc4c02, #ff8800); color: #fff; font-weight: 800; padding: 0.6rem 1.5rem; border: none;">
+          ⚡ Save &amp; Trigger Sync Now
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Toast Notifications Container -->
+  <div id="tmm-toast-container"></div>
 
   <!-- Footer -->
   <footer class="app-footer">
