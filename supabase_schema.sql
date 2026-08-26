@@ -156,7 +156,7 @@ VALUES (1, 'Monday', '2026-08-17', 'Recovery Run', 4.0, '7:50 - 8:10 min/km', 2,
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (1, 'Tuesday', '2026-08-18', 'Strength Day 1', 0.0, 'N/A', 5, 'Lower Body & Calf Armor.', 'Single-leg eccentric heel drops (3x15/leg), seated calf raises (3x15), Bulgarian split squats (3x8/leg), glute bridges (3x12/leg), tibialis wall raises (3x20).', 'Adequate protein intake');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
-VALUES (1, 'Wednesday', '2026-08-19', 'Mid-Week Aerobic', 5.0, '7:20 - 7:35 min/km', 3, 'Smooth conversational pace to build weekly aerobic base.', 'Dynamic warmup & ankle mobility', 'Water as needed');
+VALUES (1, 'Wednesday', '2026-08-19', 'Speed (Strides)', 5, '7:45 warmup/cooldown, ~5:30 strides', 6, '1.5 km warmup, 5x100m fast relaxed strides with 90s walk rest, 2 km cooldown.', 'Hamstring and calf dynamic stretches', 'Light carbs pre-run');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (1, 'Thursday', '2026-08-20', 'Strength Day 2', 0.0, 'N/A', 5, 'Posterior Chain & Core Stability.', 'Romanian Deadlifts (3x10), Bird-dogs (3x10/side with 3s hold), Side planks (3x35s/side), Deadbugs (3x12), Back extensions (3x12).', 'Normal balanced diet');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
@@ -170,7 +170,7 @@ VALUES (2, 'Monday', '2026-08-24', 'Recovery Run', 4.5, '7:50 - 8:10 min/km', 2,
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (2, 'Tuesday', '2026-08-25', 'Strength Day 1', 0.0, 'N/A', 5, 'Lower Body & Calf Armor.', 'Eccentric heel drops (3x15), seated soleus raises (3x15), split squats, glute bridges, tibialis raises.', 'Protein & carbs');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
-VALUES (2, 'Wednesday', '2026-08-26', 'Mid-Week Aerobic', 5.5, '7:15 - 7:30 min/km', 3, 'Aerobic cruise.', 'Hip mobility drills', 'Water');
+VALUES (2, 'Wednesday', '2026-08-26', 'Speed (Hill Intro)', 6, '7:45 warmup/cooldown, uphill RPE 7-8', 7, '2 km warmup, 4x60-sec steady uphill repeats (focus on posture & high knees, jog down recovery), 2 km cooldown.', 'Calf & Achilles dynamic activation', 'Banana/toast 45 min before');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (2, 'Thursday', '2026-08-27', 'Strength Day 2', 0.0, 'N/A', 5, 'Posterior Chain & Core.', 'RDLs, Bird-dogs, Side planks, Deadbugs, Supermans.', 'Balanced nutrition');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
@@ -184,7 +184,7 @@ VALUES (3, 'Monday', '2026-08-31', 'Recovery Run', 5.0, '7:50 - 8:10 min/km', 2,
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (3, 'Tuesday', '2026-09-01', 'Strength Day 1', 0.0, 'N/A', 5, 'Lower Body & Calf Armor (Add 2.5kg weight).', 'Eccentric heel drops, soleus raises, lunges, glute bridges, tibialis raises.', 'Protein');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
-VALUES (3, 'Wednesday', '2026-09-02', 'Mid-Week Aerobic', 6.0, '7:15 - 7:30 min/km', 3, 'Aerobic base builder.', 'Ankle mobility', 'Water');
+VALUES (3, 'Wednesday', '2026-09-02', 'Speed (Tempo Intro)', 6, '6:30 min/km tempo intervals', 7, '1.5 km warmup, 3x1 km @ Tempo Pace (6:30 min/km) with 2 min walk rest, 1.5 km cooldown.', 'Hamstring dynamic swings', 'Carb snack pre-run');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (3, 'Thursday', '2026-09-03', 'Strength Day 2', 0.0, 'N/A', 5, 'Posterior Chain & Core.', 'RDLs, Bird-dogs, Side planks, Pallof press, Supermans.', 'Balanced nutrition');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
@@ -198,7 +198,7 @@ VALUES (4, 'Monday', '2026-09-07', 'Recovery Run', 4.0, '8:00 min/km', 2, 'Very 
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (4, 'Tuesday', '2026-09-08', 'Strength Day 1', 0.0, 'N/A', 4, 'Light bodyweight mobility & calf activation (2x10 reps).', 'Bodyweight only', 'Nutritious recovery meals');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
-VALUES (4, 'Wednesday', '2026-09-09', 'Mid-Week Aerobic', 5.0, '7:25 - 7:40 min/km', 3, 'Easy cruise.', 'Hip openers', 'Water');
+VALUES (4, 'Wednesday', '2026-09-09', 'Speed (Strides)', 4, '7:45 warmup, strides', 5, '2 km easy, 4x100m relaxed strides, 1.5 km easy.', 'Dynamic leg swings', 'Water');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (4, 'Thursday', '2026-09-10', 'Strength Day 2', 0.0, 'N/A', 4, 'Light core & spine stabilization.', 'Bird-dogs, deadbugs, side planks (2 sets)', 'Balanced diet');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
@@ -212,7 +212,7 @@ VALUES (5, 'Monday', '2026-09-14', 'Recovery Run', 5.0, '7:50 min/km', 2, 'Recov
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (5, 'Tuesday', '2026-09-15', 'Strength Day 1', 0.0, 'N/A', 5, 'Lower Body & Calf Armor (3x15 eccentric drops).', 'Heel drops, soleus raises, split squats, glute bridges, tibialis raises.', 'Protein');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
-VALUES (5, 'Wednesday', '2026-09-16', 'Mid-Week Aerobic', 6.0, '7:15 - 7:30 min/km', 3, 'Smooth aerobic building run.', 'Dynamic warmup', 'Water');
+VALUES (5, 'Wednesday', '2026-09-16', 'Speed (Intervals)', 6, '5:50 min/km intervals', 7, '1.5 km warmup, 4x400m @ 5:50 min/km (200m jog rest), 2 km cooldown.', 'Calf dynamic prep', 'Carb snack');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (5, 'Thursday', '2026-09-17', 'Strength Day 2', 0.0, 'N/A', 5, 'Posterior Chain & Core.', 'RDLs, Bird-dogs, Side planks, Pallof press.', 'Balanced diet');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
@@ -226,7 +226,7 @@ VALUES (6, 'Monday', '2026-09-21', 'Recovery Run', 5.0, '7:50 min/km', 2, 'Easy 
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (6, 'Tuesday', '2026-09-22', 'Strength Day 1', 0.0, 'N/A', 5, 'Lower Body & Calf Armor.', 'Eccentric heel drops (weighted), soleus raises, split squats, glute bridges, tibialis raises.', 'Protein');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
-VALUES (6, 'Wednesday', '2026-09-23', 'Mid-Week Aerobic', 7.0, '7:15 - 7:30 min/km', 3, 'Aerobic foundation run.', 'Ankle mobility', 'Water');
+VALUES (6, 'Wednesday', '2026-09-23', 'Speed (Hill Repeats)', 7, 'Uphill RPE 8, cooldown 7:45', 8, '2 km warmup, 5x90-sec steady uphill repeats (focus on glute drive, jog down recovery), 2 km cooldown.', 'Calf & Achilles prep', 'Carb snack');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (6, 'Thursday', '2026-09-24', 'Strength Day 2', 0.0, 'N/A', 5, 'Posterior Chain & Core.', 'RDLs, Bird-dogs, Side planks, Supermans.', 'Balanced nutrition');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
@@ -240,7 +240,7 @@ VALUES (7, 'Monday', '2026-09-28', 'Recovery Run', 6.0, '7:50 min/km', 2, 'Easy 
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (7, 'Tuesday', '2026-09-29', 'Strength Day 1', 0.0, 'N/A', 5, 'Lower Body & Calf Armor.', 'Eccentric heel drops, soleus raises, split squats, glute bridges, tibialis raises.', 'Protein');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
-VALUES (7, 'Wednesday', '2026-09-30', 'Mid-Week Aerobic', 8.0, '7:15 - 7:30 min/km', 3, 'Aerobic base builder.', 'Hip openers', 'Water');
+VALUES (7, 'Wednesday', '2026-09-30', 'Speed (Threshold Tempo)', 7, '6:25 - 6:35 min/km tempo', 7, '1.5 km warmup, 4 km continuous @ Tempo (6:25-6:35 min/km), 1.5 km cooldown.', 'Hamstring & calf dynamic stretches', 'Carb snack pre-run');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (7, 'Thursday', '2026-10-01', 'Strength Day 2', 0.0, 'N/A', 5, 'Posterior Chain & Core.', 'RDLs, Bird-dogs, Side planks, Deadbugs.', 'Balanced diet');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
@@ -254,7 +254,7 @@ VALUES (8, 'Monday', '2026-10-05', 'Recovery Run', 4.0, '8:00 min/km', 2, 'Gentl
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (8, 'Tuesday', '2026-10-06', 'Strength Day 1', 0.0, 'N/A', 4, 'Light bodyweight calf raises & glute bridges (2x10).', 'Bodyweight only', 'Balanced meals');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
-VALUES (8, 'Wednesday', '2026-10-07', 'Mid-Week Aerobic', 5.0, '7:20 min/km + 3 strides', 3, '5 km easy with 3x100m strides.', 'Dynamic mobility', 'Water');
+VALUES (8, 'Wednesday', '2026-10-07', 'Speed (Shakeout)', 3, '7:45 min/km + pickups', 4, '3 km shakeout + 3x30-sec pickups.', 'Light dynamic stretches', 'Water');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (8, 'Thursday', '2026-10-08', 'Strength Day 2', 0.0, 'N/A', 4, 'Light core and back mobility.', 'Bird-dogs and side planks (2 sets)', 'Balanced diet');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
@@ -268,7 +268,7 @@ VALUES (9, 'Monday', '2026-10-12', 'Recovery Run', 5.0, '7:55 min/km', 2, 'Post-
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (9, 'Tuesday', '2026-10-13', 'Strength Day 1', 0.0, 'N/A', 5, 'Lower Body & Calf Armor.', 'Eccentric heel drops (3x15), seated calf raises (3x15), split squats, glute bridges, tibialis raises.', 'Protein');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
-VALUES (9, 'Wednesday', '2026-10-14', 'Mid-Week Aerobic', 8.0, '7:15 - 7:30 min/km', 3, 'Aerobic cruise.', 'Hip mobility drills', 'Water');
+VALUES (9, 'Wednesday', '2026-10-14', 'Speed (Strides)', 7, '7:40 warmup, strides', 7, '2 km warmup, 4x100m relaxed strides, 4.5 km easy. Pre-Delhi shakeout.', 'Dynamic prep', 'Carb snack');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (9, 'Thursday', '2026-10-15', 'Strength Day 2', 0.0, 'N/A', 5, 'Posterior Chain & Core.', 'RDLs, Bird-dogs, Side planks, Pallof press, Back extensions.', 'Balanced nutrition');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
@@ -282,7 +282,7 @@ VALUES (10, 'Monday', '2026-10-19', 'Recovery Run', 6.0, '7:50 min/km', 2, 'Reco
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (10, 'Tuesday', '2026-10-20', 'Strength Day 1', 0.0, 'N/A', 5, 'Lower Body & Calf Armor.', 'Eccentric heel drops, seated calf raises, Bulgarian split squats, glute bridges, tibialis raises.', 'Protein');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
-VALUES (10, 'Wednesday', '2026-10-21', 'Mid-Week Aerobic', 8.0, '7:15 - 7:30 min/km', 3, 'Aerobic foundation run.', 'Ankle mobility', 'Water');
+VALUES (10, 'Wednesday', '2026-10-21', 'Speed (Hills + Tempo)', 8, 'Hills RPE 8, Tempo 6:30 min/km', 8, '2 km warmup, 4x75-sec hill repeats, 2 km @ Tempo (6:30 min/km), 1.5 km cooldown.', 'Calf & Achilles prep', 'Carb snack');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (10, 'Thursday', '2026-10-22', 'Strength Day 2', 0.0, 'N/A', 5, 'Posterior Chain & Core.', 'RDLs, Bird-dogs, Side planks, Supermans.', 'Balanced nutrition');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
@@ -296,7 +296,7 @@ VALUES (11, 'Monday', '2026-10-26', 'Recovery Run', 6.0, '7:50 min/km', 2, 'Reco
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (11, 'Tuesday', '2026-10-27', 'Strength Day 1', 0.0, 'N/A', 5, 'Lower Body & Calf Armor.', 'Eccentric heel drops, soleus raises, split squats, glute bridges, tibialis raises.', 'Protein');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
-VALUES (11, 'Wednesday', '2026-10-28', 'Mid-Week Aerobic', 9.0, '7:15 - 7:30 min/km', 3, 'Mid-week aerobic anchor.', 'Hip openers', 'Water');
+VALUES (11, 'Wednesday', '2026-10-28', 'Speed (1K Repeats)', 8, '5:50 min/km intervals', 8, '1.5 km warmup, 4x1 km @ 5:50 min/km (2 min jog rest), 1.5 km cooldown.', 'Dynamic leg swings', 'Carb snack');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (11, 'Thursday', '2026-10-29', 'Strength Day 2', 0.0, 'N/A', 5, 'Posterior Chain & Core.', 'RDLs, Bird-dogs, Side planks, Deadbugs.', 'Balanced diet');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
@@ -310,7 +310,7 @@ VALUES (12, 'Monday', '2026-11-02', 'Recovery Run', 5.0, '8:00 min/km', 2, 'Gent
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (12, 'Tuesday', '2026-11-03', 'Strength Day 1', 0.0, 'N/A', 4, 'Bodyweight maintenance (2 sets).', 'Calf raises, glute bridges, lunges', 'Balanced meals');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
-VALUES (12, 'Wednesday', '2026-11-04', 'Mid-Week Aerobic', 6.0, '7:25 min/km', 3, 'Easy aerobic run.', 'Dynamic mobility', 'Water');
+VALUES (12, 'Wednesday', '2026-11-04', 'Speed (Strides)', 5, '7:45 warmup, strides', 5, '2 km easy, 5x100m strides, 1.5 km easy.', 'Dynamic prep', 'Water');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (12, 'Thursday', '2026-11-05', 'Strength Day 2', 0.0, 'N/A', 4, 'Core stability & hip flexor release.', 'Bird-dogs, deadbugs (2 sets)', 'Balanced diet');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
@@ -324,7 +324,7 @@ VALUES (13, 'Monday', '2026-11-09', 'Recovery Run', 6.0, '7:50 min/km', 2, 'Reco
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (13, 'Tuesday', '2026-11-10', 'Strength Day 1', 0.0, 'N/A', 5, 'Lower Body & Calf Armor.', 'Eccentric heel drops, seated calf raises, Bulgarian split squats, glute bridges, tibialis raises.', 'Protein');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
-VALUES (13, 'Wednesday', '2026-11-11', 'Mid-Week Aerobic', 8.0, '7:15 - 7:25 min/km', 3, 'Aerobic rhythm run.', 'Hip mobility', 'Water');
+VALUES (13, 'Wednesday', '2026-11-11', 'Speed (MP Tempo)', 8, '7:00 - 7:06 min/km MP block', 6, '2 km warmup, 4 km continuous @ Marathon Pace (7:00-7:06 min/km), 2 km cooldown.', 'Dynamic stretches', 'Carb snack');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (13, 'Thursday', '2026-11-12', 'Strength Day 2', 0.0, 'N/A', 5, 'Posterior Chain & Core.', 'RDLs, Bird-dogs, Side planks, Pallof press.', 'Balanced nutrition');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
@@ -338,7 +338,7 @@ VALUES (14, 'Monday', '2026-11-16', 'Recovery Run', 5.0, '8:00 min/km', 2, 'Shor
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (14, 'Tuesday', '2026-11-17', 'Strength Day 1', 0.0, 'N/A', 4, 'Light calf & glute activation (2 sets).', 'Bodyweight only', 'Balanced meals');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
-VALUES (14, 'Wednesday', '2026-11-18', 'Mid-Week Aerobic', 6.0, '7:20 min/km', 3, 'Easy aerobic run.', 'Dynamic mobility', 'Water');
+VALUES (14, 'Wednesday', '2026-11-18', 'Speed (Shakeout)', 4, '7:45 min/km + strides', 4, '4 km shakeout + 4x100m strides.', 'Dynamic stretches', 'Water');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (14, 'Thursday', '2026-11-19', 'Strength Day 2', 0.0, 'N/A', 3, 'Core & mobility only.', 'Bird-dogs, deadbugs', 'Balanced diet');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
@@ -352,7 +352,7 @@ VALUES (15, 'Monday', '2026-11-23', 'Recovery Run', 6.0, '7:55 min/km', 2, 'Post
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (15, 'Tuesday', '2026-11-24', 'Strength Day 1', 0.0, 'N/A', 5, 'Lower Body & Calf Armor.', 'Eccentric heel drops, seated calf raises, Bulgarian split squats, glute bridges, tibialis raises.', 'Protein');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
-VALUES (15, 'Wednesday', '2026-11-25', 'Mid-Week Aerobic', 9.0, '7:15 - 7:30 min/km', 3, 'Aerobic volume builder.', 'Hip mobility', 'Water');
+VALUES (15, 'Wednesday', '2026-11-25', 'Speed (Hill Attack)', 9, 'Uphill RPE 8, cooldown 7:45', 8, '2 km warmup, 6x90-sec hill repeats @ RPE 8 (Pedder Road prep), 2 km cooldown.', 'Calf & Achilles prep', 'Carb snack');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (15, 'Thursday', '2026-11-26', 'Strength Day 2', 0.0, 'N/A', 5, 'Posterior Chain & Core.', 'RDLs, Bird-dogs, Side planks, Supermans.', 'Balanced nutrition');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
@@ -366,7 +366,7 @@ VALUES (16, 'Monday', '2026-11-30', 'Recovery Run', 5.0, '8:00 min/km', 2, 'Gent
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (16, 'Tuesday', '2026-12-01', 'Strength Day 1', 0.0, 'N/A', 4, 'Bodyweight maintenance (2 sets).', 'Calf raises, glute bridges', 'Balanced meals');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
-VALUES (16, 'Wednesday', '2026-12-02', 'Mid-Week Aerobic', 7.0, '7:25 min/km', 3, 'Easy aerobic run.', 'Dynamic mobility', 'Water');
+VALUES (16, 'Wednesday', '2026-12-02', 'Speed (Strides)', 6, '7:45 warmup, strides', 5, '2 km easy, 5x100m strides, 2 km easy.', 'Dynamic prep', 'Water');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (16, 'Thursday', '2026-12-03', 'Strength Day 2', 0.0, 'N/A', 4, 'Core & lower back mobility.', 'Bird-dogs, deadbugs (2 sets)', 'Balanced diet');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
@@ -380,7 +380,7 @@ VALUES (17, 'Monday', '2026-12-07', 'Recovery Run', 7.0, '7:50 min/km', 2, 'Reco
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (17, 'Tuesday', '2026-12-08', 'Strength Day 1', 0.0, 'N/A', 5, 'Lower Body & Calf Armor.', 'Eccentric heel drops, seated calf raises, Bulgarian split squats, glute bridges, tibialis raises.', 'Protein');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
-VALUES (17, 'Wednesday', '2026-12-09', 'Mid-Week Aerobic', 10.0, '7:15 - 7:30 min/km', 3, 'Double-digit mid-week aerobic run.', 'Hip mobility', 'Water');
+VALUES (17, 'Wednesday', '2026-12-09', 'Speed (Threshold Blocks)', 8, '6:25 min/km tempo blocks', 7, '2 km warmup, 3x1.5 km @ 6:25 min/km (2 min rest), 1.5 km cooldown.', 'Dynamic stretches', 'Carb snack');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (17, 'Thursday', '2026-12-10', 'Strength Day 2', 0.0, 'N/A', 5, 'Posterior Chain & Core.', 'RDLs, Bird-dogs, Side planks, Pallof press.', 'Balanced nutrition');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
@@ -394,11 +394,11 @@ VALUES (18, 'Monday', '2026-12-14', 'Recovery Run', 6.0, '7:55 min/km', 2, 'Gent
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (18, 'Tuesday', '2026-12-15', 'Strength Day 1', 0.0, 'N/A', 5, 'Lower Body & Calf Armor (Final heavy strength week).', 'Eccentric heel drops, seated calf raises, split squats, glute bridges, tibialis raises.', 'Protein');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
-VALUES (18, 'Wednesday', '2026-12-16', 'Mid-Week Aerobic', 10.0, '7:15 - 7:30 min/km', 3, 'Mid-week aerobic anchor.', 'Hip mobility', 'Water');
+VALUES (18, 'Wednesday', '2026-12-16', 'Pre-Race Easy + Strides', 8, '7:30 - 7:45 min/km', 6, '2 km warmup, 4x100m strides, 5.5 km easy shakeout before traveling to Kolkata.', 'Dynamic stretches', 'Carb snack');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (18, 'Thursday', '2026-12-17', 'Strength Day 2', 0.0, 'N/A', 5, 'Posterior Chain & Core.', 'RDLs, Bird-dogs, Side planks, Supermans.', 'Balanced nutrition');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
-VALUES (18, 'Friday', '2026-12-18', 'Pre-Race Easy + Strides', 8.0, '7:30 - 7:45 min/km', 6, '2 km warmup, 4x100m strides, 5.5 km easy shakeout before traveling to Kolkata.', 'Dynamic stretches', 'Carb snack');
+VALUES (18, 'Friday', '2026-12-18', 'Mid-Week Aerobic', 10, '7:15 - 7:30 min/km', 3, 'Mid-week aerobic anchor.', 'Hip mobility', 'Water');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (18, 'Saturday', '2026-12-19', 'Rest', 0.0, 'N/A', 1, 'Full Rest. Hyper-hydrate with electrolytes.', 'Rest', 'High-carb loading meals + 2.5L fluids');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
@@ -408,7 +408,7 @@ VALUES (19, 'Monday', '2026-12-21', 'Recovery Run', 6.0, '8:00 min/km', 2, 'Gent
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (19, 'Tuesday', '2026-12-22', 'Strength Day 1', 0.0, 'N/A', 4, 'Lighter maintenance strength (2 sets/exercise).', 'Bodyweight heel drops, glute bridges', 'Protein');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
-VALUES (19, 'Wednesday', '2026-12-23', 'Mid-Week Aerobic', 8.0, '7:20 - 7:35 min/km', 3, 'Aerobic cruise.', 'Hip mobility', 'Water');
+VALUES (19, 'Wednesday', '2026-12-23', 'Speed (Tempo)', 8, '6:30 min/km tempo', 7, '2 km warmup, 3 km @ 6:30 min/km tempo, 2 km cooldown.', 'Dynamic stretches', 'Carb snack');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (19, 'Thursday', '2026-12-24', 'Strength Day 2', 0.0, 'N/A', 4, 'Core & bodyweight back stabilization.', 'Bird-dogs, deadbugs (2 sets)', 'Balanced nutrition');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
@@ -422,7 +422,7 @@ VALUES (20, 'Monday', '2026-12-28', 'Recovery Run', 5.0, '7:55 min/km', 2, 'Easy
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (20, 'Tuesday', '2026-12-29', 'Strength Day 1', 0.0, 'N/A', 3, 'Bodyweight only (Calf raises 2x15, glute bridges, bird-dogs). No heavy lifting.', 'Mobility & activation', 'Balanced meals');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
-VALUES (20, 'Wednesday', '2026-12-30', 'Mid-Week Aerobic', 7.0, '7:15 - 7:30 min/km', 3, 'Light, springy aerobic run.', 'Dynamic mobility', 'Water');
+VALUES (20, 'Wednesday', '2026-12-30', 'Speed (MP Sharpening)', 5, '7:00 min/km MP block', 5, '1.5 km warmup, 2 km @ Marathon Pace (7:00 min/km), 1.5 km cooldown.', 'Dynamic stretches', 'Carb snack');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (20, 'Thursday', '2026-12-31', 'Strength Day 2', 0.0, 'N/A', 3, 'Light core & stretching (15 mins).', 'Bird-dogs, deadbugs (2 sets)', 'Balanced diet');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
@@ -436,7 +436,7 @@ VALUES (21, 'Monday', '2027-01-04', 'Recovery Run', 4.0, '8:00 min/km', 2, 'Shor
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (21, 'Tuesday', '2027-01-05', 'Mobility', 0.0, 'N/A', 2, 'Light mobility, foam rolling, dynamic hip openers.', 'Mobility only', 'Balanced meals');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
-VALUES (21, 'Wednesday', '2027-01-06', 'Mid-Week Aerobic', 5.0, '7:20 min/km + 3 strides', 3, '5 km easy with 3x100m strides.', 'Dynamic mobility', 'Water');
+VALUES (21, 'Wednesday', '2027-01-06', 'Speed (MP Sharpener)', 5, '7:05 min/km MP block', 4, '2 km easy, 1.5 km @ Marathon Pace (7:05 min/km), 1.5 km cooldown.', 'Dynamic prep', 'Carb snack');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (21, 'Thursday', '2027-01-07', 'Rest', 0.0, 'N/A', 1, 'Complete Rest & hydration tracking.', 'Rest', 'Hydration tracking');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
@@ -450,11 +450,11 @@ VALUES (22, 'Monday', '2027-01-11', 'Recovery Shakeout', 4.0, '8:00 min/km', 2, 
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (22, 'Tuesday', '2027-01-12', 'Rest & Packing', 0.0, 'N/A', 1, 'Rest & Travel Packing (Vest, Gels, Salt Tabs, Shoes).', 'Rest', 'Balanced meals');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
-VALUES (22, 'Wednesday', '2027-01-13', 'Easy Jog', 4.0, '7:30 min/km + 3 strides', 3, '4 km easy jog + 3x60m light strides.', 'Mobility', 'Water');
+VALUES (22, 'Wednesday', '2027-01-13', 'Mumbai Shakeout', 3, '7:45 min/km + 2 strides', 3, '3 km morning shakeout run in Mumbai to acclimatize to coastal humidity.', 'Light dynamic stretches', 'Water');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (22, 'Thursday', '2027-01-14', 'Travel / Expo', 0.0, 'N/A', 1, 'Travel to Mumbai. Bib collection at MMRDA Expo. Rest off feet.', 'Rest', 'Hydrate with electrolyte bottle');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
-VALUES (22, 'Friday', '2027-01-15', 'Mumbai Shakeout', 3.0, '7:45 min/km + 2 strides', 3, '3 km morning shakeout run in Mumbai to acclimatize to coastal humidity.', 'Light dynamic stretches', 'Water');
+VALUES (22, 'Friday', '2027-01-15', 'Easy Jog', 4, '7:30 min/km + 3 strides', 3, '4 km easy jog + 3x60m light strides.', 'Mobility', 'Water');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (22, 'Saturday', '2027-01-16', 'Pre-Race Rest', 0.0, 'N/A', 1, 'Full Rest Day. Stay off feet. High carb meals (rice/potatoes). Sleep by 9 PM.', 'Rest', 'High-carb loading (350-400g carbs) + 2L electrolyte fluids');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)

@@ -19,6 +19,14 @@ import java.util.Locale
  */
 object PlanEngine {
 
+    data class StrategySplit(
+        val km: String,
+        val phase: String,
+        val pace: String,
+        val desc: String,
+        val color: String? = null
+    )
+
     data class WorkoutDay(
         val day: String,
         val date: String,
@@ -29,7 +37,8 @@ object PlanEngine {
         val description: String,
         val strength_prehab: String?,
         val fueling: String?,
-        var week_number: Int = 1
+        var week_number: Int = 1,
+        val strategy_splits: List<StrategySplit>? = null
     )
 
     data class WeekPlan(
@@ -111,6 +120,202 @@ object PlanEngine {
 
     fun buildManifestJson(wo: WorkoutDay): String {
         val dist = wo.distance_km
+        val timeline = mutableListOf<Map<String, Any>>()
+
+        // 1. PRIMARY SOURCE OF TRUTH: Generate Audio Directly from Structured strategy_splits
+        val splits = wo.strategy_splits
+        if (splits != null && splits.isNotEmpty()) {
+            val isRestDay = dist == 0.0 && !wo.type.contains("Strength", ignoreCase = true)
+            val isStrengthDay = wo.type.contains("Strength", ignoreCase = true)
+
+            if (isRestDay) {
+                timeline.add(mapOf(
+                    "id" to "rest_briefing",
+                    "type" to "SESSION_START",
+                    "triggerType" to "TIME",
+                    "triggerSeconds" to 0,
+                    "title" to "Rest & Recovery Day",
+                    "text" to "Today is a scheduled Rest Day. Hydrate with 2 to 2.5 liters of fluids, do light foam rolling, and allow muscle glycogen synthesis.",
+                    "duckMusicSeconds" to 1.5,
+                    "hasCountdown" to false
+                ))
+            } else if (isStrengthDay) {
+                timeline.add(mapOf(
+                    "id" to "strength_briefing",
+                    "type" to "SESSION_START",
+                    "triggerType" to "TIME",
+                    "triggerSeconds" to 0,
+                    "title" to "Strength & Prehab Session",
+                    "text" to "Today is Strength Day: ${wo.description}. Focus on single-leg calf raises, eccentric heel drops, and core stability for lower back endurance.",
+                    "duckMusicSeconds" to 1.5,
+                    "hasCountdown" to false
+                ))
+                var sSec = 3
+                splits.forEachIndexed { idx, split ->
+                    timeline.add(mapOf(
+                        "id" to "prehab_$idx",
+                        "type" to "STRENGTH_EXERCISE",
+                        "triggerType" to "TIME",
+                        "triggerSeconds" to sSec,
+                        "title" to split.phase,
+                        "text" to "${split.phase} for ${split.pace}. ${split.desc}.",
+                        "duckMusicSeconds" to 1.5,
+                        "hasCountdown" to false
+                    ))
+                    sSec += 600
+                }
+            } else {
+                timeline.add(mapOf(
+                    "id" to "session_start",
+                    "type" to "SESSION_START",
+                    "triggerType" to "TIME",
+                    "triggerSeconds" to 0,
+                    "title" to "Workout Started: ${wo.type}",
+                    "text" to "Starting ${wo.type}. Total planned volume ${wo.distance_km} km. Let us begin with Phase 1.",
+                    "duckMusicSeconds" to 1.5,
+                    "hasCountdown" to false
+                ))
+
+                var currentSec = 3
+
+                splits.forEachIndexed { idx, split ->
+                    val pLower = split.phase.lowercase(Locale.US)
+                    val kLower = split.km.lowercase(Locale.US)
+
+                    if (pLower.contains("warmup") || pLower.contains("warm-up")) {
+                        timeline.add(mapOf(
+                            "id" to "warmup_$idx",
+                            "type" to "WARMUP",
+                            "triggerType" to "TIME",
+                            "triggerSeconds" to currentSec,
+                            "title" to split.phase,
+                            "text" to "${split.phase} for ${split.km} at ${split.pace}. ${split.desc}.",
+                            "duckMusicSeconds" to 1.5,
+                            "hasCountdown" to false
+                        ))
+                        val kmMatch = Regex("([\\d\\.]+)").find(split.km)
+                        val km = kmMatch?.groupValues?.get(1)?.toDoubleOrNull() ?: 1.5
+                        currentSec += (km * 465).toInt()
+
+                    } else if (pLower.contains("rep") || kLower.contains("rep") || kLower.contains("stride") || kLower.contains("hill") || kLower.contains("pickup")) {
+                        // Pre-Cue (10s before)
+                        timeline.add(mapOf(
+                            "id" to "precue_$idx",
+                            "type" to "INTERVAL_PRE_CUE",
+                            "triggerType" to "TIME",
+                            "triggerSeconds" to (currentSec - 10).coerceAtLeast(0),
+                            "title" to "${split.km} (Pre-Cue)",
+                            "text" to "Get ready: ${split.km} at target pace ${split.pace}. ${split.desc}.",
+                            "duckMusicSeconds" to 1.5,
+                            "hasCountdown" to true,
+                            "countdownStartSecond" to (currentSec - 5).coerceAtLeast(0)
+                        ))
+                        // Start of Rep
+                        timeline.add(mapOf(
+                            "id" to "start_$idx",
+                            "type" to "INTERVAL_START",
+                            "triggerType" to "TIME",
+                            "triggerSeconds" to currentSec,
+                            "title" to "${split.km} @ ${split.pace}",
+                            "text" to "GO! ${split.km} at ${split.pace}!",
+                            "duckMusicSeconds" to 0.8,
+                            "hasCountdown" to false
+                        ))
+
+                        if (kLower.contains("75-sec") || kLower.contains("75s")) currentSec += 75
+                        else if (kLower.contains("60-sec") || kLower.contains("60s")) currentSec += 60
+                        else if (kLower.contains("90-sec") || kLower.contains("90s")) currentSec += 90
+                        else if (kLower.contains("100m")) currentSec += 25
+                        else if (kLower.contains("400m")) currentSec += 140
+                        else if (kLower.contains("1 km") || kLower.contains("1km")) currentSec += 390
+                        else currentSec += 60
+
+                    } else if (pLower.contains("recovery") || kLower.contains("rest") || kLower.contains("jog-down")) {
+                        // Rest Pre-Cue (5s before)
+                        timeline.add(mapOf(
+                            "id" to "rest_precue_$idx",
+                            "type" to "REST_PRE_CUE",
+                            "triggerType" to "TIME",
+                            "triggerSeconds" to (currentSec - 8).coerceAtLeast(0),
+                            "title" to "Rest (Pre-Cue)",
+                            "text" to "Rest in 5 seconds. ${split.km}.",
+                            "duckMusicSeconds" to 1.5,
+                            "hasCountdown" to true,
+                            "countdownStartSecond" to (currentSec - 5).coerceAtLeast(0)
+                        ))
+                        // Rest Start
+                        timeline.add(mapOf(
+                            "id" to "rest_$idx",
+                            "type" to "REST_START",
+                            "triggerType" to "TIME",
+                            "triggerSeconds" to currentSec,
+                            "title" to split.km,
+                            "text" to "Recover: ${split.km}. ${split.desc}.",
+                            "duckMusicSeconds" to 1.0,
+                            "hasCountdown" to false
+                        ))
+
+                        if (kLower.contains("90s") || kLower.contains("90-sec")) currentSec += 90
+                        else if (kLower.contains("2 min") || kLower.contains("120s")) currentSec += 120
+                        else if (kLower.contains("60s")) currentSec += 60
+                        else if (kLower.contains("200m")) currentSec += 90
+                        else currentSec += 75
+
+                    } else if (pLower.contains("tempo") || pLower.contains("marathon pace") || pLower.contains("cruise") || pLower.contains("threshold")) {
+                        timeline.add(mapOf(
+                            "id" to "tempo_$idx",
+                            "type" to "CRUISE_START",
+                            "triggerType" to "TIME",
+                            "triggerSeconds" to currentSec,
+                            "title" to split.phase,
+                            "text" to "Lock into ${split.phase}: ${split.km} at ${split.pace}. ${split.desc}.",
+                            "duckMusicSeconds" to 1.5,
+                            "hasCountdown" to false
+                        ))
+                        val kmMatch = Regex("([\\d\\.]+)").find(split.km)
+                        val km = kmMatch?.groupValues?.get(1)?.toDoubleOrNull() ?: 2.0
+                        currentSec += (km * 390).toInt()
+
+                    } else if (pLower.contains("cooldown") || pLower.contains("cool-down")) {
+                        timeline.add(mapOf(
+                            "id" to "cooldown_$idx",
+                            "type" to "COOLDOWN",
+                            "triggerType" to "TIME",
+                            "triggerSeconds" to currentSec,
+                            "title" to split.phase,
+                            "text" to "Main set complete! ${split.phase}: ${split.km} at ${split.pace}. ${split.desc}.",
+                            "duckMusicSeconds" to 1.5,
+                            "hasCountdown" to false
+                        ))
+                        val kmMatch = Regex("([\\d\\.]+)").find(split.km)
+                        val km = kmMatch?.groupValues?.get(1)?.toDoubleOrNull() ?: 1.5
+                        currentSec += (km * 480).toInt()
+                    }
+                }
+
+                timeline.add(mapOf(
+                    "id" to "complete",
+                    "type" to "SESSION_COMPLETE",
+                    "triggerType" to "TIME",
+                    "triggerSeconds" to currentSec,
+                    "title" to "Workout Complete!",
+                    "text" to "Workout complete! Outstanding discipline and execution today. Drink 500ml electrolyte fluids and complete your recovery stretches.",
+                    "duckMusicSeconds" to 1.5,
+                    "hasCountdown" to false
+                ))
+            }
+
+            val manifest = mapOf(
+                "workout_date" to wo.date,
+                "workout_type" to wo.type,
+                "distance_km" to wo.distance_km,
+                "target_pace" to wo.target_pace,
+                "timeline" to timeline
+            )
+            return Gson().toJson(manifest)
+        }
+
+        // 2. FALLBACK (If strategy_splits not present)
         val hasHillsAndTempo = wo.description.contains("hill", ignoreCase = true) && wo.description.contains("tempo", ignoreCase = true)
         val hasContinuous = !hasHillsAndTempo && (
             wo.description.contains("continuous", ignoreCase = true) || 
@@ -130,8 +335,6 @@ object PlanEngine {
         val isLongRun = wo.type.contains("Long", ignoreCase = true)
         val isRest = wo.type.contains("Rest", ignoreCase = true) || (wo.distance_km == 0.0 && !wo.type.contains("Strength", ignoreCase = true))
         val isStrength = wo.type.contains("Strength", ignoreCase = true)
-
-        val timeline = mutableListOf<Map<String, Any>>()
 
         if (isRest) {
             timeline.add(mapOf(

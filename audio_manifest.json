@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-26T09:06:41.542Z",
+  "generatedAt": "2026-08-26T17:07:58.489Z",
   "workoutDate": "2026-08-27",
   "dayOfWeek": "Thursday",
   "workoutType": "Strength Day 2",
@@ -9,8 +9,8 @@
   "estDurationMins": 30,
   "openingBriefing": {
     "title": "Good Morning! Today's Workout: 0km Strength Day 2",
-    "summaryText": "Welcome to your morning run! Today's session is 0 kilometers. Target pace is N/A with an RPE of 5 out of 10. Morning temperature is 20°C with 93% humidity. High sweat rate expected—take your scheduled salt capsules on time.",
-    "weatherAdvisory": "Morning temperature is 20°C with 93% humidity. High sweat rate expected—take your scheduled salt capsules on time.",
+    "summaryText": "Welcome to your morning run! Today's session is 0 kilometers. Target pace is N/A with an RPE of 5 out of 10. Morning temperature is 21°C with 89% humidity. High sweat rate expected—take your scheduled salt capsules on time.",
+    "weatherAdvisory": "Morning temperature is 21°C with 89% humidity. High sweat rate expected—take your scheduled salt capsules on time.",
     "targetCadence": 168,
     "fuelingPlanSummary": "Water sips as needed"
   },
@@ -34,7 +34,7 @@
       "triggerType": "TIME",
       "triggerSeconds": 0,
       "title": "🚀 Workout Started",
-      "text": "Starting workout. Posterior Chain & Core. Settle into an easy rhythm.",
+      "text": "Starting workout: Strength Day 2. Planned volume 0 km. Let us begin with Phase 1.",
       "duckMusicSeconds": 1.5,
       "hasCountdown": false
     },

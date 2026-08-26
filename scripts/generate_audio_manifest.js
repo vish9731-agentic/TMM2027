@@ -333,13 +333,129 @@ function buildAudioManifest(wo, tomorrow, weather) {
     triggerType: 'TIME',
     triggerSeconds: 0,
     title: '🚀 Workout Started',
-    text: `Starting workout. ${wo.description || `Target pace ${targetPace}.`} Settle into an easy rhythm.`,
+    text: `Starting workout: ${type}. Planned volume ${dist} km. Let us begin with Phase 1.`,
     duckMusicSeconds: 1.5,
     hasCountdown: false
   });
 
-  // STRUCTURED TIMELINE
-  if (structure.type === 'INTERVAL') {
+  // 1. PRIMARY: Generate Audio Timeline Directly from Structured strategy_splits
+  if (Array.isArray(wo.strategy_splits) && wo.strategy_splits.length > 0) {
+    let currentSec = 5;
+
+    wo.strategy_splits.forEach((split, idx) => {
+      const pLower = (split.phase || '').toLowerCase();
+      const kLower = (split.km || '').toLowerCase();
+
+      if (pLower.includes('warmup') || pLower.includes('warm-up')) {
+        timeline.push({
+          id: `warmup_${idx}`,
+          type: 'WARMUP',
+          triggerType: 'TIME',
+          triggerSeconds: currentSec,
+          title: `🏃 ${split.phase}`,
+          text: `${split.phase} for ${split.km} at ${split.pace}. ${split.desc}.`,
+          duckMusicSeconds: 1.5,
+          hasCountdown: false
+        });
+        const kmMatch = split.km.match(/([\d\.]+)/);
+        const km = kmMatch ? parseFloat(kmMatch[1]) : 1.5;
+        currentSec += Math.round(km * 465);
+
+      } else if (pLower.includes('rep') || kLower.includes('rep') || kLower.includes('stride') || kLower.includes('hill') || kLower.includes('pickup')) {
+        // Pre-Cue (10s before)
+        timeline.push({
+          id: `precue_${idx}`,
+          type: 'INTERVAL_PRE_CUE',
+          triggerType: 'TIME',
+          triggerSeconds: Math.max(0, currentSec - 10),
+          title: `🔥 ${split.km} (Pre-Cue)`,
+          text: `Get ready: ${split.km} at target pace ${split.pace}. ${split.desc}.`,
+          duckMusicSeconds: 1.5,
+          hasCountdown: true,
+          countdownStartSecond: Math.max(0, currentSec - 5)
+        });
+        // Start
+        timeline.push({
+          id: `start_${idx}`,
+          type: 'INTERVAL_START',
+          triggerType: 'TIME',
+          triggerSeconds: currentSec,
+          title: `⚡ ${split.km} @ ${split.pace}`,
+          text: `GO! ${split.km} at ${split.pace}!`,
+          duckMusicSeconds: 0.8,
+          hasCountdown: false
+        });
+
+        if (kLower.includes('75-sec') || kLower.includes('75s')) currentSec += 75;
+        else if (kLower.includes('60-sec') || kLower.includes('60s')) currentSec += 60;
+        else if (kLower.includes('90-sec') || kLower.includes('90s')) currentSec += 90;
+        else if (kLower.includes('100m')) currentSec += 25;
+        else if (kLower.includes('400m')) currentSec += 140;
+        else if (kLower.includes('1 km') || kLower.includes('1km')) currentSec += 390;
+        else currentSec += 60;
+
+      } else if (pLower.includes('recovery') || kLower.includes('rest') || kLower.includes('jog-down')) {
+        timeline.push({
+          id: `rest_precue_${idx}`,
+          type: 'REST_PRE_CUE',
+          triggerType: 'TIME',
+          triggerSeconds: Math.max(0, currentSec - 8),
+          title: `🧘 Rest (Pre-Cue)`,
+          text: `Rest in 5 seconds. ${split.km}.`,
+          duckMusicSeconds: 1.5,
+          hasCountdown: true,
+          countdownStartSecond: Math.max(0, currentSec - 5)
+        });
+        timeline.push({
+          id: `rest_${idx}`,
+          type: 'REST_START',
+          triggerType: 'TIME',
+          triggerSeconds: currentSec,
+          title: `🧘 ${split.km}`,
+          text: `Recover: ${split.km}. ${split.desc}.`,
+          duckMusicSeconds: 1.0,
+          hasCountdown: false
+        });
+
+        if (kLower.includes('90s') || kLower.includes('90-sec')) currentSec += 90;
+        else if (kLower.includes('2 min') || kLower.includes('120s')) currentSec += 120;
+        else if (kLower.includes('60s')) currentSec += 60;
+        else if (kLower.includes('200m')) currentSec += 90;
+        else currentSec += 75;
+
+      } else if (pLower.includes('tempo') || pLower.includes('marathon pace') || pLower.includes('cruise') || pLower.includes('threshold')) {
+        timeline.push({
+          id: `tempo_${idx}`,
+          type: 'CRUISE_START',
+          triggerType: 'TIME',
+          triggerSeconds: currentSec,
+          title: `🎯 ${split.phase}`,
+          text: `Lock into ${split.phase}: ${split.km} at ${split.pace}. ${split.desc}.`,
+          duckMusicSeconds: 1.5,
+          hasCountdown: false
+        });
+        const kmMatch = split.km.match(/([\d\.]+)/);
+        const km = kmMatch ? parseFloat(kmMatch[1]) : 2.0;
+        currentSec += Math.round(km * 390);
+
+      } else if (pLower.includes('cooldown') || pLower.includes('cool-down')) {
+        timeline.push({
+          id: `cooldown_${idx}`,
+          type: 'COOLDOWN',
+          triggerType: 'TIME',
+          triggerSeconds: currentSec,
+          title: `🧘 ${split.phase}`,
+          text: `Main set complete! ${split.phase}: ${split.km} at ${split.pace}. ${split.desc}.`,
+          duckMusicSeconds: 1.5,
+          hasCountdown: false
+        });
+        const kmMatch = split.km.match(/([\d\.]+)/);
+        const km = kmMatch ? parseFloat(kmMatch[1]) : 1.5;
+        currentSec += Math.round(km * 480);
+      }
+    });
+
+  } else if (structure.type === 'INTERVAL') {
     // 1. Warmup
     timeline.push({
       id: 'warmup_phase',
