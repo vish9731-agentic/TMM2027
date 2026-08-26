@@ -1058,15 +1058,16 @@
       <div style="margin-bottom: 1rem;">
         <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-dim); margin-bottom: 0.35rem;">MODEL SELECTION</label>
         <select id="gemini-model-select" class="search-input" style="width: 100%;" onchange="handleModelSelectChange()">
-          <option value="gemini-3.7-flash" selected>Gemini 3.7 Flash (Antigravity Flagship • Ultra Fast &amp; Reasoning)</option>
-          <option value="gemini-3.7-pro">Gemini 3.7 Pro (Antigravity Deep Clinical Reasoning)</option>
-          <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
-          <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
-          <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+          <option value="gemini-3.6-flash" selected>Gemini 3.6 Flash (Antigravity Flagship • Ultra Fast &amp; High Reasoning)</option>
+          <option value="gemini-3.5-flash">Gemini 3.5 Flash (Balanced Performance &amp; Clinical Quality)</option>
+          <option value="gemini-3.5-flash-lite">Gemini 3.5 Flash Lite (Instant Sub-Second Latency)</option>
+          <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash Lite</option>
+          <option value="gemini-flash-latest">Gemini Flash (Auto-Alias Latest)</option>
+          <option value="gemini-3.7-flash">Gemini 3.7 Flash (High Demand Tier)</option>
           <option value="custom">⚙️ Custom Antigravity / Gemini Model ID...</option>
         </select>
         <div id="gemini-custom-model-container" style="display: none; margin-top: 0.5rem;">
-          <input type="text" id="gemini-custom-model-input" placeholder="e.g. gemini-3.7-flash or custom-model-name" class="search-input" style="width: 100%; font-family: monospace; font-size: 0.82rem;">
+          <input type="text" id="gemini-custom-model-input" placeholder="e.g. gemini-3.6-flash or custom-model-name" class="search-input" style="width: 100%; font-family: monospace; font-size: 0.82rem;">
           <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.25rem;">
             Type any model identifier available in your Google AI Studio account.
           </div>
@@ -1511,6 +1512,6 @@
     <p style="margin-top: 0.3rem;">Kickoff: Monday, August 17, 2026 • Race Day: Sunday, January 17, 2027</p>
   </footer>
 
-  <script src="app.js?v=3.7.9"></script>
+  <script src="app.js?v=3.8.0"></script>
 </body>
 </html>

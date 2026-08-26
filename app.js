@@ -3056,36 +3056,65 @@ function generateWorkoutSplits(wo) {
     return splits;
   }
 
-  // 3. Intervals / 400m / 1K Repeats (e.g. 4x400m, 1K repeats)
-  if (typeLower.includes('interval') || typeLower.includes('repeat') || descLower.includes('400m') || descLower.includes('1k repeats') || descLower.includes('1 km @')) {
-    const warmupMatch = desc.match(/([\d\.]+)\s*km\s*warmup/i);
-    const cooldownMatch = desc.match(/([\d\.]+)\s*km\s*cooldown/i);
-    const warmupKm = warmupMatch ? parseFloat(warmupMatch[1]) : 1.5;
-    const cooldownKm = cooldownMatch ? parseFloat(cooldownMatch[1]) : 2.0;
-
-    const intervalMatch = desc.match(/(\d+\s*x\s*[^,\.]+)/i);
-    const intervalText = intervalMatch ? intervalMatch[1].trim() : 'Interval Repeats';
+  // 3. Intervals / 400m / 1K Repeats (e.g. 4x400m, 1K repeats, time intervals)
+  if (typeLower.includes('interval') || typeLower.includes('repeat') || descLower.includes('400m') || descLower.includes('1k repeats') || descLower.includes('1 km @') || descLower.includes('x (')) {
+    const warmupKm = 1.0;
+    const cooldownKm = 1.0;
 
     splits.push({
-      km: `Km 1 – ${warmupKm}`,
-      phase: 'Warm-up Float',
-      pace: '7:45 – 8:00 min/km',
-      desc: 'Gradual heart rate ramp, dynamic mobility drills',
+      km: `Km 0 – ${warmupKm.toFixed(1)}`,
+      phase: 'Phase 1: Warmup Jog',
+      pace: '7:30 – 7:45 min/km',
+      desc: 'Gradual heart rate ramp, dynamic mobility drills (RPE 3)',
       color: '#10b981'
     });
+
+    // Detect rep pattern (e.g. 4x400m or 6x1-min or default 4x400m)
+    let repCount = 4;
+    let repDist = '400m';
+    let restDist = '200m';
+    let repPace = targetPace !== 'N/A' ? targetPace : '5:50 min/km';
+
+    const matchX = desc.match(/(\d+)\s*x\s*(\d+\s*m|\d+\s*km|\d+\s*min|\d+-\w+)/i);
+    if (matchX) {
+      repCount = parseInt(matchX[1], 10) || 4;
+      repDist = matchX[2].trim();
+    }
+
+    const matchRest = desc.match(/(\d+\s*m|\d+\s*s|\d+\s*sec|\d+\s*min)\s*(?:jog|walk|rest|recovery)/i);
+    if (matchRest) {
+      restDist = matchRest[1].trim();
+    }
+
+    let subSectionIdx = 1;
+    for (let i = 1; i <= repCount; i++) {
+      // Work Rep Sub-Section
+      splits.push({
+        km: `${subSectionIdx}. ${repDist} Rep ${i}`,
+        phase: `Interval Rep ${i}/${repCount}`,
+        pace: repPace,
+        desc: `Rep ${i} of ${repCount}: Drive knees, tall posture, cadence 175+ SPM (RPE 8)`,
+        color: '#ff3b00'
+      });
+      subSectionIdx++;
+
+      // Recovery Rest Sub-Section
+      splits.push({
+        km: `${subSectionIdx}. ${restDist} Rest ${i}`,
+        phase: `Recovery ${i}/${repCount}`,
+        pace: 'Easy Jog / Walk',
+        desc: `Rest ${i} of ${repCount}: Slow down, deep belly breaths, lower heart rate (RPE 2)`,
+        color: '#38bdf8'
+      });
+      subSectionIdx++;
+    }
+
     splits.push({
-      km: 'Main Set',
-      phase: 'Speed Intervals',
-      pace: targetPace !== 'N/A' ? targetPace : '5:50 – 6:15 min/km',
-      desc: `${intervalText} (High cadence, maintain relaxed face & shoulders)`,
-      color: '#ff3b00'
-    });
-    splits.push({
-      km: `Final ${cooldownKm} km`,
-      phase: 'Cool-down',
-      pace: '7:50 – 8:15 min/km',
-      desc: 'Controlled jog to flush legs and lower core body temperature',
-      color: '#38bdf8'
+      km: `Final ${cooldownKm.toFixed(1)} km`,
+      phase: 'Phase 3: Cooldown Jog',
+      pace: '7:45 – 8:15 min/km',
+      desc: 'Controlled jog to flush lactic acid and lower core temperature (RPE 2)',
+      color: '#a855f7'
     });
     return splits;
   }
@@ -3097,22 +3126,22 @@ function generateWorkoutSplits(wo) {
     const tempoKm = Math.max(1.0, dist - warmupKm - cooldownKm);
 
     splits.push({
-      km: `Km 1 – ${warmupKm}`,
-      phase: 'Warm-up Float',
+      km: `Km 0 – ${warmupKm.toFixed(1)}`,
+      phase: 'Phase 1: Warmup Float',
       pace: '7:45 – 8:00 min/km',
-      desc: 'Gentle aerobic warmup, activate glutes & soleus',
+      desc: 'Gentle aerobic warmup, activate glutes & soleus (RPE 3)',
       color: '#10b981'
     });
     splits.push({
       km: `Km ${(warmupKm + 0.1).toFixed(1)} – ${(warmupKm + tempoKm).toFixed(1)}`,
-      phase: 'Tempo / MP Block',
+      phase: 'Phase 2: Tempo / MP Block',
       pace: targetPace,
       desc: 'Sustained lactate threshold effort, locked-in breathing rhythm (2:2 pattern)',
       color: '#ff7700'
     });
     splits.push({
-      km: `Final ${cooldownKm} km`,
-      phase: 'Cool-down Flush',
+      km: `Final ${cooldownKm.toFixed(1)} km`,
+      phase: 'Phase 3: Cooldown Flush',
       pace: '7:50 – 8:15 min/km',
       desc: 'Easy flush jog and walking transition',
       color: '#38bdf8'
@@ -3151,55 +3180,66 @@ function generateWorkoutSplits(wo) {
     return splits;
   }
 
-  // 6. Long Runs (8km - 19km)
-  if (typeLower.includes('long run') || dist >= 8) {
-    const warmupKm = 2.0;
+  // 6. Long Runs (7km - 19km)
+  if (typeLower.includes('long run') || dist >= 7) {
+    const warmupKm = 1.0;
     const finishKm = 1.0;
     const cruiseKmEnd = dist - finishKm;
 
     splits.push({
-      km: `Km 1 – ${warmupKm}`,
-      phase: 'Aerobic Warmup',
+      km: `Km 0 – ${warmupKm.toFixed(1)}`,
+      phase: 'Phase 1: Conservative Float',
       pace: '7:45 – 8:00 min/km',
-      desc: 'Gentle aerobic float, loosen up hips & calves, stay in Zone 2',
+      desc: 'Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2',
       color: '#10b981'
     });
     splits.push({
-      km: `Km 3 – ${cruiseKmEnd}`,
-      phase: 'Endurance Cruise',
+      km: `Km ${(warmupKm + 0.1).toFixed(1)} – ${cruiseKmEnd.toFixed(1)}`,
+      phase: 'Phase 2: Marathon Cruise',
       pace: targetPace,
-      desc: 'Rhythmic marathon aerobic base, take salt & water according to plan',
+      desc: 'Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.',
       color: '#00f5d4'
     });
     splits.push({
-      km: `Km ${cruiseKmEnd + 1} – ${dist}`,
-      phase: 'Sub-5:00 Finish',
-      pace: '7:06 min/km',
-      desc: 'TMM 2027 goal pace rehearsal, strong posture & quick ground contact',
+      km: `Final ${finishKm.toFixed(1)} km`,
+      phase: 'Phase 3: Finish & Prehab',
+      pace: '7:06 – 7:35 min/km',
+      desc: 'Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.',
       color: '#ff7700'
     });
     return splits;
   }
 
-  // 7. Standard Easy / Recovery Runs (3km - 7km)
+  // 7. Recovery & Easy Runs (3-Phase Stratification: Warmup -> Cruise [Majority] -> Cooldown)
+  const warmupKm = dist <= 4 ? 0.8 : 1.0;
+  const cooldownKm = dist <= 4 ? 0.8 : 0.8;
+  const cruiseKm = Math.max(1.0, dist - warmupKm - cooldownKm);
+  const cruiseEnd = warmupKm + cruiseKm;
+
   splits.push({
-    km: 'Km 1',
-    phase: 'Warm-up Float',
-    pace: '7:45 – 8:00 min/km',
-    desc: 'Very gentle warmup, nasal breathing only, shake out calves',
+    km: `0.0 – ${warmupKm.toFixed(1)} km`,
+    phase: 'Phase 1: Warmup',
+    pace: '8:00 – 8:15 min/km',
+    desc: 'Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.',
     color: '#10b981'
   });
-  if (dist > 1) {
-    splits.push({
-      km: `Km 2 – ${dist.toFixed(0)}`,
-      phase: typeLower.includes('recovery') ? 'Recovery Cruise' : 'Zone 2 Base Cruise',
-      pace: targetPace,
-      desc: typeLower.includes('recovery') 
-        ? 'Ultra-light effort to promote blood flow without neuromuscular fatigue'
-        : 'Smooth conversational pace to expand mitochondrial density',
-      color: '#00f5d4'
-    });
-  }
+
+  splits.push({
+    km: `${warmupKm.toFixed(1)} – ${cruiseEnd.toFixed(1)} km`,
+    phase: 'Phase 2: Main Cruise (Majority)',
+    pace: targetPace !== 'N/A' ? targetPace : '7:35 – 7:50 min/km',
+    desc: `Main aerobic base cruise (RPE 3, ${cruiseKm.toFixed(1)} km). 168 SPM cadence lock for active vascular capillary flushing.`,
+    color: '#00f5d4'
+  });
+
+  splits.push({
+    km: `${cruiseEnd.toFixed(1)} – ${dist.toFixed(1)} km`,
+    phase: 'Phase 3: Cooldown',
+    pace: '8:15+ min/km / Brisk Walk',
+    desc: 'Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.',
+    color: '#38bdf8'
+  });
+
   return splits;
 }
 
@@ -4463,8 +4503,15 @@ window.openVegaIconStudioModal = openVegaIconStudioModal;
 window.closeVegaIconStudioModal = closeVegaIconStudioModal;
 window.selectVegaSunsetIcon = selectVegaSunsetIcon;
 
+function normalizeGeminiModel(m) {
+  if (!m || m === 'gemini-2.0-flash' || m === 'gemini-2.5-flash' || m === 'gemini-2.5-pro' || m === 'gemini-1.5-flash' || m === 'gemini-1.5-pro' || m === 'gemini-3.7-pro') {
+    return 'gemini-3.6-flash';
+  }
+  return m;
+}
+
 let geminiApiKey = localStorage.getItem('tmm_gemini_api_key') || '';
-let geminiModel = localStorage.getItem('tmm_gemini_model') || 'gemini-3.7-flash';
+let geminiModel = normalizeGeminiModel(localStorage.getItem('tmm_gemini_model') || 'gemini-3.6-flash');
 let coachChatHistory = [];
 
 try {
@@ -4492,11 +4539,12 @@ function toggleCoachDrawer() {
 }
 
 const VEGA_AVAILABLE_MODELS = [
-  { value: 'gemini-3.7-flash', label: 'Gemini 3.7 Flash (Antigravity Flagship • Ultra Fast & High Reasoning)' },
-  { value: 'gemini-3.7-pro', label: 'Gemini 3.7 Pro (Antigravity Deep Clinical Reasoning)' },
-  { value: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash' },
-  { value: 'gemini-2.5-pro', label: 'Gemini 2.5 Pro' },
-  { value: 'gemini-2.0-flash', label: 'Gemini 2.0 Flash' },
+  { value: 'gemini-3.6-flash', label: 'Gemini 3.6 Flash (Antigravity Flagship • Ultra Fast & High Reasoning)' },
+  { value: 'gemini-3.5-flash', label: 'Gemini 3.5 Flash (Balanced Performance & Clinical Quality)' },
+  { value: 'gemini-3.5-flash-lite', label: 'Gemini 3.5 Flash Lite (Instant Sub-Second Latency)' },
+  { value: 'gemini-3.1-flash-lite', label: 'Gemini 3.1 Flash Lite' },
+  { value: 'gemini-flash-latest', label: 'Gemini Flash (Auto-Alias Latest)' },
+  { value: 'gemini-3.7-flash', label: 'Gemini 3.7 Flash (High Demand Tier)' },
   { value: 'custom', label: '⚙️ Custom Antigravity / Gemini Model ID...' }
 ];
 
@@ -4512,7 +4560,7 @@ function handleModelSelectChange() {
     customContainer.id = 'gemini-custom-model-container';
     customContainer.style.marginTop = '0.5rem';
     customContainer.innerHTML = `
-      <input type="text" id="gemini-custom-model-input" placeholder="e.g. gemini-3.7-flash or custom-model-id" class="search-input" style="width: 100%; font-family: monospace; font-size: 0.82rem;">
+      <input type="text" id="gemini-custom-model-input" placeholder="e.g. gemini-3.6-flash or custom-model-id" class="search-input" style="width: 100%; font-family: monospace; font-size: 0.82rem;">
       <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.25rem;">
         Type any model identifier available in your Google AI Studio account.
       </div>
@@ -4536,9 +4584,9 @@ function getActiveCoachModel() {
     return customInput.value.trim();
   }
   if (modelSelect && modelSelect.value !== 'custom') {
-    return modelSelect.value;
+    return normalizeGeminiModel(modelSelect.value);
   }
-  return geminiModel || 'gemini-3.7-flash';
+  return normalizeGeminiModel(geminiModel || 'gemini-3.6-flash');
 }
 
 // Settings Modal
@@ -4552,8 +4600,8 @@ function openCoachSettingsModal() {
   
   if (modelSelect) {
     // Dynamically rebuild the select options to guarantee all latest models appear
-    const currentVal = geminiModel || 'gemini-3.7-flash';
-    const isCustom = !VEGA_AVAILABLE_MODELS.slice(0, 5).some(m => m.value === currentVal);
+    const currentVal = normalizeGeminiModel(geminiModel || 'gemini-3.6-flash');
+    const isCustom = !VEGA_AVAILABLE_MODELS.slice(0, 6).some(m => m.value === currentVal);
     
     modelSelect.innerHTML = VEGA_AVAILABLE_MODELS.map(m => 
       `<option value="${m.value}" ${(!isCustom && m.value === currentVal) || (isCustom && m.value === 'custom') ? 'selected' : ''}>${m.label}</option>`
@@ -4796,14 +4844,15 @@ window.clearCoachChatHistory = clearCoachChatHistory;
 
 // Strict Gemini Execution (No fallback - answers strictly from selected model)
 async function executeGeminiStrictRequest(model, key, contents) {
-  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
+  const modelName = normalizeGeminiModel(model) || 'gemini-3.6-flash';
+  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${key}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       contents: contents,
       generationConfig: {
         temperature: 0.4,
-        maxOutputTokens: 2000
+        maxOutputTokens: 2500
       }
     })
   });
