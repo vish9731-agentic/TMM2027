@@ -37,6 +37,9 @@ public final class ActivityMainBinding implements ViewBinding {
   public final Button btnSundayDebriefTest;
 
   @NonNull
+  public final Button btnTestCoachVoice;
+
+  @NonNull
   public final ConicalSteelBadgeView conicalSteelBadge;
 
   @NonNull
@@ -47,6 +50,15 @@ public final class ActivityMainBinding implements ViewBinding {
 
   @NonNull
   public final Spinner spinnerCadence;
+
+  @NonNull
+  public final TextView tvCoachRaceIntel;
+
+  @NonNull
+  public final TextView tvCoachStatusBadge;
+
+  @NonNull
+  public final TextView tvCoachThemeTitle;
 
   @NonNull
   public final TextView tvDayLabel;
@@ -74,9 +86,11 @@ public final class ActivityMainBinding implements ViewBinding {
 
   private ActivityMainBinding(@NonNull FrameLayout rootView, @NonNull AppCompatButton btnNextDay,
       @NonNull AppCompatButton btnPrevDay, @NonNull Button btnStart,
-      @NonNull Button btnSundayDebriefTest, @NonNull ConicalSteelBadgeView conicalSteelBadge,
-      @NonNull LinearLayout layoutLyricsContainer, @NonNull LinearLayout layoutTimelineContainer,
-      @NonNull Spinner spinnerCadence, @NonNull TextView tvDayLabel,
+      @NonNull Button btnSundayDebriefTest, @NonNull Button btnTestCoachVoice,
+      @NonNull ConicalSteelBadgeView conicalSteelBadge, @NonNull LinearLayout layoutLyricsContainer,
+      @NonNull LinearLayout layoutTimelineContainer, @NonNull Spinner spinnerCadence,
+      @NonNull TextView tvCoachRaceIntel, @NonNull TextView tvCoachStatusBadge,
+      @NonNull TextView tvCoachThemeTitle, @NonNull TextView tvDayLabel,
       @NonNull TextView tvHeroDistanceNum, @NonNull TextView tvHeroDistanceUnit,
       @NonNull TextView tvLiveCadenceBpm, @NonNull TextView tvTargetPace,
       @NonNull TextView tvTimelineCount, @NonNull TextView tvWeatherAdvisory,
@@ -86,10 +100,14 @@ public final class ActivityMainBinding implements ViewBinding {
     this.btnPrevDay = btnPrevDay;
     this.btnStart = btnStart;
     this.btnSundayDebriefTest = btnSundayDebriefTest;
+    this.btnTestCoachVoice = btnTestCoachVoice;
     this.conicalSteelBadge = conicalSteelBadge;
     this.layoutLyricsContainer = layoutLyricsContainer;
     this.layoutTimelineContainer = layoutTimelineContainer;
     this.spinnerCadence = spinnerCadence;
+    this.tvCoachRaceIntel = tvCoachRaceIntel;
+    this.tvCoachStatusBadge = tvCoachStatusBadge;
+    this.tvCoachThemeTitle = tvCoachThemeTitle;
     this.tvDayLabel = tvDayLabel;
     this.tvHeroDistanceNum = tvHeroDistanceNum;
     this.tvHeroDistanceUnit = tvHeroDistanceUnit;
@@ -151,6 +169,12 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.btnTestCoachVoice;
+      Button btnTestCoachVoice = ViewBindings.findChildViewById(rootView, id);
+      if (btnTestCoachVoice == null) {
+        break missingId;
+      }
+
       id = R.id.conicalSteelBadge;
       ConicalSteelBadgeView conicalSteelBadge = ViewBindings.findChildViewById(rootView, id);
       if (conicalSteelBadge == null) {
@@ -172,6 +196,24 @@ public final class ActivityMainBinding implements ViewBinding {
       id = R.id.spinnerCadence;
       Spinner spinnerCadence = ViewBindings.findChildViewById(rootView, id);
       if (spinnerCadence == null) {
+        break missingId;
+      }
+
+      id = R.id.tvCoachRaceIntel;
+      TextView tvCoachRaceIntel = ViewBindings.findChildViewById(rootView, id);
+      if (tvCoachRaceIntel == null) {
+        break missingId;
+      }
+
+      id = R.id.tvCoachStatusBadge;
+      TextView tvCoachStatusBadge = ViewBindings.findChildViewById(rootView, id);
+      if (tvCoachStatusBadge == null) {
+        break missingId;
+      }
+
+      id = R.id.tvCoachThemeTitle;
+      TextView tvCoachThemeTitle = ViewBindings.findChildViewById(rootView, id);
+      if (tvCoachThemeTitle == null) {
         break missingId;
       }
 
@@ -224,8 +266,9 @@ public final class ActivityMainBinding implements ViewBinding {
       }
 
       return new ActivityMainBinding((FrameLayout) rootView, btnNextDay, btnPrevDay, btnStart,
-          btnSundayDebriefTest, conicalSteelBadge, layoutLyricsContainer, layoutTimelineContainer,
-          spinnerCadence, tvDayLabel, tvHeroDistanceNum, tvHeroDistanceUnit, tvLiveCadenceBpm,
+          btnSundayDebriefTest, btnTestCoachVoice, conicalSteelBadge, layoutLyricsContainer,
+          layoutTimelineContainer, spinnerCadence, tvCoachRaceIntel, tvCoachStatusBadge,
+          tvCoachThemeTitle, tvDayLabel, tvHeroDistanceNum, tvHeroDistanceUnit, tvLiveCadenceBpm,
           tvTargetPace, tvTimelineCount, tvWeatherAdvisory, tvWorkoutTitle);
     }
     String missingId = rootView.getResources().getResourceName(id);

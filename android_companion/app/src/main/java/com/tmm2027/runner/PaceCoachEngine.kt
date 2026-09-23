@@ -22,6 +22,8 @@ class PaceCoachEngine(
     private val recentSpeedEstimates = mutableListOf<Float>() // m/s
     private var lastAlertTimestamp = 0L
     private val alertCooldownMs = 60_000L // 60s anti-nagging cooldown
+    private var sessionStartTimeMs = System.currentTimeMillis()
+    private val warmupGracePeriodMs = 120_000L // 2-min startup grace period to ease into run
 
     private var paceFormattedString: String = "--:--"
     var currentSmoothedSpeedMs: Float = 0.0f
@@ -29,7 +31,15 @@ class PaceCoachEngine(
     var gpsAccuracyMeters: Float = 0.0f
         private set
 
+    fun resetSession() {
+        sessionStartTimeMs = System.currentTimeMillis()
+        recentSpeedEstimates.clear()
+        lastAlertTimestamp = 0L
+        lastValidLocation = null
+    }
+
     fun setTargetPace(paceStr: String) {
+        sessionStartTimeMs = System.currentTimeMillis()
         try {
             // e.g. "7:35 - 7:45 min/km" or "5:45 - 6:00 min/km"
             val parts = paceStr.split("-").map { it.replace("min/km", "").trim() }
@@ -110,8 +120,12 @@ class PaceCoachEngine(
         }
     }
 
+    var dynamicAlertsTooSlow: List<String>? = null
+    var dynamicAlertsTooFast: List<String>? = null
+
     private fun checkPaceAndAutoGovernCadence(currentPaceSecKm: Int) {
         val now = System.currentTimeMillis()
+        if (now - sessionStartTimeMs < warmupGracePeriodMs) return // In warmup/startup grace period
         if (now - lastAlertTimestamp < alertCooldownMs) return
         if (recentSpeedEstimates.size < 6) return // Wait for 6s steady samples
 
@@ -125,17 +139,14 @@ class PaceCoachEngine(
             val targetFormatted = String.format("%d:%02d", maxTargetPaceSecKm / 60, maxTargetPaceSecKm % 60)
 
             // Auto-Cadence Adjustment: +3 SPM to pick up step rate
-            val newBpm = cadenceMetronome?.adjustCadenceForPace(+3)
+            cadenceMetronome?.adjustCadenceForPace(+3)
 
-            if (newBpm != null && cadenceMetronome?.currentMode == CadenceMetronome.Mode.AUTO_PACE_SYNC) {
-                audioCueManager.playDirectCue(
-                    "Pace is $currentFormatted, target is $targetFormatted. Picking up cadence to $newBpm steps per minute to hit target pace."
-                )
-            } else {
-                audioCueManager.playDirectCue(
-                    "Pace is $currentFormatted min per km. Target is $targetFormatted. Pick up the cadence slightly."
-                )
-            }
+            audioCueManager.playRandomPaceAlert(
+                category = AudioCueManager.PaceAlertCategory.TOO_SLOW,
+                customPool = dynamicAlertsTooSlow,
+                currentPaceFormatted = currentFormatted,
+                targetPaceFormatted = targetFormatted
+            )
         }
         // Running Too Fast (15+ seconds faster than min target zone on easy/long runs)
         else if (currentPaceSecKm < minTargetPaceSecKm - 15) {
@@ -144,17 +155,14 @@ class PaceCoachEngine(
             val targetFormatted = String.format("%d:%02d", minTargetPaceSecKm / 60, minTargetPaceSecKm % 60)
 
             // Auto-Cadence Adjustment: -3 SPM to relax step rate
-            val newBpm = cadenceMetronome?.adjustCadenceForPace(-3)
+            cadenceMetronome?.adjustCadenceForPace(-3)
 
-            if (newBpm != null && cadenceMetronome?.currentMode == CadenceMetronome.Mode.AUTO_PACE_SYNC) {
-                audioCueManager.playDirectCue(
-                    "Pacing fast at $currentFormatted min per km. Easing cadence to $newBpm steps per minute. Relax your stride."
-                )
-            } else {
-                audioCueManager.playDirectCue(
-                    "Pace is $currentFormatted min per km. Target is $targetFormatted. Settle back into an easy rhythm."
-                )
-            }
+            audioCueManager.playRandomPaceAlert(
+                category = AudioCueManager.PaceAlertCategory.TOO_FAST,
+                customPool = dynamicAlertsTooFast,
+                currentPaceFormatted = currentFormatted,
+                targetPaceFormatted = targetFormatted
+            )
         }
     }
 

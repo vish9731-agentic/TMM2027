@@ -46,6 +46,8 @@ CREATE TABLE IF NOT EXISTS daily_workouts (
     pace_variance_sec INT,
     compliance_score_pct INT,
     ingestion_source VARCHAR(50),
+    strategy_splits JSONB,
+    coach_script JSONB,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 

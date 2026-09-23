@@ -340,7 +340,7 @@ function buildAudioManifest(wo, tomorrow, weather) {
 
   // 1. PRIMARY: Generate Audio Timeline Directly from Structured strategy_splits
   if (Array.isArray(wo.strategy_splits) && wo.strategy_splits.length > 0) {
-    let currentSec = 5;
+    let currentSec = 8;
 
     wo.strategy_splits.forEach((split, idx) => {
       const pLower = (split.phase || '').toLowerCase();

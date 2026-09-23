@@ -26,6 +26,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.io.File
 
 /**
  * Production Android Foreground Service for marathon audio coaching.
@@ -65,7 +66,8 @@ class WorkoutAudioService : Service() {
         val text: String,
         val duckMusicSeconds: Double,
         val hasCountdown: Boolean,
-        val countdownStartSecond: Int? = null
+        val countdownStartSecond: Int? = null,
+        val audioFilePath: String? = null
     )
 
     private val activeTimeline = mutableListOf<AudioEvent>()
@@ -134,7 +136,6 @@ class WorkoutAudioService : Service() {
         startForeground(NOTIFICATION_ID, buildNotification("Starting Workout..."))
         startLocationUpdates()
 
-        audioCueManager.playDirectCue("Starting workout. YouTube music will duck automatically during cues. Enjoy your run!")
         handler.post(tickerRunnable)
     }
 
@@ -153,10 +154,33 @@ class WorkoutAudioService : Service() {
                     paceCoachEngine.setTargetPace(targetPace)
                 }
 
+                @Suppress("UNCHECKED_CAST")
+                val paceAlerts = map["dynamic_pace_alerts"] as? Map<String, Any>
+                if (paceAlerts != null) {
+                    @Suppress("UNCHECKED_CAST")
+                    paceCoachEngine.dynamicAlertsTooSlow = paceAlerts["too_slow"] as? List<String>
+                    @Suppress("UNCHECKED_CAST")
+                    paceCoachEngine.dynamicAlertsTooFast = paceAlerts["too_fast"] as? List<String>
+                }
+
+                val baseCacheDir = getExternalFilesDir(null)
+
                 timelineList?.forEach { item ->
+                    val eventId = item["id"] as? String ?: "event_${System.currentTimeMillis()}"
+                    var audioPath = item["audioFilePath"] as? String
+                    if (audioPath == null && baseCacheDir != null) {
+                        val candidateWav = File(baseCacheDir, "audio_cache/$eventId.wav")
+                        val candidateMp3 = File(baseCacheDir, "audio_cache/$eventId.mp3")
+                        if (candidateWav.exists()) {
+                            audioPath = candidateWav.absolutePath
+                        } else if (candidateMp3.exists()) {
+                            audioPath = candidateMp3.absolutePath
+                        }
+                    }
+
                     activeTimeline.add(
                         AudioEvent(
-                            id = item["id"] as? String ?: "event_${System.currentTimeMillis()}",
+                            id = eventId,
                             type = item["type"] as? String ?: "CUE",
                             triggerType = item["triggerType"] as? String ?: "TIME",
                             triggerSeconds = (item["triggerSeconds"] as? Number)?.toInt(),
@@ -165,7 +189,8 @@ class WorkoutAudioService : Service() {
                             text = item["text"] as? String ?: "",
                             duckMusicSeconds = (item["duckMusicSeconds"] as? Number)?.toDouble() ?: 1.5,
                             hasCountdown = item["hasCountdown"] as? Boolean ?: false,
-                            countdownStartSecond = (item["countdownStartSecond"] as? Number)?.toInt()
+                            countdownStartSecond = (item["countdownStartSecond"] as? Number)?.toInt(),
+                            audioFilePath = audioPath
                         )
                     )
                 }
@@ -235,16 +260,18 @@ class WorkoutAudioService : Service() {
     }
 
     private fun fireAudioEvent(event: AudioEvent) {
-        Log.d("WorkoutAudioService", "Firing Audio Event: ${event.title} - ${event.text}")
+        Log.d("WorkoutAudioService", "Firing Audio Event: ${event.title} - ${event.text} (File: ${event.audioFilePath ?: "TTS Fallback"})")
 
         if (event.hasCountdown) {
             audioCueManager.playCueWithCountdown(
                 promptText = event.text,
+                audioFilePath = event.audioFilePath,
                 onStartGo = {}
             )
         } else {
             audioCueManager.playDirectCue(
-                promptText = event.text
+                promptText = event.text,
+                audioFilePath = event.audioFilePath
             )
         }
     }

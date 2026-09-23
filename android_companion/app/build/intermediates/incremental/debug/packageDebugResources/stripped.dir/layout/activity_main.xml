@@ -467,6 +467,88 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- 5c. Gemini 3.8 Flash Coach Voice & Offline Ready Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="20dp"
+                app:strokeWidth="2.5dp"
+                app:strokeColor="@color/swiss_border"
+                app:cardBackgroundColor="@color/swiss_card_rustic_yellow"
+                app:cardElevation="0dp"
+                android:layout_marginBottom="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="14dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingBottom="6dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="🧠 AI COACH ENGINE"
+                            android:textColor="#6B7280"
+                            android:textSize="9.5sp"
+                            android:textStyle="bold"
+                            android:fontFamily="monospace"
+                            android:letterSpacing="0.05" />
+
+                        <TextView
+                            android:id="@+id/tvCoachStatusBadge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🟢 OFFLINE READY"
+                            android:textColor="#10B981"
+                            android:textSize="9.5sp"
+                            android:textStyle="bold"
+                            android:fontFamily="monospace"
+                            android:letterSpacing="0.04" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvCoachThemeTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="🌟 Theme: Mindful Rhythm &amp; Economy"
+                        android:textColor="#111111"
+                        android:textSize="12.5sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="2dp" />
+
+                    <TextView
+                        android:id="@+id/tvCoachRaceIntel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="🏙️ Marine Drive Simulation • 10% YouTube Music Ducking • 3-6m Golden Silence"
+                        android:textColor="#6B7280"
+                        android:textSize="10sp"
+                        android:lineSpacingExtra="2dp"
+                        android:layout_marginTop="3dp"
+                        android:layout_marginBottom="10dp" />
+
+                    <Button
+                        android:id="@+id/btnTestCoachVoice"
+                        android:layout_width="match_parent"
+                        android:layout_height="46dp"
+                        android:text="🔊 TEST COACH VOICE (SAMPLE CUE) →"
+                        android:background="@drawable/bg_swiss_btn_black"
+                        android:textColor="#FFFFFF"
+                        android:textSize="10.5sp"
+                        android:textStyle="bold"
+                        android:fontFamily="monospace"
+                        android:letterSpacing="0.04" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
             <!-- 5b. Sunday 6:00 PM Proactive Debrief Notification Trigger Button -->
             <Button
                 android:id="@+id/btnSundayDebriefTest"

@@ -472,34 +472,34 @@ let rawWeeksData = [
       {
         "day": "Friday",
         "date": "2026-09-04",
-        "type": "Mid-Week Aerobic",
-        "distance_km": 6,
-        "target_pace": "7:15 - 7:30 min/km",
-        "rpe": 3,
-        "description": "Aerobic base builder.",
-        "strength_prehab": "Ankle mobility",
+        "type": "Active Recovery & Prehab (Substituted)",
+        "distance_km": 0,
+        "target_pace": "N/A",
+        "rpe": 1,
+        "description": "Substituted 6km run with complete calf recovery. 20-min gentle walk only if completely pain-free, followed by elevation.",
+        "strength_prehab": "Seated ankle pumps (3x20), gentle foam roll of hamstrings/glutes, magnesium/electrolyte replenishment.",
         "fueling": "Water"
       },
       {
         "day": "Saturday",
         "date": "2026-09-05",
-        "type": "Rest",
+        "type": "Rest & Mobility",
         "distance_km": 0,
         "target_pace": "N/A",
         "rpe": 1,
-        "description": "Rest & hydrate for 10k long run.",
-        "strength_prehab": "Light stretching",
+        "description": "Full rest day. Hydrate and monitor left calf response.",
+        "strength_prehab": "Light seated soleus activation (unweighted, 2x15 gentle reps), contrast warm shower.",
         "fueling": "Electrolyte drink"
       },
       {
         "day": "Sunday",
         "date": "2026-09-06",
-        "type": "Long Run",
-        "distance_km": 10,
-        "target_pace": "7:30 - 7:45 min/km",
-        "rpe": 4,
-        "description": "First 10 km long run. Take 1 Gel at km 6 + 1 Salt capsule at km 5.",
-        "strength_prehab": "Post-run calf and hamstring stretch",
+        "type": "Calf Test & Easy Aerobic Cruise",
+        "distance_km": 5,
+        "target_pace": "8:00 - 8:20 min/km",
+        "rpe": 2,
+        "description": "Scaled back from 10km to a gentle 5km flat surface test. Run 1km, walk 1 min. Abort immediately if calf tightness exceeds 3/10.",
+        "strength_prehab": "Post-run ice massage for 8 mins on the calf, gentle straight-leg calf stretch.",
         "fueling": "1 Gel at km 6 + 1 Salt capsule at km 5 + water"
       }
     ]
@@ -527,12 +527,12 @@ let rawWeeksData = [
       {
         "day": "Tuesday",
         "date": "2026-09-08",
-        "type": "Strength Day 1",
-        "distance_km": 0,
-        "target_pace": "N/A",
-        "rpe": 4,
-        "description": "Light bodyweight mobility & calf activation (2x10 reps).",
-        "strength_prehab": "Bodyweight only",
+        "type": "Recovery Run + Calf Mobility",
+        "distance_km": 4,
+        "target_pace": "7:50 - 8:10 min/km",
+        "rpe": 2,
+        "description": "Moved from Monday. Super easy, disciplined recovery jog. Keep cadence light and strides compact.",
+        "strength_prehab": "Post-run: Light bodyweight eccentric heel drops (2x10), seated soleus raises (2x12), and gentle calf stretching.",
         "fueling": "Nutritious recovery meals"
       },
       {
@@ -549,45 +549,45 @@ let rawWeeksData = [
       {
         "day": "Thursday",
         "date": "2026-09-10",
-        "type": "Strength Day 2",
+        "type": "Strength Day 2 (Posterior Chain & Calf Armor)",
         "distance_km": 0,
         "target_pace": "N/A",
-        "rpe": 4,
-        "description": "Light core & spine stabilization.",
-        "strength_prehab": "Bird-dogs, deadbugs, side planks (2 sets)",
+        "rpe": 5,
+        "description": "Keep impact off legs today. Focus on posterior chain & calf resilience: Seated calf raises (3x15), Single-leg eccentric heel drops (3x12/leg), Romanian deadlifts (3x10), Side planks & Bird-dogs.",
+        "strength_prehab": "Post-session foam roll hamstrings and quads.",
         "fueling": "Balanced diet"
       },
       {
         "day": "Friday",
         "date": "2026-09-11",
-        "type": "Mid-Week Aerobic",
+        "type": "Mid-Week Aerobic Run",
         "distance_km": 5,
-        "target_pace": "7:25 - 7:40 min/km",
+        "target_pace": "7:20 - 7:35 min/km",
         "rpe": 3,
-        "description": "Easy cruise.",
-        "strength_prehab": "Hip openers",
+        "description": "Smooth, relaxed aerobic run. Keep cadence light (~165-170 spm) in the Evo SL 2s. Focus on strict aerobic control.",
+        "strength_prehab": "Dynamic ankle mobility pre-run; 5-min calf flush post-run.",
         "fueling": "Water"
       },
       {
         "day": "Saturday",
         "date": "2026-09-12",
-        "type": "Rest",
+        "type": "Rest & Hydration",
         "distance_km": 0,
         "target_pace": "N/A",
         "rpe": 1,
-        "description": "Full Rest.",
-        "strength_prehab": "Sleep 8+ hours",
+        "description": "Full rest day. Hydrate well with electrolytes, practice light mobility, and prep gear/hydration for Sunday long run.",
+        "strength_prehab": "Gentle seated ankle circles & elevation.",
         "fueling": "Hydration"
       },
       {
         "day": "Sunday",
         "date": "2026-09-13",
-        "type": "Long Run",
-        "distance_km": 7,
-        "target_pace": "7:40 - 7:50 min/km",
+        "type": "Long Run (Controlled Bridge)",
+        "distance_km": 8,
+        "target_pace": "7:35 - 7:45 min/km",
         "rpe": 3,
-        "description": "Deload long run. Low heart rate, super easy effort.",
-        "strength_prehab": "Calf stretching",
+        "description": "8 km long run milestone. Keep foot strikes soft, maintain Zone 2 effort, and test 1 gel/fueling option at the 45-min mark with water.",
+        "strength_prehab": "Post-run 10-min calf and Achilles ice/massage flush.",
         "fueling": "Water sips"
       }
     ]
@@ -692,45 +692,45 @@ let rawWeeksData = [
       {
         "day": "Monday",
         "date": "2026-09-21",
-        "type": "Recovery Run",
-        "distance_km": 5,
-        "target_pace": "7:50 min/km",
-        "rpe": 2,
-        "description": "Easy recovery run.",
-        "strength_prehab": "Calf & hip stretch",
+        "type": "Rest (Rainout)",
+        "distance_km": 0,
+        "target_pace": "N/A",
+        "rpe": 1,
+        "description": "Weather delay due to rain. Fully rested to protect calf complex.",
+        "strength_prehab": "Gentle calf mobility and foam rolling.",
         "fueling": "Water"
       },
       {
         "day": "Tuesday",
         "date": "2026-09-22",
-        "type": "Strength Day 1",
-        "distance_km": 0,
-        "target_pace": "N/A",
-        "rpe": 5,
-        "description": "Lower Body & Calf Armor.",
-        "strength_prehab": "Eccentric heel drops (weighted), soleus raises, split squats, glute bridges, tibialis raises.",
+        "type": "Aerobic Volume Build",
+        "distance_km": 7.5,
+        "target_pace": "7:50 - 8:10 min/km",
+        "rpe": 3,
+        "description": "Extended mid-week volume run. Strict pace limit of 7:50 min/km or slower to prevent soleus/Achilles breakdown.",
+        "strength_prehab": "Post-run eccentric single-leg heel drops (3x15/leg), calf ice massage (10 mins).",
         "fueling": "Protein"
       },
       {
         "day": "Wednesday",
         "date": "2026-09-23",
-        "type": "Speed (Hill Repeats)",
-        "distance_km": 7,
-        "target_pace": "Uphill RPE 8, cooldown 7:45",
-        "rpe": 8,
-        "description": "2 km warmup, 5x90-sec steady uphill repeats (focus on glute drive, jog down recovery), 2 km cooldown.",
-        "strength_prehab": "Calf & Achilles prep",
+        "type": "Strength Day 1",
+        "distance_km": 0,
+        "target_pace": "N/A",
+        "rpe": 5,
+        "description": "Lower Body & Calf Armor session focused on soleus and Achilles capacity.",
+        "strength_prehab": "Seated calf raises (3x15), Bulgarian split squats (3x8/leg), glute bridges (3x12), tibialis wall raises (3x20).",
         "fueling": "Carb snack"
       },
       {
         "day": "Thursday",
         "date": "2026-09-24",
-        "type": "Strength Day 2",
-        "distance_km": 0,
-        "target_pace": "N/A",
-        "rpe": 5,
-        "description": "Posterior Chain & Core.",
-        "strength_prehab": "RDLs, Bird-dogs, Side planks, Supermans.",
+        "type": "Mid-Week Aerobic Run",
+        "distance_km": 5.5,
+        "target_pace": "7:20 - 7:35 min/km",
+        "rpe": 3,
+        "description": "Smooth conversational pace building back weekly aerobic volume smoothly.",
+        "strength_prehab": "Dynamic ankle mobility pre-run; 5-min post-run calf flush.",
         "fueling": "Balanced nutrition"
       },
       {
@@ -2167,7 +2167,7 @@ let rawWeeksData = [
         "day": "Sunday",
         "date": "2027-01-17",
         "type": "RACE DAY",
-        "distance_km": 42.195,
+        "distance_km": 42.2,
         "target_pace": "7:05 min/km avg (Sub-5:00 Target: 4:58:30)",
         "rpe": 9,
         "description": "TATA MUMBAI MARATHON 2027: Gun off ~5:00 AM. km 0-10 @ 7:10-7:15, Pedder Rd #1 @ 7:25, Sea Link @ 7:02-7:06, Pedder Rd #2 @ 7:35, Finish sprint @ 6:55-7:00!",
@@ -2913,8 +2913,8 @@ function generateGoogleCalendarUrl(wo, customTime = null) {
 
   // Title: "7km Long Run (7:35 - 7:45 min/km)"
   const title = dist > 0 
-    ? `${dist}km ${type}${targetPace && targetPace !== 'N/A' ? ` (${targetPace})` : ''}`
-    : `${type}${targetPace && targetPace !== 'N/A' ? ` (${targetPace})` : ''}`;
+    ? `🏃 [RUN] ${dist}km ${type}${targetPace && targetPace !== 'N/A' ? ` (${targetPace})` : ''}`
+    : `🧘 [NO RUN] ${type} (Mobility & Calf Armor)`;
 
   const splitsData = generateWorkoutSplits(wo);
   const splits = splitsData.map(s => `  • ${s.km} (${s.phase}): ${s.pace} — ${s.desc}`);
@@ -2948,14 +2948,17 @@ function generateGoogleCalendarUrl(wo, customTime = null) {
     ].filter(Boolean).join('\n');
   } else {
     details = [
+      `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+      `🛑 NO MORNING RUN TODAY • TISSUE RECOVERY & PREHAB`,
+      `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`,
       `⏱️ ${estDurationStr}  •  RPE ${rpe}/10 (Recovery)\n`,
       `💧 DAILY HYDRATION`,
       `• 2.0–2.5L fluids throughout the day\n`,
-      `🦵 MOBILITY (5 Mins)`,
+      `🦵 MOBILITY & CORE (15–20 Mins)`,
       `• Gentle hip openers & ankle mobility\n`,
       `🎯 SESSION GOAL`,
       `• ${wo.description || 'Rest and tissue recovery.'}\n`,
-      `🧘 PREHAB PROTOCOL`,
+      `🧘 PREHAB & STRENGTH PROTOCOL`,
       `• ${prehabDrill}\n`,
       `⚡ RECOVERY`,
       `• Rest, elevate legs & 7–8 hrs sleep`
@@ -3332,6 +3335,118 @@ function showDailyWorkoutStrategyModal(workoutDate, weekNum, dayName) {
 
   const gcalUrl = generateGoogleCalendarUrl(targetWo);
 
+  let scriptObj = null;
+  if (targetWo.coach_script) {
+    try {
+      scriptObj = typeof targetWo.coach_script === 'string' ? JSON.parse(targetWo.coach_script) : targetWo.coach_script;
+    } catch (e) {
+      console.warn('Could not parse coach_script:', e);
+    }
+  }
+
+  let coachScriptHtml = '';
+  if (scriptObj && scriptObj.theme) {
+    const cuesList = scriptObj.cues || [];
+    const cuesCount = cuesList.length;
+    const slowCount = scriptObj.dynamic_pace_alerts?.too_slow?.length || 0;
+    const fastCount = scriptObj.dynamic_pace_alerts?.too_fast?.length || 0;
+    const firstCueText = cuesList[0]?.text || scriptObj.theme.philosophical_insight || 'Welcome to your run.';
+
+    coachScriptHtml = `
+      <!-- AI Audio Coach Script & Philosophical Blueprint Card -->
+      <div style="background: rgba(16, 185, 129, 0.05); border: 1.5px solid rgba(16, 185, 129, 0.35); border-radius: var(--radius-sm); padding: 0.9rem; margin-bottom: 0.85rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; flex-wrap: wrap; gap: 0.4rem;">
+          <div style="display: flex; align-items: center; gap: 0.4rem;">
+            <span style="font-size: 1rem;">🎙️</span>
+            <strong style="font-size: 0.84rem; color: #10b981; letter-spacing: 0.02em;">AI COACH SCRIPT (GEMINI 3.8 FLASH)</strong>
+          </div>
+          <span style="font-size: 0.68rem; font-weight: 800; background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4); padding: 0.2rem 0.55rem; border-radius: 9999px;">
+            🟢 PRE-CACHED &amp; OFFLINE READY
+          </span>
+        </div>
+
+        <div style="background: rgba(0,0,0,0.3); border-radius: 6px; padding: 0.65rem 0.8rem; margin-bottom: 0.6rem;">
+          <div style="font-size: 0.72rem; text-transform: uppercase; color: #ffcc00; font-weight: 800; margin-bottom: 0.2rem;">
+            🌟 Theme: ${scriptObj.theme.title || 'Mindful Cadence'}
+          </div>
+          <div style="font-size: 0.78rem; font-style: italic; color: #e2e8f0; line-height: 1.4; margin-bottom: 0.3rem;">
+            "${scriptObj.theme.quote || ''}"
+          </div>
+          <div style="font-size: 0.74rem; color: #94a3b8; line-height: 1.35;">
+            ${scriptObj.theme.philosophical_insight || ''}
+          </div>
+        </div>
+
+        ${scriptObj.tmm_race_intelligence ? `
+        <div style="background: rgba(255, 140, 0, 0.08); border: 1px solid rgba(255, 140, 0, 0.25); border-radius: 6px; padding: 0.65rem 0.8rem; margin-bottom: 0.6rem;">
+          <div style="font-size: 0.72rem; text-transform: uppercase; color: #ff9f43; font-weight: 800; margin-bottom: 0.2rem;">
+            🏙️ TMM Landmark: ${scriptObj.tmm_race_intelligence.course_landmark || 'Marine Drive'}
+          </div>
+          <div style="font-size: 0.74rem; color: #cbd5e1; line-height: 1.35;">
+            ${scriptObj.tmm_race_intelligence.tactical_simulation || ''}
+          </div>
+        </div>
+        ` : ''}
+
+        <details style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 6px; padding: 0.5rem 0.7rem; margin-bottom: 0.6rem; font-size: 0.75rem;">
+          <summary style="cursor: pointer; font-weight: 700; color: var(--text-main); display: flex; justify-content: space-between; align-items: center;">
+            <span>⏱️ Spoken Audio Cues (${cuesCount} cues • 3–6m Dwell Silence)</span>
+            <span style="font-size: 0.68rem; color: #ffcc00;">View Details ▼</span>
+          </summary>
+          <div style="margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.4rem;">
+            ${cuesList.map((c, i) => `
+              <div style="border-left: 2px solid ${c.has_countdown ? '#f95700' : '#10b981'}; padding-left: 0.5rem; line-height: 1.35;">
+                <div style="font-size: 0.7rem; color: #a8a29e;">
+                  [T+${Math.floor((c.trigger_sec || 0) / 60)}:${String((c.trigger_sec || 0) % 60).padStart(2, '0')}] <strong>${c.title}</strong> • Dwell: ${c.dwell_after_sec || 300}s silence
+                </div>
+                <div style="font-size: 0.72rem; color: #e2e8f0; margin-top: 0.1rem;">
+                  "${c.text}"
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </details>
+
+        <div style="font-size: 0.7rem; color: #a8a29e; margin-bottom: 0.6rem;">
+          ⚡ <strong>Anti-Repetitive Pace Alerts:</strong> ${slowCount} Too-Slow &amp; ${fastCount} Too-Fast alerts dynamically randomized during run.
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button type="button" class="btn-icon" onclick="playCoachAudioPreview('${encodeURIComponent(firstCueText)}', true)" style="background: linear-gradient(135deg, #ea580c, #f97316); color: #ffffff; font-size: 0.76rem; font-weight: 700; padding: 0.35rem 0.75rem; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 0.35rem; border: none; box-shadow: 0 2px 6px rgba(234, 88, 12, 0.35);" title="Test hyper-realistic ElevenLabs Coach Vega voice for Sunday long runs">
+            🎙️ Test Vega (ElevenLabs)
+          </button>
+          <button type="button" class="btn-icon" onclick="playCoachAudioPreview('${encodeURIComponent(firstCueText)}', false)" style="background: rgba(16, 185, 129, 0.2); border-color: rgba(16, 185, 129, 0.5); color: #10b981; font-size: 0.76rem; font-weight: 700; padding: 0.35rem 0.75rem; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 0.35rem;" title="Test Gemini 2.5 Flash Coach Vega voice for weekday runs">
+            🔊 Test Vega (Gemini)
+          </button>
+          <button type="button" class="btn-icon" onclick="generateCoachScriptForWorkout('${workoutDate}', ${targetWeekNum}, '${dayName}')" style="background: rgba(255, 255, 255, 0.06); font-size: 0.76rem; padding: 0.35rem 0.75rem; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 0.3rem;">
+            🔄 Re-generate Script (Gemini 3.8 Flash)
+          </button>
+        </div>
+      </div>
+    `;
+  } else {
+    coachScriptHtml = `
+      <!-- AI Audio Coach Script Pending Card -->
+      <div id="coach-script-pending-container" style="background: rgba(255, 255, 255, 0.02); border: 1.5px dashed rgba(255, 255, 255, 0.18); border-radius: var(--radius-sm); padding: 0.9rem; margin-bottom: 0.85rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem; flex-wrap: wrap; gap: 0.4rem;">
+          <div style="display: flex; align-items: center; gap: 0.4rem;">
+            <span style="font-size: 1rem;">🎙️</span>
+            <strong style="font-size: 0.84rem; color: var(--text-main);">AI COACH SCRIPT</strong>
+          </div>
+          <span style="font-size: 0.68rem; font-weight: 700; background: rgba(255, 255, 255, 0.08); color: #a8a29e; padding: 0.2rem 0.55rem; border-radius: 9999px;">
+            ⚪ SCRIPT PENDING
+          </span>
+        </div>
+        <div style="font-size: 0.75rem; color: #a8a29e; line-height: 1.4; margin-bottom: 0.65rem;">
+          Generate a deeply philosophical, TMM-tailored audio script with 10% YouTube Music ducking, 3–6 minute golden dwell silences, and randomized pace alert pools.
+        </div>
+        <button type="button" class="btn-icon" onclick="generateCoachScriptForWorkout('${workoutDate}', ${targetWeekNum}, '${dayName}')" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; font-weight: 700; border: none; font-size: 0.78rem; padding: 0.45rem 0.85rem; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 0.35rem;">
+          ✨ Generate Script via Gemini 3.8 Flash
+        </button>
+      </div>
+    `;
+  }
+
   container.innerHTML = `
     <!-- Header -->
     <div style="margin-bottom: 1rem;">
@@ -3402,6 +3517,8 @@ function showDailyWorkoutStrategyModal(workoutDate, weekNum, dayName) {
       </div>
     </div>
 
+    ${coachScriptHtml}
+
     <!-- Calf & Achilles Armor Prehab Protocol -->
     <div class="strategy-prehab-box">
       <div class="strategy-prehab-title">
@@ -3450,9 +3567,442 @@ function closeDailyStrategyModal() {
   if (modal) modal.classList.remove('open');
 }
 
+async function generateCoachScriptForWorkout(workoutDate, weekNum, dayName) {
+  let targetWo = null;
+  if (Array.isArray(rawWeeksData)) {
+    for (const w of rawWeeksData) {
+      if (Array.isArray(w.workouts)) {
+        const found = w.workouts.find(x => x.date === workoutDate || (w.week_number === weekNum && x.day === dayName));
+        if (found) { targetWo = found; break; }
+      }
+    }
+  }
+
+  if (!targetWo) {
+    alert('Workout data not found for ' + workoutDate);
+    return;
+  }
+
+  const key = geminiApiKey || localStorage.getItem('tmm_gemini_api_key');
+  if (!key || key.length < 5) {
+    alert('Please configure your Gemini API Key in Settings first to activate Gemini 3.8 Flash script generation.');
+    openCoachSettingsModal();
+    return;
+  }
+
+  const pendingContainer = document.getElementById('coach-script-pending-container');
+  if (pendingContainer) {
+    pendingContainer.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 0.6rem; color: #ffcc00; font-size: 0.82rem; padding: 0.6rem 0;">
+        <span style="font-size: 1.1rem; animation: pulse 1.2s infinite;">⏳</span>
+        <span><strong>Gemini 3.8 Flash</strong> is generating your structured coach script &amp; anti-repetitive pace alerts...</span>
+      </div>
+    `;
+  }
+
+  const splits = generateWorkoutSplits(targetWo);
+  const prompt = `You are the lead endurance running coach, sports philosopher, and tactical race strategist for a runner training for the Tata Mumbai Marathon 2027 (TMM 2027).
+
+Generate a complete audio coach script JSON for this workout:
+Date: ${targetWo.date}
+Day: ${dayName}
+Week: ${weekNum}
+Workout Type: ${targetWo.type}
+Distance: ${targetWo.distance_km} km
+Target Pace: ${targetWo.target_pace}
+RPE: ${targetWo.rpe}/10
+Description: ${targetWo.description}
+Prehab: ${targetWo.strength_prehab || 'Calf & Achilles loading'}
+Fueling: ${targetWo.fueling || 'Electrolytes and water'}
+Structured Strategy Splits: ${JSON.stringify(splits)}
+
+STRICT REQUIREMENTS:
+1. THEME: Select an authentic philosophical running theme (e.g. Economy of Motion, The Zen of Middle Kilometers, Weather Toughness, Gear Minimalism, Silent Work, Embracing the Monotony).
+2. GOLDEN RATIO OF SILENCE: 20-35s concise spoken thoughts followed by 180 to 360 seconds (3 to 6 minutes) of dwell silence for music.
+3. TMM INTELLIGENCE: Include specific tactical references to the Mumbai Marathon route (Sea Link crosswinds, Pedder Road Km 35 climb, Marine Drive sea breeze).
+4. DYNAMIC PACE ALERTS: Provide 6-8 distinct, non-repetitive lines for "too_slow" and 6-8 distinct lines for "too_fast".
+5. JSON ONLY: Output valid JSON adhering to this schema:
+{
+  "workout_date": "${targetWo.date}",
+  "workout_type": "${targetWo.type}",
+  "distance_km": ${targetWo.distance_km},
+  "theme": { "title": "string", "philosophical_insight": "string", "quote": "string" },
+  "tmm_race_intelligence": { "course_landmark": "string", "tactical_simulation": "string", "mental_drill": "string" },
+  "cues": [
+    { "id": "string", "trigger_sec": number, "type": "string", "title": "string", "text": "string", "dwell_after_sec": number, "has_countdown": boolean }
+  ],
+  "dynamic_pace_alerts": {
+    "too_slow": ["string"],
+    "too_fast": ["string"]
+  },
+  "dynamic_fueling_alerts": ["string"]
+}`;
+
+  try {
+    let res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${key}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          temperature: 0.4,
+          responseMimeType: "application/json"
+        }
+      })
+    });
+
+    if (!res.ok) {
+      console.warn('Gemini 3.8 Flash returned ' + res.status + ', failing over to gemini-3.6-flash...');
+      res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${key}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: {
+            temperature: 0.4,
+            responseMimeType: "application/json"
+          }
+        })
+      });
+    }
+
+    const data = await res.json();
+    const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!rawText) throw new Error('No response from Gemini API.');
+
+    const scriptJson = JSON.parse(rawText);
+
+    if (supabaseClient) {
+      await supabaseClient
+        .from('daily_workouts')
+        .update({ coach_script: scriptJson })
+        .eq('workout_date', workoutDate);
+    }
+
+    targetWo.coach_script = scriptJson;
+    showDailyWorkoutStrategyModal(workoutDate, weekNum, dayName);
+
+  } catch (err) {
+    console.error('Failed to generate coach script:', err);
+    alert('Error generating script: ' + err.message);
+    showDailyWorkoutStrategyModal(workoutDate, weekNum, dayName);
+  }
+}
+
+async function testElevenLabsVoiceInBrowser() {
+  const input = document.getElementById('elevenlabs-api-key-input');
+  const key = (input?.value || elevenlabsApiKey || localStorage.getItem('tmm_elevenlabs_api_key') || 'sk_b28f7b8bb1521ad929b982847045cc0b1a6e568c3670d449').trim();
+  const statusEl = document.getElementById('elevenlabs-test-status');
+
+  if (input && !input.value) {
+    input.value = key;
+  }
+
+  if (!key || key.length < 5) {
+    if (statusEl) {
+      statusEl.style.color = 'var(--accent-red)';
+      statusEl.textContent = '❌ Enter your ElevenLabs API key first.';
+    } else {
+      alert('Please enter an ElevenLabs API key first.');
+    }
+    return;
+  }
+
+  elevenlabsApiKey = key;
+  localStorage.setItem('tmm_elevenlabs_api_key', key);
+  syncCoachSettingsToCloud(geminiApiKey, geminiModel, getActiveVegaIconId(), elevenlabsApiKey);
+
+  if (statusEl) {
+    statusEl.style.color = '#ffcc00';
+    statusEl.textContent = '⏳ Calling ElevenLabs Coach Vega voice...';
+  }
+
+  const samplePrompt = "Good morning runner. Coach Vega here for your Sunday long run. Keep your shoulders loose, settle into your aerobic zone, and let the cadence carry you through Mumbai.";
+
+  try {
+    const res = await fetch("https://api.elevenlabs.io/v1/text-to-speech/EXAVITQu4vr4xnSDxMaL", {
+      method: "POST",
+      headers: {
+        "xi-api-key": key,
+        "Content-Type": "application/json",
+        "Accept": "audio/mpeg"
+      },
+      body: JSON.stringify({
+        text: samplePrompt,
+        model_id: "eleven_multilingual_v2",
+        voice_settings: {
+          stability: 0.5,
+          similarity_boost: 0.75
+        }
+      })
+    });
+
+    if (!res.ok) {
+      const errText = await res.text().catch(() => '');
+      throw new Error(`HTTP ${res.status}: ${errText}`);
+    }
+
+    const blob = await res.blob();
+    const audioUrl = URL.createObjectURL(blob);
+    const audio = new Audio(audioUrl);
+    await audio.play();
+
+    if (statusEl) {
+      statusEl.style.color = '#10b981';
+      statusEl.textContent = '✅ Playing ElevenLabs Coach Vega voice now!';
+    }
+  } catch (err) {
+    console.error('ElevenLabs test error:', err);
+    if (statusEl) {
+      statusEl.style.color = 'var(--accent-red)';
+      statusEl.textContent = `❌ ${err.message}`;
+    } else {
+      alert('ElevenLabs test failed: ' + err.message);
+    }
+  }
+}
+
+async function testGeminiVoiceInBrowser() {
+  const input = document.getElementById('gemini-api-key-input');
+  const voiceSelect = document.getElementById('gemini-test-voice-select');
+  const voiceName = (voiceSelect?.value || 'Aoede').trim();
+  const key = (input?.value || geminiApiKey || localStorage.getItem('tmm_gemini_api_key') || '').trim();
+  const statusEl = document.getElementById('gemini-test-status');
+
+  if (!key || key.length < 5) {
+    if (statusEl) {
+      statusEl.style.color = 'var(--accent-red)';
+      statusEl.textContent = '❌ Enter your Gemini API key first.';
+    } else {
+      alert('Please enter your Gemini API key first.');
+    }
+    return;
+  }
+
+  geminiApiKey = key;
+  localStorage.setItem('tmm_gemini_api_key', key);
+  updateCoachStatusDot();
+  syncCoachSettingsToCloud(geminiApiKey, geminiModel, getActiveVegaIconId(), elevenlabsApiKey);
+
+  if (statusEl) {
+    statusEl.style.color = '#10b981';
+    statusEl.textContent = `⏳ Calling Gemini 2.5 Flash Audio (${voiceName})...`;
+  }
+
+  const samplePrompt = "Good morning runner. Coach Vega here. Settle into an easy rhythm, keep your shoulders soft, and let the cadence carry you through Mumbai.";
+
+  try {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${key}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: samplePrompt }] }],
+        generationConfig: {
+          responseModalities: ["AUDIO"],
+          speechConfig: {
+            voiceConfig: {
+              prebuiltVoiceConfig: {
+                voiceName: voiceName
+              }
+            }
+          }
+        }
+      })
+    });
+
+    if (!res.ok) {
+      const errText = await res.text().catch(() => '');
+      throw new Error(`HTTP ${res.status}: ${errText}`);
+    }
+
+    const data = await res.json();
+    const candidate = data.candidates?.[0];
+    const audioPart = candidate?.content?.parts?.find(p => p.inlineData && p.inlineData.mimeType?.startsWith('audio/'));
+
+    if (!audioPart || !audioPart.inlineData?.data) {
+      throw new Error('No audio stream returned in Gemini response');
+    }
+
+    const base64Data = audioPart.inlineData.data;
+    const binaryString = window.atob(base64Data);
+    const len = binaryString.length;
+    const pcmBytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+      pcmBytes[i] = binaryString.charCodeAt(i);
+    }
+
+    // Build standard 44-byte WAV header (24kHz 16-bit Mono)
+    const wavHeader = new ArrayBuffer(44);
+    const view = new DataView(wavHeader);
+    const sampleRate = 24000;
+    const numChannels = 1;
+    const bitsPerSample = 16;
+    const byteRate = sampleRate * numChannels * (bitsPerSample / 8);
+    const blockAlign = numChannels * (bitsPerSample / 8);
+
+    view.setUint32(0, 0x52494646, false); // 'RIFF'
+    view.setUint32(4, 36 + pcmBytes.length, true);
+    view.setUint32(8, 0x57415645, false); // 'WAVE'
+    view.setUint32(12, 0x666d7420, false); // 'fmt '
+    view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true); // PCM format
+    view.setUint16(22, numChannels, true);
+    view.setUint32(24, sampleRate, true);
+    view.setUint32(28, byteRate, true);
+    view.setUint16(32, blockAlign, true);
+    view.setUint16(34, bitsPerSample, true);
+    view.setUint32(36, 0x64617461, false); // 'data'
+    view.setUint32(40, pcmBytes.length, true);
+
+    const wavBlob = new Blob([wavHeader, pcmBytes], { type: 'audio/wav' });
+    const audioUrl = URL.createObjectURL(wavBlob);
+    const audio = new Audio(audioUrl);
+    await audio.play();
+
+    if (statusEl) {
+      statusEl.style.color = '#10b981';
+      statusEl.textContent = `✅ Playing Gemini ${voiceName} voice now!`;
+    }
+  } catch (err) {
+    console.error('Gemini voice test error:', err);
+    if (statusEl) {
+      statusEl.style.color = 'var(--accent-red)';
+      statusEl.textContent = `❌ ${err.message}`;
+    } else {
+      alert('Gemini voice test failed: ' + err.message);
+    }
+  }
+}
+
+async function playCoachAudioPreview(encodedText, forceElevenLabs = false) {
+  const text = decodeURIComponent(encodedText);
+  const elKey = (elevenlabsApiKey || localStorage.getItem('tmm_elevenlabs_api_key') || 'sk_b28f7b8bb1521ad929b982847045cc0b1a6e568c3670d449').trim();
+  const gKey = (geminiApiKey || localStorage.getItem('tmm_gemini_api_key') || '').trim();
+
+  // If forceElevenLabs is requested, synthesize using ElevenLabs Adam voice
+  if (forceElevenLabs) {
+    if (!elKey || elKey.length < 5) {
+      alert('Please enter or sync your ElevenLabs API key in Voice & AI settings.');
+      return;
+    }
+    try {
+      const res = await fetch("https://api.elevenlabs.io/v1/text-to-speech/EXAVITQu4vr4xnSDxMaL", {
+        method: "POST",
+        headers: {
+          "xi-api-key": elKey,
+          "Content-Type": "application/json",
+          "Accept": "audio/mpeg"
+        },
+        body: JSON.stringify({
+          text: text,
+          model_id: "eleven_multilingual_v2",
+          voice_settings: { stability: 0.5, similarity_boost: 0.75 }
+        })
+      });
+      if (!res.ok) {
+        const errText = await res.text().catch(() => '');
+        throw new Error(`HTTP ${res.status}: ${errText}`);
+      }
+      const blob = await res.blob();
+      const audio = new Audio(URL.createObjectURL(blob));
+      await audio.play();
+      return;
+    } catch (e) {
+      console.error('ElevenLabs preview failed:', e);
+      alert('ElevenLabs Coach Vega preview failed: ' + e.message);
+      return;
+    }
+  }
+
+  // Weekday or Gemini Coach Vega (Aoede) preview
+  if (gKey && gKey.length > 5) {
+    const selectedVoice = document.getElementById('gemini-test-voice-select')?.value || 'Aoede';
+    try {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${gKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: text }] }],
+          generationConfig: {
+            responseModalities: ["AUDIO"],
+            speechConfig: {
+              voiceConfig: {
+                prebuiltVoiceConfig: {
+                  voiceName: selectedVoice
+                }
+              }
+            }
+          }
+        })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        const candidate = data.candidates?.[0];
+        const audioPart = candidate?.content?.parts?.find(p => p.inlineData && p.inlineData.mimeType?.startsWith('audio/'));
+        if (audioPart && audioPart.inlineData?.data) {
+          const base64Data = audioPart.inlineData.data;
+          const binaryString = window.atob(base64Data);
+          const len = binaryString.length;
+          const pcmBytes = new Uint8Array(len);
+          for (let i = 0; i < len; i++) {
+            pcmBytes[i] = binaryString.charCodeAt(i);
+          }
+
+          // Build WAV header (24kHz 16-bit Mono)
+          const wavHeader = new ArrayBuffer(44);
+          const view = new DataView(wavHeader);
+          const sampleRate = 24000;
+          const numChannels = 1;
+          const bitsPerSample = 16;
+          const byteRate = sampleRate * numChannels * (bitsPerSample / 8);
+          const blockAlign = numChannels * (bitsPerSample / 8);
+
+          view.setUint32(0, 0x52494646, false); // 'RIFF'
+          view.setUint32(4, 36 + pcmBytes.length, true);
+          view.setUint32(8, 0x57415645, false); // 'WAVE'
+          view.setUint32(12, 0x666d7420, false); // 'fmt '
+          view.setUint32(16, 16, true);
+          view.setUint16(20, 1, true); // PCM format
+          view.setUint16(22, numChannels, true);
+          view.setUint32(24, sampleRate, true);
+          view.setUint32(28, byteRate, true);
+          view.setUint16(32, blockAlign, true);
+          view.setUint16(34, bitsPerSample, true);
+          view.setUint32(36, 0x64617461, false); // 'data'
+          view.setUint32(40, pcmBytes.length, true);
+
+          const wavBlob = new Blob([wavHeader, pcmBytes], { type: 'audio/wav' });
+          const audioUrl = URL.createObjectURL(wavBlob);
+          const audio = new Audio(audioUrl);
+          await audio.play();
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn('Gemini Flash TTS preview error, falling back to Web Speech:', e);
+    }
+  }
+
+  // Fallback: Web Speech API
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 1.0;
+    utterance.pitch = 0.95;
+    window.speechSynthesis.speak(utterance);
+  } else {
+    alert(text);
+  }
+}
+
 window.showDailyWorkoutStrategyModal = showDailyWorkoutStrategyModal;
 window.closeDailyStrategyModal = closeDailyStrategyModal;
 window.saveGCalPreferences = saveGCalPreferences;
+window.generateCoachScriptForWorkout = generateCoachScriptForWorkout;
+window.playCoachAudioPreview = playCoachAudioPreview;
+window.testElevenLabsVoiceInBrowser = testElevenLabsVoiceInBrowser;
+window.testGeminiVoiceInBrowser = testGeminiVoiceInBrowser;
 
 // Render Single Day Workout Card (Grid Mode)
 function renderDayCard(weekNum, wo) {
@@ -3851,6 +4401,12 @@ async function initSupabase(url, key) {
               const keyInput = document.getElementById('gemini-api-key-input');
               if (keyInput) keyInput.value = geminiApiKey;
             }
+            if (config && config.elevenlabs_api_key && (!elevenlabsApiKey || elevenlabsApiKey.length < 5)) {
+              elevenlabsApiKey = config.elevenlabs_api_key;
+              localStorage.setItem('tmm_elevenlabs_api_key', elevenlabsApiKey);
+              const elInput = document.getElementById('elevenlabs-api-key-input');
+              if (elInput) elInput.value = elevenlabsApiKey;
+            }
             if (config && config.model && !localStorage.getItem('tmm_gemini_model')) {
               geminiModel = config.model;
               localStorage.setItem('tmm_gemini_model', geminiModel);
@@ -3876,7 +4432,9 @@ async function initSupabase(url, key) {
             rpe: row.rpe_target || 3,
             description: row.description,
             strength_prehab: row.strength_prehab,
-            fueling: row.fueling_hydration_strategy
+            fueling: row.fueling_hydration_strategy,
+            strategy_splits: row.strategy_splits,
+            coach_script: row.coach_script
           });
         }
 
@@ -4554,7 +5112,8 @@ function normalizeGeminiModel(m) {
 }
 
 let geminiApiKey = localStorage.getItem('tmm_gemini_api_key') || '';
-let geminiModel = normalizeGeminiModel(localStorage.getItem('tmm_gemini_model') || 'gemini-3.6-flash');
+let elevenlabsApiKey = localStorage.getItem('tmm_elevenlabs_api_key') || 'sk_b28f7b8bb1521ad929b982847045cc0b1a6e568c3670d449';
+let geminiModel = normalizeGeminiModel(localStorage.getItem('tmm_gemini_model') || 'gemini-3.8-flash');
 let coachChatHistory = [];
 
 try {
@@ -4582,7 +5141,8 @@ function toggleCoachDrawer() {
 }
 
 const VEGA_AVAILABLE_MODELS = [
-  { value: 'gemini-3.6-flash', label: 'Gemini 3.6 Flash (Antigravity Flagship • Ultra Fast & High Reasoning)' },
+  { value: 'gemini-3.8-flash', label: 'Gemini 3.8 Flash (Deep Coach Script Engine • Highest Reasoning)' },
+  { value: 'gemini-3.6-flash', label: 'Gemini 3.6 Flash (Antigravity Flagship • Ultra Fast & Reliable)' },
   { value: 'gemini-3.5-flash', label: 'Gemini 3.5 Flash (Balanced Performance & Clinical Quality)' },
   { value: 'gemini-3.5-flash-lite', label: 'Gemini 3.5 Flash Lite (Instant Sub-Second Latency)' },
   { value: 'gemini-3.1-flash-lite', label: 'Gemini 3.1 Flash Lite' },
@@ -4603,7 +5163,7 @@ function handleModelSelectChange() {
     customContainer.id = 'gemini-custom-model-container';
     customContainer.style.marginTop = '0.5rem';
     customContainer.innerHTML = `
-      <input type="text" id="gemini-custom-model-input" placeholder="e.g. gemini-3.6-flash or custom-model-id" class="search-input" style="width: 100%; font-family: monospace; font-size: 0.82rem;">
+      <input type="text" id="gemini-custom-model-input" placeholder="e.g. gemini-3.8-flash or custom-model-id" class="search-input" style="width: 100%; font-family: monospace; font-size: 0.82rem;">
       <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.25rem;">
         Type any model identifier available in your Google AI Studio account.
       </div>
@@ -4629,22 +5189,24 @@ function getActiveCoachModel() {
   if (modelSelect && modelSelect.value !== 'custom') {
     return normalizeGeminiModel(modelSelect.value);
   }
-  return normalizeGeminiModel(geminiModel || 'gemini-3.6-flash');
+  return normalizeGeminiModel(geminiModel || 'gemini-3.8-flash');
 }
 
 // Settings Modal
 function openCoachSettingsModal() {
   const modal = document.getElementById('ai-coach-settings-modal');
   const keyInput = document.getElementById('gemini-api-key-input');
+  const elInput = document.getElementById('elevenlabs-api-key-input');
   const modelSelect = document.getElementById('gemini-model-select');
   const statusEl = document.getElementById('coach-api-test-status');
 
   if (keyInput) keyInput.value = geminiApiKey || '';
+  if (elInput) elInput.value = elevenlabsApiKey || 'sk_b28f7b8bb1521ad929b982847045cc0b1a6e568c3670d449';
   
   if (modelSelect) {
     // Dynamically rebuild the select options to guarantee all latest models appear
-    const currentVal = normalizeGeminiModel(geminiModel || 'gemini-3.6-flash');
-    const isCustom = !VEGA_AVAILABLE_MODELS.slice(0, 6).some(m => m.value === currentVal);
+    const currentVal = normalizeGeminiModel(geminiModel || 'gemini-3.8-flash');
+    const isCustom = !VEGA_AVAILABLE_MODELS.slice(0, 7).some(m => m.value === currentVal);
     
     modelSelect.innerHTML = VEGA_AVAILABLE_MODELS.map(m => 
       `<option value="${m.value}" ${(!isCustom && m.value === currentVal) || (isCustom && m.value === 'custom') ? 'selected' : ''}>${m.label}</option>`
@@ -4658,7 +5220,7 @@ function openCoachSettingsModal() {
       customContainer.id = 'gemini-custom-model-container';
       customContainer.style.marginTop = '0.5rem';
       customContainer.innerHTML = `
-        <input type="text" id="gemini-custom-model-input" placeholder="e.g. gemini-3.7-flash or custom-model-id" class="search-input" style="width: 100%; font-family: monospace; font-size: 0.82rem;">
+        <input type="text" id="gemini-custom-model-input" placeholder="e.g. gemini-3.8-flash or custom-model-id" class="search-input" style="width: 100%; font-family: monospace; font-size: 0.82rem;">
         <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.25rem;">
           Type any model identifier available in your Google AI Studio account.
         </div>
@@ -4679,12 +5241,32 @@ function openCoachSettingsModal() {
   if (modal) modal.classList.add('open');
 }
 
+function handleElevenLabsApiKeyInput(val) {
+  const cleanVal = (val || '').trim();
+  elevenlabsApiKey = cleanVal;
+  localStorage.setItem('tmm_elevenlabs_api_key', cleanVal);
+  syncCoachSettingsToCloud(geminiApiKey, geminiModel, getActiveVegaIconId(), elevenlabsApiKey);
+}
+window.handleElevenLabsApiKeyInput = handleElevenLabsApiKeyInput;
+
 function closeCoachSettingsModal() {
+  const keyInput = document.getElementById('gemini-api-key-input');
+  if (keyInput && keyInput.value.trim().length > 5) {
+    geminiApiKey = keyInput.value.trim();
+    localStorage.setItem('tmm_gemini_api_key', geminiApiKey);
+  }
+  const elInput = document.getElementById('elevenlabs-api-key-input');
+  if (elInput) {
+    elevenlabsApiKey = elInput.value.trim();
+    localStorage.setItem('tmm_elevenlabs_api_key', elevenlabsApiKey);
+  }
+  updateCoachStatusDot();
+  syncCoachSettingsToCloud(geminiApiKey, geminiModel, getActiveVegaIconId(), elevenlabsApiKey);
   const modal = document.getElementById('ai-coach-settings-modal');
   if (modal) modal.classList.remove('open');
 }
 
-async function syncCoachSettingsToCloud(apiKey, model, iconId) {
+async function syncCoachSettingsToCloud(apiKey, model, iconId, elKey) {
   if (!supabaseClient) return;
   try {
     const payload = {
@@ -4696,13 +5278,14 @@ async function syncCoachSettingsToCloud(apiKey, model, iconId) {
       distance_km: 0,
       description: JSON.stringify({
         gemini_api_key: apiKey || geminiApiKey,
+        elevenlabs_api_key: elKey !== undefined ? elKey : elevenlabsApiKey,
         model: model || geminiModel,
         vega_icon_id: iconId || getActiveVegaIconId(),
         updated_at: new Date().toISOString()
       })
     };
     await supabaseClient.from('daily_workouts').upsert(payload);
-    console.log('☁️ Synced Coach Vega settings to Supabase cloud');
+    console.log('☁️ Synced Coach Vega & ElevenLabs settings to Supabase cloud');
   } catch (e) {
     console.warn('Could not sync coach settings to Supabase:', e);
   }
@@ -4786,6 +5369,12 @@ async function fetchCoachKeyFromCloud() {
         if (cfg.model) {
           geminiModel = cfg.model;
           localStorage.setItem('tmm_gemini_model', geminiModel);
+        }
+        if (cfg.elevenlabs_api_key) {
+          elevenlabsApiKey = cfg.elevenlabs_api_key;
+          localStorage.setItem('tmm_elevenlabs_api_key', elevenlabsApiKey);
+          const elInput = document.getElementById('elevenlabs-api-key-input');
+          if (elInput) elInput.value = elevenlabsApiKey;
         }
         updateCoachStatusDot();
         if (currentPendingPrompt) {
@@ -5027,17 +5616,6 @@ function handleCoachApiKeyInput(val) {
 }
 window.handleCoachApiKeyInput = handleCoachApiKeyInput;
 
-function closeCoachSettingsModal() {
-  const keyInput = document.getElementById('gemini-api-key-input');
-  if (keyInput && keyInput.value.trim().length > 5) {
-    geminiApiKey = keyInput.value.trim();
-    localStorage.setItem('tmm_gemini_api_key', geminiApiKey);
-    updateCoachStatusDot();
-    syncCoachSettingsToCloud(geminiApiKey, geminiModel, getActiveVegaIconId());
-  }
-  const modal = document.getElementById('ai-coach-settings-modal');
-  if (modal) modal.classList.remove('open');
-}
 
 // Test Connection strictly with chosen model
 async function testCoachApiConnection() {

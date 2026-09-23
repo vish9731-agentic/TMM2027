@@ -38,7 +38,8 @@ object PlanEngine {
         val strength_prehab: String?,
         val fueling: String?,
         var week_number: Int = 1,
-        val strategy_splits: List<StrategySplit>? = null
+        val strategy_splits: List<StrategySplit>? = null,
+        val coach_script: Map<String, Any>? = null
     )
 
     data class WeekPlan(
@@ -119,6 +120,45 @@ object PlanEngine {
     }
 
     fun buildManifestJson(wo: WorkoutDay): String {
+        // 0. SUPREME SOURCE: Pre-Cached / Generated Gemini 3.8 Flash Coach Script
+        if (wo.coach_script != null) {
+            @Suppress("UNCHECKED_CAST")
+            val cues = wo.coach_script["cues"] as? List<Map<String, Any>>
+            if (!cues.isNullOrEmpty()) {
+                val timeline = mutableListOf<Map<String, Any>>()
+                for (cue in cues) {
+                    val triggerSec = (cue["trigger_sec"] as? Number)?.toInt() ?: 0
+                    val hasCountdown = cue["has_countdown"] as? Boolean ?: false
+                    val itemMap = mutableMapOf<String, Any>(
+                        "id" to (cue["id"] as? String ?: "cue_${System.currentTimeMillis()}"),
+                        "type" to (cue["type"] as? String ?: "CUE"),
+                        "triggerType" to "TIME",
+                        "triggerSeconds" to triggerSec,
+                        "title" to (cue["title"] as? String ?: "Coach Cue"),
+                        "text" to (cue["text"] as? String ?: ""),
+                        "duckMusicSeconds" to 1.5,
+                        "hasCountdown" to hasCountdown
+                    )
+                    if (hasCountdown) {
+                        itemMap["countdownStartSecond"] = (triggerSec - 5).coerceAtLeast(0)
+                    }
+                    timeline.add(itemMap)
+                }
+
+                val manifest = mutableMapOf<String, Any>(
+                    "workout_date" to wo.date,
+                    "workout_type" to wo.type,
+                    "distance_km" to wo.distance_km,
+                    "target_pace" to wo.target_pace,
+                    "timeline" to timeline
+                )
+                wo.coach_script["theme"]?.let { manifest["theme"] = it }
+                wo.coach_script["tmm_race_intelligence"]?.let { manifest["tmm_race_intelligence"] = it }
+                wo.coach_script["dynamic_pace_alerts"]?.let { manifest["dynamic_pace_alerts"] = it }
+                return Gson().toJson(manifest)
+            }
+        }
+
         val dist = wo.distance_km
         val timeline = mutableListOf<Map<String, Any>>()
 
@@ -176,7 +216,7 @@ object PlanEngine {
                     "hasCountdown" to false
                 ))
 
-                var currentSec = 3
+                var currentSec = 8
 
                 splits.forEachIndexed { idx, split ->
                     val pLower = split.phase.lowercase(Locale.US)

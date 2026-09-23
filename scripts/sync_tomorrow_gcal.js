@@ -378,10 +378,13 @@ function buildEventPayload(wo, tomorrow) {
   const startDateTimeStr = `${tomorrow.dateStr}T${pad(startH)}:${pad(startM)}:00+05:30`;
   const endDateTimeStr = `${tomorrow.dateStr}T${endH}:${endM}:00+05:30`;
 
-  // Event name: e.g. "7km Long Run (7:35 - 7:45 min/km)"
+  // Deterministic Event ID: e.g. "tmm202720260923" (prevents duplicate or ghost events across plan adaptations)
+  const eventId = `tmm2027${tomorrow.dateStr.replace(/[^0-9]/g, '')}`;
+
+  // Clear Event Prefixing: Always distinguish running vs non-running sessions instantly in notifications
   const summary = dist > 0 
-    ? `${dist}km ${type}${targetPace && targetPace !== 'N/A' ? ` (${targetPace})` : ''}`
-    : `${type}${targetPace && targetPace !== 'N/A' ? ` (${targetPace})` : ''}`;
+    ? `🏃 [RUN] ${dist}km ${type}${targetPace && targetPace !== 'N/A' ? ` (${targetPace})` : ''}`
+    : `🧘 [NO RUN] ${type} (Mobility & Calf Armor)`;
 
   // Stage progression splits
   const splitsData = generateWorkoutSplits(wo);
@@ -417,14 +420,17 @@ function buildEventPayload(wo, tomorrow) {
     ].filter(Boolean).join('\n');
   } else {
     description = [
+      `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+      `🛑 NO MORNING RUN TODAY • TISSUE RECOVERY & PREHAB`,
+      `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`,
       `⏱️ ${estDurationStr}  •  RPE ${rpe}/10 (Recovery)\n`,
       `💧 DAILY HYDRATION`,
       `• 2.0–2.5L fluids throughout the day\n`,
-      `🦵 MOBILITY (5 Mins)`,
+      `🦵 MOBILITY & CORE (15–20 Mins)`,
       `• Gentle hip openers & ankle mobility\n`,
       `🎯 SESSION GOAL`,
       `• ${wo.description || 'Rest and tissue recovery.'}\n`,
-      `🧘 PREHAB PROTOCOL`,
+      `🧘 PREHAB & STRENGTH PROTOCOL`,
       `• ${prehabDrill}\n`,
       `⚡ RECOVERY`,
       `• Rest, elevate legs & 7–8 hrs sleep`
@@ -440,12 +446,13 @@ function buildEventPayload(wo, tomorrow) {
     useDefault: false,
     overrides: [
       { method: 'popup', minutes: minsUntilStart }, // Instant notification right when event is created tonight
-      { method: 'popup', minutes: 30 },            // 30 mins before 6:00 AM morning run (5:30 AM wake-up alert)
+      { method: 'popup', minutes: 30 },            // 30 mins before morning workout
       { method: 'email', minutes: minsUntilStart }  // Immediate email notification on creation
     ]
   };
 
   return {
+    id: eventId,
     summary,
     description,
     location: 'Mumbai / Training Course',
@@ -513,34 +520,86 @@ async function pushToGoogleCalendar(eventPayload) {
   const tokenData = await tokenRes.json();
   const accessToken = tokenData.access_token;
 
-  // Insert event into Google Calendar
   const targetCalId = CALENDAR_ID || 'primary';
   console.log(`📅 Target Calendar ID: ${targetCalId}`);
 
-  const insertUrl = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(targetCalId)}/events?sendUpdates=all`;
-  const insertRes = await fetch(insertUrl, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${accessToken}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(eventPayload)
+  const eventId = eventPayload.id;
+  const syncRunsOnly = process.env.SYNC_RUNS_ONLY === 'true';
+  const isNoRunDay = eventPayload.summary.startsWith('🧘 [NO RUN]');
+
+  // If SYNC_RUNS_ONLY is enabled and tomorrow is a Non-Running day, clean up any previous event and skip
+  if (syncRunsOnly && isNoRunDay) {
+    console.log(`ℹ️ [SYNC_RUNS_ONLY Policy Active] Non-running day (${eventPayload.summary}) skipped from creating calendar alarm.`);
+    try {
+      const deleteUrl = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(targetCalId)}/events/${eventId}`;
+      await fetch(deleteUrl, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${accessToken}` }
+      });
+      console.log(`🧹 Cleaned up existing calendar event (ID: ${eventId}) for rest/prehab day.`);
+    } catch (e) {}
+    return { ok: true, mode: 'skipped-non-run' };
+  }
+
+  // Check if event already exists using deterministic Event ID
+  const checkUrl = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(targetCalId)}/events/${eventId}`;
+  const checkRes = await fetch(checkUrl, {
+    method: 'GET',
+    headers: { 'Authorization': `Bearer ${accessToken}` }
   });
 
-  if (!insertRes.ok) {
-    const errText = await insertRes.text();
+  let apiRes;
+  if (checkRes.ok) {
+    // Event exists: Update it in-place (PUT)
+    console.log(`🔄 Existing event found for date (${eventId}). Updating calendar event in-place...`);
+    apiRes = await fetch(checkUrl + '?sendUpdates=all', {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(eventPayload)
+    });
+  } else {
+    // Insert new event with deterministic ID (using import endpoint)
+    const importUrl = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(targetCalId)}/events/import`;
+    apiRes = await fetch(importUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(eventPayload)
+    });
+
+    // If import returns 400/409 fallback to standard insert
+    if (!apiRes.ok) {
+      const insertUrl = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(targetCalId)}/events?sendUpdates=all`;
+      apiRes = await fetch(insertUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(eventPayload)
+      });
+    }
+  }
+
+  if (!apiRes.ok) {
+    const errText = await apiRes.text();
     let parsedErr = {};
     try { parsedErr = JSON.parse(errText); } catch(e) {}
     
-    if (insertRes.status === 404 || insertRes.status === 403) {
+    if (apiRes.status === 404 || apiRes.status === 403) {
       console.error(`\n⚠️ Permission/Calendar ID Tip: Make sure you shared your Google Calendar with '${creds.client_email}' giving permission 'Make changes to events', and set repository secret GOOGLE_CALENDAR_ID to your Gmail address if using a secondary calendar.\n`);
     }
-    throw new Error(`Google Calendar Event Insert failed: ${JSON.stringify(parsedErr, null, 2) || errText}`);
+    throw new Error(`Google Calendar Event Sync failed: ${JSON.stringify(parsedErr, null, 2) || errText}`);
   }
 
-  const createdEvent = await insertRes.json();
-  console.log(`🎉 Successfully created Google Calendar event: ${createdEvent.htmlLink || 'Done'}`);
-  return { ok: true, event: createdEvent };
+  const resultEvent = await apiRes.json();
+  console.log(`🎉 Successfully synchronized Google Calendar event: ${resultEvent.htmlLink || resultEvent.summary || 'Done'}`);
+  return { ok: true, event: resultEvent };
 }
 
 // Main Execution Flow
@@ -574,7 +633,16 @@ async function main() {
   }
 }
 
-main().catch(err => {
-  console.error(`❌ Sync Engine Failed:`, err);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch(err => {
+    console.error(`❌ Sync Engine Failed:`, err);
+    process.exit(1);
+  });
+}
+
+module.exports = {
+  fetchTomorrowWorkout,
+  buildEventPayload,
+  pushToGoogleCalendar,
+  main
+};

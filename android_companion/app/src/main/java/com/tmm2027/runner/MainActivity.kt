@@ -55,6 +55,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvHeroDistanceNum: TextView
     private lateinit var tvHeroDistanceUnit: TextView
 
+    private lateinit var tvCoachStatusBadge: TextView
+    private lateinit var tvCoachThemeTitle: TextView
+    private lateinit var tvCoachRaceIntel: TextView
+    private lateinit var btnTestCoachVoice: Button
+    private var testAudioCueManager: AudioCueManager? = null
+
     private lateinit var spinnerCadence: Spinner
     private lateinit var layoutTimelineContainer: LinearLayout
     private lateinit var layoutLyricsContainer: LinearLayout
@@ -114,6 +120,16 @@ class MainActivity : AppCompatActivity() {
         layoutTimelineContainer = findViewById(R.id.layoutTimelineContainer)
         layoutLyricsContainer = findViewById(R.id.layoutLyricsContainer)
         btnStart = findViewById(R.id.btnStart)
+
+        tvCoachStatusBadge = findViewById(R.id.tvCoachStatusBadge)
+        tvCoachThemeTitle = findViewById(R.id.tvCoachThemeTitle)
+        tvCoachRaceIntel = findViewById(R.id.tvCoachRaceIntel)
+        btnTestCoachVoice = findViewById(R.id.btnTestCoachVoice)
+        testAudioCueManager = AudioCueManager(this)
+
+        btnTestCoachVoice.setOnClickListener {
+            testCoachVoiceSample()
+        }
 
         btnPrevDay.setOnClickListener {
             if (currentWeekList.isNotEmpty()) {
@@ -318,6 +334,32 @@ class MainActivity : AppCompatActivity() {
         val mapType = object : TypeToken<Map<String, Any>>() {}.type
         val manifestMap: Map<String, Any> = gson.fromJson(manifestJson, mapType)
         val timelineList = manifestMap["timeline"] as? List<Map<String, Any>> ?: emptyList()
+
+        @Suppress("UNCHECKED_CAST")
+        val themeMap = manifestMap["theme"] as? Map<String, Any>
+        @Suppress("UNCHECKED_CAST")
+        val raceIntelMap = manifestMap["tmm_race_intelligence"] as? Map<String, Any>
+
+        val isSunday = wo.day.equals("Sunday", ignoreCase = true)
+        val engineLabel = if (isSunday) "ELEVENLABS ADAM" else "GEMINI 3.8 FLASH"
+
+        if (themeMap != null) {
+            val title = themeMap["title"] as? String ?: "Mindful Rhythm & Economy"
+            tvCoachThemeTitle.text = "🌟 Theme: $title"
+            tvCoachStatusBadge.text = "🟢 OFFLINE READY • $engineLabel"
+            tvCoachStatusBadge.setTextColor(Color.parseColor("#10B981"))
+        } else {
+            tvCoachThemeTitle.text = "🌟 Theme: Aerobic Foundation & Economy"
+            tvCoachStatusBadge.text = "🟢 READY • $engineLabel"
+            tvCoachStatusBadge.setTextColor(Color.parseColor("#10B981"))
+        }
+
+        if (raceIntelMap != null) {
+            val landmark = raceIntelMap["course_landmark"] as? String ?: "Marine Drive Promenade"
+            tvCoachRaceIntel.text = "🏙️ $landmark • 10% YouTube Music Ducking • 3-6m Golden Silence"
+        } else {
+            tvCoachRaceIntel.text = "🏙️ Marine Drive & Sea Link Strategy • 10% YouTube Music Ducking"
+        }
 
         tvTimelineCount.text = "${timelineList.size} MILESTONES"
         renderTimeline(timelineList)
@@ -587,8 +629,23 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun testCoachVoiceSample() {
+        val isSunday = activeWorkout?.day?.equals("Sunday", ignoreCase = true) == true
+        val engineName = if (isSunday) "ElevenLabs Coach Vega (Sunday Long Run)" else "Gemini Flash (Weekday Voice)"
+        Toast.makeText(this, "🔊 Playing sample cue via $engineName (10% Ducking)...", Toast.LENGTH_SHORT).show()
+
+        val sampleText = if (isSunday) {
+            "Tata Mumbai Marathon Coach Vega here. Welcome to your Sunday endurance build. Settle into your stride, protect tomorrow's legs, and let the cadence carry you."
+        } else {
+            "Coach Vega checking in with Gemini audio. Focus on soft footfalls and a relaxed upper body. We are targeting disciplined aerobic consistency today."
+        }
+
+        testAudioCueManager?.playDirectCue(sampleText)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
+        testAudioCueManager?.shutdown()
         if (isBound) {
             unbindService(serviceConnection)
             isBound = false

@@ -37,10 +37,14 @@ id btnNextDay
 id btnPrevDay
 id btnStart
 id btnSundayDebriefTest
+id btnTestCoachVoice
 id conicalSteelBadge
 id layoutLyricsContainer
 id layoutTimelineContainer
 id spinnerCadence
+id tvCoachRaceIntel
+id tvCoachStatusBadge
+id tvCoachThemeTitle
 id tvDayLabel
 id tvHeroDistanceNum
 id tvHeroDistanceUnit

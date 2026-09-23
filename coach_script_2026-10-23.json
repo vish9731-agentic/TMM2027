@@ -1,0 +1,115 @@
+{
+  "workout_date": "2026-10-23",
+  "workout_type": "Mid-Week Aerobic",
+  "distance_km": 8,
+  "theme": {
+    "title": "Economy of Motion: Finding Flow",
+    "philosophical_insight": "Easy runs are not empty miles; they are the sacred bedrock where aerobic power and psychological quiet are forged. By running slow with profound intention, we teach the physical body efficiency and cultivate a quiet, patient mind.",
+    "quote": "Only the disciplined ones in life are free. If you are undisciplined, you are a slave to your moods and your passions."
+  },
+  "tmm_race_intelligence": {
+    "course_landmark": "Marine Drive & Chowpatty Promenade",
+    "tactical_simulation": "Today's easy 7:15-7:30 min/km pace simulates the controlled, patient breathing required along the long, open sweep of Marine Drive when the morning sea breeze meets rising humidity.",
+    "mental_drill": "The Anchor Visualisation: Picture the Queen's Necklace unfolding beside you. Keep your shoulders soft, your cadence light, and resist the temptation to surge ahead."
+  },
+  "cues": [
+    {
+      "id": "cue_1_start",
+      "trigger_sec": 0,
+      "type": "SESSION_START",
+      "title": "Welcome & Aerobic Setting",
+      "text": "Good morning, runner. Welcome to your eight-kilometer aerobic baseline. Today is about gentleness, precision, and ease. We are targeting a relaxed 7:15 to 7:30 per kilometer pace at an RPE of 3 out of 10. Let your body wake up naturally. Soft footfalls, relaxed posture, light breathing. Let us begin.",
+      "dwell_after_sec": 300,
+      "has_countdown": false
+    },
+    {
+      "id": "cue_2_theme_1",
+      "trigger_sec": 325,
+      "type": "THEME_INSIGHT",
+      "title": "The Purpose of Easy Miles",
+      "text": "Haruki Murakami wrote that pain is inevitable, but suffering is optional. On days like today, discipline means refusing to go fast. You are building capillary density and strengthening connective tissues without tax. Trust the slowness. It is not laziness; it is high-level athletic maturity.",
+      "dwell_after_sec": 360,
+      "has_countdown": false
+    },
+    {
+      "id": "cue_3_tmm_intel",
+      "trigger_sec": 710,
+      "type": "TACTICAL_INSIGHT",
+      "title": "Marine Drive Rhythm",
+      "text": "Think ahead to race day at Tata Mumbai Marathon. When you hit Marine Drive, the wide open bay invites you to surge too early. But the true master locks into an effortless aerobic float right here. Feel the imaginary sea breeze, drop your shoulders, and keep your cadence smooth and quick.",
+      "dwell_after_sec": 360,
+      "has_countdown": false
+    },
+    {
+      "id": "cue_4_theme_2",
+      "trigger_sec": 1095,
+      "type": "THEME_INSIGHT",
+      "title": "Joy in the Movement",
+      "text": "Eliud Kipchoge reminds us to run with a smile because a smiling mind is a relaxed mind. Check in with your face. Release the tension in your jaw and forehead. When you run easy with a joyful heart, your running economy skyrockets and oxygen flows effortlessly to your working muscles.",
+      "dwell_after_sec": 360,
+      "has_countdown": false
+    },
+    {
+      "id": "cue_5_midpoint",
+      "trigger_sec": 1480,
+      "type": "PACING_CHECK",
+      "title": "Midpoint Aerobic Check",
+      "text": "You are roughly halfway through today's distance. Check your effort level right now. Are you truly at an RPE 3? Can you speak in full, comfortable sentences? If you feel yourself drifting faster than 7:15 per kilometer, ease off gently. Honor the plan. Protect tomorrow's strength.",
+      "dwell_after_sec": 360,
+      "has_countdown": false
+    },
+    {
+      "id": "cue_6_theme_3",
+      "trigger_sec": 1865,
+      "type": "THEME_INSIGHT",
+      "title": "Anatomy of Patience",
+      "text": "The marathon is not won in a single heroic workout. It is forged in hundreds of quiet, unglamorous, perfectly executed easy runs like this one. You are accumulating volume without fatigue. Respect the process, embrace the rhythm, and let the kilometers come to you.",
+      "dwell_after_sec": 360,
+      "has_countdown": false
+    },
+    {
+      "id": "cue_7_form_prehab",
+      "trigger_sec": 2250,
+      "type": "FORM_CHECK",
+      "title": "Ankle & Cadence Focus",
+      "text": "As we head into the final segment, focus on your feet. Land lightly under your center of mass, allowing your ankles to spring naturally. Remember, post-run today we have dedicated ankle mobility work. Keep your feet active and resilient for Mumbai's roads.",
+      "dwell_after_sec": 300,
+      "has_countdown": false
+    },
+    {
+      "id": "cue_8_finish",
+      "trigger_sec": 2575,
+      "type": "SESSION_END",
+      "title": "Cooling Down & Recovery",
+      "text": "Fantastic work today. Ease your pace down into a soft walk. You held your aerobic boundary with complete composure and respect for the journey. Take a few sips of pure water, stretch out your calves, and get ready for your ankle mobility prehab. Excellent execution today, champion.",
+      "dwell_after_sec": 180,
+      "has_countdown": false
+    }
+  ],
+  "dynamic_pace_alerts": {
+    "too_slow": [
+      "Gently pick up the cadence just a touch, keeping your heart light and soft.",
+      "You are dipping a bit too slow; focus on a quick, light foot strike under your hips.",
+      "Let us bring the rhythm back up into that sweet 7:15 to 7:30 target zone.",
+      "Stay engaged, runner. A slightly quicker turn-over will restore your natural float.",
+      "Lift your posture slightly and increase your step frequency to regain the aerobic glide.",
+      "Don't lose your momentum. Stand tall and let your arms drive a smooth, gentle pace.",
+      "Re-establish your rhythm. A subtle uptick in cadence will put you right back on target."
+    ],
+    "too_fast": [
+      "Check your ego, runner. Slow down and protect your legs for the big miles ahead.",
+      "You are pushing too fast for an aerobic recovery day. Ease off the gas gently.",
+      "Remember Kipchoge's discipline: true strength is knowing how to stay patient and slow.",
+      "Save that speed for Pedder Road! Right now, settle back into an effortless RPE 3.",
+      "Drop your speed back into the 7:15-7:30 window. Protect your calves and joints today.",
+      "Slow down and breathe. Running too fast today steals energy from your long run.",
+      "Brake slightly. Turn this into a soft, easy float. Let your heart rate settle."
+    ]
+  },
+  "dynamic_fueling_alerts": [
+    "Take a smooth, small sip of water to stay hydrated and keep your throat refreshed.",
+    "Hydration check: take a small swallow of water now to maintain fluid balance.",
+    "Keep your mouth moist with a quick sip of water. Simple hydration for an easy run."
+  ],
+  "_generated_by_model": "gemini-3.6-flash"
+}

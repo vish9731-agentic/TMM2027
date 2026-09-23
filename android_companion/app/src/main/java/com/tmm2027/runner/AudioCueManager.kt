@@ -4,6 +4,7 @@ import android.content.Context
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
+import android.media.MediaPlayer
 import android.media.ToneGenerator
 import android.os.Build
 import android.os.Handler
@@ -11,11 +12,13 @@ import android.os.Looper
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.util.Log
+import java.io.File
 import java.util.Locale
 
 /**
  * Manages Native Android Audio Focus (10% YouTube Music Ducking),
- * Zero-Latency 5-4-3-2-1 Countdown Beeps, and Voice Cues.
+ * Hybrid Voice Audio Playback (Gemini/ElevenLabs Studio Audio -> Native TTS Fallback),
+ * Zero-Latency 5-4-3-2-1 Countdown Beeps, and Anti-Repetitive Dynamic Pace Alerts.
  */
 class AudioCueManager(private val context: Context) : TextToSpeech.OnInitListener {
 
@@ -26,6 +29,43 @@ class AudioCueManager(private val context: Context) : TextToSpeech.OnInitListene
 
     private var audioFocusRequest: AudioFocusRequest? = null
     private var toneGen: ToneGenerator? = null
+    private var mediaPlayer: MediaPlayer? = null
+
+    data class QueuedItem(
+        val text: String,
+        val isCountdown: Boolean = false,
+        val audioFilePath: String? = null,
+        val onStartGo: (() -> Unit)? = null,
+        val onComplete: (() -> Unit)? = null
+    )
+
+    private val queue = java.util.ArrayDeque<QueuedItem>()
+    private var isSpeaking = false
+
+    enum class PaceAlertCategory { TOO_SLOW, TOO_FAST }
+
+    private val defaultTooSlowPool = listOf(
+        "Pace is dropping slightly. Relax your shoulders and pick up the cadence.",
+        "A little behind target pace. Quicken the turnover, keep the foot strike light.",
+        "Pace is slipping. Drive from the glutes, keep your posture upright and tall.",
+        "We are below target pace. Find a steady rhythm and lift the tempo.",
+        "Pace check: ease the cadence up a few beats per minute.",
+        "Focus on your foot turnaround. Bring the pace smoothly back into the target zone.",
+        "Slightly off the pace. Quick, light steps will get us right back on track."
+    )
+
+    private val defaultTooFastPool = listOf(
+        "Pace is running hot. Protect tomorrow's workout and settle back into rhythm.",
+        "Dial it back slightly. The discipline today is in staying patient and relaxed.",
+        "A little fast right now. Drop the shoulders, shake out the hands, ease off.",
+        "Ease back into the target zone. Save that extra gear for race day.",
+        "You are ahead of the target zone. Float and relax into your aerobic rhythm.",
+        "Running too fast for this session. Settle down, breathe through your diaphragm.",
+        "Pace check: slow the cadence down a notch. Keep it strictly controlled."
+    )
+
+    private var lastSlowIndex = -1
+    private var lastFastIndex = -1
 
     init {
         tts = TextToSpeech(context, this)
@@ -43,11 +83,12 @@ class AudioCueManager(private val context: Context) : TextToSpeech.OnInitListene
             tts?.setPitch(1.0f)
             isTtsReady = true
             Log.d("AudioCueManager", "TTS Initialized successfully.")
+            processNext()
         }
     }
 
     /**
-     * Ducks YouTube Music down to 10% volume strictly 1.5s prior to cue.
+     * Ducks YouTube Music down to 10% volume strictly prior to cue.
      */
     fun requestDucking() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -83,51 +124,156 @@ class AudioCueManager(private val context: Context) : TextToSpeech.OnInitListene
      */
     fun releaseDucking() {
         handler.postDelayed({
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                audioFocusRequest?.let {
-                    audioManager.abandonAudioFocusRequest(it)
-                    Log.d("AudioCueManager", "Released Audio Focus -> Music restored to 100%")
+            if (!isSpeaking && queue.isEmpty()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    audioFocusRequest?.let {
+                        audioManager.abandonAudioFocusRequest(it)
+                        Log.d("AudioCueManager", "Released Audio Focus -> Music restored to 100%")
+                    }
+                } else {
+                    @Suppress("DEPRECATION")
+                    audioManager.abandonAudioFocus(null)
                 }
-            } else {
-                @Suppress("DEPRECATION")
-                audioManager.abandonAudioFocus(null)
             }
-        }, 500)
+        }, 400)
     }
 
     /**
-     * Executes a complete Interval Transition:
-     * 1. Duck YouTube Music (1.5s lead)
-     * 2. Speak Prompt ("1 min hard, Pace 5:45, RPE 8")
+     * Executes an Interval Transition:
+     * 1. Duck YouTube Music
+     * 2. Speak Prompt (via cached Studio Audio if available, else TTS)
      * 3. Beep Countdown 5... 4... 3... 2... 1... GO!
      * 4. Restore YouTube Music to 100%
      */
-    fun playCueWithCountdown(promptText: String, onStartGo: () -> Unit) {
-        requestDucking()
-
-        handler.postDelayed({
-            speakText(promptText) {
-                // After voice finishes, start 5-4-3-2-1 countdown
-                startCountdownSequence(onStartGo)
-            }
-        }, 500)
+    fun playCueWithCountdown(promptText: String, audioFilePath: String? = null, onStartGo: () -> Unit) {
+        queue.add(QueuedItem(
+            text = promptText,
+            isCountdown = true,
+            audioFilePath = audioFilePath,
+            onStartGo = onStartGo
+        ))
+        processNext()
     }
 
     /**
-     * Simple announcement (e.g. Fueling Alert, Split, Pace correction) with ducking.
+     * Direct announcement (Session Intro, Phase Warmup, Fueling Alert, Tactical Tip) with ducking.
      */
-    fun playDirectCue(promptText: String) {
-        requestDucking()
-        handler.postDelayed({
-            speakText(promptText) {
-                releaseDucking()
-            }
-        }, 500)
+    fun playDirectCue(promptText: String, audioFilePath: String? = null, onComplete: (() -> Unit)? = null) {
+        queue.add(QueuedItem(
+            text = promptText,
+            isCountdown = false,
+            audioFilePath = audioFilePath,
+            onComplete = onComplete
+        ))
+        processNext()
     }
 
-    private fun speakText(text: String, onComplete: () -> Unit) {
-        if (!isTtsReady || tts == null) {
-            onComplete()
+    /**
+     * Randomized anti-repetitive pace alerts. Never plays the same phrase twice consecutively.
+     */
+    fun playRandomPaceAlert(
+        category: PaceAlertCategory,
+        customPool: List<String>? = null,
+        currentPaceFormatted: String? = null,
+        targetPaceFormatted: String? = null
+    ) {
+        val pool = if (!customPool.isNullOrEmpty()) customPool else when (category) {
+            PaceAlertCategory.TOO_SLOW -> defaultTooSlowPool
+            PaceAlertCategory.TOO_FAST -> defaultTooFastPool
+        }
+
+        if (pool.isEmpty()) return
+
+        val lastIdx = if (category == PaceAlertCategory.TOO_SLOW) lastSlowIndex else lastFastIndex
+        var nextIdx: Int
+        if (pool.size > 1) {
+            do {
+                nextIdx = (pool.indices).random()
+            } while (nextIdx == lastIdx)
+        } else {
+            nextIdx = 0
+        }
+
+        if (category == PaceAlertCategory.TOO_SLOW) {
+            lastSlowIndex = nextIdx
+        } else {
+            lastFastIndex = nextIdx
+        }
+
+        var text = pool[nextIdx]
+        if (currentPaceFormatted != null && targetPaceFormatted != null && !text.contains(currentPaceFormatted)) {
+            text = "Pace $currentPaceFormatted min per km. Target is $targetPaceFormatted. $text"
+        }
+
+        playDirectCue(text)
+    }
+
+    @Synchronized
+    private fun processNext() {
+        if (isSpeaking || queue.isEmpty()) return
+        if (!isTtsReady && queue.peek()?.audioFilePath.isNullOrEmpty()) return
+
+        val item = queue.poll() ?: return
+        isSpeaking = true
+        requestDucking()
+
+        handler.postDelayed({
+            if (!item.audioFilePath.isNullOrEmpty() && File(item.audioFilePath).exists()) {
+                playViaMediaPlayer(item)
+            } else {
+                speakViaTts(item)
+            }
+        }, 150)
+    }
+
+    private fun playViaMediaPlayer(item: QueuedItem) {
+        try {
+            mediaPlayer?.release()
+            mediaPlayer = MediaPlayer().apply {
+                setDataSource(item.audioFilePath)
+                setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ASSISTANCE_NAVIGATION_GUIDANCE)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                        .build()
+                )
+                setOnCompletionListener {
+                    it.release()
+                    mediaPlayer = null
+                    handler.post {
+                        if (item.isCountdown) {
+                            startCountdownSequence(item.onStartGo ?: {})
+                        } else {
+                            isSpeaking = false
+                            item.onComplete?.invoke()
+                            if (queue.isEmpty()) {
+                                releaseDucking()
+                            } else {
+                                processNext()
+                            }
+                        }
+                    }
+                }
+                setOnErrorListener { mp, what, extra ->
+                    Log.w("AudioCueManager", "MediaPlayer playback error ($what, $extra), falling back to TTS")
+                    mp.release()
+                    mediaPlayer = null
+                    speakViaTts(item)
+                    true
+                }
+                prepare()
+                start()
+            }
+        } catch (e: Exception) {
+            Log.e("AudioCueManager", "MediaPlayer error: ${e.message}, falling back to TTS")
+            speakViaTts(item)
+        }
+    }
+
+    private fun speakViaTts(item: QueuedItem) {
+        if (!isTtsReady) {
+            isSpeaking = false
+            releaseDucking()
             return
         }
 
@@ -135,14 +281,34 @@ class AudioCueManager(private val context: Context) : TextToSpeech.OnInitListene
         tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
             override fun onStart(utteranceId: String?) {}
             override fun onDone(utteranceId: String?) {
-                handler.post { onComplete() }
+                handler.post {
+                    if (item.isCountdown) {
+                        startCountdownSequence(item.onStartGo ?: {})
+                    } else {
+                        isSpeaking = false
+                        item.onComplete?.invoke()
+                        if (queue.isEmpty()) {
+                            releaseDucking()
+                        } else {
+                            processNext()
+                        }
+                    }
+                }
             }
             override fun onError(utteranceId: String?) {
-                handler.post { onComplete() }
+                handler.post {
+                    isSpeaking = false
+                    item.onComplete?.invoke()
+                    if (queue.isEmpty()) {
+                        releaseDucking()
+                    } else {
+                        processNext()
+                    }
+                }
             }
         })
 
-        tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId)
+        tts?.speak(item.text, TextToSpeech.QUEUE_FLUSH, null, utteranceId)
     }
 
     /**
@@ -162,10 +328,27 @@ class AudioCueManager(private val context: Context) : TextToSpeech.OnInitListene
         // T = 0 (GO!)
         handler.postDelayed({
             playBeep(ToneGenerator.TONE_PROP_ACK, 350)
-            speakText("GO!") {
-                releaseDucking()
-                onStartGo()
-            }
+            val utteranceId = "go_${System.currentTimeMillis()}"
+            tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                override fun onStart(utteranceId: String?) {}
+                override fun onDone(utteranceId: String?) {
+                    handler.post {
+                        isSpeaking = false
+                        releaseDucking()
+                        onStartGo()
+                        processNext()
+                    }
+                }
+                override fun onError(utteranceId: String?) {
+                    handler.post {
+                        isSpeaking = false
+                        releaseDucking()
+                        onStartGo()
+                        processNext()
+                    }
+                }
+            })
+            tts?.speak("GO!", TextToSpeech.QUEUE_FLUSH, null, utteranceId)
         }, 5 * countIntervalMs)
     }
 
@@ -178,7 +361,12 @@ class AudioCueManager(private val context: Context) : TextToSpeech.OnInitListene
     }
 
     fun shutdown() {
+        queue.clear()
+        isSpeaking = false
         releaseDucking()
+        mediaPlayer?.stop()
+        mediaPlayer?.release()
+        mediaPlayer = null
         tts?.stop()
         tts?.shutdown()
         toneGen?.release()

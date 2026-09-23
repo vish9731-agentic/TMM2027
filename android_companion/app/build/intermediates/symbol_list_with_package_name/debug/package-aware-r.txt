@@ -3251,6 +3251,7 @@ id btnNextDay
 id btnPrevDay
 id btnStart
 id btnSundayDebriefTest
+id btnTestCoachVoice
 id buttonPanel
 id cache_measures
 id callMeasure
@@ -3638,6 +3639,9 @@ id transition_position
 id transition_scene_layoutid_cache
 id transition_transform
 id triangle
+id tvCoachRaceIntel
+id tvCoachStatusBadge
+id tvCoachThemeTitle
 id tvDayLabel
 id tvHeroDistanceNum
 id tvHeroDistanceUnit
