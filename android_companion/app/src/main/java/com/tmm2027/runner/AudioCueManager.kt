@@ -12,6 +12,10 @@ import android.os.Looper
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.Locale
 
@@ -34,7 +38,8 @@ class AudioCueManager(private val context: Context) : TextToSpeech.OnInitListene
     data class QueuedItem(
         val text: String,
         val isCountdown: Boolean = false,
-        val audioFilePath: String? = null,
+        var audioFilePath: String? = null,
+        val isSunday: Boolean = false,
         val onStartGo: (() -> Unit)? = null,
         val onComplete: (() -> Unit)? = null
     )
@@ -145,11 +150,12 @@ class AudioCueManager(private val context: Context) : TextToSpeech.OnInitListene
      * 3. Beep Countdown 5... 4... 3... 2... 1... GO!
      * 4. Restore YouTube Music to 100%
      */
-    fun playCueWithCountdown(promptText: String, audioFilePath: String? = null, onStartGo: () -> Unit) {
+    fun playCueWithCountdown(promptText: String, audioFilePath: String? = null, isSunday: Boolean = false, onStartGo: () -> Unit) {
         queue.add(QueuedItem(
             text = promptText,
             isCountdown = true,
             audioFilePath = audioFilePath,
+            isSunday = isSunday,
             onStartGo = onStartGo
         ))
         processNext()
@@ -158,11 +164,12 @@ class AudioCueManager(private val context: Context) : TextToSpeech.OnInitListene
     /**
      * Direct announcement (Session Intro, Phase Warmup, Fueling Alert, Tactical Tip) with ducking.
      */
-    fun playDirectCue(promptText: String, audioFilePath: String? = null, onComplete: (() -> Unit)? = null) {
+    fun playDirectCue(promptText: String, audioFilePath: String? = null, isSunday: Boolean = false, onComplete: (() -> Unit)? = null) {
         queue.add(QueuedItem(
             text = promptText,
             isCountdown = false,
             audioFilePath = audioFilePath,
+            isSunday = isSunday,
             onComplete = onComplete
         ))
         processNext()
@@ -218,10 +225,26 @@ class AudioCueManager(private val context: Context) : TextToSpeech.OnInitListene
         requestDucking()
 
         handler.postDelayed({
-            if (!item.audioFilePath.isNullOrEmpty() && File(item.audioFilePath).exists()) {
+            if (!item.audioFilePath.isNullOrEmpty() && File(item.audioFilePath!!).exists()) {
                 playViaMediaPlayer(item)
             } else {
-                speakViaTts(item)
+                // Synthesize Studio HD audio via Gemini / ElevenLabs with caching
+                CoroutineScope(Dispatchers.IO).launch {
+                    val synthFile = try {
+                        CloudVoiceSynthesizer.getOrSynthesizeAudio(context, item.text, item.isSunday)
+                    } catch (e: Exception) {
+                        Log.w("AudioCueManager", "CloudVoiceSynthesizer error: ${e.message}")
+                        null
+                    }
+                    withContext(Dispatchers.Main) {
+                        if (synthFile != null && synthFile.exists()) {
+                            item.audioFilePath = synthFile.absolutePath
+                            playViaMediaPlayer(item)
+                        } else {
+                            speakViaTts(item)
+                        }
+                    }
+                }
             }
         }, 150)
     }

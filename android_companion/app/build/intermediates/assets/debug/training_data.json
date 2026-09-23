@@ -864,12 +864,12 @@
         {
           "day": "Friday",
           "date": "2026-09-04",
-          "type": "Mid-Week Aerobic",
-          "distance_km": 6,
-          "target_pace": "7:15 - 7:30 min/km",
-          "rpe": 3,
-          "description": "Aerobic base builder.",
-          "strength_prehab": "Ankle mobility",
+          "type": "Active Recovery & Prehab (Substituted)",
+          "distance_km": 0,
+          "target_pace": "N/A",
+          "rpe": 1,
+          "description": "Substituted 6km run with complete calf recovery. 20-min gentle walk only if completely pain-free, followed by elevation.",
+          "strength_prehab": "Seated ankle pumps (3x20), gentle foam roll of hamstrings/glutes, magnesium/electrolyte replenishment.",
           "fueling": "Water",
           "strategy_splits": [
             {
@@ -898,12 +898,12 @@
         {
           "day": "Saturday",
           "date": "2026-09-05",
-          "type": "Rest",
+          "type": "Rest & Mobility",
           "distance_km": 0,
           "target_pace": "N/A",
           "rpe": 1,
-          "description": "Rest & hydrate for 10k long run.",
-          "strength_prehab": "Light stretching",
+          "description": "Full rest day. Hydrate and monitor left calf response.",
+          "strength_prehab": "Light seated soleus activation (unweighted, 2x15 gentle reps), contrast warm shower.",
           "fueling": "Electrolyte drink",
           "strategy_splits": [
             {
@@ -932,12 +932,12 @@
         {
           "day": "Sunday",
           "date": "2026-09-06",
-          "type": "Long Run",
-          "distance_km": 10,
-          "target_pace": "7:30 - 7:45 min/km",
-          "rpe": 4,
-          "description": "First 10 km long run. Take 1 Gel at km 6 + 1 Salt capsule at km 5.",
-          "strength_prehab": "Post-run calf and hamstring stretch",
+          "type": "Calf Test & Easy Aerobic Cruise",
+          "distance_km": 5,
+          "target_pace": "8:00 - 8:20 min/km",
+          "rpe": 2,
+          "description": "Scaled back from 10km to a gentle 5km flat surface test. Run 1km, walk 1 min. Abort immediately if calf tightness exceeds 3/10.",
+          "strength_prehab": "Post-run ice massage for 8 mins on the calf, gentle straight-leg calf stretch.",
           "fueling": "1 Gel at km 6 + 1 Salt capsule at km 5 + water",
           "strategy_splits": [
             {
@@ -1011,12 +1011,12 @@
         {
           "day": "Tuesday",
           "date": "2026-09-08",
-          "type": "Strength Day 1",
-          "distance_km": 0,
-          "target_pace": "N/A",
-          "rpe": 4,
-          "description": "Light bodyweight mobility & calf activation (2x10 reps).",
-          "strength_prehab": "Bodyweight only",
+          "type": "Recovery Run + Calf Mobility",
+          "distance_km": 4,
+          "target_pace": "7:50 - 8:10 min/km",
+          "rpe": 2,
+          "description": "Moved from Monday. Super easy, disciplined recovery jog. Keep cadence light and strides compact.",
+          "strength_prehab": "Post-run: Light bodyweight eccentric heel drops (2x10), seated soleus raises (2x12), and gentle calf stretching.",
           "fueling": "Nutritious recovery meals",
           "strategy_splits": [
             {
@@ -1128,12 +1128,12 @@
         {
           "day": "Thursday",
           "date": "2026-09-10",
-          "type": "Strength Day 2",
+          "type": "Strength Day 2 (Posterior Chain & Calf Armor)",
           "distance_km": 0,
           "target_pace": "N/A",
-          "rpe": 4,
-          "description": "Light core & spine stabilization.",
-          "strength_prehab": "Bird-dogs, deadbugs, side planks (2 sets)",
+          "rpe": 5,
+          "description": "Keep impact off legs today. Focus on posterior chain & calf resilience: Seated calf raises (3x15), Single-leg eccentric heel drops (3x12/leg), Romanian deadlifts (3x10), Side planks & Bird-dogs.",
+          "strength_prehab": "Post-session foam roll hamstrings and quads.",
           "fueling": "Balanced diet",
           "strategy_splits": [
             {
@@ -1162,12 +1162,12 @@
         {
           "day": "Friday",
           "date": "2026-09-11",
-          "type": "Mid-Week Aerobic",
+          "type": "Mid-Week Aerobic Run",
           "distance_km": 5,
-          "target_pace": "7:25 - 7:40 min/km",
+          "target_pace": "7:20 - 7:35 min/km",
           "rpe": 3,
-          "description": "Easy cruise.",
-          "strength_prehab": "Hip openers",
+          "description": "Smooth, relaxed aerobic run. Keep cadence light (~165-170 spm) in the Evo SL 2s. Focus on strict aerobic control.",
+          "strength_prehab": "Dynamic ankle mobility pre-run; 5-min calf flush post-run.",
           "fueling": "Water",
           "strategy_splits": [
             {
@@ -1196,12 +1196,12 @@
         {
           "day": "Saturday",
           "date": "2026-09-12",
-          "type": "Rest",
+          "type": "Rest & Hydration",
           "distance_km": 0,
           "target_pace": "N/A",
           "rpe": 1,
-          "description": "Full Rest.",
-          "strength_prehab": "Sleep 8+ hours",
+          "description": "Full rest day. Hydrate well with electrolytes, practice light mobility, and prep gear/hydration for Sunday long run.",
+          "strength_prehab": "Gentle seated ankle circles & elevation.",
           "fueling": "Hydration",
           "strategy_splits": [
             {
@@ -1230,12 +1230,12 @@
         {
           "day": "Sunday",
           "date": "2026-09-13",
-          "type": "Long Run",
-          "distance_km": 7,
-          "target_pace": "7:40 - 7:50 min/km",
+          "type": "Long Run (Controlled Bridge)",
+          "distance_km": 8,
+          "target_pace": "7:35 - 7:45 min/km",
           "rpe": 3,
-          "description": "Deload long run. Low heart rate, super easy effort.",
-          "strength_prehab": "Calf stretching",
+          "description": "8 km long run milestone. Keep foot strikes soft, maintain Zone 2 effort, and test 1 gel/fueling option at the 45-min mark with water.",
+          "strength_prehab": "Post-run 10-min calf and Achilles ice/massage flush.",
           "fueling": "Water sips",
           "strategy_splits": [
             {
@@ -1573,303 +1573,79 @@
         {
           "day": "Monday",
           "date": "2026-09-21",
-          "type": "Recovery Run",
-          "distance_km": 5,
-          "target_pace": "7:50 min/km",
-          "rpe": 2,
-          "description": "Easy recovery run.",
-          "strength_prehab": "Calf & hip stretch",
-          "fueling": "Water",
-          "strategy_splits": [
-            {
-              "km": "0.0 – 1.0 km",
-              "phase": "Phase 1: Warmup",
-              "pace": "8:00 – 8:15 min/km",
-              "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
-              "color": "#10b981"
-            },
-            {
-              "km": "1.0 – 4.2 km",
-              "phase": "Phase 2: Main Cruise (Majority)",
-              "pace": "7:50 min/km",
-              "desc": "Main aerobic base cruise (RPE 3, 3.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
-              "color": "#00f5d4"
-            },
-            {
-              "km": "4.2 – 5.0 km",
-              "phase": "Phase 3: Cooldown",
-              "pace": "8:15+ min/km / Brisk Walk",
-              "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
-              "color": "#38bdf8"
-            }
-          ]
+          "type": "Rest (Rainout)",
+          "distance_km": 0,
+          "target_pace": "N/A",
+          "rpe": 1,
+          "description": "Weather delay due to rain. Fully rested to protect calf complex.",
+          "strength_prehab": "Gentle calf mobility and foam rolling.",
+          "fueling": "Water"
         },
         {
           "day": "Tuesday",
           "date": "2026-09-22",
-          "type": "Strength Day 1",
-          "distance_km": 0,
-          "target_pace": "N/A",
-          "rpe": 5,
-          "description": "Lower Body & Calf Armor.",
-          "strength_prehab": "Eccentric heel drops (weighted), soleus raises, split squats, glute bridges, tibialis raises.",
-          "fueling": "Protein",
-          "strategy_splits": [
-            {
-              "km": "Prehab 1",
-              "phase": "Ankle & Foot Mobility",
-              "pace": "10 Mins",
-              "desc": "Ankle alphabets, plantar roll with lacrosse ball",
-              "color": "#10b981"
-            },
-            {
-              "km": "Prehab 2",
-              "phase": "Eccentric Calf Loading",
-              "pace": "15 Mins",
-              "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
-              "color": "#ffcc00"
-            },
-            {
-              "km": "Prehab 3",
-              "phase": "Foam Rolling & Recovery",
-              "pace": "10 Mins",
-              "desc": "Soleus, gastrocnemius, and quads myofascial release",
-              "color": "#38bdf8"
-            }
-          ]
+          "type": "Aerobic Volume Build",
+          "distance_km": 7.5,
+          "target_pace": "7:50 - 8:10 min/km",
+          "rpe": 3,
+          "description": "Extended mid-week volume run. Strict pace limit of 7:50 min/km or slower to prevent soleus/Achilles breakdown.",
+          "strength_prehab": "Post-run eccentric single-leg heel drops (3x15/leg), calf ice massage (10 mins).",
+          "fueling": "Protein"
         },
         {
           "day": "Wednesday",
           "date": "2026-09-23",
-          "type": "Speed (Hill Repeats)",
-          "distance_km": 7,
-          "target_pace": "Uphill RPE 8, cooldown 7:45",
-          "rpe": 8,
-          "description": "2 km warmup, 5x90-sec steady uphill repeats (focus on glute drive, jog down recovery), 2 km cooldown.",
-          "strength_prehab": "Calf & Achilles prep",
-          "fueling": "Carb snack",
-          "strategy_splits": [
-            {
-              "km": "Km 0 – 2.0",
-              "phase": "Phase 1: Warm-up Float",
-              "pace": "7:45 – 8:00 min/km",
-              "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
-              "color": "#10b981"
-            },
-            {
-              "km": "1. 90-s Hill Repeat 1",
-              "phase": "Rep 1/5",
-              "pace": "Uphill Sprint (RPE 8)",
-              "desc": "Rep 1 of 5: Powerful glute drive, high knees, upright torso (RPE 8)",
-              "color": "#ff3b00"
-            },
-            {
-              "km": "2. Jog-Down Jog-Down Rest 1",
-              "phase": "Recovery 1/5",
-              "pace": "Walk / Easy Jog",
-              "desc": "Rest 1 of 5: Controlled jog down to hill base, reset heart rate (RPE 2)",
-              "color": "#38bdf8"
-            },
-            {
-              "km": "3. 90-s Hill Repeat 2",
-              "phase": "Rep 2/5",
-              "pace": "Uphill Sprint (RPE 8)",
-              "desc": "Rep 2 of 5: Powerful glute drive, high knees, upright torso (RPE 8)",
-              "color": "#ff3b00"
-            },
-            {
-              "km": "4. Jog-Down Jog-Down Rest 2",
-              "phase": "Recovery 2/5",
-              "pace": "Walk / Easy Jog",
-              "desc": "Rest 2 of 5: Controlled jog down to hill base, reset heart rate (RPE 2)",
-              "color": "#38bdf8"
-            },
-            {
-              "km": "5. 90-s Hill Repeat 3",
-              "phase": "Rep 3/5",
-              "pace": "Uphill Sprint (RPE 8)",
-              "desc": "Rep 3 of 5: Powerful glute drive, high knees, upright torso (RPE 8)",
-              "color": "#ff3b00"
-            },
-            {
-              "km": "6. Jog-Down Jog-Down Rest 3",
-              "phase": "Recovery 3/5",
-              "pace": "Walk / Easy Jog",
-              "desc": "Rest 3 of 5: Controlled jog down to hill base, reset heart rate (RPE 2)",
-              "color": "#38bdf8"
-            },
-            {
-              "km": "7. 90-s Hill Repeat 4",
-              "phase": "Rep 4/5",
-              "pace": "Uphill Sprint (RPE 8)",
-              "desc": "Rep 4 of 5: Powerful glute drive, high knees, upright torso (RPE 8)",
-              "color": "#ff3b00"
-            },
-            {
-              "km": "8. Jog-Down Jog-Down Rest 4",
-              "phase": "Recovery 4/5",
-              "pace": "Walk / Easy Jog",
-              "desc": "Rest 4 of 5: Controlled jog down to hill base, reset heart rate (RPE 2)",
-              "color": "#38bdf8"
-            },
-            {
-              "km": "9. 90-s Hill Repeat 5",
-              "phase": "Rep 5/5",
-              "pace": "Uphill Sprint (RPE 8)",
-              "desc": "Rep 5 of 5: Powerful glute drive, high knees, upright torso (RPE 8)",
-              "color": "#ff3b00"
-            },
-            {
-              "km": "10. Jog-Down Jog-Down Rest 5",
-              "phase": "Recovery 5/5",
-              "pace": "Walk / Easy Jog",
-              "desc": "Rest 5 of 5: Controlled jog down to hill base, reset heart rate (RPE 2)",
-              "color": "#38bdf8"
-            },
-            {
-              "km": "Final 2.0 km",
-              "phase": "Phase 3: Cool-down Flush",
-              "pace": "7:50 – 8:15 min/km",
-              "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
-              "color": "#a855f7"
-            }
-          ]
+          "type": "Evening Recovery Shakeout",
+          "distance_km": 3,
+          "target_pace": "7:50 - 8:10 min/km",
+          "rpe": 2,
+          "description": "Short evening aerobic recovery shakeout. Keep effort very light and relaxed.",
+          "strength_prehab": "5-min post-run calf mobility & seated soleus raises.",
+          "fueling": "Water"
         },
         {
           "day": "Thursday",
           "date": "2026-09-24",
-          "type": "Strength Day 2",
-          "distance_km": 0,
-          "target_pace": "N/A",
-          "rpe": 5,
-          "description": "Posterior Chain & Core.",
-          "strength_prehab": "RDLs, Bird-dogs, Side planks, Supermans.",
-          "fueling": "Balanced nutrition",
-          "strategy_splits": [
-            {
-              "km": "Prehab 1",
-              "phase": "Ankle & Foot Mobility",
-              "pace": "10 Mins",
-              "desc": "Ankle alphabets, plantar roll with lacrosse ball",
-              "color": "#10b981"
-            },
-            {
-              "km": "Prehab 2",
-              "phase": "Eccentric Calf Loading",
-              "pace": "15 Mins",
-              "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
-              "color": "#ffcc00"
-            },
-            {
-              "km": "Prehab 3",
-              "phase": "Foam Rolling & Recovery",
-              "pace": "10 Mins",
-              "desc": "Soleus, gastrocnemius, and quads myofascial release",
-              "color": "#38bdf8"
-            }
-          ]
+          "type": "Mid-Week Aerobic Build",
+          "distance_km": 7,
+          "target_pace": "7:20 - 7:35 min/km",
+          "rpe": 3,
+          "description": "Mid-week aerobic foundation run. Steady conversational rhythm.",
+          "strength_prehab": "Dynamic ankle mobility pre-run; 5-min calf flush.",
+          "fueling": "Balanced nutrition"
         },
         {
           "day": "Friday",
           "date": "2026-09-25",
-          "type": "Mid-Week Aerobic",
-          "distance_km": 7,
-          "target_pace": "7:15 - 7:30 min/km",
-          "rpe": 3,
-          "description": "Aerobic foundation run.",
-          "strength_prehab": "Ankle mobility",
-          "fueling": "Water",
-          "strategy_splits": [
-            {
-              "km": "Km 0 – 1.0",
-              "phase": "Phase 1: Conservative Float",
-              "pace": "7:45 – 8:00 min/km",
-              "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
-              "color": "#10b981"
-            },
-            {
-              "km": "Km 1.1 – 6.0",
-              "phase": "Phase 2: Marathon Cruise",
-              "pace": "7:15 - 7:30 min/km",
-              "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
-              "color": "#00f5d4"
-            },
-            {
-              "km": "Final 1.0 km",
-              "phase": "Phase 3: Finish & Prehab",
-              "pace": "7:06 – 7:35 min/km",
-              "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
-              "color": "#ff7700"
-            }
-          ]
+          "type": "Complete Rest & Pre-Long Run Priming",
+          "distance_km": 0,
+          "target_pace": "N/A",
+          "rpe": 1,
+          "description": "Full rest day before Saturday 14km Long Run. Hydrate with electrolytes and foam roll calves.",
+          "strength_prehab": "Light calf & hamstring stretching, 10-min legs-up-the-wall.",
+          "fueling": "Electrolyte hydration & carbs"
         },
         {
           "day": "Saturday",
           "date": "2026-09-26",
-          "type": "Rest",
-          "distance_km": 0,
-          "target_pace": "N/A",
-          "rpe": 1,
-          "description": "Full Rest.",
-          "strength_prehab": "Gentle stretching",
-          "fueling": "Electrolyte hydration",
-          "strategy_splits": [
-            {
-              "km": "Prehab 1",
-              "phase": "Ankle & Foot Mobility",
-              "pace": "10 Mins",
-              "desc": "Ankle alphabets, plantar roll with lacrosse ball",
-              "color": "#10b981"
-            },
-            {
-              "km": "Prehab 2",
-              "phase": "Eccentric Calf Loading",
-              "pace": "15 Mins",
-              "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
-              "color": "#ffcc00"
-            },
-            {
-              "km": "Prehab 3",
-              "phase": "Foam Rolling & Recovery",
-              "pace": "10 Mins",
-              "desc": "Soleus, gastrocnemius, and quads myofascial release",
-              "color": "#38bdf8"
-            }
-          ]
+          "type": "Key Long Run (Hydration Vest Test)",
+          "distance_km": 14,
+          "target_pace": "7:30 - 7:45 min/km",
+          "rpe": 3,
+          "description": "14.0 km progressive long run. Full hydration vest test. Gels at km 5 & 10; salt capsule at km 6.",
+          "strength_prehab": "10-min post-run eccentric heel drop armor protocol & ice flush.",
+          "fueling": "2 Gels (km 5, 10) + 1 Salt capsule (km 6) + 1L water"
         },
         {
           "day": "Sunday",
           "date": "2026-09-27",
-          "type": "Long Run",
-          "distance_km": 14,
-          "target_pace": "7:30 - 7:45 min/km",
-          "rpe": 4,
-          "description": "14 km long run with full hydration vest test.",
-          "strength_prehab": "Post-run calf flush",
-          "fueling": "2 Gels (km 5, 10) + 1 Salt capsule (km 6) + 1L water",
-          "strategy_splits": [
-            {
-              "km": "Km 0 – 1.0",
-              "phase": "Phase 1: Conservative Float",
-              "pace": "7:45 – 8:00 min/km",
-              "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
-              "color": "#10b981"
-            },
-            {
-              "km": "Km 1.1 – 13.0",
-              "phase": "Phase 2: Marathon Cruise",
-              "pace": "7:30 - 7:45 min/km",
-              "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
-              "color": "#00f5d4"
-            },
-            {
-              "km": "Final 1.0 km",
-              "phase": "Phase 3: Finish & Prehab",
-              "pace": "7:06 – 7:35 min/km",
-              "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
-              "color": "#ff7700"
-            }
-          ]
+          "type": "Full Rest & Recovery",
+          "distance_km": 0,
+          "target_pace": "N/A",
+          "rpe": 1,
+          "description": "Post-long run regeneration day. Full rest, protein re-feed, and tissue repair.",
+          "strength_prehab": "Gentle walking & calf elevation.",
+          "fueling": "Protein & recovery meal"
         }
       ]
     },
@@ -6455,7 +6231,7 @@
           "day": "Sunday",
           "date": "2027-01-17",
           "type": "RACE DAY",
-          "distance_km": 42.195,
+          "distance_km": 42.2,
           "target_pace": "7:05 min/km avg (Sub-5:00 Target: 4:58:30)",
           "rpe": 9,
           "description": "TATA MUMBAI MARATHON 2027: Gun off ~5:00 AM. km 0-10 @ 7:10-7:15, Pedder Rd #1 @ 7:25, Sea Link @ 7:02-7:06, Pedder Rd #2 @ 7:35, Finish sprint @ 6:55-7:00!",

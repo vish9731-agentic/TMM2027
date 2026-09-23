@@ -640,7 +640,7 @@ class MainActivity : AppCompatActivity() {
             "Coach Vega checking in with Gemini audio. Focus on soft footfalls and a relaxed upper body. We are targeting disciplined aerobic consistency today."
         }
 
-        testAudioCueManager?.playDirectCue(sampleText)
+        testAudioCueManager?.playDirectCue(sampleText, isSunday = isSunday)
     }
 
     override fun onDestroy() {
