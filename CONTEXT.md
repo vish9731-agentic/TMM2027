@@ -171,12 +171,37 @@ flowchart TD
 
 ## 9. Fueling, Hydration & Gear Strategy
 
-* **Shoes:** **Adidas Adizero Evo SL 2** (All-in-one daily trainer, speed shoe, and race shoe).
-  * *Strategy:* Monitor wear; ensure shoe has between 150–350 km of mileage by race day (broken in, but optimal cushion retained).
-* **Hydration Gear:** Hydration vest with front soft flasks.
+### A. Footwear & Mileage Budget: Adidas Adizero EVO SL
+* **Model Acquired:** **Adidas Adizero EVO SL** (Purchased Monday, November 9, 2026 — Day 1 of Week 13).
+* **Shoe Classification:** Ultralight Super-Trainer & Marathon Race Shoe ($224\text{g}$, $38\text{mm}$ heel / $31.4\text{mm}$ forefoot, $6.6\text{mm}$ drop).
+* **Midsole & Construction:** $100\%$ Full-Length **Lightstrike Pro** superfoam with Continental™ rubber outsole.
+* **Plate Architecture (Non-Plated):** **Zero rigid carbon plate or rods.** This is a deliberate, highly tactical choice tailored to the athlete's specific biomechanical profile:
+  * *Calf Cramp Mitigation:* Rigid carbon plates act as an unyielding lever, placing severe eccentric strain on the gastrocnemius, soleus, and Achilles tendon during high-mileage fatigue (the primary root cause of the runner's km 18–19 cramping history).
+  * *Natural Flexion:* The non-plated EVO SL yields natural metatarsophalangeal flexion while delivering elite superfoam rebound ($\sim 85\%+$ energy return) and vibration dampening.
+* **10-Week Mileage Budget & Lifespan Arc (Weeks 13–22):**
+  * *Initial Odometer:* $0.0\text{ km}$ at Week 13 kickoff.
+  * *Break-in Target (Weeks 13–14):* First $40 - 50\text{ km}$ dedicated to midsole compression, footbed molding, and tendon adaptation.
+  * *Peak Marathon Sweet Spot:* **$150 - 350\text{ km}$** (Optimal compliance, maximal bounce, zero mechanical stiffness).
+  * *Pre-Race Target Odometer:* $\sim 275\text{ km}$ by Saturday, January 16, 2027.
+  * *TMM 2027 Race Day:* $+42.195\text{ km} \rightarrow$ Finishes the marathon at **$\sim 317\text{ km}$**, well within peak cushion retention and before the $500 - 600\text{ km}$ durability degradation ceiling.
+
+| Phase | Weeks | Planned Session Types in EVO SL | Weekly Allocated Km | Cumulative Shoe Odometer | Lifespan Status |
+| :--- | :---: | :--- | :---: | :---: | :--- |
+| **Break-in & Adaptation** | W13 – W14 | Wed Speed (MP Intro/Tempo) + Sun Long Run (14–16 km) | $26 - 32\text{ km/wk}$ | $\sim 58\text{ km}$ | 🟢 Initial Break-In Complete |
+| **Deload & Mid-Build** | W15 – W16 | Wed Hill Repeats + Sun Long Run (18–22 km) | $24 - 36\text{ km/wk}$ | $\sim 118\text{ km}$ | 🔵 Mid-Build Cushion |
+| **Peak Specificity & Sim** | W17 – W19 | Wed MP Sharpening + Sun Long Runs + **TSW Kolkata 25K** | $32 - 42\text{ km/wk}$ | $\sim 230\text{ km}$ | 🟡 **Golden Race Window (150–350 km)** |
+| **Taper & Dress Rehearsal** | W20 – W21 | Wed Strides + Sun 16k & Sun 12k Dress Rehearsal | $18 - 25\text{ km/wk}$ | **$\sim 275\text{ km}$** | 🟡 **Race Morning Prime** |
+| **Tata Mumbai Marathon** | W22 | 42.195 km Goal Race (Sub-5:00:00) | $42.2\text{ km}$ | **$\sim 317\text{ km}$** | 🏆 Marathon Finish Locked |
+
+* **Two-Shoe Rotation Protocol:**
+  * 👟 **Adidas Adizero EVO SL (Primary Race & Workout Shoe):** Reserved for Wednesday Quality/Speed Sessions, Sunday Long Runs, the TSW Kolkata 25K Race Simulation, and Race Day.
+  * 👟 **Daily Recovery Trainer (Secondary Rotation):** Utilized for Monday Short Recovery Runs ($4 - 6\text{ km}$) and light shakeouts. This spares $\sim 80 - 90\text{ km}$ of unnecessary pavement pounding on the EVO SL, ensuring maximal bounce is saved for race morning.
+
+### B. Hydration & Fueling Gear
+* **Hydration Gear:** Hydration vest with front soft flasks ($2 \times 500\text{ml}$).
 * **On-Run Fueling Strategy:**
   * **Energy Gels:** Practice taking 1 gel every **40–45 minutes** on all long runs exceeding 75 minutes ($30 - 45\text{g}$ carbs/hour).
-  * **Electrolytes & Salt Tablets:** Start integrating electrolyte powders (e.g., Fast&Up Reload) or salt capsules into hydration vest water starting from Week 3. Aim for $400 - 600\text{ mg}$ sodium per hour to counter Mumbai's humidity and prevent calf cramping.
+  * **Electrolytes & Salt Tablets:** Fast&Up Reload / SaltStick capsules taken every 45–60 minutes ($400 - 600\text{mg}$ sodium/hr) to counter Mumbai's humidity and prevent calf cramping.
   * **Fluid Intake:** $150 - 200\text{ ml}$ small sips every 15–20 minutes.
 * **Sleep & Recovery:** Maintain baseline **7–8 hours** of sleep; emphasize post-long-run carbohydrate and protein replenishment within 45 minutes of finishing.
 

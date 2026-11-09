@@ -40,17 +40,17 @@ gantt
 | **9** | **Base** | Oct 12 – Oct 18 | **41 km** | **21.1 km** | **PROCAM SLAM #1** | **VDHM 2026 (Delhi Half Marathon)** — Steady Training Run |
 | **10** | **Base** | Oct 19 – Oct 25 | **42 km** | **20 km** | — | **Breaking the 20K mark** @ 7:35–7:45 min/km |
 | **11** | **Base** | Oct 26 – Nov 01 | **45 km** | **22 km** | — | Sustained aerobic volume + tempo segments |
-| **12** | **Peak** | Nov 02 – Nov 08 | **44 km** | **22 km** | — | Re-entry build; 22 km aerobic stamina + MP tempo segments post-recovery |
-| **13** | **Peak** | Nov 09 – Nov 15 | **46 km** | **24 km** | — | Peak phase opening; Marathon Pace threshold blocks |
-| **14** | **Peak** | Nov 16 – Nov 22 | **40 km** | **21.1 km** | **HM SIMULATION** | **Half Marathon Race Simulation** (Aim: ~2:23–2:27) |
-| **15** | **Peak** | Nov 23 – Nov 29 | **32 km** | **14 km** | **DELOAD 3** | Mid-program recovery, soft-tissue absorption post-HM simulation & glycogen reset |
-| **16** | **Peak** | Nov 30 – Dec 06 | **50 km** | **26 km** | — | High volume peak week; Pedder Road Hill Attack; 26 km Long Run |
-| **17** | **Peak** | Dec 07 – Dec 13 | **55 km** | **30 km** | **BIG DISTANCE** | **30 km Volume Builder** (Fatigue resistance) |
-| **18** | **Peak** | Dec 14 – Dec 20 | **49 km** | **25.0 km** | **PROCAM SLAM #2** | **KOLKATA 25K (TSW 25K)** — MP Race Simulation |
-| **19** | **Peak** | Dec 21 – Dec 27 | **36 km** | **16 km** | **DELOAD 4** | Post-Kolkata 25K recovery, musculoskeletal absorption & pre-taper reset |
-| **20** | **Taper** | Dec 28 – Jan 03 | **35 km** | **18 km** | **TAPER 1** | Volume drop $-35\%$, intensity preserved |
-| **21** | **Taper** | Jan 04 – Jan 10 | **26 km** | **12 km** | **TAPER 2** | Volume drop $-55\%$, short MP sharpener |
-| **22** | **Race** | Jan 11 – Jan 17 | **54.2 km** | **42.2 km** | **PROCAM SLAM #3** | **TATA MUMBAI MARATHON (Sub-5:00:00 Target!)** 🏆 |
+| **12** | **Peak** | Nov 02 – Nov 08 | **33 km** | **18 km** | — | Completed re-entry post-illness: 18 km long run banked @ 7:14 min/km |
+| **13** | **Peak** | Nov 09 – Nov 15 | **38 km** | **21 km** | — | Safe progressive build; protect left knee; 21 km Half Marathon distance @ 7:35–7:45 min/km |
+| **14** | **Peak** | Nov 16 – Nov 22 | **42 km** | **23 km** | — | Aerobic stamina extension; 23 km LR with last 2 km progressive |
+| **15** | **Peak** | Nov 23 – Nov 29 | **34 km** | **16 km** | **DELOAD 3** | Musculoskeletal absorption, tendon remodeling & glycogen reset |
+| **16** | **Peak** | Nov 30 – Dec 06 | **46 km** | **25 km** | — | Pedder Road Hill Attack; 25 km Long Run with full hydration test |
+| **17** | **Peak** | Dec 07 – Dec 13 | **48 km** | **27 km** | **BIG DISTANCE** | **Pre-Kolkata High Distance Builder:** 27 km Long Run (Mental cadence lock) |
+| **18** | **Peak** | Dec 14 – Dec 20 | **39 km** | **25.0 km** | **PROCAM SLAM #2** | **TSW KOLKATA 25K (Mini-Taper Week):** Mid-week deload, Sunday MP rehearsal (15 km @ 7:25, 10 km @ 7:06) |
+| **19** | **Peak** | Dec 21 – Dec 27 | **46 km** | **30 / 21 km** | **PROVISIONAL PEAK** | **Provisional Peak Long Run:** Low mid-week; Plan A: 30 km (feel amazing) / Plan B: 21 km (chill option) |
+| **20** | **Taper** | Dec 28 – Jan 03 | **35 km** | **18 km** | **TAPER 1** | Volume drop $-30\%$, glycogen replenishment, MP sharpening |
+| **21** | **Taper** | Jan 04 – Jan 10 | **25 km** | **12 km** | **TAPER 2** | Volume drop $-50\%$, nervous system recovery, gear dress rehearsal in Adidas Adizero EVO SL |
+| **22** | **Race** | Jan 11 – Jan 17 | **53.2 km** | **42.2 km** | **PROCAM SLAM #3** | **TATA MUMBAI MARATHON (Sub-5:00:00 Target: 4:58:30!)** 🏆 |
 
 ---
 
@@ -345,7 +345,7 @@ flowchart LR
 
 #### Week 22 (Jan 11 – Jan 17, 2027) — RACE WEEK! [TATA MUMBAI MARATHON]
 * **Mon (Jan 11):** 4 km Shakeout Run @ 8:00 min/km + gentle calf stretches.
-* **Tue (Jan 12):** Rest & Travel Prep. Pack hydration vest, gels, salt tabs, Adidas Evo SL 2, anti-chafe balm.
+* **Tue (Jan 12):** Rest & Travel Prep. Pack hydration vest, gels, salt tabs, Adidas Adizero EVO SL, anti-chafe balm.
 * **Wed (Jan 13):** 4 km Easy Jog @ 7:30 min/km + $3 \times 60\text{m}$ strides.
 * **Thu (Jan 14):** Full Rest Day. Travel to Mumbai / Bib collection at MMRDA Expo.
 * **Fri (Jan 15):** 3 km Shakeout Run in Mumbai (Acclimatize to morning humidity) @ 7:45 min/km + $2 \times 50\text{m}$ strides.

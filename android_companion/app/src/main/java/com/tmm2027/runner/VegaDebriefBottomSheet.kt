@@ -440,7 +440,7 @@ class VegaDebriefBottomSheet : BottomSheetDialogFragment() {
 
                 val prompt = """
                 You are Coach Vega — elite Olympic marathon coach, exercise physiologist, and physical therapist for an athlete targeting Sub-5:00 (7:06 min/km pace) at the Tata Mumbai Marathon 2027.
-                The athlete trains in Adidas Adizero Evo SL 2 shoes.
+                The athlete trains in newly acquired Adidas Adizero EVO SL shoes (Lightstrike Pro superfoam, non-plated, 6.6mm drop), budgeted for a 150–350 km sweet spot by race morning.
 
                 EXACT WEEK $weekNumber TELEMETRY LOGS (SUPABASE CLOUD):
                 $weekWorkoutsJson

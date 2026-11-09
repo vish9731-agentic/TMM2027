@@ -133,6 +133,32 @@ async function generateCoachScriptForWorkout(workout) {
   const prehab = workout.strength_prehab || "Calf eccentrics";
   const splits = workout.strategy_splits || [];
 
+  // Physiological Heart Rate Zone & Biometrics context
+  const isSpeedOrHills = type.toLowerCase().includes('hill') || type.toLowerCase().includes('interval') || type.toLowerCase().includes('rep');
+  const isTempo = type.toLowerCase().includes('tempo') || type.toLowerCase().includes('threshold') || type.toLowerCase().includes('mp');
+  const isLong = type.toLowerCase().includes('long') || dist >= 10;
+  
+  let targetHrZoneName = "Zone 2 (Aerobic Base)";
+  let targetHrRange = "130 – 145 bpm";
+  let hrCeiling = "145 bpm (148 bpm max for late-run thermal drift)";
+  if (isSpeedOrHills) {
+    targetHrZoneName = "Zone 4 (Threshold & Hills) with Zone 1/2 Recovery";
+    targetHrRange = "Work Reps: 159 – 172 bpm | Rest: < 135 bpm";
+    hrCeiling = "175 bpm (Ceiling)";
+  } else if (isTempo) {
+    targetHrZoneName = "Zone 3 (Aerobic Tempo / Marathon Pace)";
+    targetHrRange = "146 – 158 bpm";
+    hrCeiling = "160 bpm (Ceiling)";
+  } else if (isLong) {
+    targetHrZoneName = "Zone 2 (Aerobic Base Endurance)";
+    targetHrRange = "132 – 145 bpm";
+    hrCeiling = "145 bpm (First half) / 148 bpm (Final 5K under heat)";
+  } else if (dist <= 5) {
+    targetHrZoneName = "Zone 1 / Lower Zone 2 (Active Recovery)";
+    targetHrRange = "125 – 138 bpm";
+    hrCeiling = "140 bpm (Ceiling)";
+  }
+
   const prompt = `
 You are the elite Master Coach and Running Philosopher for the Tata Mumbai Marathon 2027 (TMM 2027).
 Your coaching style is a blend of Eliud Kipchoge (stoic discipline & joy), Coach Bennett (empathetic, grounded athletic encouragement), and Haruki Murakami (thoughtful reflection on running and life).
@@ -144,6 +170,9 @@ WORKOUT BLUEPRINT FROM DATABASE:
 - Workout Type: ${type}
 - Planned Distance: ${dist} km
 - Target Pace: ${targetPace}
+- Target Heart Rate Zone: ${targetHrZoneName}
+- Prescribed HR Range: ${targetHrRange} (Ceiling: ${hrCeiling})
+- Hardware: Samsung Galaxy Watch4 Classic optical pulse tracking via Strava
 - RPE Target: ${rpe} / 10
 - Fueling Strategy: ${fueling}
 - Post-run Prehab: ${prehab}
@@ -156,12 +185,13 @@ STRICT COACHING GUIDELINES:
 2. RUN THEME:
    - Choose a unique philosophical theme suitable for this specific workout type (e.g. "The Art of Middle-Kilometer Solitude", "Economy of Motion: Finding Flow", "The Anatomy of Discipline vs Motivation", "Running in Adversity & Weather", "Minimalism: What Gear Actually Matters").
    - Include 2 to 3 thematic reflection drops interspersed during the run.
-3. STRICT 1:1 STRATEGY ALIGNMENT:
+3. STRICT 1:1 STRATEGY ALIGNMENT & HEART RATE DISCIPLINE:
    - Every split in the provided Strategy Splits MUST have a matching cue.
-   - For work intervals/reps: provide a 10s pre-cue with countdown alert, followed by an explosive GO cue.
-   - For recovery rests: provide a 5s pre-cue and a relaxed recovery breathing cue.
-   - For continuous tempo blocks: cue the sustained threshold lock without artificial breaks.
-   - For warmup/cooldown: cue relaxed aerobic float and lactate flushing.
+   - For work intervals/reps: provide a 10s pre-cue with countdown alert, followed by an explosive GO cue. Remind athlete to push into Zone 4 (159–172 bpm).
+   - For recovery rests: provide a 5s pre-cue and prompt a Galaxy Watch4 pulse check to confirm HR drops below 135 bpm before starting the next rep.
+   - For continuous tempo blocks: cue the sustained threshold lock (Zone 3: 146–158 bpm) without artificial surges.
+   - For warmup/cooldown: cue relaxed aerobic float (<130 bpm) and lactate flushing.
+   - For long runs: emphasize strict Zone 2 adherence (130–145 bpm) to preserve calf muscle glycogen for the final 10K.
 4. TMM 2027 MUMBAI MARATHON ROUTE INTELLIGENCE:
    - Relate today's training directly to a specific landmark or tactical challenge of the Tata Mumbai Marathon:
      * Bandra-Worli Sea Link crosswinds (holding 170+ SPM cadence without crowd shelter)
@@ -171,14 +201,22 @@ STRICT COACHING GUIDELINES:
 5. DYNAMIC PACING ALERTS (ANTI-REPETITIVE):
    - Provide an array of 6 to 8 distinct, varied lines for "too_slow" (encouraging, tactical, posture/cadence focus).
    - Provide an array of 6 to 8 distinct, varied lines for "too_fast" (ego check, calf protection, pacing wisdom).
-6. DYNAMIC FUELING ALERTS:
-   - Provide contextual reminders for water, electrolytes, and salt capsules derived from the fueling strategy.
+6. DYNAMIC HEART RATE ALERTS (GALAXY WATCH4 BIOMETRICS):
+   - Provide 5 to 6 distinct lines for "too_high": alert runner when Galaxy Watch vibrates above the ceiling (${hrCeiling}), prompting relaxed jaw, lowered shoulders, belly breathing, and an immediate 15s/km pace reduction to prevent calf glycogen exhaustion.
+   - Provide 4 to 5 distinct lines for "too_low": prompt runner during tempo/interval segments to pick up turnover if pulse hasn't reached target zone.
+7. DYNAMIC FUELING & CARDIAC DRIFT ALERTS:
+   - Provide contextual reminders for water, electrolytes, and salt capsules. If cardiac drift occurs (>5% HR rise at constant pace in 2nd half), prescribe salt capsule + water.
+8. FOOTWEAR & BIOMECHANICAL CUEING (ADIDAS ADIZERO EVO SL):
+   - The athlete runs in the newly acquired Adidas Adizero EVO SL (100% Lightstrike Pro foam, non-plated natural flex, 6.6mm drop).
+   - In 1 to 2 cues (e.g. warmup or cruise split), integrate tactile form coaching: cue a quick, light cadence (~168–172 SPM), letting the Lightstrike Pro rocker carry momentum with a soft midfoot roll to spare the soleus and calves.
 
 Respond STRICTLY with valid JSON matching this exact structure:
 {
   "workout_date": "${date}",
   "workout_type": "${type}",
   "distance_km": ${dist},
+  "target_hr_zone": "${targetHrZoneName}",
+  "target_hr_range": "${targetHrRange}",
   "theme": {
     "title": "Short Theme Title",
     "philosophical_insight": "2-3 sentences explaining the theme",
@@ -203,6 +241,10 @@ Respond STRICTLY with valid JSON matching this exact structure:
   "dynamic_pace_alerts": {
     "too_slow": [ "6-8 varied lines" ],
     "too_fast": [ "6-8 varied lines" ]
+  },
+  "dynamic_heart_rate_alerts": {
+    "too_high": [ "5-6 varied lines: ease pace by 15s/km, drop shoulders, deep belly breaths, protect calf glycogen" ],
+    "too_low": [ "4-5 varied lines: lift cadence, lean from ankles, engage glutes" ]
   },
   "dynamic_fueling_alerts": [ "2-3 lines" ]
 }

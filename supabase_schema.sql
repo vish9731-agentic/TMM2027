@@ -448,11 +448,11 @@ VALUES (21, 'Friday', '2027-01-08', 'Mid-Week Aerobic', 5, '7:20 min/km + 3 stri
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (21, 'Saturday', '2027-01-09', 'Rest', 0, 'N/A', 1, 'Full Rest.', 'Rest', 'Hydration');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
-VALUES (21, 'Sunday', '2027-01-10', 'Long Run', 12, '7:30 - 7:40 min/km', 3, 'Final dress rehearsal: 12 km @ 7:30-7:40 min/km with Adidas Evo SL 2 and race vest.', 'Calf stretching', '2 Gels + 1 Salt capsule + water');
+VALUES (21, 'Sunday', '2027-01-10', 'Long Run', 12, '7:30 - 7:40 min/km', 3, 'Final dress rehearsal: 12 km @ 7:30-7:40 min/km with Adidas Adizero EVO SL and race vest.', 'Calf stretching', '2 Gels + 1 Salt capsule + water');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (22, 'Monday', '2027-01-11', 'Recovery Shakeout', 4, '8:00 min/km', 2, '4 km shakeout run + gentle calf stretches.', 'Light stretching', 'Water');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
-VALUES (22, 'Tuesday', '2027-01-12', 'Rest & Packing', 0, 'N/A', 1, 'Rest & Travel Packing (Vest, Gels, Salt Tabs, Shoes).', 'Rest', 'Balanced meals');
+VALUES (22, 'Tuesday', '2027-01-12', 'Rest & Packing', 0, 'N/A', 1, 'Rest & Travel Packing (Vest, Gels, Salt Tabs, Adidas Adizero EVO SL shoes).', 'Rest', 'Balanced meals');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)
 VALUES (22, 'Wednesday', '2027-01-13', 'Mumbai Shakeout', 3, '7:45 min/km + 2 strides', 3, '3 km morning shakeout run in Mumbai to acclimatize to coastal humidity.', 'Light dynamic stretches', 'Water');
 INSERT INTO daily_workouts (week_number, day_of_week, workout_date, workout_type, distance_km, target_pace, rpe_target, description, strength_prehab, fueling_hydration_strategy)

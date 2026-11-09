@@ -394,14 +394,19 @@ function buildEventPayload(wo, tomorrow) {
     ? wo.strength_prehab 
     : 'Post-run eccentric heel drops on a step (3x15) + foam roll calves';
 
+  const shoeRec = (typeLower.includes('recovery') || typeLower.includes('shakeout'))
+    ? '• 👟 Shoe: Daily Recovery Trainer (or Adidas Adizero EVO SL — reserve race cushion)'
+    : '• 👟 Shoe: Adidas Adizero EVO SL (Lightstrike Pro rebound & non-plated calf protection)';
+
   let description = '';
   
   if (dist > 0) {
     description = [
       `⏱️ ${estDurationStr}  •  RPE ${rpe}/10 (Aerobic Base)\n`,
-      `💧 PRE-RUN FUELING`,
+      `💧 PRE-RUN FUELING & GEAR`,
       `• 250ml water + pinch of pink salt (30m before)`,
-      dist >= 10 ? `• 1 banana or toast with honey (45m before)\n` : `\n`,
+      dist >= 10 ? `• 1 banana or toast with honey (45m before)` : '',
+      shoeRec + `\n`,
       `🦵 WARMUP (3–5 Mins)`,
       `• 3m ankle mobility & soleus calf rockers (2x15)`,
       `• Start Km 1 as a gentle warmup float\n`,

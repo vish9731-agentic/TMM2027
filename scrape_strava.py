@@ -417,6 +417,97 @@ def query_supabase_workout(date_str):
         print(f"⚠️ Error querying Supabase for date {date_str}: {e}")
     return None
 
+def get_gemini_key():
+    key = os.environ.get("GEMINI_API_KEY", "").strip()
+    if key: return key
+    if not SUPABASE_URL or not SUPABASE_KEY: return None
+    try:
+        url = f"{SUPABASE_URL}/rest/v1/daily_workouts?id=eq.9999&select=description"
+        headers = {"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"}
+        req = urllib.request.Request(url, headers=headers)
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            data = json.loads(resp.read().decode())
+            if data and len(data) > 0 and data[0].get("description"):
+                cfg = json.loads(data[0]["description"])
+                return cfg.get("gemini_api_key")
+    except Exception as e:
+        print(f"      ℹ️ Note: Could not fetch Gemini key for auto-analysis: {e}")
+    return None
+
+def generate_vega_analysis_for_run(planned_wo, run_data, dist_delta, pace_delta_sec, score_pct):
+    gemini_key = get_gemini_key()
+    if not gemini_key:
+        print("      ℹ️ Gemini API key not found. Skipping auto-generated Vega run critique.")
+        return None
+
+    date_str = planned_wo.get("workout_date", "")
+    day_name = f"Week {planned_wo.get('week_number', '')} • {planned_wo.get('day_of_week', '')}"
+    wo_type = planned_wo.get("workout_type", "Run")
+    planned_dist = planned_wo.get("distance_km", 0)
+    target_pace = planned_wo.get("target_pace", "N/A")
+    actual_dist = run_data.get("dist_km", 0)
+    actual_pace = run_data.get("pace_str", "N/A")
+    avg_hr = run_data.get("avg_hr")
+    splits = run_data.get("splits") or []
+
+    splits_str = ", ".join(f"{s.get('km', 'Km')}: {s.get('pace', 'N/A')}" for s in splits[:20]) if splits else "No per-km splits"
+
+    prompt = f"""You are Coach Vega — an elite marathon coach, exercise physiologist, and sports physical therapist specialized in coaching an athlete for the Tata Mumbai Marathon 2027 (Sub-5:00 goal at 7:06 min/km pace).
+The runner trains in Adidas Adizero EVO SL shoes in Bengaluru and tracks with Strava / Galaxy Watch.
+
+TELEMETRY FROM RUN TO CRITIQUE:
+- Date: {date_str} ({day_name})
+- Workout Type: {wo_type}
+- Planned Target: {planned_dist} km @ {target_pace}
+- Actual Completed: {actual_dist} km @ {actual_pace}
+- Precision Match: {score_pct}% (Distance delta: {dist_delta:+} km, Pace delta: {pace_delta_sec:+}s/km)
+- Heart Rate: {f'Average {avg_hr} bpm' if avg_hr else 'Not recorded'}
+- Per-Kilometer Splits: {splits_str}
+
+STRICT LANGUAGE AND TONE REQUIREMENTS:
+- Use simple Indian English.
+- Warm, encouraging, grounded, direct, and conversational (e.g. "Good effort completing the run", "Your pace was slightly fast in the first few kilometers", "Don't rush on easy days, let your body adapt", "Make sure you do your calf stretches properly tonight", "Keep it steady").
+- NEVER use heavy, pompous, highbrow, or overly complicated academic English.
+
+STRICT CRISP ONE-LINE SCIENTIFIC BIG-PICTURE PURPOSE REQUIREMENT:
+- You MUST provide a single line explaining the purpose of this specific run in the larger marathon journey.
+- It MUST be strictly ONE crisp, simple sentence.
+- It MUST be scientifically sound, accounting for biology, physiology, and body biomechanics (e.g. capillary bed density, mitochondrial fat oxidation, cardiac stroke volume, lactate buffering, soleus/Achilles tendon elasticity, or glycogen sparing for Mumbai's 42 km).
+
+Respond strictly with valid JSON adhering to this exact schema:
+{{
+  "big_picture_purpose": "Crisp 1-line scientific purpose accounting for biology, physiology, and biomechanics in the marathon journey.",
+  "verdict_summary": "2-3 short sentences in simple Indian English evaluating how the run went.",
+  "pacing_and_splits_insight": "2 sentences in simple Indian English explaining pacing rhythm, splits, or cardiac drift.",
+  "calf_and_recovery_prehab": "1-2 sentences with concrete prehab instructions for tonight (eccentric heel drops, hydration).",
+  "tomorrow_directive": "1 short sentence connecting this to tomorrow's scheduled session.",
+  "speech_text": "A warm, natural 35-45 second spoken debrief script in simple Indian English combining these points for voice synthesis."
+}}"""
+
+    models_to_try = ["gemini-3.8-flash", "gemini-3.6-flash"]
+    for model in models_to_try:
+        try:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={gemini_key}"
+            req_data = {
+                "contents": [{"parts": [{"text": prompt}]}],
+                "generationConfig": {"temperature": 0.4, "responseMimeType": "application/json"}
+            }
+            req = urllib.request.Request(url, data=json.dumps(req_data).encode("utf-8"), headers={"Content-Type": "application/json"})
+            with urllib.request.urlopen(req, timeout=25) as resp:
+                res_json = json.loads(resp.read().decode("utf-8"))
+                text = res_json.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "")
+                text = re.sub(r"^```json", "", text, flags=re.IGNORECASE).strip("` \n")
+                parsed = json.loads(text)
+                parsed["_model"] = model
+                parsed["_analyzed_at"] = datetime.now(timezone.utc).isoformat()
+                print(f"      ✨ Coach Vega auto-critique generated via {model}!")
+                print(f"         • Purpose: {parsed.get('big_picture_purpose')}")
+                return parsed
+        except Exception as e:
+            print(f"      ⚠️ {model} auto-critique error: {e}")
+            continue
+    return None
+
 def update_supabase_workout(date_str, payload):
     if not SUPABASE_URL or not SUPABASE_KEY:
         print("⚠️ Supabase credentials missing. Skipping cloud write.")
@@ -580,7 +671,8 @@ def main():
             pace_str = primary_run["pace_str"]
             name = primary_run["name"]
             extra_count = len(runs) - 1
-            notes_str = f"Auto-synced from Strava ({name})"
+            gear_tag = " • Gear: Adidas Adizero EVO SL" if date_str >= "2026-11-09" else ""
+            notes_str = f"Auto-synced from Strava ({name}){gear_tag}"
             if extra_count > 0:
                 other_names = ", ".join(r["name"] for r in runs[1:])
                 notes_str += f" [Note: {extra_count} other activity on date: {other_names}]"
@@ -590,7 +682,8 @@ def main():
             duration_secs = primary_run["duration_secs"]
             pace_str = primary_run["pace_str"]
             name = primary_run["name"]
-            notes_str = f"Auto-synced from Strava ({name})"
+            gear_tag = " • Gear: Adidas Adizero EVO SL" if date_str >= "2026-11-09" else ""
+            notes_str = f"Auto-synced from Strava ({name}){gear_tag}"
 
         dist_delta, pace_delta_sec, score_pct = calculate_variance(planned_dist, dist_km, target_pace, pace_str)
 
@@ -616,6 +709,14 @@ def main():
             "ingestion_source": "strava_github_action",
             "athlete_notes": notes_str
         }
+
+        # Auto-generate Coach Vega run analysis
+        try:
+            vega_critique = generate_vega_analysis_for_run(planned_wo, primary_run, dist_delta, pace_delta_sec, score_pct)
+            if vega_critique:
+                payload["vega_analysis"] = vega_critique
+        except Exception as ve_err:
+            print(f"      ℹ️ Note: Auto-critique generation bypassed: {ve_err}")
 
         success = update_supabase_workout(date_str, payload)
         if success:
