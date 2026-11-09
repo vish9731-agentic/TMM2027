@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-08-25T17:49:07.863Z",
+  "timestamp": "2026-11-09T11:15:13.131Z",
   "totalTests": 28,
   "passedTests": 28,
   "failedTests": 0,
@@ -18,34 +18,34 @@
       "hasHorizontalOverflow": false,
       "overflowingElements": [
         {
-          "selector": "button.week-jump-btn.peak-btn",
-          "right": 1610,
-          "width": 128,
-          "excess": 1290
-        },
-        {
-          "selector": "button.week-jump-btn.milestone-btn",
-          "right": 1476,
-          "width": 63,
-          "excess": 1156
-        },
-        {
-          "selector": "div#day-1_Sunday_2026-08-23.day-card",
+          "selector": "div#day-13_Sunday_2026-11-15.day-card",
           "right": 1435,
           "width": 190,
           "excess": 1115
         },
         {
-          "selector": "div#day-2_Sunday_2026-08-30.day-card",
-          "right": 1435,
-          "width": 190,
-          "excess": 1115
+          "selector": "div.day-card-header",
+          "right": 1424,
+          "width": 167,
+          "excess": 1104
         },
         {
-          "selector": "div#day-3_Sunday_2026-09-06.day-card",
-          "right": 1435,
-          "width": 190,
-          "excess": 1115
+          "selector": "input.checkbox-custom",
+          "right": 1424,
+          "width": 20,
+          "excess": 1104
+        },
+        {
+          "selector": "div",
+          "right": 1424,
+          "width": 167,
+          "excess": 1104
+        },
+        {
+          "selector": "div.day-distance",
+          "right": 1424,
+          "width": 167,
+          "excess": 1104
         }
       ],
       "touchTargetIssues": [
@@ -59,6 +59,12 @@
           "tag": "a",
           "text": "Google AI Studio ↗",
           "width": 98,
+          "height": 13
+        },
+        {
+          "tag": "a",
+          "text": "Create a token on Gi",
+          "width": 144,
           "height": 13
         }
       ],
@@ -85,34 +91,34 @@
       "hasHorizontalOverflow": false,
       "overflowingElements": [
         {
-          "selector": "button.week-jump-btn.peak-btn",
-          "right": 1610,
-          "width": 128,
-          "excess": 1250
-        },
-        {
-          "selector": "button.week-jump-btn.milestone-btn",
-          "right": 1476,
-          "width": 63,
-          "excess": 1116
-        },
-        {
-          "selector": "div#day-1_Sunday_2026-08-23.day-card",
+          "selector": "div#day-13_Sunday_2026-11-15.day-card",
           "right": 1435,
           "width": 190,
           "excess": 1075
         },
         {
-          "selector": "div#day-2_Sunday_2026-08-30.day-card",
-          "right": 1435,
-          "width": 190,
-          "excess": 1075
+          "selector": "div.day-card-header",
+          "right": 1424,
+          "width": 167,
+          "excess": 1064
         },
         {
-          "selector": "div#day-3_Sunday_2026-09-06.day-card",
-          "right": 1435,
-          "width": 190,
-          "excess": 1075
+          "selector": "input.checkbox-custom",
+          "right": 1424,
+          "width": 20,
+          "excess": 1064
+        },
+        {
+          "selector": "div",
+          "right": 1424,
+          "width": 167,
+          "excess": 1064
+        },
+        {
+          "selector": "div.day-distance",
+          "right": 1424,
+          "width": 167,
+          "excess": 1064
         }
       ],
       "touchTargetIssues": [
@@ -126,6 +132,12 @@
           "tag": "a",
           "text": "Google AI Studio ↗",
           "width": 98,
+          "height": 13
+        },
+        {
+          "tag": "a",
+          "text": "Create a token on Gi",
+          "width": 144,
           "height": 13
         }
       ],
@@ -152,34 +164,34 @@
       "hasHorizontalOverflow": false,
       "overflowingElements": [
         {
-          "selector": "button.week-jump-btn.peak-btn",
-          "right": 1616,
-          "width": 128,
-          "excess": 1241
-        },
-        {
-          "selector": "button.week-jump-btn.milestone-btn",
-          "right": 1482,
-          "width": 63,
-          "excess": 1107
-        },
-        {
-          "selector": "div#day-1_Sunday_2026-08-23.day-card",
+          "selector": "div#day-13_Sunday_2026-11-15.day-card",
           "right": 1441,
           "width": 190,
           "excess": 1066
         },
         {
-          "selector": "div#day-2_Sunday_2026-08-30.day-card",
-          "right": 1441,
-          "width": 190,
-          "excess": 1066
+          "selector": "div.day-card-header",
+          "right": 1429,
+          "width": 167,
+          "excess": 1054
         },
         {
-          "selector": "div#day-3_Sunday_2026-09-06.day-card",
-          "right": 1441,
-          "width": 190,
-          "excess": 1066
+          "selector": "input.checkbox-custom",
+          "right": 1429,
+          "width": 20,
+          "excess": 1054
+        },
+        {
+          "selector": "div",
+          "right": 1429,
+          "width": 167,
+          "excess": 1054
+        },
+        {
+          "selector": "div.day-distance",
+          "right": 1429,
+          "width": 167,
+          "excess": 1054
         }
       ],
       "touchTargetIssues": [
@@ -193,6 +205,12 @@
           "tag": "a",
           "text": "Google AI Studio ↗",
           "width": 98,
+          "height": 13
+        },
+        {
+          "tag": "a",
+          "text": "Create a token on Gi",
+          "width": 144,
           "height": 13
         }
       ],
@@ -219,34 +237,34 @@
       "hasHorizontalOverflow": false,
       "overflowingElements": [
         {
-          "selector": "button.week-jump-btn.peak-btn",
-          "right": 1616,
-          "width": 128,
-          "excess": 1226
-        },
-        {
-          "selector": "button.week-jump-btn.milestone-btn",
-          "right": 1482,
-          "width": 63,
-          "excess": 1092
-        },
-        {
-          "selector": "div#day-1_Sunday_2026-08-23.day-card",
+          "selector": "div#day-13_Sunday_2026-11-15.day-card",
           "right": 1441,
           "width": 190,
           "excess": 1051
         },
         {
-          "selector": "div#day-2_Sunday_2026-08-30.day-card",
-          "right": 1441,
-          "width": 190,
-          "excess": 1051
+          "selector": "div.day-card-header",
+          "right": 1429,
+          "width": 167,
+          "excess": 1039
         },
         {
-          "selector": "div#day-3_Sunday_2026-09-06.day-card",
-          "right": 1441,
-          "width": 190,
-          "excess": 1051
+          "selector": "input.checkbox-custom",
+          "right": 1429,
+          "width": 20,
+          "excess": 1039
+        },
+        {
+          "selector": "div",
+          "right": 1429,
+          "width": 167,
+          "excess": 1039
+        },
+        {
+          "selector": "div.day-distance",
+          "right": 1429,
+          "width": 167,
+          "excess": 1039
         }
       ],
       "touchTargetIssues": [
@@ -260,6 +278,12 @@
           "tag": "a",
           "text": "Google AI Studio ↗",
           "width": 98,
+          "height": 13
+        },
+        {
+          "tag": "a",
+          "text": "Create a token on Gi",
+          "width": 144,
           "height": 13
         }
       ],
@@ -286,34 +310,34 @@
       "hasHorizontalOverflow": false,
       "overflowingElements": [
         {
-          "selector": "button.week-jump-btn.peak-btn",
-          "right": 1616,
-          "width": 128,
-          "excess": 1204
-        },
-        {
-          "selector": "button.week-jump-btn.milestone-btn",
-          "right": 1482,
-          "width": 63,
-          "excess": 1070
-        },
-        {
-          "selector": "div#day-1_Sunday_2026-08-23.day-card",
+          "selector": "div#day-13_Sunday_2026-11-15.day-card",
           "right": 1441,
           "width": 190,
           "excess": 1029
         },
         {
-          "selector": "div#day-2_Sunday_2026-08-30.day-card",
-          "right": 1441,
-          "width": 190,
-          "excess": 1029
+          "selector": "div.day-card-header",
+          "right": 1429,
+          "width": 167,
+          "excess": 1017
         },
         {
-          "selector": "div#day-3_Sunday_2026-09-06.day-card",
-          "right": 1441,
-          "width": 190,
-          "excess": 1029
+          "selector": "input.checkbox-custom",
+          "right": 1429,
+          "width": 20,
+          "excess": 1017
+        },
+        {
+          "selector": "div",
+          "right": 1429,
+          "width": 167,
+          "excess": 1017
+        },
+        {
+          "selector": "div.day-distance",
+          "right": 1429,
+          "width": 167,
+          "excess": 1017
         }
       ],
       "touchTargetIssues": [
@@ -359,34 +383,34 @@
       "hasHorizontalOverflow": false,
       "overflowingElements": [
         {
-          "selector": "button.week-jump-btn.peak-btn",
-          "right": 1616,
-          "width": 128,
-          "excess": 1186
-        },
-        {
-          "selector": "button.week-jump-btn.milestone-btn",
-          "right": 1482,
-          "width": 63,
-          "excess": 1052
-        },
-        {
-          "selector": "div#day-1_Sunday_2026-08-23.day-card",
+          "selector": "div#day-13_Sunday_2026-11-15.day-card",
           "right": 1441,
           "width": 190,
           "excess": 1011
         },
         {
-          "selector": "div#day-2_Sunday_2026-08-30.day-card",
-          "right": 1441,
-          "width": 190,
-          "excess": 1011
+          "selector": "div.day-card-header",
+          "right": 1429,
+          "width": 167,
+          "excess": 999
         },
         {
-          "selector": "div#day-3_Sunday_2026-09-06.day-card",
-          "right": 1441,
-          "width": 190,
-          "excess": 1011
+          "selector": "input.checkbox-custom",
+          "right": 1429,
+          "width": 20,
+          "excess": 999
+        },
+        {
+          "selector": "div",
+          "right": 1429,
+          "width": 167,
+          "excess": 999
+        },
+        {
+          "selector": "div.day-distance",
+          "right": 1429,
+          "width": 167,
+          "excess": 999
         }
       ],
       "touchTargetIssues": [
@@ -432,34 +456,34 @@
       "hasHorizontalOverflow": false,
       "overflowingElements": [
         {
-          "selector": "button.week-jump-btn.peak-btn",
-          "right": 1626,
-          "width": 128,
-          "excess": 782
-        },
-        {
-          "selector": "div#day-1_Sunday_2026-08-23.day-card",
+          "selector": "div#day-13_Sunday_2026-11-15.day-card",
           "right": 1591,
           "width": 210,
           "excess": 747
         },
         {
-          "selector": "div#day-2_Sunday_2026-08-30.day-card",
-          "right": 1591,
-          "width": 210,
-          "excess": 747
+          "selector": "div.day-card-header",
+          "right": 1578,
+          "width": 184,
+          "excess": 734
         },
         {
-          "selector": "div#day-3_Sunday_2026-09-06.day-card",
-          "right": 1591,
-          "width": 210,
-          "excess": 747
+          "selector": "input.checkbox-custom",
+          "right": 1578,
+          "width": 20,
+          "excess": 734
         },
         {
-          "selector": "div#day-4_Sunday_2026-09-13.day-card",
-          "right": 1591,
-          "width": 210,
-          "excess": 747
+          "selector": "div",
+          "right": 1578,
+          "width": 184,
+          "excess": 734
+        },
+        {
+          "selector": "div.day-distance",
+          "right": 1578,
+          "width": 184,
+          "excess": 734
         }
       ],
       "touchTargetIssues": [],
@@ -486,34 +510,34 @@
       "hasHorizontalOverflow": false,
       "overflowingElements": [
         {
-          "selector": "button.week-jump-btn.peak-btn",
-          "right": 1616,
-          "width": 128,
-          "excess": 1016
-        },
-        {
-          "selector": "div#day-1_Sunday_2026-08-23.day-card",
+          "selector": "div#day-13_Sunday_2026-11-15.day-card",
           "right": 1581,
           "width": 210,
           "excess": 981
         },
         {
-          "selector": "div#day-2_Sunday_2026-08-30.day-card",
-          "right": 1581,
-          "width": 210,
-          "excess": 981
+          "selector": "div.day-card-header",
+          "right": 1568,
+          "width": 184,
+          "excess": 968
         },
         {
-          "selector": "div#day-3_Sunday_2026-09-06.day-card",
-          "right": 1581,
-          "width": 210,
-          "excess": 981
+          "selector": "input.checkbox-custom",
+          "right": 1568,
+          "width": 20,
+          "excess": 968
         },
         {
-          "selector": "div#day-4_Sunday_2026-09-13.day-card",
-          "right": 1581,
-          "width": 210,
-          "excess": 981
+          "selector": "div",
+          "right": 1568,
+          "width": 184,
+          "excess": 968
+        },
+        {
+          "selector": "div.day-distance",
+          "right": 1568,
+          "width": 184,
+          "excess": 968
         }
       ],
       "touchTargetIssues": [
@@ -528,6 +552,12 @@
           "text": "🗑️ Clear Memory",
           "width": 102,
           "height": 25
+        },
+        {
+          "tag": "a",
+          "text": "Create a token on Gi",
+          "width": 144,
+          "height": 13
         }
       ],
       "visibilityChecks": {
@@ -553,34 +583,34 @@
       "hasHorizontalOverflow": false,
       "overflowingElements": [
         {
-          "selector": "button.week-jump-btn.peak-btn",
-          "right": 1616,
-          "width": 128,
-          "excess": 848
-        },
-        {
-          "selector": "div#day-1_Sunday_2026-08-23.day-card",
+          "selector": "div#day-13_Sunday_2026-11-15.day-card",
           "right": 1581,
           "width": 210,
           "excess": 813
         },
         {
-          "selector": "div#day-2_Sunday_2026-08-30.day-card",
-          "right": 1581,
-          "width": 210,
-          "excess": 813
+          "selector": "div.day-card-header",
+          "right": 1568,
+          "width": 184,
+          "excess": 800
         },
         {
-          "selector": "div#day-3_Sunday_2026-09-06.day-card",
-          "right": 1581,
-          "width": 210,
-          "excess": 813
+          "selector": "input.checkbox-custom",
+          "right": 1568,
+          "width": 20,
+          "excess": 800
         },
         {
-          "selector": "div#day-4_Sunday_2026-09-13.day-card",
-          "right": 1581,
-          "width": 210,
-          "excess": 813
+          "selector": "div",
+          "right": 1568,
+          "width": 184,
+          "excess": 800
+        },
+        {
+          "selector": "div.day-distance",
+          "right": 1568,
+          "width": 184,
+          "excess": 800
         }
       ],
       "touchTargetIssues": [],
@@ -607,34 +637,34 @@
       "hasHorizontalOverflow": false,
       "overflowingElements": [
         {
-          "selector": "button.week-jump-btn.peak-btn",
-          "right": 1626,
-          "width": 128,
-          "excess": 806
-        },
-        {
-          "selector": "div#day-1_Sunday_2026-08-23.day-card",
+          "selector": "div#day-13_Sunday_2026-11-15.day-card",
           "right": 1591,
           "width": 210,
           "excess": 771
         },
         {
-          "selector": "div#day-2_Sunday_2026-08-30.day-card",
-          "right": 1591,
-          "width": 210,
-          "excess": 771
+          "selector": "div.day-card-header",
+          "right": 1578,
+          "width": 184,
+          "excess": 758
         },
         {
-          "selector": "div#day-3_Sunday_2026-09-06.day-card",
-          "right": 1591,
-          "width": 210,
-          "excess": 771
+          "selector": "input.checkbox-custom",
+          "right": 1578,
+          "width": 20,
+          "excess": 758
         },
         {
-          "selector": "div#day-4_Sunday_2026-09-13.day-card",
-          "right": 1591,
-          "width": 210,
-          "excess": 771
+          "selector": "div",
+          "right": 1578,
+          "width": 184,
+          "excess": 758
+        },
+        {
+          "selector": "div.day-distance",
+          "right": 1578,
+          "width": 184,
+          "excess": 758
         }
       ],
       "touchTargetIssues": [],
@@ -661,34 +691,34 @@
       "hasHorizontalOverflow": false,
       "overflowingElements": [
         {
-          "selector": "button.week-jump-btn.peak-btn",
-          "right": 1626,
-          "width": 128,
-          "excess": 602
-        },
-        {
-          "selector": "div#day-1_Sunday_2026-08-23.day-card",
+          "selector": "div#day-13_Sunday_2026-11-15.day-card",
           "right": 1591,
           "width": 210,
           "excess": 567
         },
         {
-          "selector": "div#day-2_Sunday_2026-08-30.day-card",
-          "right": 1591,
-          "width": 210,
-          "excess": 567
+          "selector": "div.day-card-header",
+          "right": 1578,
+          "width": 184,
+          "excess": 554
         },
         {
-          "selector": "div#day-3_Sunday_2026-09-06.day-card",
-          "right": 1591,
-          "width": 210,
-          "excess": 567
+          "selector": "input.checkbox-custom",
+          "right": 1578,
+          "width": 20,
+          "excess": 554
         },
         {
-          "selector": "div#day-4_Sunday_2026-09-13.day-card",
-          "right": 1591,
-          "width": 210,
-          "excess": 567
+          "selector": "div",
+          "right": 1578,
+          "width": 184,
+          "excess": 554
+        },
+        {
+          "selector": "div.day-distance",
+          "right": 1578,
+          "width": 184,
+          "excess": 554
         }
       ],
       "touchTargetIssues": [],
@@ -715,34 +745,22 @@
       "hasHorizontalOverflow": false,
       "overflowingElements": [
         {
-          "selector": "button.week-jump-btn.peak-btn",
-          "right": 1626,
+          "selector": "button#week-jump-btn-22.week-jump-btn.peak-btn",
+          "right": 1488,
           "width": 128,
-          "excess": 346
+          "excess": 208
         },
         {
-          "selector": "button.week-jump-btn.milestone-btn",
-          "right": 1492,
+          "selector": "button#week-jump-btn-21.week-jump-btn.milestone-btn",
+          "right": 1353,
           "width": 63,
-          "excess": 212
+          "excess": 73
         },
         {
-          "selector": "button.week-jump-btn.milestone-btn",
-          "right": 1422,
+          "selector": "button#week-jump-btn-20.week-jump-btn.milestone-btn",
+          "right": 1284,
           "width": 67,
-          "excess": 142
-        },
-        {
-          "selector": "button.week-jump-btn",
-          "right": 1349,
-          "width": 46,
-          "excess": 69
-        },
-        {
-          "selector": "button.week-jump-btn.peak-btn",
-          "right": 1296,
-          "width": 121,
-          "excess": 16
+          "excess": 4
         }
       ],
       "touchTargetIssues": [],
@@ -769,16 +787,10 @@
       "hasHorizontalOverflow": false,
       "overflowingElements": [
         {
-          "selector": "button.week-jump-btn.peak-btn",
-          "right": 1626,
+          "selector": "button#week-jump-btn-22.week-jump-btn.peak-btn",
+          "right": 1568,
           "width": 128,
-          "excess": 186
-        },
-        {
-          "selector": "button.week-jump-btn.milestone-btn",
-          "right": 1492,
-          "width": 63,
-          "excess": 52
+          "excess": 128
         }
       ],
       "touchTargetIssues": [],

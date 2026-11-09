@@ -21,6 +21,7 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const puppeteer = require('puppeteer-core');
 
 // Standard Device Viewport Profiles
@@ -401,17 +402,20 @@ async function runResponsivenessTestSuite(options = {}) {
   const { server, baseUrl } = await createStaticServer(rootDir);
   console.log(`🚀 Local test server running on ${baseUrl}\n`);
 
+  const tempProfileDir = fs.mkdtempSync(path.join(os.tmpdir(), 'tmm_resp_'));
+
   const browser = await puppeteer.launch({
     executablePath: chromePath,
     headless: true,
     pipe: true,
+    protocolTimeout: 60000,
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
       '--disable-dev-shm-usage',
       '--disable-gpu',
       '--font-render-hinting=none',
-      '--user-data-dir=/tmp/tmm_responsive_runner'
+      `--user-data-dir=${tempProfileDir}`
     ]
   });
 
@@ -448,7 +452,7 @@ async function runResponsivenessTestSuite(options = {}) {
         let pageLoadError = null;
 
         try {
-          await page.goto(targetUrl, { waitUntil: ['domcontentloaded', 'networkidle0'], timeout: 10000 });
+          await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 15000 });
         } catch (err) {
           pageLoadSuccess = false;
           pageLoadError = err.message;
@@ -529,8 +533,9 @@ async function runResponsivenessTestSuite(options = {}) {
       }
     }
   } finally {
-    await browser.close();
-    server.close();
+    try { await browser.close(); } catch (e) {}
+    try { server.close(); } catch (e) {}
+    try { fs.rmSync(tempProfileDir, { recursive: true, force: true }); } catch (e) {}
   }
 
   // Generate Report
