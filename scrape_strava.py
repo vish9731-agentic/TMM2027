@@ -246,6 +246,23 @@ def fetch_strava_activity_splits_and_hr(activity_id):
                     if "splits" in sc.lower() or "distance" in sc.lower() and "pace" in sc.lower():
                         print(f"      🔎 Script {s_idx} preview: {repr(sc[:250])}")
 
+            # Search for tables in HTML
+            if str(activity_id) == "20903145827":
+                table_matches = re.findall(r'<table[^>]*>.*?</table>', html, re.DOTALL | re.IGNORECASE)
+                print(f"      🔎 Total HTML tables: {len(table_matches)}")
+                for t in table_matches:
+                    print(f"      🔎 Table preview: {repr(t[:200])}")
+
+                # Test streams endpoint
+                try:
+                    streams_url = f"https://www.strava.com/activities/{activity_id}/streams?stream_types%5B%5D=distance&stream_types%5B%5D=time&stream_types%5B%5D=heartrate"
+                    st_req = urllib.request.Request(streams_url, headers=headers)
+                    with urllib.request.urlopen(st_req, timeout=10) as st_resp:
+                        st_data = json.loads(st_resp.read().decode("utf-8"))
+                        print(f"      🔎 Streams endpoint response keys: {list(st_data.keys()) if isinstance(st_data, dict) else len(st_data)}")
+                except Exception as st_err:
+                    print(f"      🔎 Streams endpoint error: {st_err}")
+
             # 1. Parse splits_metric JSON array
             splits_data = []
             m = re.search(r'"splits_metric"\s*:\s*(\[\{.*?\}\])', html)
