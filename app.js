@@ -239,6 +239,24 @@ let currentViewMode = 'grid';
 let searchQuery = '';
 let allCollapsed = null; // null = default mode: only current week expanded, rest collapsed
 let completedWorkouts = JSON.parse(localStorage.getItem('tmm_completed_workouts') || '{}');
+
+// Auto-purge any corrupted non-running day entries (Tuesday, Thursday, Saturday)
+// so the initial synchronous render NEVER shows rest or strength days as completed!
+(function sanitizeWorkouts() {
+  let changed = false;
+  for (const k of Object.keys(completedWorkouts)) {
+    const lk = k.toLowerCase();
+    if (lk.includes('tuesday') || lk.includes('thursday') || lk.includes('saturday') || lk.includes('rest') || lk.includes('strength')) {
+      delete completedWorkouts[k];
+      changed = true;
+    }
+  }
+  if (changed) {
+    try {
+      localStorage.setItem('tmm_completed_workouts', JSON.stringify(completedWorkouts));
+    } catch (e) {}
+  }
+})();
 let rawWeeksData = [
   {
     "week_number": 1,

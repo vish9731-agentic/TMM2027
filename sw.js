@@ -1,10 +1,10 @@
 // TMM 2027 High-Performance Modern Service Worker
-const CACHE_NAME = 'tmm-2027-v3.9.1-opt';
+const CACHE_NAME = 'tmm-2027-v3.9.2-opt';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
-  './styles.css?v=3.9.1',
-  './app.js?v=3.9.1',
+  './styles.css?v=3.9.2',
+  './app_main.js?v=3.9.2',
   './manifest.json',
   './icons/icon.svg'
 ];

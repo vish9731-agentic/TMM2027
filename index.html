@@ -19,7 +19,28 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=3.9.1">
+  <link rel="stylesheet" href="styles.css?v=3.9.2">
+
+  <!-- Immediate startup migration: purge phantom rest & strength day completions & bust stale SW -->
+  <script>
+    try {
+      var raw = localStorage.getItem('tmm_completed_workouts');
+      if (raw) {
+        var data = JSON.parse(raw);
+        var changed = false;
+        for (var k in data) {
+          var lk = k.toLowerCase();
+          if (lk.includes('tuesday') || lk.includes('thursday') || lk.includes('saturday') || lk.includes('rest') || lk.includes('strength')) {
+            delete data[k];
+            changed = true;
+          }
+        }
+        if (changed) {
+          localStorage.setItem('tmm_completed_workouts', JSON.stringify(data));
+        }
+      }
+    } catch(e) {}
+  </script>
 
   <!-- Supabase JS Client (Deferred) -->
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1572,6 +1593,6 @@
     <p style="margin-top: 0.3rem;">Kickoff: Monday, August 17, 2026 • Race Day: Sunday, January 17, 2027</p>
   </footer>
 
-  <script src="app.js?v=3.9.1"></script>
+  <script src="app_main.js?v=3.9.2"></script>
 </body>
 </html>
