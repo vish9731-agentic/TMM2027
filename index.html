@@ -16,16 +16,15 @@
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
   <link rel="apple-touch-icon" href="icons/icon.svg">
 
-  <link rel="stylesheet" href="styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <!-- Supabase JS Client -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<body>
-  <!-- Sam Kolder Animated 35mm Film Grain Overlay -->
-  <div class="kold-grain-overlay"></div>
+  <link rel="stylesheet" href="styles.css">
 
+  <!-- Supabase JS Client (Deferred) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
   <!-- Top Navigation Header -->
   <header class="navbar">
     <div class="nav-container">
@@ -158,15 +157,22 @@
         </div>
       </div>
 
-      <!-- Key Gear & Baseline Card -->
-      <div class="hero-card">
+      <!-- Post-Illness Adherence & Possibility Card -->
+      <div class="hero-card" id="hero-card-adherence" onclick="showAdherenceBreakdownModal()" style="cursor: pointer;" title="Click to view detailed Adherence & Possibility breakdown">
         <div class="metric-label">
-          <span>Baseline & Gear</span>
-          <span>👟</span>
+          <span>Adherence</span>
+          <span>🎯</span>
         </div>
-        <div class="metric-value" style="font-size: 1.4rem;">Adidas Evo SL 2</div>
-        <div class="metric-sub">Baseline: <strong>10K in 60:00</strong></div>
-        <div class="metric-sub">Training Base: <strong>Bengaluru (~920m)</strong></div>
+        <div class="metric-value" id="metric-adherence-pct" style="color: #10b981;">100%</div>
+        <div class="metric-sub" id="metric-possibility-sub">
+          Possibility: <strong id="metric-possibility-val" style="color: #10b981;">100%</strong> • Insanity: <strong id="metric-insanity-val" style="color: #94a3b8;">0%</strong>
+        </div>
+        <div class="metric-sub" id="metric-adherence-detail" style="font-size: 0.74rem; color: var(--text-dim); margin-top: 0.25rem;">
+          Vol: <strong id="metric-adherence-vol">0.0 / 0.0 km (100%)</strong> • Pace: <strong id="metric-adherence-pace">On Target</strong>
+        </div>
+        <div class="progress-track" style="margin-top: 0.65rem;">
+          <div class="progress-fill" id="metric-adherence-fill" style="width: 100%; background: linear-gradient(90deg, #10b981, #06b6d4);"></div>
+        </div>
       </div>
     </section>
 
@@ -194,8 +200,12 @@
             <button class="view-mode-btn" id="btn-view-table" onclick="setViewMode('table')">📋 Agenda Table</button>
           </div>
           
+          <button class="btn-icon" style="padding: 0.35rem 0.75rem; font-size: 0.75rem; background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.5); color: var(--primary); font-weight: 800;" onclick="scrollToCurrentWeek()" title="Jump to Current Training Week">
+            📍 Current Week
+          </button>
+
           <button class="btn-icon" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;" onclick="toggleAllWeeks()">
-            <span id="expand-toggle-label">📂 Collapse All</span>
+            <span id="expand-toggle-label">📁 Expand All</span>
           </button>
         </div>
 
@@ -208,18 +218,6 @@
       <!-- Quick Week Jumper Bar -->
       <div class="week-jumper-bar" id="week-jumper-bar">
         <!-- Rendered by app.js -->
-      </div>
-        <div class="filter-group">
-          <span class="filter-label">Filter Weeks:</span>
-          <button class="filter-btn active" data-filter="all">All 22 Weeks</button>
-          <button class="filter-btn" data-filter="deload">🔋 Deload Weeks (W4, 8, 12, 16, 20)</button>
-          <button class="filter-btn" data-filter="milestone">⭐ Milestones (10K TT, HM Sim, 32K)</button>
-        </div>
-
-        <div class="search-box">
-          <span class="search-icon">🔍</span>
-          <input type="text" id="search-workouts" class="search-input" placeholder="Search tempo, hills, intervals, gels...">
-        </div>
       </div>
 
       <!-- Weekly Cards Container -->
@@ -1001,13 +999,13 @@
       <div class="coach-typing-dot"></div>
       <div class="coach-typing-dot"></div>
       <div class="coach-typing-dot"></div>
-      <span id="coach-typing-text" style="font-size: 0.75rem; color: #818cf8; margin-left: 0.4rem; font-weight: 600;">Coach Vega (Gemini 3.7) is analyzing...</span>
+      <span id="coach-typing-text" style="font-size: 0.75rem; color: #818cf8; margin-left: 0.4rem; font-weight: 600;">Coach Vega is analyzing...</span>
     </div>
 
     <!-- Live Queue & Retry Countdown Bar -->
     <div id="coach-queue-box" style="display: none; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: var(--radius-sm); padding: 0.6rem 0.85rem; margin: 0.35rem 0.85rem; font-size: 0.78rem; color: #fbbf24; align-items: center; justify-content: space-between; gap: 0.6rem;">
       <div id="coach-queue-msg" style="line-height: 1.35; flex: 1;">
-        ⏳ <strong>Gemini 3.7 high demand.</strong> Auto-retrying in <span id="coach-countdown-val" style="font-weight: 800; font-family: monospace; color: #fff; background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem;">10</span>s...
+        ⏳ <strong>Google servers high demand.</strong> Auto-retrying in <span id="coach-countdown-val" style="font-weight: 800; font-family: monospace; color: #fff; background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem;">10</span>s...
       </div>
       <button type="button" id="coach-retry-now-btn" onclick="triggerImmediateRetry()" style="background: #f59e0b; color: #000; font-weight: 800; border: none; border-radius: 6px; padding: 0.35rem 0.75rem; font-size: 0.72rem; cursor: pointer; white-space: nowrap;">
         ⚡ Retry Now
@@ -1044,7 +1042,7 @@
         </div>
         <div>
           <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: var(--text-main);">Coach Vega AI Settings</h3>
-          <div style="font-size: 0.8rem; color: var(--text-muted);">Powered by Antigravity / Gemini 3.7 Engine</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted);">Powered by Antigravity / Gemini 3.8 Flash High-Availability Engine</div>
         </div>
       </div>
 
@@ -1112,6 +1110,22 @@
             Type any model identifier available in your Google AI Studio account.
           </div>
         </div>
+      </div>
+
+      <!-- High-Availability Resilience Toggle Card -->
+      <div style="margin-bottom: 1rem; background: rgba(16, 185, 129, 0.06); border: 1px solid rgba(16, 185, 129, 0.28); border-radius: var(--radius-md); padding: 0.75rem 0.9rem;">
+        <label style="display: flex; align-items: flex-start; gap: 0.65rem; cursor: pointer; margin: 0;">
+          <input type="checkbox" id="coach-ha-failover-toggle" checked onchange="handleHaFailoverToggle(this.checked)" style="margin-top: 0.2rem; cursor: pointer; accent-color: #10b981; width: 16px; height: 16px;">
+          <div>
+            <div style="font-size: 0.82rem; font-weight: 800; color: #10b981; display: flex; align-items: center; gap: 0.35rem;">
+              <span>⚡ High-Availability Resilience</span>
+              <span style="font-size: 0.65rem; background: rgba(16, 185, 129, 0.2); color: #10b981; padding: 0.1rem 0.4rem; border-radius: 9999px; font-weight: 700;">Recommended</span>
+            </div>
+            <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.2rem; line-height: 1.4;">
+              If Google servers return a temporary 503 or 429 high demand spike on your chosen model, Vega will immediately fulfill your response via resilient failover without changing or dropping your saved model preference.
+            </div>
+          </div>
+        </label>
       </div>
 
       <!-- Chat Memory Retention Info -->

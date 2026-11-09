@@ -16,10 +16,10 @@ gantt
     Weeks 1-4 (Deload W4)        :2026-08-17, 2026-09-13
     section Phase 2: Aerobic Base Building
     Weeks 5-8 (Deload W8 + 10K TT):2026-09-14, 2026-10-11
-    Weeks 9-12 (Deload W12)      :2026-10-12, 2026-11-08
+    Weeks 9-11 (VDHM W9)         :2026-10-12, 2026-11-01
     section Phase 3: Peak & Specificity
-    Weeks 13-16 (HM Sim W14, Deload W16):2026-11-09, 2026-12-06
-    Weeks 17-19 (Peak 32km W18)  :2026-12-07, 2026-12-27
+    Weeks 12-15 (HM Sim W14, Deload W15):2026-11-02, 2026-11-29
+    Weeks 16-19 (Peak 30km W17, Deload W19):2026-11-30, 2026-12-27
     section Phase 4: Taper & Race
     Weeks 20-22 (TMM Race Jan 17):2026-12-28, 2027-01-17
 ```
@@ -40,14 +40,14 @@ gantt
 | **9** | **Base** | Oct 12 – Oct 18 | **41 km** | **21.1 km** | **PROCAM SLAM #1** | **VDHM 2026 (Delhi Half Marathon)** — Steady Training Run |
 | **10** | **Base** | Oct 19 – Oct 25 | **42 km** | **20 km** | — | **Breaking the 20K mark** @ 7:35–7:45 min/km |
 | **11** | **Base** | Oct 26 – Nov 01 | **45 km** | **22 km** | — | Sustained aerobic volume + tempo segments |
-| **12** | **Base** | Nov 02 – Nov 08 | **32 km** | **14 km** | **DELOAD 3** | Mid-program reset & musculoskeletal check |
-| **13** | **Peak** | Nov 09 – Nov 15 | **46 km** | **24 km** | — | Peak phase opening; Marathon Pace blocks |
-| **14** | **Peak** | Nov 16 – Nov 22 | **40 km** | **21.1 km** | **HM SIMULATION** | **Half Marathon Race Simulation** (Aim: ~2:15–2:20) |
-| **15** | **Peak** | Nov 23 – Nov 29 | **50 km** | **26 km** | — | High volume week; hydration vest dress rehearsal |
-| **16** | **Peak** | Nov 30 – Dec 06 | **36 km** | **16 km** | **DELOAD 4** | Pre-peak rest & glycogen store refresh |
+| **12** | **Peak** | Nov 02 – Nov 08 | **44 km** | **22 km** | — | Re-entry build; 22 km aerobic stamina + MP tempo segments post-recovery |
+| **13** | **Peak** | Nov 09 – Nov 15 | **46 km** | **24 km** | — | Peak phase opening; Marathon Pace threshold blocks |
+| **14** | **Peak** | Nov 16 – Nov 22 | **40 km** | **21.1 km** | **HM SIMULATION** | **Half Marathon Race Simulation** (Aim: ~2:23–2:27) |
+| **15** | **Peak** | Nov 23 – Nov 29 | **32 km** | **14 km** | **DELOAD 3** | Mid-program recovery, soft-tissue absorption post-HM simulation & glycogen reset |
+| **16** | **Peak** | Nov 30 – Dec 06 | **50 km** | **26 km** | — | High volume peak week; Pedder Road Hill Attack; 26 km Long Run |
 | **17** | **Peak** | Dec 07 – Dec 13 | **55 km** | **30 km** | **BIG DISTANCE** | **30 km Volume Builder** (Fatigue resistance) |
 | **18** | **Peak** | Dec 14 – Dec 20 | **49 km** | **25.0 km** | **PROCAM SLAM #2** | **KOLKATA 25K (TSW 25K)** — MP Race Simulation |
-| **19** | **Peak** | Dec 21 – Dec 27 | **46 km** | **24 km** | — | Post-peak consolidation run |
+| **19** | **Peak** | Dec 21 – Dec 27 | **36 km** | **16 km** | **DELOAD 4** | Post-Kolkata 25K recovery, musculoskeletal absorption & pre-taper reset |
 | **20** | **Taper** | Dec 28 – Jan 03 | **35 km** | **18 km** | **TAPER 1** | Volume drop $-35\%$, intensity preserved |
 | **21** | **Taper** | Jan 04 – Jan 10 | **26 km** | **12 km** | **TAPER 2** | Volume drop $-55\%$, short MP sharpener |
 | **22** | **Race** | Jan 11 – Jan 17 | **54.2 km** | **42.2 km** | **PROCAM SLAM #3** | **TATA MUMBAI MARATHON (Sub-5:00:00 Target!)** 🏆 |
@@ -168,7 +168,7 @@ flowchart LR
 
 ---
 
-### PHASE 2: AEROBIC BASE BUILDING (Weeks 5 – 12)
+### PHASE 2: AEROBIC BASE BUILDING (Weeks 5 – 11)
 *Objective: Build capillary density, expand mitochondrial volume, tackle the 18–20 km cramp zone safely.*
 
 #### Week 5 (Sep 14 – Sep 20, 2026) — Total Volume: 29 km
@@ -237,88 +237,88 @@ flowchart LR
 * **Sat (Oct 31):** Full Rest Day.
 * **Sun (Nov 01):** **Long Run: 22 km** @ 7:30–7:45 min/km. (Last 2 km @ Marathon Pace 7:06 min/km to simulate finishing strong).
 
-#### Week 12 (Nov 02 – Nov 08, 2026) — Total Volume: 32 km [DELOAD WEEK 3]
-* **Mon (Nov 02):** 5 km Recovery Run @ 8:00 min/km.
-* **Tue (Nov 03):** **Strength Day 1:** Bodyweight maintenance (2 sets).
-* **Wed (Nov 04):** 6 km Aerobic Run @ 7:25 min/km.
-* **Thu (Nov 05):** **Strength Day 2:** Core stability & hip flexor release.
-* **Fri (Nov 06):** **Speed Session (Strides):** 5 km Total — 2 km easy, $5 \times 100\text{m}$ strides, 1.5 km easy.
-* **Sat (Nov 07):** Full Rest Day.
-* **Sun (Nov 08):** **Long Run: 14 km** @ 7:35–7:45 min/km. Smooth, easy, low fatigue.
-
 ---
 
-### PHASE 3: PEAK & RACE SPECIFICITY (Weeks 13 – 19)
-*Objective: Maximum volume tolerance, marathon-specific pacing fatigue resistance, peak long run of 30 km.*
+### PHASE 3: PEAK & RACE SPECIFICITY (Weeks 12 – 19)
+*Objective: Maximum volume tolerance, marathon-specific pacing fatigue resistance, 30 km peak long run, Kolkata 25K, with 4-week deload cycles reassigned from Week 12.*
 
-#### Week 13 (Nov 09 – Nov 15, 2026) — Total Volume: 46 km
+#### Week 12 (Nov 02 – Nov 08, 2026) — Total Volume: 44 km [BUILD WEEK 1]
+* **Mon (Nov 02):** 6 km Recovery Run @ 7:50–8:10 min/km. Post-run calf and hamstring mobility flushes.
+* **Tue (Nov 03):** **Strength Day 1:** Lower Body & Calf Armor (Single-leg eccentric heel drops, seated calf raises, Bulgarian split squats, glute bridges, tibialis wall raises).
+* **Wed (Nov 04):** **Speed Session (MP Tempo):** 8 km Total — 2 km warmup @ 7:45, $4\text{ km continuous}$ @ Marathon Pace (7:00–7:06 min/km), 2 km cooldown @ 7:45.
+* **Thu (Nov 05):** **Strength Day 2:** Posterior Chain & Core (RDLs, Bird-dogs with 3s hold, Side planks, Deadbugs).
+* **Fri (Nov 06):** 8 km Mid-Week Aerobic Run @ 7:15–7:30 min/km (Conversational cruising).
+* **Sat (Nov 07):** Full Rest Day. Hydrate with electrolytes.
+* **Sun (Nov 08):** **Long Run: 22 km** @ 7:30–7:45 min/km (Last 2 km @ Marathon Pace 7:06 min/km). Gels at km 6, 12, 17 + Salt capsules at km 6 & 14.
+
+#### Week 13 (Nov 09 – Nov 15, 2026) — Total Volume: 46 km [BUILD WEEK 2]
 * **Mon (Nov 09):** 6 km Recovery Run @ 7:50 min/km.
 * **Tue (Nov 10):** **Strength Day 1:** Lower Body & Calf Armor.
-* **Wed (Nov 11):** 8 km Aerobic Run @ 7:15–7:25 min/km.
+* **Wed (Nov 11):** **Speed Session (MP Tempo):** 8 km Total — 2 km warmup, $4\text{ km}$ @ Marathon Pace (7:00–7:06 min/km), 2 km cooldown.
 * **Thu (Nov 12):** **Strength Day 2:** Posterior Chain & Core.
-* **Fri (Nov 13):** **Speed Session (MP Tempo):** 8 km Total — 2 km warmup, $4\text{ km}$ @ Marathon Pace (7:00–7:06 min/km), 2 km cooldown.
+* **Fri (Nov 13):** 8 km Mid-Week Aerobic Run @ 7:15–7:25 min/km.
 * **Sat (Nov 14):** Full Rest Day.
 * **Sun (Nov 15):** **Long Run: 24 km** @ 7:30–7:45 min/km. (Gels every 40 min, salt tab at km 6, 12, 18).
 
-#### Week 14 (Nov 16 – Nov 22, 2026) — Total Volume: 40 km [HALF MARATHON SIMULATION]
+#### Week 14 (Nov 16 – Nov 22, 2026) — Total Volume: 40 km [BUILD WEEK 3: HALF MARATHON SIMULATION]
 * **Mon (Nov 16):** 5 km Short Recovery Run @ 8:00 min/km.
-* **Tue (Nov 17):** **Strength Day 1:** Light calf & glute activation.
-* **Wed (Nov 18):** 6 km Aerobic Run @ 7:20 min/km.
+* **Tue (Nov 17):** **Strength Day 1:** Light calf & glute activation (2 sets).
+* **Wed (Nov 18):** **Speed Session (Shakeout):** 4 km Total — 4 km shakeout + $4 \times 100\text{m}$ strides.
 * **Thu (Nov 19):** **Strength Day 2:** Core & mobility only.
-* **Fri (Nov 20):** 4 km Shakeout Run + $4 \times 100\text{m}$ strides.
-* **Sat (Nov 21):** Full Rest Day. Full race-morning meal rehearsal.
+* **Fri (Nov 20):** 6 km Mid-Week Aerobic Run @ 7:20 min/km.
+* **Sat (Nov 21):** Full Rest Day. Full race-morning meal rehearsal & hydration.
 * **Sun (Nov 22):** **HALF MARATHON RACE SIMULATION (21.1 km):**  
   *Strategy:* First 5 km @ 7:10 min/km, km 5–16 @ 6:45–6:55 min/km, km 16–21.1 @ 6:30–6:40 min/km. **Target Finish: 2:23:00–2:27:00**.
 
-#### Week 15 (Nov 23 – Nov 29, 2026) — Total Volume: 50 km
-* **Mon (Nov 23):** 6 km Recovery Run @ 7:55 min/km.
-* **Tue (Nov 24):** **Strength Day 1:** Lower Body & Calf Armor.
-* **Wed (Nov 25):** 9 km Aerobic Run @ 7:15–7:30 min/km.
-* **Thu (Nov 26):** **Strength Day 2:** Posterior Chain & Core.
-* **Fri (Nov 27):** **Speed Session (Pedder Road Hill Attack):** 9 km Total — 2 km warmup, $6 \times 90$-sec hill repeats @ RPE 8, 2 km cooldown.
-* **Sat (Nov 28):** Full Rest Day.
-* **Sun (Nov 29):** **Long Run: 26 km** @ 7:30–7:45 min/km. Practice 5 full gels + 3 salt capsules.
+#### Week 15 (Nov 23 – Nov 29, 2026) — Total Volume: 32 km [DELOAD WEEK 3]
+* **Mon (Nov 23):** 5 km Recovery Run @ 8:00 min/km (Low effort, gentle cruise).
+* **Tue (Nov 24):** **Strength Day 1:** Bodyweight maintenance (2 sets: calf raises, glute bridges, lunges).
+* **Wed (Nov 25):** **Speed Session (Strides):** 5 km Total — 2 km easy, $5 \times 100\text{m}$ strides, 1.5 km easy.
+* **Thu (Nov 26):** **Strength Day 2:** Core stability & hip flexor release (Bird-dogs, deadbugs 2 sets).
+* **Fri (Nov 27):** 6 km Mid-Week Aerobic Run @ 7:25 min/km.
+* **Sat (Nov 28):** Full Rest Day. Sleep 8+ hours.
+* **Sun (Nov 29):** **Long Run: 14 km** @ 7:35–7:45 min/km. Deload long run: Low heart rate, smooth cruising, 2 Gels + 1 Salt capsule + water.
 
-#### Week 16 (Nov 30 – Dec 06, 2026) — Total Volume: 36 km [DELOAD WEEK 4]
-* **Mon (Nov 30):** 5 km Recovery Run @ 8:00 min/km.
-* **Tue (Dec 01):** **Strength Day 1:** Bodyweight maintenance (2 sets).
-* **Wed (Dec 02):** 7 km Aerobic Run @ 7:25 min/km.
-* **Thu (Dec 03):** **Strength Day 2:** Deep core & lower back mobility.
-* **Fri (Dec 04):** **Speed Session (Strides):** 6 km Total — 2 km easy, $5 \times 100\text{m}$ strides, 2 km easy.
-* **Sat (Dec 05):** Full Rest Day.
-* **Sun (Dec 06):** **Long Run: 16 km** @ 7:35–7:45 min/km. Easy, relaxed rhythm.
+#### Week 16 (Nov 30 – Dec 06, 2026) — Total Volume: 50 km [BUILD WEEK 1: HILL ATTACK & 26 KM]
+* **Mon (Nov 30):** 6 km Recovery Run @ 7:55 min/km.
+* **Tue (Dec 01):** **Strength Day 1:** Lower Body & Calf Armor (Eccentric focus).
+* **Wed (Dec 02):** **Speed Session (Pedder Road Hill Attack):** 9 km Total — 2 km warmup, $6 \times 90$-sec hill repeats @ RPE 8, 2 km cooldown.
+* **Thu (Dec 03):** **Strength Day 2:** Posterior Chain & Core.
+* **Fri (Dec 04):** 9 km Mid-Week Aerobic Run @ 7:15–7:30 min/km.
+* **Sat (Dec 05):** Full Rest Day. Hydration & carb prep.
+* **Sun (Dec 06):** **Long Run: 26 km** @ 7:30–7:45 min/km. Practice 5 full gels + 3 salt capsules with hydration vest.
 
-#### Week 17 (Dec 07 – Dec 13, 2026) — Total Volume: 55 km [BIG VOLUME BUILDER: 30 KM]
+#### Week 17 (Dec 07 – Dec 13, 2026) — Total Volume: 55 km [BUILD WEEK 2: 30 KM PEAK VOLUME BUILDER]
 * **Mon (Dec 07):** 7 km Recovery Run @ 7:50 min/km.
 * **Tue (Dec 08):** **Strength Day 1:** Lower Body & Calf Armor.
-* **Wed (Dec 09):** 10 km Aerobic Run @ 7:15–7:30 min/km.
+* **Wed (Dec 09):** **Speed Session (Threshold Blocks):** 8 km Total — 2 km warmup, $3 \times 1.5\text{ km}$ @ 6:25 min/km (2 min rest), 1.5 km cooldown.
 * **Thu (Dec 10):** **Strength Day 2:** Posterior Chain & Core.
-* **Fri (Dec 11):** **Speed Session (Threshold Blocks):** 8 km Total — 2 km warmup, $3 \times 1.5\text{ km}$ @ 6:25 min/km (2 min rest), 1.5 km cooldown.
-* **Sat (Dec 12):** Full Rest Day.
+* **Fri (Dec 11):** 10 km Mid-Week Aerobic Run @ 7:15–7:30 min/km.
+* **Sat (Dec 12):** Full Rest Day. Carb load.
 * **Sun (Dec 13):** **PEAK DISTANCE LONG RUN: 30 km [THE TIME-ON-FEET BUILDER]**  
   *Pacing:* Strict 7:35–7:45 min/km (Last 3 km @ Marathon Pace 7:06 min/km).  
   *Fueling:* 6 Gels + 4 Salt capsules.
 
-#### Week 18 (Dec 14 – Dec 20, 2026) — Total Volume: 49 km [PROCAM SLAM #2: KOLKATA 25K]
+#### Week 18 (Dec 14 – Dec 20, 2026) — Total Volume: 49 km [BUILD WEEK 3: PROCAM SLAM #2 — KOLKATA 25K]
 * **Mon (Dec 14):** 6 km Recovery Run @ 7:55 min/km.
 * **Tue (Dec 15):** **Strength Day 1:** Lower Body & Calf Armor (Maintenance).
-* **Wed (Dec 16):** 10 km Aerobic Run @ 7:15–7:30 min/km.
+* **Wed (Dec 16):** **Speed / Pre-Race Sharpening:** 8 km Total — 2 km warmup, $4 \times 100\text{m}$ strides, 5.5 km easy @ 7:30–7:45 min/km.
 * **Thu (Dec 17):** **Strength Day 2:** Core & Back (Light).
-* **Fri (Dec 18):** 8 km Total — 2 km warmup, $4 \times 100\text{m}$ strides, 5.5 km easy.
-* **Sat (Dec 19):** Full Rest Day. Travel to Kolkata.
+* **Fri (Dec 18):** 10 km Mid-Week Aerobic Run @ 7:15–7:30 min/km.
+* **Sat (Dec 19):** Full Rest Day. Travel to Kolkata / Bib collection.
 * **Sun (Dec 20):** **PROCAM SLAM MILESTONE #2: TATA STEEL WORLD 25K KOLKATA (25.0 km)**  
   *Strategy & Purpose:* Marathon Goal Pace Dress Rehearsal!  
   *Pacing:* First 15 km @ **7:20–7:25 min/km**, last 10 km locked at **Marathon Goal Pace (7:00–7:06 min/km)**. (Estimated Finish: ~3:00:00).  
   *Optional:* Jog a 5 km easy warm-up before race start if you want a 30 km total day. Full hydration vest protocol.
 
-#### Week 19 (Dec 21 – Dec 27, 2026) — Total Volume: 46 km [POST-PEAK CONSOLIDATION]
-* **Mon (Dec 21):** 6 km Gentle Recovery Run @ 8:00 min/km.
-* **Tue (Dec 22):** **Strength Day 1:** Transition to lighter maintenance (2 sets/exercise).
-* **Wed (Dec 23):** 8 km Aerobic Run @ 7:20–7:35 min/km.
-* **Thu (Dec 24):** **Strength Day 2:** Core & bodyweight back stabilization.
-* **Fri (Dec 25):** **Speed Session (Form & Tempo):** 8 km Total — 2 km warmup, $3\text{ km}$ @ 6:30 min/km, 2 km cooldown.
-* **Sat (Dec 26):** Full Rest Day.
-* **Sun (Dec 27):** **Long Run: 24 km** @ 7:35–7:45 min/km.
+#### Week 19 (Dec 21 – Dec 27, 2026) — Total Volume: 36 km [DELOAD WEEK 4: POST-KOLKATA ABSORPTION]
+* **Mon (Dec 21):** 5 km Recovery Run @ 8:00 min/km (Gentle post-race shakeout).
+* **Tue (Dec 22):** **Strength Day 1:** Bodyweight maintenance (2 sets/exercise).
+* **Wed (Dec 23):** **Speed Session (Strides):** 6 km Total — 2 km easy, $5 \times 100\text{m}$ strides, 2 km easy.
+* **Thu (Dec 24):** **Strength Day 2:** Deep core & lower back mobility.
+* **Fri (Dec 25):** 7 km Mid-Week Aerobic Run @ 7:25 min/km.
+* **Sat (Dec 26):** Full Rest Day. Rest & recover.
+* **Sun (Dec 27):** **Long Run: 16 km** @ 7:35–7:45 min/km. Easy, relaxed cruise to absorb peak miles before taper.
 
 ---
 

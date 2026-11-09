@@ -116,23 +116,23 @@ The plan follows a 4-stage periodization model with built-in **deload weeks ever
 
 ```mermaid
 graph LR
-    P1[Phase 1: Prep & Foundation<br>Weeks 1 - 4<br>Deload: W4] --> P2[Phase 2: Base Building<br>Weeks 5 - 12<br>Deload: W8, W12]
-    P2 --> P3[Phase 3: Peak & Specificity<br>Weeks 13 - 19<br>Deload: W16]
+    P1[Phase 1: Prep & Foundation<br>Weeks 1 - 4<br>Deload: W4] --> P2[Phase 2: Base Building<br>Weeks 5 - 11<br>Deload: W8]
+    P2 --> P3[Phase 3: Peak & Specificity<br>Weeks 12 - 19<br>Deload: W15, W19]
     P3 --> P4[Phase 4: Taper & Race<br>Weeks 20 - 22<br>Race: Jan 17]
 ```
 
 1. **Phase 1: Prep & Musculoskeletal Foundation (Weeks 1 – 4 | 20 km $\rightarrow$ 28 km)**
    * *Focus:* Adapting tendons, establishing the 4-day rhythm, introducing 3x/week strength routine, solving calf stiffness.
    * *Deload:* **Week 4**
-2. **Phase 2: Aerobic Base Building (Weeks 5 – 12 | 28 km $\rightarrow$ 42 km)**
+2. **Phase 2: Aerobic Base Building (Weeks 5 – 11 | 28 km $\rightarrow$ 45 km)**
    * *Focus:* Expanding capillary beds, extending Sunday long runs from 12 km to 22 km (breaking the 18–19 km cramping threshold safely), incorporating steady hill repeats for Pedder Road simulation.
-   * *Deloads:* **Week 8 & Week 12**
-   * *Milestone:* 10K Time Trial in Week 8.
-3. **Phase 3: Peak & Race Specificity (Weeks 13 – 19 | 42 km $\rightarrow$ 56 km)**
-   * *Focus:* Peak volume, back-to-back fatigue resistance, long runs reaching 25 km, 28 km, and a maximum of 32 km. Full dress rehearsal of nutrition, hydration vest, and shoes.
-   * *Deload:* **Week 16**
-   * *Milestone:* Half Marathon Simulation Race in Week 14.
-4. **Phase 4: Taper & Race Execution (Weeks 20 – 22 | 56 km $\rightarrow$ Race)**
+   * *Deload:* **Week 8** (Weeks 10 & 11 illness served as de facto deload)
+   * *Milestone:* 10K Time Trial in Week 8, Vedanta Delhi Half Marathon (VDHM) in Week 9.
+3. **Phase 3: Peak & Race Specificity (Weeks 12 – 19 | 40 km $\rightarrow$ 55 km)**
+   * *Focus:* Peak volume, back-to-back fatigue resistance, long runs reaching 24 km, 26 km, and peak 30 km; Kolkata 25K MP dress rehearsal. Reassigned 4-week deload cycle starting at Week 12.
+   * *Deloads:* **Week 15 & Week 19**
+   * *Milestone:* Half Marathon Simulation Race in Week 14, TSW Kolkata 25K in Week 18.
+4. **Phase 4: Taper & Race Execution (Weeks 20 – 22 | 55 km $\rightarrow$ Race)**
    * *Focus:* Glycogen replenishment, cellular repair, maintaining leg turnover with short MP strides, travel logistics to Mumbai, race morning pacing discipline.
 
 ---

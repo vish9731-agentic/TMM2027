@@ -2,8 +2,6 @@
    22-WEEK MARATHON TRAINING PLAN - MODERN ATHLETIC DESIGN SYSTEM
    ============================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
-
 :root {
   /* Color Palette */
   --bg-main: #0a0e17;
@@ -95,14 +93,15 @@ h1, h2, h3, h4, .brand-font {
   position: sticky;
   top: 0;
   z-index: 100;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  background: rgba(10, 14, 23, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background: rgba(10, 14, 23, 0.94);
   border-bottom: 1px solid var(--border-subtle);
   padding: 0.85rem 1.5rem;
   width: 100%;
   max-width: 100vw;
   box-sizing: border-box;
+  transform: translateZ(0); /* Hardware accelerated layer */
 }
 
 .nav-container {
@@ -264,15 +263,13 @@ h1, h2, h3, h4, .brand-font {
 }
 
 .hero-card {
-  background: var(--bg-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   padding: 1.5rem;
   position: relative;
   overflow: hidden;
-  transition: var(--transition-smooth);
+  transition: border-color var(--transition-fast);
 }
 
 .hero-card::before {
@@ -298,6 +295,15 @@ h1, h2, h3, h4, .brand-font {
 
 .hero-card-race::before {
   background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+}
+
+#hero-card-adherence {
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+#hero-card-adherence:hover {
+  border-color: rgba(16, 185, 129, 0.45);
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.12);
 }
 
 .race-badge {
@@ -401,8 +407,7 @@ h1, h2, h3, h4, .brand-font {
 
 /* Filter & Controls Bar */
 .controls-bar {
-  background: var(--bg-card);
-  backdrop-filter: blur(16px);
+  background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   padding: 1rem 1.5rem;
@@ -471,10 +476,12 @@ h1, h2, h3, h4, .brand-font {
   color: var(--text-main);
 }
 
-.week-jump-btn.active {
-  background: rgba(16, 185, 129, 0.2);
+.week-jump-btn.active,
+.week-jump-btn.current {
+  background: rgba(16, 185, 129, 0.22);
   color: var(--primary);
   border-color: var(--primary);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.35);
 }
 
 .week-jump-btn.milestone-btn {
@@ -639,16 +646,29 @@ h1, h2, h3, h4, .brand-font {
 }
 
 .week-card {
-  background: var(--bg-card);
-  backdrop-filter: blur(16px);
+  background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  transition: var(--transition-fast);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  content-visibility: auto;
+  contain-intrinsic-size: 0 420px;
 }
 
 .week-card:hover {
   border-color: var(--border-highlight);
+}
+
+.week-card.current-week-card {
+  border-color: rgba(16, 185, 129, 0.6);
+  box-shadow: 0 0 24px rgba(16, 185, 129, 0.16);
+}
+
+.week-card.current-week-card .week-num-badge {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: var(--primary);
+  color: var(--primary);
+  font-weight: 800;
 }
 
 .week-header {
@@ -737,10 +757,22 @@ h1, h2, h3, h4, .brand-font {
   box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
 }
 
+.badge-current {
+  background: rgba(16, 185, 129, 0.22);
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.35);
+  font-weight: 700;
+}
+
 .collapse-icon {
   font-size: 1.1rem;
   color: var(--text-muted);
   transition: transform 0.3s ease;
+}
+
+.week-card.collapsed {
+  contain-intrinsic-size: 0 72px;
 }
 
 .week-card.collapsed .collapse-icon {
@@ -1042,8 +1074,7 @@ h1, h2, h3, h4, .brand-font {
 
 /* Elevation & Course Map */
 .course-card {
-  background: var(--bg-card);
-  backdrop-filter: blur(16px);
+  background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   padding: 1.75rem;
@@ -1509,14 +1540,15 @@ h1, h2, h3, h4, .brand-font {
   background: #ff7b00;
   border-radius: 50%;
   margin-left: 0.3rem;
-  box-shadow: 0 0 10px #ff7b00;
-  animation: sunsetPulse 1.8s infinite;
+  box-shadow: 0 0 8px #ff7b00;
+  will-change: transform, opacity;
+  animation: sunsetPulse 1.8s infinite ease-in-out;
 }
 
 @keyframes sunsetPulse {
-  0% { transform: scale(0.9); opacity: 0.7; }
-  50% { transform: scale(1.4); opacity: 1; box-shadow: 0 0 14px #ffb703; }
-  100% { transform: scale(0.9); opacity: 0.7; }
+  0% { transform: scale(0.85); opacity: 0.6; }
+  50% { transform: scale(1.35); opacity: 1; }
+  100% { transform: scale(0.85); opacity: 0.6; }
 }
 
 /* Slide-out Coach Drawer */
@@ -2372,33 +2404,15 @@ h1, h2, h3, h4, .brand-font {
 }
 
 /* ==============================================================================
-   SAM KOLDER 100% CINEMATIC AESTHETIC & ANIMATED 35MM FILM GRAIN
+   CINEMATIC AESTHETIC - ZERO-CPU HIGH-PERFORMANCE GRAIN
    ============================================================================== */
 .kold-grain-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  max-width: 100vw;
-  max-height: 100vh;
-  background: transparent url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.08"/></svg>') repeat;
-  animation: koldFilmGrain 0.3s steps(6) infinite;
+  display: none !important; /* Zero CPU/GPU overhead; completely eliminated noise jitter */
   pointer-events: none;
-  z-index: 99999;
-  opacity: 0.75;
-  overflow: hidden;
 }
 
 @keyframes koldFilmGrain {
-  0% { background-position: 0 0; }
-  15% { background-position: -20px -20px; }
-  30% { background-position: 30px 15px; }
-  45% { background-position: -15px 25px; }
-  60% { background-position: 25px -15px; }
-  75% { background-position: -10px 10px; }
-  90% { background-position: 15px 20px; }
-  100% { background-position: 0 0; }
+  0%, 100% { transform: none; }
 }
 
 .kold-select {
@@ -2476,5 +2490,15 @@ h1, h2, h3, h4, .brand-font {
   border-color: rgba(56, 189, 248, 0.5);
   background: linear-gradient(135deg, #081724 0%, #0d1322 100%);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(56, 189, 248, 0.3);
+}
+
+/* Performance and Accessibility Optimization */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
