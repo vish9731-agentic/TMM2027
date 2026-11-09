@@ -12,7 +12,7 @@ const APP_DATA = {
     "goal_pace": "7:06 min/km",
     "current_10k_time": "01:00:00",
     "baseline_easy_pace": "7:15 min/km",
-    "shoe": "Adidas Adizero Evo SL 2"
+    "shoe": "Adidas Adizero EVO SL"
   },
   "phases": [
     { "id": 1, "name": "Phase 1: Prep & Foundation", "weeks": "Weeks 1–4", "dates": "Aug 17 – Sep 13", "description": "Establish 4-day weekly habit, build calf armor (eccentric drops) to avoid cramps, core stability for lower back." },
@@ -1353,7 +1353,7 @@ let rawWeeksData = [
         "distance_km": 5,
         "target_pace": "7:20 - 7:35 min/km",
         "rpe": 3,
-        "description": "Smooth, relaxed aerobic run. Keep cadence light (~165-170 spm) in the Evo SL 2s. Focus on strict aerobic control.",
+        "description": "Smooth, relaxed aerobic run. Keep cadence light (~165-170 spm) in the Adidas Adizero EVO SLs. Focus on strict aerobic control.",
         "strength_prehab": "Dynamic ankle mobility pre-run; 5-min calf flush post-run.",
         "fueling": "Water",
         "strategy_splits": [
@@ -6361,7 +6361,7 @@ let rawWeeksData = [
         "distance_km": 12,
         "target_pace": "7:30 - 7:40 min/km",
         "rpe": 3,
-        "description": "Final dress rehearsal: 12 km @ 7:30-7:40 min/km with Adidas Evo SL 2 and race vest.",
+        "description": "Final dress rehearsal: 12 km @ 7:30-7:40 min/km with Adidas Adizero EVO SL and race vest.",
         "strength_prehab": "Calf stretching",
         "fueling": "2 Gels + 1 Salt capsule + water",
         "strategy_splits": [
@@ -8649,7 +8649,9 @@ function showDailyWorkoutStrategyModal(workoutDate, weekNum, dayName) {
       </div>
       <div style="color: var(--text-main); line-height: 1.45;">
         • <strong>Pre-Run Hydration:</strong> Drink 250ml water with a pinch of Himalayan pink salt 30 mins before heading out.<br>
-        • <strong>Shoe Selection:</strong> Adidas Adizero Evo SL 2 (keep forefoot strike light &amp; relaxed).<br>
+        • <strong>Shoe Selection:</strong> ${((targetWo.type && targetWo.type.toLowerCase().includes('recovery')) || dayName === 'Monday') 
+          ? '<strong style="color: #38bdf8;">Daily Recovery Trainer</strong> (or Adidas Adizero EVO SL; reserve superfoam for quality sessions).' 
+          : '<strong style="color: #10b981;">Adidas Adizero EVO SL</strong> (100% Lightstrike Pro superfoam absorbs impact &amp; spares calves; keep forefoot strike light &amp; relaxed).'} <a href="javascript:void(0)" onclick="closeDailyStrategyModal(); openGearLockerModal();" style="color: #10b981; text-decoration: underline; font-size: 0.75rem; margin-left: 0.4rem;">[View Shoe Budget ↗]</a><br>
         • <strong>Fueling:</strong> ${targetWo.fueling && targetWo.fueling !== 'N/A' ? targetWo.fueling : 'Water / electrolytes only for runs under 60 minutes.'}
       </div>
     </div>
@@ -10334,9 +10336,26 @@ async function syncAndPullLatestRunForVega() {
 window.syncAndPullLatestRunForVega = syncAndPullLatestRunForVega;
 
 function openGearLockerModal() {
-  showToastNotification('👟 Adidas Adizero EVO SL: 0.0 km logged / 275 km pre-race budget. In Break-in phase (6.6mm drop).', 'info', 6000);
+  const modal = document.getElementById('gear-locker-modal');
+  if (modal) modal.classList.add('active');
 }
 window.openGearLockerModal = openGearLockerModal;
+
+function closeGearLockerModal() {
+  const modal = document.getElementById('gear-locker-modal');
+  if (modal) modal.classList.remove('active');
+}
+window.closeGearLockerModal = closeGearLockerModal;
+
+function saveManualShoeOdometer() {
+  const input = document.getElementById('shoe-manual-odometer-input');
+  if (!input) return;
+  const val = parseFloat(input.value) || 0;
+  localStorage.setItem('tmm_shoe_manual_odometer', val.toString());
+  showToastNotification(`👟 Calibrated shoe baseline odometer: ${val.toFixed(1)} km`, 'success');
+  if (typeof updateShoeMileageBudget === 'function') updateShoeMileageBudget();
+}
+window.saveManualShoeOdometer = saveManualShoeOdometer;
 
 function triggerVegaAnalyze(workoutKey, dateStr, isFollowUp = false) {
   if (typeof closeVarianceDetailModal === 'function') closeVarianceDetailModal();
@@ -10657,6 +10676,7 @@ function applyIngestedRun(dateStr, dist, durationSecs, paceStr, source = 'manual
   updateVegaSyncPresetButtons();
   if (typeof updateMileageRampChart === 'function') updateMileageRampChart();
   if (typeof renderTodayMission === 'function') renderTodayMission();
+  updateShoeBudgetWidget();
   showToastNotification(`Run saved! Compliance: ${scorePct}%`, 'success');
 
   // Trigger background Vega analysis if not yet analyzed
@@ -11893,7 +11913,7 @@ function generatePredictiveRepliesHtml(content) {
   } else if (lower.includes('plan_change_proposal') || lower.includes('schedule') || lower.includes('adjust') || lower.includes('restructure')) {
     suggestions.push({ label: '🎯 Impact on Sub-5 Goal?', prompt: 'How do these proposed changes impact my chances of hitting sub-5:00 at TMM 2027?' });
     suggestions.push({ label: '🌧️ Move Long Run', prompt: 'Can we shift the weekend long run by one day or make it flatter to preserve recovery?' });
-    suggestions.push({ label: '👟 Shoe Rotation Advice', prompt: 'Which shoe should I use for this adjusted session: Adizero Evo SL 2 or a daily trainer?' });
+    suggestions.push({ label: '👟 Shoe Rotation Advice', prompt: 'Which shoe should I use for this adjusted session: Adidas Adizero EVO SL or a daily trainer?' });
   } else if (lower.includes('pace') || lower.includes('heart rate') || lower.includes('zone 2') || lower.includes('debrief') || lower.includes('telemetry')) {
     suggestions.push({ label: '⚡ Zone 2 HR Ceiling', prompt: 'What is my strict heart rate ceiling and breathing rhythm to keep this in true Zone 2?' });
     suggestions.push({ label: '💧 Fueling & Gel Plan', prompt: 'What is the exact fueling, carb intake, and hydration timing for this upcoming long run?' });
@@ -11975,7 +11995,7 @@ function updateVegaHorizonBar() {
     <div class="coach-horizon-sub">
       <span>🎯 Target Pace: <span class="mono-stat">${woPace}</span></span>
       <span>⚡ Effort: <strong style="color: #fbbf24;">RPE ${woRpe}/10</strong></span>
-      <span>👟 Gear: <strong>Adizero Evo SL 2</strong></span>
+      <span>👟 Gear: <strong>Adidas Adizero EVO SL</strong></span>
     </div>
     <div class="coach-horizon-progress">
       <span>Week ${weekNum} Volume:</span>
@@ -12061,7 +12081,7 @@ function buildCoachContext() {
       target_race: "Tata Mumbai Marathon 2027 (Jan 17, 2027)",
       goal: "Sub-5:00:00 (7:06 min/km pace)",
       interim_milestone: "Vedanta Delhi Half Marathon (VDHM) Oct 18, 2026",
-      current_gear: "Adidas Adizero Evo SL 2",
+      current_gear: "Adidas Adizero EVO SL",
       tracking_hardware: "Galaxy Watch / Strava Sync"
     },
     today_date: todayStr,
@@ -12129,13 +12149,13 @@ async function processCoachQuery(userText, attempt = 1) {
     const context = buildCoachContext();
     
     const systemPrompt = `You are Coach Vega — an elite marathon coach, exercise physiologist, and sports physical therapist specialized in coaching an athlete for the Tata Mumbai Marathon 2027 (Target: Sub-5:00:00 finish at 7:06 min/km pace).
-The athlete is training in Adidas Adizero Evo SL 2 shoes and tracking with Galaxy Watch / Strava.
+The athlete is training in Adidas Adizero EVO SL shoes and tracking with Galaxy Watch / Strava.
 
 ATHLETE TELEMETRY & 4-WEEK MESOCYCLE SCHEDULE CONTEXT:
 ${JSON.stringify(context, null, 2)}
 
 YOUR CORE COACHING & DIAGNOSTIC DIRECTIVES:
-1. **Heartful, Empathetic & Clinical Interviewing:** You care deeply about the athlete's long-term health, longevity, and race-day success. When the athlete mentions pain, calf tightness, strain, unusual fatigue, or a missed workout, DO NOT immediately prescribe major changes without understanding context. First ask 1–2 sharp, empathetic diagnostic questions (e.g. pain location/nature, when it began, pace on recent runs, shoe feel in Evo SL 2, stretching/foam rolling, hydration/cramps).
+1. **Heartful, Empathetic & Clinical Interviewing:** You care deeply about the athlete's long-term health, longevity, and race-day success. When the athlete mentions pain, calf tightness, strain, unusual fatigue, or a missed workout, DO NOT immediately prescribe major changes without understanding context. First ask 1–2 sharp, empathetic diagnostic questions (e.g. pain location/nature, when it began, pace on recent runs, shoe feel in Adidas Adizero EVO SL, stretching/foam rolling, hydration/cramps).
 2. **Root Cause Analysis:** Once you have gathered the context (or if enough context is already provided in the message and Strava telemetry), explain clearly WHY this occurred (e.g., pace variance on Wednesday exceeding Zone 2 aerobic ceiling causing excessive soleus/Achilles loading, insufficient eccentric heel drops, or dehydration).
 3. **Targeted Prehab/Rehab:** Prescribe immediate physical therapy relief (e.g. eccentric single-leg heel drops on a step 3x15, soleus foam rolling, hydration/electrolytes).
 4. **Comprehensive Schedule Adjustment Authority (Single-Day, Full-Week, or Entire Month):**
@@ -12351,7 +12371,7 @@ async function processCoachWeeklyDebrief(telemetryPayload, userPromptText) {
   }
 
   const systemPrompt = `You are Coach Vega — elite Olympic marathon coach, exercise physiologist, and physical therapist for an athlete targeting Sub-5:00 (7:06 min/km pace) at the Tata Mumbai Marathon 2027.
-The athlete is training in Adidas Adizero Evo SL 2 shoes.
+The athlete is training in Adidas Adizero EVO SL shoes.
 
 WEEKLY TELEMETRY DATA (EXACT 7-DAY COMPLIANCE LOGS):
 ${JSON.stringify(telemetryPayload, null, 2)}
@@ -12401,6 +12421,418 @@ Tone: Warm, empathetic, analytical, inspiring, and authoritative.`;
   }
 }
 window.processCoachWeeklyDebrief = processCoachWeeklyDebrief;
+
+// ==============================================================================
+// COACH VEGA EVERY-RUN CRITIQUE & PRESET RUN SYNC ENGINE
+// ==============================================================================
+
+function getLatestCompletedRun() {
+  const completedEntries = [];
+  try {
+    for (const [key, log] of Object.entries(completedWorkouts || {})) {
+      if (log && log.done && (log.dist > 0 || log.actualDistanceKm > 0)) {
+        const parts = key.split('_');
+        let dateStr = '';
+        if (parts.length >= 3) {
+          dateStr = parts.slice(2).join('_');
+        } else if (key.startsWith('custom_')) {
+          dateStr = key.replace('custom_', '');
+        }
+        const match = findWorkoutInfoByDate(dateStr);
+        completedEntries.push({
+          workoutKey: key,
+          dateStr: dateStr || (match ? match.workout.date : ''),
+          match: match,
+          workout: match ? match.workout : { day: 'Workout', date: dateStr, type: 'Run' },
+          plannedDist: match ? match.workout.distance_km : (log.plannedDist || 0),
+          targetPace: match ? match.workout.target_pace : (log.targetPace || 'N/A'),
+          logData: log,
+          hasAnalysis: !!(log.vega_analysis && log.vega_analysis.big_picture_purpose)
+        });
+      }
+    }
+  } catch (e) {
+    console.warn('Error reading completed workouts:', e);
+  }
+
+  if (completedEntries.length === 0) return null;
+
+  // Sort descending by dateStr
+  completedEntries.sort((a, b) => (b.dateStr || '').localeCompare(a.dateStr || ''));
+  return completedEntries[0];
+}
+window.getLatestCompletedRun = getLatestCompletedRun;
+
+function updateVegaSyncPresetButtons() {
+  const slot = document.getElementById('vega-latest-run-action-slot');
+  if (!slot) return;
+
+  const latest = getLatestCompletedRun();
+  if (!latest) {
+    slot.innerHTML = '';
+    return;
+  }
+
+  if (latest.hasAnalysis) {
+    slot.innerHTML = `
+      <button class="vega-view-btn" onclick="viewLatestRunVegaAnalysis()" title="View Vega critique for ${latest.workout.date}">
+        <span>✨</span> <span>View Vega Analysis</span>
+      </button>
+    `;
+  } else {
+    slot.innerHTML = `
+      <button class="vega-analyze-btn" onclick="triggerVegaAnalyze('${latest.workoutKey}', '${latest.dateStr}')" title="Analyze run from ${latest.workout.date} with Coach Vega">
+        <span>⚡</span> <span>Vega Analyze</span>
+      </button>
+    `;
+  }
+}
+window.updateVegaSyncPresetButtons = updateVegaSyncPresetButtons;
+
+async function syncAndPullLatestRunForVega() {
+  const drawer = document.getElementById('ai-coach-drawer');
+  if (drawer && !drawer.classList.contains('open')) {
+    toggleCoachDrawer();
+  }
+
+  const syncBtn = document.getElementById('vega-sync-run-btn');
+  if (syncBtn) {
+    syncBtn.innerHTML = `<span>⏳</span> <span>Syncing...</span>`;
+    syncBtn.disabled = true;
+  }
+
+  // Refresh latest workouts from Supabase if connected
+  if (supabaseClient) {
+    try {
+      const { data: woRows } = await supabaseClient
+        .from('daily_workouts')
+        .select('*')
+        .order('workout_date', { ascending: true });
+      if (woRows && woRows.length > 0) {
+        woRows.forEach(row => {
+          if (row.id === 9999 || row.workout_type === 'AppSyncConfig') return;
+          const isRun = Number(row.distance_km) > 0 &&
+            !String(row.workout_type || '').toLowerCase().includes('rest') &&
+            !String(row.workout_type || '').toLowerCase().includes('strength');
+          if (isRun && (row.is_completed || row.actual_distance_km > 0)) {
+            const key = `${row.week_number}_${row.day_of_week}_${row.workout_date}`;
+            const existing = completedWorkouts[key] || {};
+            completedWorkouts[key] = {
+              ...existing,
+              done: true,
+              dist: Number(row.actual_distance_km) || Number(row.distance_km),
+              plannedDist: Number(row.distance_km) || 0,
+              actualPace: row.actual_pace || 'N/A',
+              targetPace: row.target_pace || 'N/A',
+              scorePct: row.compliance_score_pct !== null && row.compliance_score_pct !== undefined ? Number(row.compliance_score_pct) : existing.scorePct,
+              distDelta: row.distance_variance_km !== null ? Number(row.distance_variance_km) : existing.distDelta,
+              paceDeltaSec: row.pace_variance_sec !== null ? Number(row.pace_variance_sec) : existing.paceDeltaSec,
+              actualSplits: row.actual_splits || existing.actualSplits || null,
+              avgHeartRate: row.avg_heart_rate || existing.avgHeartRate || null,
+              maxHeartRate: row.max_heart_rate || existing.maxHeartRate || null,
+              notes: row.athlete_notes || existing.notes || '',
+              vega_analysis: row.vega_analysis || existing.vega_analysis || null
+            };
+          }
+        });
+        localStorage.setItem('tmm_completed_workouts', JSON.stringify(completedWorkouts));
+      }
+    } catch (e) {
+      console.warn('Supabase refresh during sync failed:', e);
+    }
+  }
+
+  if (syncBtn) {
+    syncBtn.innerHTML = `<span>🔄</span> <span>Sync Latest Run</span>`;
+    syncBtn.disabled = false;
+  }
+
+  updateVegaSyncPresetButtons();
+
+  const latest = getLatestCompletedRun();
+  if (!latest) {
+    coachChatHistory.push({
+      role: 'bot',
+      content: `I checked your training log, but haven't found any completed runs yet. Once you complete and log or sync a run from Strava, click **Sync Latest Run** and I'll analyze it for you!`,
+      timestamp: new Date().toISOString()
+    });
+    renderCoachMessages();
+    return;
+  }
+
+  const log = latest.logData;
+  const wo = latest.workout;
+  const splitsCount = (log.actualSplits && Array.isArray(log.actualSplits)) ? log.actualSplits.length : 0;
+  const hrText = log.avgHeartRate ? ` • ❤️ Avg HR: **${log.avgHeartRate} bpm**` : '';
+  const splitsText = splitsCount > 0 ? ` • ⏱️ **${splitsCount} splits ingested**` : '';
+
+  if (latest.hasAnalysis) {
+    const va = log.vega_analysis;
+    const speechAttr = encodeURIComponent(va.speech_text || (va.verdict_summary + ' ' + va.big_picture_purpose));
+    const content = `🏃 **Latest Run Pulled:** **${wo.day}, ${latest.dateStr}** • **${wo.type}**
+• Completed: **${log.dist} km @ ${log.actualPace}** (Target: ${latest.plannedDist} km @ ${latest.targetPace})
+• Precision Score: **${log.scorePct}%**${hrText}${splitsText}
+
+---
+
+🎯 **Purpose in the Larger Picture (Science & Physiology):**
+*${va.big_picture_purpose}*
+
+📋 **Verdict:**
+${va.verdict_summary}
+
+${va.pacing_and_splits_insight ? `⏱️ **Splits & Rhythm:**\n${va.pacing_and_splits_insight}\n` : ''}
+${va.calf_and_recovery_prehab ? `🦵 **Calf & Recovery Prehab:**\n${va.calf_and_recovery_prehab}\n` : ''}
+${va.tomorrow_directive ? `⚡ **Tomorrow:**\n${va.tomorrow_directive}\n` : ''}
+
+<div style="margin-top: 0.75rem; display: flex; gap: 0.4rem; flex-wrap: wrap;">
+  <button class="action-pill-btn" onclick="playCoachAudioPreview('${speechAttr}', false)" style="background: rgba(255, 204, 0, 0.18); border-color: rgba(255, 204, 0, 0.5); color: #ffcc00; font-size: 0.75rem; font-weight: 800;">
+    🎙️ Listen to Coach Vega
+  </button>
+  <button class="action-pill-btn" onclick="showVarianceDetailModal('${latest.workoutKey}', '${latest.dateStr}')" style="background: rgba(56, 189, 248, 0.15); border-color: rgba(56, 189, 248, 0.4); color: #38bdf8; font-size: 0.75rem;">
+    📊 Open Execution Report
+  </button>
+  <button class="action-pill-btn" onclick="triggerVegaAnalyze('${latest.workoutKey}', '${latest.dateStr}', true)" style="background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.2); color: var(--text-muted); font-size: 0.75rem;">
+    🔄 Re-analyze
+  </button>
+</div>`;
+
+    coachChatHistory.push({
+      role: 'bot',
+      content: content,
+      timestamp: new Date().toISOString()
+    });
+    renderCoachMessages();
+  } else {
+    const content = `🏃 **Latest Run Pulled:** **${wo.day}, ${latest.dateStr}** • **${wo.type}**
+• Completed: **${log.dist} km @ ${log.actualPace}** (Target: ${latest.plannedDist} km @ ${latest.targetPace})
+• Precision Score: **${log.scorePct}%**${hrText}${splitsText}
+
+Vega analysis is ready to be generated for this run.
+
+<div style="margin-top: 0.75rem;">
+  <button class="vega-analyze-btn" onclick="triggerVegaAnalyze('${latest.workoutKey}', '${latest.dateStr}')" style="padding: 0.5rem 1rem; font-size: 0.82rem;">
+    <span>⚡</span> <span>Vega Analyze</span>
+  </button>
+</div>`;
+
+    coachChatHistory.push({
+      role: 'bot',
+      content: content,
+      timestamp: new Date().toISOString()
+    });
+    renderCoachMessages();
+  }
+}
+window.syncAndPullLatestRunForVega = syncAndPullLatestRunForVega;
+
+function viewLatestRunVegaAnalysis() {
+  const latest = getLatestCompletedRun();
+  if (!latest) {
+    alert('No completed runs found to view.');
+    return;
+  }
+  showVarianceDetailModal(latest.workoutKey, latest.dateStr);
+}
+window.viewLatestRunVegaAnalysis = viewLatestRunVegaAnalysis;
+
+async function triggerVegaAnalyze(workoutKey, dateStr, forceRefresh = false) {
+  const logData = completedWorkouts[workoutKey];
+  const match = findWorkoutInfoByDate(dateStr);
+  if (!logData) {
+    alert('Workout data not found for ' + workoutKey);
+    return;
+  }
+
+  if (logData.vega_analysis && !forceRefresh) {
+    if (document.getElementById('variance-detail-modal')?.classList.contains('open')) {
+      showVarianceDetailModal(workoutKey, dateStr);
+    }
+    updateVegaSyncPresetButtons();
+    return;
+  }
+
+  const slotId = `vega-critique-box-${workoutKey.replace(/[^a-zA-Z0-9]/g, '_')}`;
+  const slotEl = document.getElementById(slotId);
+  if (slotEl) {
+    slotEl.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 0.6rem; color: #ffcc00; font-size: 0.85rem; padding: 0.65rem 0;">
+        <span style="font-size: 1.2rem; animation: pulse 1.2s infinite;">⏳</span>
+        <span><strong>Coach Vega</strong> is analyzing your run telemetry &amp; larger-picture biology...</span>
+      </div>
+    `;
+  }
+
+  const typingIndicator = document.getElementById('coach-typing-indicator');
+  const typingText = document.getElementById('coach-typing-text');
+  if (typingIndicator) {
+    typingIndicator.style.display = 'flex';
+    if (typingText) typingText.textContent = `Coach Vega is analyzing ${dateStr} run...`;
+  }
+
+  const plannedDist = match ? match.workout.distance_km : (logData.plannedDist || 0);
+  const targetPace = match ? match.workout.target_pace : (logData.targetPace || 'N/A');
+  const actualDist = logData.dist || 0;
+  const actualPace = logData.actualPace || 'N/A';
+  const workoutType = match ? match.workout.type : 'Workout';
+  const dayName = match ? `Week ${match.weekNumber} • ${match.workout.day}` : dateStr;
+
+  const splitsSummary = (logData.actualSplits && Array.isArray(logData.actualSplits)) 
+    ? logData.actualSplits.slice(0, 25).map(s => `${s.km || `Km ${s.split}`}: ${s.pace}${s.heart_rate ? ` (${s.heart_rate} bpm)` : ''}`).join(', ')
+    : 'No granular split markers recorded';
+
+  let cardiacDriftNote = 'Normal aerobic response';
+  if (logData.actualSplits && logData.actualSplits.length >= 4) {
+    const valid = logData.actualSplits.filter(s => s.heart_rate && s.heart_rate > 50);
+    if (valid.length >= 4) {
+      const half = Math.floor(valid.length / 2);
+      const avg1 = Math.round(valid.slice(0, half).reduce((acc, s) => acc + s.heart_rate, 0) / half);
+      const avg2 = Math.round(valid.slice(half).reduce((acc, s) => acc + s.heart_rate, 0) / (valid.length - half));
+      const drift = avg2 - avg1;
+      if (drift > 8) cardiacDriftNote = `Cardiac drift detected (+${drift} bpm increase in second half)`;
+    }
+  }
+
+  const prompt = `You are Coach Vega — an elite marathon coach, exercise physiologist, and sports physical therapist specialized in coaching an athlete for the Tata Mumbai Marathon 2027 (Sub-5:00 goal at 7:06 min/km pace).
+The runner trains in Adidas Adizero EVO SL shoes in Bengaluru and tracks with Strava / Galaxy Watch.
+
+TELEMETRY FROM RUN TO CRITIQUE:
+- Date: ${dateStr} (${dayName})
+- Workout Type: ${workoutType}
+- Planned Target: ${plannedDist} km @ ${targetPace}
+- Actual Completed: ${actualDist} km @ ${actualPace}
+- Precision Match: ${logData.scorePct}% (Distance delta: ${logData.distDelta >= 0 ? '+' : ''}${logData.distDelta} km, Pace delta: ${logData.paceDeltaSec}s/km)
+- Heart Rate: ${logData.avgHeartRate ? `Average ${logData.avgHeartRate} bpm (Max ${logData.maxHeartRate || 'N/A'} bpm)` : 'Not recorded'}
+- Cardiac Drift: ${cardiacDriftNote}
+- Per-Kilometer Splits: ${splitsSummary}
+- Athlete Notes: ${logData.notes || 'None'}
+
+STRICT LANGUAGE AND TONE REQUIREMENTS:
+- Use simple Indian English.
+- Warm, encouraging, grounded, direct, and conversational (e.g. "Good effort completing the run", "Your pace was slightly fast in the beginning", "Don't rush on easy days, let your body adapt", "Make sure you do your calf stretches properly tonight", "Keep it steady").
+- NEVER use heavy, pompous, highbrow, or overly complicated academic English.
+
+STRICT CRISP ONE-LINE SCIENTIFIC BIG-PICTURE PURPOSE REQUIREMENT:
+- You MUST provide a single line explaining the purpose of this specific run in the larger marathon journey.
+- It MUST be strictly ONE crisp, simple sentence.
+- It MUST be scientifically sound, accounting for biology, physiology, and body biomechanics (e.g. capillary bed density, mitochondrial fat oxidation, cardiac stroke volume, lactate buffering, soleus/Achilles tendon elasticity, or glycogen sparing for Mumbai's 42 km).
+
+Respond strictly with valid JSON adhering to this exact schema:
+{
+  "big_picture_purpose": "Crisp 1-line scientific purpose accounting for biology, physiology, and biomechanics in the marathon journey.",
+  "verdict_summary": "2-3 short sentences in simple Indian English evaluating how the run went.",
+  "pacing_and_splits_insight": "2 sentences in simple Indian English explaining pacing rhythm, splits, or cardiac drift.",
+  "calf_and_recovery_prehab": "1-2 sentences with concrete prehab instructions for tonight (eccentric heel drops, hydration).",
+  "tomorrow_directive": "1 short sentence connecting this to tomorrow's scheduled session.",
+  "speech_text": "A warm, natural 35-45 second spoken debrief script in simple Indian English combining these points for voice synthesis."
+}`;
+
+  let effectiveKey = getEffectiveApiKey();
+  if (!effectiveKey) {
+    if (typingIndicator) typingIndicator.style.display = 'none';
+    alert('Please configure your Gemini API Key in Settings first to run Vega Analyze.');
+    openCoachSettingsModal();
+    return;
+  }
+
+  try {
+    const contents = [{ role: 'user', parts: [{ text: prompt }] }];
+    const modelToUse = normalizeGeminiModel(geminiModel) || 'gemini-3.8-flash';
+    const result = await executeGeminiResilientRequest(modelToUse, effectiveKey, contents, {
+      generationConfig: {
+        temperature: 0.4,
+        responseMimeType: "application/json"
+      }
+    });
+
+    if (result.ok) {
+      let rawText = result.data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+      let parsed = null;
+      try {
+        rawText = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
+        parsed = JSON.parse(rawText);
+      } catch (pe) {
+        console.warn('Could not parse Vega critique JSON:', pe);
+        parsed = {
+          big_picture_purpose: "This workout develops aerobic mitochondrial efficiency and prepares tendon elasticity for the marathon.",
+          verdict_summary: rawText.slice(0, 200),
+          pacing_and_splits_insight: "Pace held close to prescribed parameters.",
+          calf_and_recovery_prehab: "Perform 3x15 eccentric heel drops and drink water with electrolytes.",
+          tomorrow_directive: "Stick to tomorrow's planned recovery schedule.",
+          speech_text: rawText.slice(0, 300)
+        };
+      }
+
+      parsed._analyzed_at = new Date().toISOString();
+      parsed._model = result.usedModel;
+
+      logData.vega_analysis = parsed;
+      completedWorkouts[workoutKey] = logData;
+      localStorage.setItem('tmm_completed_workouts', JSON.stringify(completedWorkouts));
+
+      // Attempt updating Supabase
+      if (supabaseClient && dateStr) {
+        supabaseClient
+          .from('daily_workouts')
+          .update({ vega_analysis: parsed })
+          .eq('workout_date', dateStr)
+          .then(({ error }) => {
+            if (error) console.warn('Supabase vega_analysis sync notice:', error.message);
+          });
+      }
+
+      updateVegaSyncPresetButtons();
+      renderWeeklyPlan();
+
+      if (document.getElementById('variance-detail-modal')?.classList.contains('open')) {
+        showVarianceDetailModal(workoutKey, dateStr);
+      }
+
+      const drawer = document.getElementById('ai-coach-drawer');
+      if (drawer && drawer.classList.contains('open')) {
+        const speechAttr = encodeURIComponent(parsed.speech_text || (parsed.verdict_summary + ' ' + parsed.big_picture_purpose));
+        coachChatHistory.push({
+          role: 'bot',
+          content: `✨ **Vega Run Analysis Complete (${dayName}):**\n\n🎯 **Purpose in Larger Picture:**\n*${parsed.big_picture_purpose}*\n\n📋 **Verdict:**\n${parsed.verdict_summary}\n\n⏱️ **Splits & Rhythm:**\n${parsed.pacing_and_splits_insight}\n\n🦵 **Calf & Recovery Prehab:**\n${parsed.calf_and_recovery_prehab}\n\n<div style="margin-top: 0.5rem;"><button class="action-pill-btn" onclick="playCoachAudioPreview('${speechAttr}', false)" style="background: rgba(255, 204, 0, 0.18); border-color: rgba(255, 204, 0, 0.5); color: #ffcc00; font-size: 0.75rem; font-weight: 800;">🎙️ Listen to Coach Vega</button></div>`,
+          timestamp: new Date().toISOString()
+        });
+        renderCoachMessages();
+      }
+
+      showToastNotification(`✨ Vega Analysis complete for ${dayName}!`, 'success');
+    } else {
+      throw new Error(result.message || 'Gemini request failed');
+    }
+  } catch (err) {
+    console.error('Vega Analyze error:', err);
+    if (slotEl) {
+      slotEl.innerHTML = `
+        <div style="color: var(--accent-red); font-size: 0.8rem; padding: 0.4rem 0;">
+          ⚠️ Vega Analyze could not complete: ${escapeHtml(err.message)}
+          <button class="action-pill-btn" onclick="triggerVegaAnalyze('${workoutKey}', '${dateStr}', true)" style="margin-left: 0.5rem; font-size: 0.7rem;">Retry</button>
+        </div>
+      `;
+    }
+    showToastNotification('Vega Analyze encountered an issue: ' + err.message, 'error');
+  } finally {
+    if (typingIndicator) typingIndicator.style.display = 'none';
+  }
+}
+window.triggerVegaAnalyze = triggerVegaAnalyze;
+
+async function triggerBackgroundVegaAnalysis(workoutKey, dateStr) {
+  try {
+    const logData = completedWorkouts[workoutKey];
+    if (!logData || logData.vega_analysis) return;
+    const key = getEffectiveApiKey();
+    if (!key) return;
+    console.log(`🤖 Auto-triggering background Vega analysis for ${dateStr}...`);
+    await triggerVegaAnalyze(workoutKey, dateStr, false);
+  } catch (e) {
+    console.warn('Background Vega analysis notice:', e);
+  }
+}
+window.triggerBackgroundVegaAnalysis = triggerBackgroundVegaAnalysis;
 
 // Auto-Resume Pending Coach Query on Page Load (even if user closed browser or reloaded)
 function checkAndResumePendingCoachQuery() {
@@ -13498,6 +13930,165 @@ function copyDeviceSyncLink() {
     prompt('Copy this 1-Click Phone Sync Link and open it on your phone:', link);
   }
 }
+
+
+// ==============================================================================
+// ATHLETE GEAR LOCKER & ADIDAS ADIZERO EVO SL SHOE BUDGET ENGINE
+// ==============================================================================
+const ADIDAS_EVO_SL_CONFIG = {
+  id: 'adidas-evo-sl',
+  name: 'Adidas Adizero EVO SL',
+  purchaseDate: '2026-11-09',
+  purchaseWeek: 13,
+  specs: {
+    foam: '100% Full-Length Lightstrike Pro',
+    plate: 'Non-plated / Natural Flex (Calf & Achilles protection)',
+    stack: '38mm Heel / 31.4mm Forefoot',
+    drop: 6.6,
+    weight: '224g (US 9)',
+    outsole: 'Continental™ High-Traction Rubber'
+  },
+  budget: {
+    initialKm: 0.0,
+    breakInTargetKm: 50.0,
+    midBuildTargetKm: 150.0,
+    optimalRaceWindow: [150.0, 350.0],
+    preRacePlannedKm: 275.0,
+    raceDayKm: 42.195,
+    lifespanLimitKm: 600.0
+  }
+};
+
+function calculateShoeMileage() {
+  const manualOffset = Number(localStorage.getItem('tmm_shoe_odometer_offset') || 0);
+  let evoSlLoggedKm = manualOffset;
+
+  if (typeof rawWeeksData !== 'undefined' && Array.isArray(rawWeeksData)) {
+    rawWeeksData.forEach(w => {
+      if (w.week_number >= 13 && w.workouts) {
+        w.workouts.forEach(wo => {
+          const key = `${w.week_number}_${wo.day}_${wo.date}`;
+          const log = (typeof completedWorkouts !== 'undefined' && completedWorkouts) ? completedWorkouts[key] : null;
+          if (log && log.done) {
+            const isDailyTrainer = log.shoe === 'daily-trainer' || (wo.type && wo.type.toLowerCase().includes('recovery') && log.shoe === 'daily-trainer');
+            if (!isDailyTrainer) {
+              const runDist = Number(log.dist !== undefined ? log.dist : (log.actualDistanceKm || wo.distance_km || 0));
+              evoSlLoggedKm += runDist;
+            }
+          }
+        });
+      }
+    });
+  }
+
+  evoSlLoggedKm = Math.round(evoSlLoggedKm * 10) / 10;
+  const preRaceBudget = ADIDAS_EVO_SL_CONFIG.budget.preRacePlannedKm;
+  const pct = Math.min(100, Math.round((evoSlLoggedKm / preRaceBudget) * 100));
+
+  let phaseName = '🟢 Break-In (0–50k)';
+  let phaseColor = '#10b981';
+  if (evoSlLoggedKm > 50 && evoSlLoggedKm < 150) {
+    phaseName = '🔵 Mid-Build (50–150k)';
+    phaseColor = '#38bdf8';
+  } else if (evoSlLoggedKm >= 150 && evoSlLoggedKm <= 350) {
+    phaseName = '🟡 Race Sweet Spot (150–350k)';
+    phaseColor = '#f59e0b';
+  } else if (evoSlLoggedKm > 350 && evoSlLoggedKm <= 500) {
+    phaseName = '🟠 Training Workhorse (350–500k)';
+    phaseColor = '#f97316';
+  } else if (evoSlLoggedKm > 500) {
+    phaseName = '🔴 Durability Limit (>500k)';
+    phaseColor = '#ef4444';
+  }
+
+  return {
+    currentKm: evoSlLoggedKm,
+    preRaceBudget,
+    pct,
+    phaseName,
+    phaseColor,
+    projectedTmmFinishKm: Math.round((evoSlLoggedKm + 42.2) * 10) / 10
+  };
+}
+
+function updateShoeBudgetWidget() {
+  const stats = calculateShoeMileage();
+  const kmEl = document.getElementById('shoe-current-km');
+  const targetEl = document.getElementById('shoe-target-km');
+  const phaseEl = document.getElementById('shoe-lifecycle-phase');
+  const fillEl = document.getElementById('metric-shoe-fill');
+
+  if (kmEl) kmEl.textContent = `${stats.currentKm} km`;
+  if (targetEl) targetEl.textContent = `${stats.preRaceBudget} km pre-race`;
+  if (phaseEl) {
+    phaseEl.textContent = stats.phaseName;
+    phaseEl.style.color = stats.phaseColor;
+  }
+  if (fillEl) fillEl.style.width = `${stats.pct}%`;
+
+  const modalKmEl = document.getElementById('modal-shoe-current-km');
+  const modalFillEl = document.getElementById('modal-shoe-fill');
+  if (modalKmEl) modalKmEl.textContent = `${stats.currentKm} km`;
+  if (modalFillEl) modalFillEl.style.width = `${stats.pct}%`;
+}
+
+function renderGearLedgerTable() {
+  const tbody = document.getElementById('gear-ledger-tbody');
+  if (!tbody) return;
+
+  const rows = [
+    { week: 'W13', phase: 'Break-In & Build', sessions: 'Wed MP Intro (5k) + Sun Long Run (14k)', evoKm: '19.0 km', cumulKm: '19.0 km', status: '🟢 Break-In', color: '#10b981' },
+    { week: 'W14', phase: 'Peak Stamina', sessions: 'Wed MP Tempo (6k) + Sun Long Run (23k)', evoKm: '29.0 km', cumulKm: '48.0 km', status: '🟢 Break-In Ready', color: '#10b981' },
+    { week: 'W15', phase: 'Deload 3', sessions: 'Wed Easy Aerobic (6k) + Sun Long Run (16k)', evoKm: '22.0 km', cumulKm: '70.0 km', status: '🔵 Mid-Build Cushion', color: '#38bdf8' },
+    { week: 'W16', phase: 'Pedder Rd Attack', sessions: 'Wed Hill Repeats (8k) + Sun Long Run (25k)', evoKm: '33.0 km', cumulKm: '103.0 km', status: '🔵 Mid-Build Cushion', color: '#38bdf8' },
+    { week: 'W17', phase: 'Pre-Kolkata High', sessions: 'Wed MP Sharpening (6k) + Sun Long Run (27k)', evoKm: '33.0 km', cumulKm: '136.0 km', status: '🔵 Mid-Build Cushion', color: '#38bdf8' },
+    { week: 'W18', phase: 'TSW Kolkata 25K', sessions: 'Wed Strides (4k) + Sun TSW Kolkata 25K (25k)', evoKm: '29.0 km', cumulKm: '165.0 km', status: '🟡 Race Sweet Spot', color: '#f59e0b' },
+    { week: 'W19', phase: 'Provisional Peak', sessions: 'Wed MP Tempo (5k) + Sun Peak Long Run (30k)', evoKm: '35.0 km', cumulKm: '200.0 km', status: '🟡 Race Sweet Spot', color: '#f59e0b' },
+    { week: 'W20', phase: 'Taper 1 (-30%)', sessions: 'Wed MP Sharpening (5k) + Sun Long Run (18k)', evoKm: '23.0 km', cumulKm: '223.0 km', status: '🟡 Race Sweet Spot', color: '#f59e0b' },
+    { week: 'W21', phase: 'Taper 2 (-50%)', sessions: 'Wed Strides (5k) + Sun 12k Dress Rehearsal', evoKm: '17.0 km', cumulKm: '240.0 km', status: '🟡 Race Morning Prime', color: '#f59e0b' },
+    { week: 'W22', phase: 'Tata Mumbai Marathon', sessions: 'Fri Mumbai Shakeout (3k) + SUN RACE DAY (42.2k)', evoKm: '45.2 km', cumulKm: '285.2 km', status: '🏆 Sub-5:00 Finish!', color: '#10b981' }
+  ];
+
+  tbody.innerHTML = rows.map(r => `
+    <tr>
+      <td><strong>${r.week}</strong></td>
+      <td><span style="font-size: 0.75rem; color: #cbd5e1;">${r.phase}</span></td>
+      <td><span style="font-size: 0.75rem;">${r.sessions}</span></td>
+      <td style="font-family: monospace; font-weight: 700;">${r.evoKm}</td>
+      <td style="font-family: monospace; font-weight: 800; color: #fff;">${r.cumulKm}</td>
+      <td><span style="font-size: 0.72rem; font-weight: 700; color: ${r.color};">${r.status}</span></td>
+    </tr>
+  `).join('');
+}
+
+function openGearLockerModal() {
+  const modal = document.getElementById('gear-locker-modal');
+  if (!modal) return;
+  updateShoeBudgetWidget();
+  renderGearLedgerTable();
+  const input = document.getElementById('shoe-manual-odometer-input');
+  if (input) {
+    input.value = localStorage.getItem('tmm_shoe_odometer_offset') || '0.0';
+  }
+  modal.classList.add('open');
+}
+
+function closeGearLockerModal() {
+  const modal = document.getElementById('gear-locker-modal');
+  if (modal) modal.classList.remove('open');
+}
+
+function saveManualShoeOdometer() {
+  const input = document.getElementById('shoe-manual-odometer-input');
+  if (!input) return;
+  const val = parseFloat(input.value) || 0;
+  localStorage.setItem('tmm_shoe_odometer_offset', val.toFixed(1));
+  updateShoeBudgetWidget();
+  if (typeof showToastNotification === 'function') {
+    showToastNotification(`Shoe odometer offset calibrated to ${val.toFixed(1)} km!`, 'success');
+  }
+}
+
 
 window.openGitHubTokenModal = openGitHubTokenModal;
 window.closeGitHubTokenModal = closeGitHubTokenModal;
