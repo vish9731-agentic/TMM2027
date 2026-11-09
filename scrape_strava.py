@@ -234,6 +234,15 @@ def fetch_strava_activity_splits_and_hr(activity_id):
                 print(f"      🔎 HR occurrences in 20903145827 (count {len(hr_matches)}): {hr_matches[:6]}")
                 split_matches = re.findall(r'.{0,40}split.{0,40}', html, re.IGNORECASE)
                 print(f"      🔎 Split occurrences in 20903145827 (count {len(split_matches)}): {split_matches[:6]}")
+                if "pageView" in html:
+                    pv_idx = html.find("pageView")
+                    print(f"      🔎 pageView context: {repr(html[max(0, pv_idx-300):pv_idx+300])}")
+                # Check for script tags with JSON
+                scripts = re.findall(r'<script[^>]*>(.*?)</script>', html, re.DOTALL)
+                print(f"      🔎 Total script tags: {len(scripts)}")
+                for s_idx, sc in enumerate(scripts):
+                    if "splits" in sc.lower() or "distance" in sc.lower() and "pace" in sc.lower():
+                        print(f"      🔎 Script {s_idx} preview: {repr(sc[:250])}")
 
             # 1. Parse splits_metric JSON array
             splits_data = []
