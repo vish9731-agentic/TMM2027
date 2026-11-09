@@ -19,8 +19,8 @@ import urllib.error
 
 # Environment Variables
 STRAVA_COOKIE = os.environ.get("STRAVA_SESSION_COOKIE", "").strip()
-SUPABASE_URL = os.environ.get("SUPABASE_URL", "").strip().rstrip("/")
-SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "").strip()
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://xtdfhxczdlgyhkqsltyq.supabase.co").strip().rstrip("/")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh0ZGZoeGN6ZGxneWhrcXNsdHlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxMzg2OTUsImV4cCI6MjEwMjcxNDY5NX0.ARI4z_eWMhBQiF66xTXKDOrspfsBQjnG81qxaBhEuww").strip()
 
 # IST Timezone (UTC+5:30) - Primary athlete tracking timezone
 IST_TZ = timezone(timedelta(hours=5, minutes=30))
