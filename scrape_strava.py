@@ -228,6 +228,13 @@ def fetch_strava_activity_splits_and_hr(activity_id):
         with urllib.request.urlopen(req, timeout=15) as response:
             html = response.read().decode("utf-8", errors="replace")
 
+            # Search for React props, JSON blobs, splits, or heartrate
+            if str(activity_id) == "20903145827":
+                hr_matches = re.findall(r'.{0,40}heart.{0,40}', html, re.IGNORECASE)
+                print(f"      🔎 HR occurrences in 20903145827 (count {len(hr_matches)}): {hr_matches[:6]}")
+                split_matches = re.findall(r'.{0,40}split.{0,40}', html, re.IGNORECASE)
+                print(f"      🔎 Split occurrences in 20903145827 (count {len(split_matches)}): {split_matches[:6]}")
+
             # 1. Parse splits_metric JSON array
             splits_data = []
             m = re.search(r'"splits_metric"\s*:\s*(\[\{.*?\}\])', html)
