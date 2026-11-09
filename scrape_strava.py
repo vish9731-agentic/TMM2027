@@ -202,10 +202,98 @@ def fetch_strava_activities():
         print(f"❌ Error scraping Strava: {e}")
         return []
 
+def compute_splits_from_streams(distance_stream, time_stream, hr_stream=None):
+    """
+    Computes precise per-kilometer splits from second-by-second Strava telemetry streams.
+    Extracts split-by-split distance, pace, duration, and heart rate.
+    """
+    if not distance_stream or not time_stream or len(distance_stream) != len(time_stream):
+        return [], None, None
+
+    total_points = len(distance_stream)
+    splits = []
+    cur_km = 1
+    last_idx = 0
+    last_dist = 0.0
+    last_time = 0
+
+    avg_hr = None
+    max_hr = None
+    if hr_stream and len(hr_stream) == total_points:
+        valid_hrs = [int(h) for h in hr_stream if h and h > 30]
+        if valid_hrs:
+            avg_hr = int(round(sum(valid_hrs) / len(valid_hrs)))
+            max_hr = int(max(valid_hrs))
+
+    for i in range(total_points):
+        d = float(distance_stream[i])
+        t = int(time_stream[i])
+        target_d = cur_km * 1000.0
+
+        if d >= target_d:
+            split_dist_km = (d - last_dist) / 1000.0
+            split_time_sec = t - last_time
+            if split_dist_km > 0 and split_time_sec > 0:
+                pace_sec = split_time_sec / split_dist_km
+                pm = int(pace_sec // 60)
+                ps = int(round(pace_sec % 60))
+                pace_str = f"{pm}:{ps:02d} min/km"
+            else:
+                pace_sec = 0
+                pace_str = "N/A"
+
+            split_hr_val = None
+            if hr_stream:
+                sub_hrs = [int(h) for h in hr_stream[last_idx:i+1] if h and h > 30]
+                if sub_hrs:
+                    split_hr_val = int(round(sum(sub_hrs) / len(sub_hrs)))
+
+            splits.append({
+                "split": cur_km,
+                "km": f"Km {cur_km}",
+                "distance_km": round(split_dist_km, 2),
+                "pace": pace_str,
+                "pace_sec": round(pace_sec),
+                "duration_sec": split_time_sec,
+                "heart_rate": split_hr_val
+            })
+
+            cur_km += 1
+            last_idx = i
+            last_dist = d
+            last_time = t
+
+    # Remainder split (final partial kilometer if >= 150m)
+    rem_dist = float(distance_stream[-1]) - last_dist
+    rem_time = int(time_stream[-1]) - last_time
+    if rem_dist >= 150:
+        rem_km = rem_dist / 1000.0
+        pace_sec = rem_time / rem_km if rem_km > 0 else 0
+        pm = int(pace_sec // 60)
+        ps = int(round(pace_sec % 60))
+
+        split_hr_val = None
+        if hr_stream:
+            sub_hrs = [int(h) for h in hr_stream[last_idx:] if h and h > 30]
+            if sub_hrs:
+                split_hr_val = int(round(sum(sub_hrs) / len(sub_hrs)))
+
+        splits.append({
+            "split": cur_km,
+            "km": f"Km {cur_km} (final)",
+            "distance_km": round(rem_km, 2),
+            "pace": f"{pm}:{ps:02d} min/km",
+            "pace_sec": round(pace_sec),
+            "duration_sec": rem_time,
+            "heart_rate": split_hr_val
+        })
+
+    return splits, avg_hr, max_hr
+
 def fetch_strava_activity_splits_and_hr(activity_id):
     """
-    Fetches detailed per-km splits (splits_metric) and heart rate from Strava activity page.
-    Extracts split-by-split pace, duration, elevation, and optical heart rate recorded by Galaxy Watch.
+    Fetches detailed per-km splits and optical heart rate from Strava activity telemetry.
+    Uses Strava's telemetry streams endpoint (/streams) with fallback to activity HTML.
     """
     if not activity_id or not STRAVA_COOKIE:
         return {"splits": [], "avg_hr": None, "max_hr": None}
@@ -214,71 +302,59 @@ def fetch_strava_activity_splits_and_hr(activity_id):
     if not cookie_header.startswith("_strava4_session="):
         cookie_header = f"_strava4_session={cookie_header}"
 
-    url = f"https://www.strava.com/activities/{activity_id}"
     headers = {
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept": "application/json, text/javascript, */*; q=0.01",
+        "X-Requested-With": "XMLHttpRequest",
         "Cookie": cookie_header,
         "Referer": "https://www.strava.com/athlete/training"
     }
 
-    req = urllib.request.Request(url, headers=headers)
+    # 1. Primary: Strava Telemetry Streams Endpoint
+    streams_url = f"https://www.strava.com/activities/{activity_id}/streams?stream_types%5B%5D=distance&stream_types%5B%5D=time&stream_types%5B%5D=heartrate"
     try:
-        print(f"      📡 Querying detailed activity {activity_id}...")
+        req = urllib.request.Request(streams_url, headers=headers)
+        with urllib.request.urlopen(req, timeout=15) as response:
+            stream_json = json.loads(response.read().decode("utf-8"))
+            if isinstance(stream_json, dict) and "distance" in stream_json and "time" in stream_json:
+                d_stream = stream_json.get("distance", [])
+                t_stream = stream_json.get("time", [])
+                hr_stream = stream_json.get("heartrate")
+
+                splits, avg_hr, max_hr = compute_splits_from_streams(d_stream, t_stream, hr_stream)
+                print(f"      📊 Activity {activity_id}: computed {len(splits)} splits from stream (HR: avg={avg_hr}, max={max_hr})")
+                return {
+                    "splits": splits,
+                    "avg_hr": avg_hr,
+                    "max_hr": max_hr
+                }
+    except Exception as e:
+        print(f"      ℹ️ Streams endpoint note for {activity_id}: {e}")
+
+    # 2. Secondary Fallback: Activity Page HTML Scraping
+    url = f"https://www.strava.com/activities/{activity_id}"
+    try:
+        html_headers = {
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Cookie": cookie_header,
+            "Referer": "https://www.strava.com/athlete/training"
+        }
+        req = urllib.request.Request(url, headers=html_headers)
         with urllib.request.urlopen(req, timeout=15) as response:
             html = response.read().decode("utf-8", errors="replace")
 
-            # Search for React props, JSON blobs, splits, or heartrate
-            if str(activity_id) == "20903145827":
-                hr_matches = re.findall(r'.{0,40}heart.{0,40}', html, re.IGNORECASE)
-                print(f"      🔎 HR occurrences in 20903145827 (count {len(hr_matches)}): {hr_matches[:6]}")
-                split_matches = re.findall(r'.{0,40}split.{0,40}', html, re.IGNORECASE)
-                print(f"      🔎 Split occurrences in 20903145827 (count {len(split_matches)}): {split_matches[:6]}")
-                if "pageView" in html:
-                    pv_idx = html.find("pageView")
-                    print(f"      🔎 pageView context: {repr(html[max(0, pv_idx-300):pv_idx+300])}")
-                # Check for script tags with JSON
-                scripts = re.findall(r'<script[^>]*>(.*?)</script>', html, re.DOTALL)
-                print(f"      🔎 Total script tags: {len(scripts)}")
-                if len(scripts) > 129:
-                    print(f"      🔎 SCRIPT 129:\n{scripts[129][:4000]}")
-                for s_idx, sc in enumerate(scripts):
-                    if "splits" in sc.lower() or "distance" in sc.lower() and "pace" in sc.lower():
-                        print(f"      🔎 Script {s_idx} preview: {repr(sc[:250])}")
-
-            # Search for tables in HTML
-            if str(activity_id) == "20903145827":
-                table_matches = re.findall(r'<table[^>]*>.*?</table>', html, re.DOTALL | re.IGNORECASE)
-                print(f"      🔎 Total HTML tables: {len(table_matches)}")
-                for t in table_matches:
-                    print(f"      🔎 Table preview: {repr(t[:200])}")
-
-                # Test streams endpoint
-                try:
-                    streams_url = f"https://www.strava.com/activities/{activity_id}/streams?stream_types%5B%5D=distance&stream_types%5B%5D=time&stream_types%5B%5D=heartrate"
-                    st_req = urllib.request.Request(streams_url, headers=headers)
-                    with urllib.request.urlopen(st_req, timeout=10) as st_resp:
-                        st_data = json.loads(st_resp.read().decode("utf-8"))
-                        print(f"      🔎 Streams endpoint response keys: {list(st_data.keys()) if isinstance(st_data, dict) else len(st_data)}")
-                except Exception as st_err:
-                    print(f"      🔎 Streams endpoint error: {st_err}")
-
-            # 1. Parse splits_metric JSON array
             splits_data = []
             m = re.search(r'"splits_metric"\s*:\s*(\[\{.*?\}\])', html)
             if not m:
                 m = re.search(r'&quot;splits_metric&quot;\s*:\s*(\[.*?\])(?:,\s*&quot;|})', html)
                 if m:
                     unescaped = m.group(1).replace("&quot;", '"')
-                    try:
-                        splits_data = json.loads(unescaped)
-                    except Exception:
-                        pass
+                    try: splits_data = json.loads(unescaped)
+                    except Exception: pass
             else:
-                try:
-                    splits_data = json.loads(m.group(1))
-                except Exception:
-                    pass
+                try: splits_data = json.loads(m.group(1))
+                except Exception: pass
 
             formatted_splits = []
             if splits_data and isinstance(splits_data, list):
@@ -286,42 +362,30 @@ def fetch_strava_activity_splits_and_hr(activity_id):
                     split_num = s.get("split") or (len(formatted_splits) + 1)
                     dist_m = float(s.get("distance", 1000.0))
                     moving_sec = int(s.get("moving_time") or s.get("elapsed_time", 0))
-                    elevation_diff = round(float(s.get("elevation_difference", 0.0)), 1)
                     split_hr = s.get("average_heartrate")
                     split_hr_val = int(round(float(split_hr))) if split_hr else None
 
                     split_km = dist_m / 1000.0
-                    if moving_sec > 0 and split_km > 0:
-                        pace_sec = moving_sec / split_km
-                        pm = math.floor(pace_sec / 60)
-                        ps = round(pace_sec % 60)
-                        p_str = f"{pm}:{ps:02d} min/km"
-                    else:
-                        pace_sec = 0
-                        p_str = "N/A"
+                    pace_sec = moving_sec / split_km if split_km > 0 and moving_sec > 0 else 0
+                    pm = int(pace_sec // 60)
+                    ps = int(round(pace_sec % 60))
 
                     formatted_splits.append({
                         "split": split_num,
                         "km": f"Km {split_num}",
                         "distance_km": round(split_km, 2),
-                        "pace": p_str,
+                        "pace": f"{pm}:{ps:02d} min/km" if pace_sec > 0 else "N/A",
                         "pace_sec": round(pace_sec),
                         "duration_sec": moving_sec,
-                        "elevation_diff_m": elevation_diff,
                         "heart_rate": split_hr_val
                     })
 
-            # 2. Extract average and max heart rate if present
             avg_hr = None
             max_hr = None
             hr_m = re.search(r'"average_heartrate"\s*:\s*([0-9.]+)', html)
-            if hr_m:
-                avg_hr = int(round(float(hr_m.group(1))))
+            if hr_m: avg_hr = int(round(float(hr_m.group(1))))
             max_hr_m = re.search(r'"max_heartrate"\s*:\s*([0-9.]+)', html)
-            if max_hr_m:
-                max_hr = int(round(float(max_hr_m.group(1))))
-
-            print(f"      📊 Activity {activity_id}: found {len(formatted_splits)} splits, avg_hr={avg_hr}, max_hr={max_hr}, html_len={len(html)}")
+            if max_hr_m: max_hr = int(round(float(max_hr_m.group(1))))
 
             return {
                 "splits": formatted_splits,
