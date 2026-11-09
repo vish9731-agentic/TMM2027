@@ -1603,6 +1603,132 @@ h1, h2, h3, h4, .brand-font {
   border: 1px solid rgba(16, 185, 129, 0.4);
 }
 
+/* Live Dynamic Daily Horizon & Runner Readiness Header */
+.coach-horizon-bar {
+  padding: 0.75rem 1.15rem;
+  background: linear-gradient(180deg, rgba(17, 24, 39, 0.95) 0%, rgba(13, 19, 34, 0.98) 100%);
+  border-bottom: 1px solid rgba(255, 140, 0, 0.22);
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.coach-horizon-today {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.coach-horizon-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: #ffb703;
+  background: rgba(255, 183, 3, 0.12);
+  border: 1px solid rgba(255, 183, 3, 0.3);
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.02em;
+}
+
+.coach-horizon-status {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.coach-horizon-title {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.coach-horizon-sub {
+  font-size: 0.75rem;
+  color: #cbd5e1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.coach-horizon-sub .mono-stat {
+  font-family: monospace;
+  color: #38bdf8;
+  font-weight: 700;
+}
+
+/* Weekly Progress Bar inside Horizon */
+.coach-horizon-progress {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.7rem;
+  color: #94a3b8;
+}
+
+.coach-horizon-track {
+  flex: 1;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.coach-horizon-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff7700, #ffb703);
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+/* Horizon Action Pills (Pre-Run Brief, Calf Check, Swap) */
+.coach-horizon-actions {
+  display: flex;
+  gap: 0.45rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 0.15rem;
+}
+
+.coach-horizon-actions::-webkit-scrollbar {
+  display: none;
+}
+
+.coach-action-pill {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #f1f5f9;
+  font-size: 0.73rem;
+  font-weight: 700;
+  padding: 0.32rem 0.65rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.coach-action-pill:hover {
+  background: rgba(255, 140, 0, 0.18);
+  border-color: #ffb703;
+  color: #ffcc00;
+  transform: translateY(-1px);
+}
+
+.coach-action-pill:active {
+  transform: scale(0.96);
+}
+
 .coach-telemetry-strip {
   display: flex;
   align-items: center;
@@ -1654,16 +1780,40 @@ h1, h2, h3, h4, .brand-font {
   border-color: #ef4444;
 }
 
-/* Triage Bar */
+/* Triage Bar & Categorized Accordions */
 .coach-triage-bar {
   display: flex;
-  gap: 0.45rem;
-  padding: 0.75rem 1.25rem;
-  overflow-x: auto;
-  scrollbar-width: none;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.6rem 1.15rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(0, 0, 0, 0.35);
+}
+
+.triage-category-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  overflow-x: auto;
+  scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
+}
+
+.triage-category-row::-webkit-scrollbar {
+  display: none;
+}
+
+.triage-category-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #94a3b8;
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .coach-triage-bar::-webkit-scrollbar {
@@ -2008,12 +2158,12 @@ h1, h2, h3, h4, .brand-font {
 
 /* Input Bar */
 .coach-input-bar {
-  padding: 0.85rem 1.25rem;
+  padding: 0.85rem 1.15rem;
   background: #090e17;
   border-top: 1px solid rgba(255, 140, 0, 0.25);
   display: flex;
-  gap: 0.6rem;
-  align-items: center;
+  gap: 0.5rem;
+  align-items: flex-end;
   padding-bottom: max(0.85rem, env(safe-area-inset-bottom));
 }
 
@@ -2027,10 +2177,13 @@ h1, h2, h3, h4, .brand-font {
   font-size: 0.9rem;
   resize: none;
   font-family: inherit;
-  line-height: 1.4;
-  max-height: 100px;
+  line-height: 1.45;
+  min-height: 44px;
+  max-height: 130px;
+  overflow-y: auto;
   -webkit-appearance: none;
   appearance: none;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
 }
 
 .coach-textarea:focus {
@@ -2038,6 +2191,47 @@ h1, h2, h3, h4, .brand-font {
   border-color: #ff8800;
   background: rgba(255, 140, 0, 0.08);
   box-shadow: 0 0 12px rgba(255, 140, 0, 0.25);
+}
+
+.coach-mic-btn {
+  background: rgba(255, 255, 255, 0.08);
+  color: #cbd5e1;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.15rem;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.coach-mic-btn:hover {
+  background: rgba(255, 140, 0, 0.15);
+  border-color: #ff8800;
+  color: #ffb703;
+}
+
+.coach-mic-btn:active {
+  transform: scale(0.94);
+}
+
+.coach-mic-btn.listening {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: #ef4444;
+  color: #ef4444;
+  animation: micListeningPulse 1.2s infinite ease-in-out;
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.5);
+}
+
+@keyframes micListeningPulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+  50% { transform: scale(1.06); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
 }
 
 .coach-send-btn {
@@ -2056,11 +2250,147 @@ h1, h2, h3, h4, .brand-font {
   transition: var(--transition-fast);
   flex-shrink: 0;
   box-shadow: 0 4px 14px rgba(255, 84, 0, 0.4);
+  user-select: none;
 }
 
 .coach-send-btn:hover {
   transform: scale(1.05);
   box-shadow: 0 6px 20px rgba(255, 84, 0, 0.6);
+}
+
+.coach-send-btn:active {
+  transform: scale(0.94);
+}
+
+/* Voice Readout Button & Waveform Animation on Bot Bubbles */
+.coach-voice-read-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #94a3b8;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.22rem 0.55rem;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.65rem;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.coach-voice-read-btn:hover {
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+.coach-voice-read-btn:active {
+  transform: scale(0.95);
+}
+
+.coach-voice-read-btn.playing {
+  background: rgba(16, 185, 129, 0.22);
+  color: #10b981;
+  border-color: #10b981;
+}
+
+.voice-wave-bars {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 12px;
+}
+
+.voice-wave-bar {
+  width: 2px;
+  background: currentColor;
+  border-radius: 1px;
+  height: 4px;
+}
+
+.voice-wave-bars.active .voice-wave-bar:nth-child(1) {
+  animation: waveBar 0.8s infinite ease-in-out;
+}
+.voice-wave-bars.active .voice-wave-bar:nth-child(2) {
+  animation: waveBar 0.8s infinite ease-in-out 0.2s;
+}
+.voice-wave-bars.active .voice-wave-bar:nth-child(3) {
+  animation: waveBar 0.8s infinite ease-in-out 0.4s;
+}
+
+@keyframes waveBar {
+  0%, 100% { height: 3px; }
+  50% { height: 11px; }
+}
+
+/* Predictive Conversational Quick-Replies */
+.coach-quick-replies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+  padding-top: 0.65rem;
+  border-top: 1px dashed rgba(255, 255, 255, 0.12);
+}
+
+.coach-reply-pill {
+  background: rgba(255, 140, 0, 0.1);
+  border: 1px solid rgba(255, 140, 0, 0.35);
+  color: #ffcc00;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.coach-reply-pill:hover {
+  background: linear-gradient(135deg, rgba(255, 69, 0, 0.3), rgba(255, 183, 3, 0.3));
+  border-color: #ffb703;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(255, 140, 0, 0.25);
+}
+
+.coach-reply-pill:active {
+  transform: scale(0.96);
+}
+
+/* Direct 'Ask Vega' Button on Calendar Workout Cards */
+.workout-card-vega-btn {
+  background: rgba(255, 140, 0, 0.12);
+  border: 1px solid rgba(255, 140, 0, 0.4);
+  color: #ffb703;
+  font-size: 0.73rem;
+  font-weight: 700;
+  padding: 0.28rem 0.65rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  text-decoration: none;
+  user-select: none;
+}
+
+.workout-card-vega-btn:hover {
+  background: linear-gradient(135deg, rgba(255, 69, 0, 0.35), rgba(255, 183, 3, 0.35));
+  border-color: #ffcc00;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 12px rgba(255, 140, 0, 0.3);
+}
+
+.workout-card-vega-btn:active {
+  transform: scale(0.96);
 }
 
 /* ==============================================================================

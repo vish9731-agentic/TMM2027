@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=3.9.2">
+  <link rel="stylesheet" href="styles.css?v=3.9.3">
 
   <!-- Immediate startup migration: purge phantom rest & strength day completions & bust stale SW -->
   <script>
@@ -950,41 +950,37 @@
         </div>
       </div>
       <div style="display: flex; align-items: center; gap: 0.4rem;">
-        <button class="btn-icon" onclick="openCoachSettingsModal()" title="Voice & Model Settings (Coach Vega: ElevenLabs & Gemini)" style="padding: 0.35rem 0.55rem; font-size: 0.85rem; border-color: rgba(255,140,0,0.5); color: #ffcc00; font-weight: 800;">🎙️</button>
         <button class="btn-icon" onclick="openVegaIconStudioModal()" title="Choose Sunset Athlete Icon" style="padding: 0.35rem 0.55rem; font-size: 0.85rem; border-color: rgba(255,140,0,0.5); color: #ffcc00;">🎨</button>
-        <button class="btn-icon" onclick="openCoachSettingsModal()" title="AI Model Settings" style="padding: 0.35rem 0.55rem; font-size: 0.85rem;">⚙️</button>
+        <button class="btn-icon" onclick="openCoachSettingsModal()" title="Voice & Model Settings (Gemini & ElevenLabs)" style="padding: 0.35rem 0.55rem; font-size: 0.85rem;">⚙️</button>
+        <button class="btn-icon" onclick="clearCoachChatHistory()" title="Clear Chat History" style="padding: 0.35rem 0.55rem; font-size: 0.85rem; color: var(--text-dim);">🗑️</button>
         <button class="btn-icon" onclick="toggleCoachDrawer()" title="Close Drawer" style="padding: 0.35rem 0.55rem; font-size: 0.85rem;">✕</button>
       </div>
     </div>
 
-    <!-- Active Telemetry Strip -->
-    <div class="coach-telemetry-strip">
-      <div class="coach-telemetry-item">
-        <span class="coach-telemetry-label">Target:</span>
-        <span class="coach-telemetry-val">TMM 2027 (4:59:59)</span>
-      </div>
-      <div class="coach-telemetry-item">
-        <span class="coach-telemetry-label">Pace:</span>
-        <span class="coach-telemetry-val">7:06 /km</span>
-      </div>
-      <div class="coach-telemetry-item">
-        <span class="coach-telemetry-label">Gear:</span>
-        <span class="coach-telemetry-val">Evo SL 2</span>
-      </div>
-      <div style="margin-left: auto;">
-        <button class="coach-clear-btn" onclick="clearCoachChatHistory()" title="Clear Chat History">🗑️ Clear</button>
-      </div>
+    <!-- Dynamic Real-Time Training Horizon Bar -->
+    <div id="coach-horizon-bar" class="coach-horizon-bar">
+      <!-- Populated dynamically by updateVegaHorizonBar() -->
     </div>
 
-    <!-- Quick Triage Chips (Single Day, Whole Week, Whole Month) -->
+    <!-- Quick Triage Chips by Category -->
     <div class="coach-triage-bar">
-      <button class="triage-chip" style="background: linear-gradient(135deg, rgba(255, 183, 3, 0.25), rgba(245, 158, 11, 0.35)); border: 1px solid #ffb703; color: #ffcc00; font-weight: 800;" onclick="triggerWeeklyDebriefDemo(1)">🧪 Sunday 6PM Weekly Debrief (Live Demo)</button>
-      <button class="triage-chip" onclick="sendQuickPrompt('My calves felt tight and strained during my run yesterday.')">🦵 Calf Strain Diagnosis</button>
-      <button class="triage-chip" onclick="sendQuickPrompt('I need to deload this entire week to recover. Please adjust the whole week\'s schedule.')">🗓️ Deload Entire Week</button>
-      <button class="triage-chip" onclick="sendQuickPrompt('Can you restructure the entire upcoming month of workouts to give my calves extra time to adapt?')">🔄 Restructure Next Month</button>
-      <button class="triage-chip" onclick="sendQuickPrompt('Can you review my recent pace and variance from Strava?')">⚡ Pacing Check</button>
-      <button class="triage-chip" onclick="sendQuickPrompt('I missed workouts this week. Can you reschedule the rest of the week?')">⏸️ Reschedule Week</button>
-      <button class="triage-chip" onclick="sendQuickPrompt('What prehab drills should I do today for calf &amp; achilles armor?')">💪 Calf Armor Drill</button>
+      <div class="triage-category-row">
+        <span class="triage-category-badge" style="background: rgba(255,140,0,0.15); border-color: rgba(255,140,0,0.4); color: #ff9900;">⚡ Strategy</span>
+        <button class="triage-chip" onclick="sendQuickPrompt('Give me a quick tactical brief for today\'s scheduled workout.')">🎯 Today's Brief</button>
+        <button class="triage-chip" onclick="sendQuickPrompt('Can you review my recent pace and variance from Strava?')">⚡ Pace &amp; Heart Rate</button>
+        <button class="triage-chip" style="background: linear-gradient(135deg, rgba(255, 183, 3, 0.2), rgba(245, 158, 11, 0.25)); border-color: #ffb703; color: #ffcc00; font-weight: 700;" onclick="triggerWeeklyDebriefDemo(1)">🧪 Weekly Debrief Demo</button>
+      </div>
+      <div class="triage-category-row">
+        <span class="triage-category-badge" style="background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.4); color: #f87171;">🩺 Prehab</span>
+        <button class="triage-chip" onclick="sendQuickPrompt('My calves felt tight and strained during my run yesterday. What should I do?')">🦵 Calf Strain Check</button>
+        <button class="triage-chip" onclick="sendQuickPrompt('What prehab drills should I do today for calf and Achilles armor?')">🛡️ Achilles Armor Drills</button>
+      </div>
+      <div class="triage-category-row">
+        <span class="triage-category-badge" style="background: rgba(59,130,246,0.15); border-color: rgba(59,130,246,0.4); color: #60a5fa;">🗓️ Swaps</span>
+        <button class="triage-chip" onclick="sendQuickPrompt('I need to deload this entire week to recover. Please adjust the whole week\'s schedule.')">🗓️ Deload This Week</button>
+        <button class="triage-chip" onclick="sendQuickPrompt('I missed workouts this week. Can you reschedule the rest of the week?')">⏸️ Reschedule Week</button>
+        <button class="triage-chip" onclick="sendQuickPrompt('Can you restructure the entire upcoming month of workouts to give my calves extra time to adapt?')">🔄 Restructure Month</button>
+      </div>
     </div>
 
     <!-- Chat Messages Scroll Area -->
@@ -1039,9 +1035,10 @@
       </button>
     </div>
 
-    <!-- Input Bar -->
+    <!-- Input Bar with Voice Dictation -->
     <div class="coach-input-bar">
-      <textarea id="coach-input" class="coach-textarea" placeholder="Ask Coach Vega (e.g. My calves felt strained yesterday...)" rows="1" onkeydown="handleCoachInputKeydown(event)"></textarea>
+      <button type="button" id="coach-mic-btn" class="coach-mic-btn" onclick="toggleVegaVoiceDictation()" title="Voice Dictation (Hands-free speech)">🎙️</button>
+      <textarea id="coach-input" class="coach-textarea" placeholder="Ask Coach Vega or tap mic to speak..." rows="1" oninput="handleCoachInputInput(this)" onkeydown="handleCoachInputKeydown(event)"></textarea>
       <button id="coach-send-btn" class="coach-send-btn" onclick="sendCoachMessage()" title="Send Message">
         ➤
       </button>
@@ -1593,6 +1590,6 @@
     <p style="margin-top: 0.3rem;">Kickoff: Monday, August 17, 2026 • Race Day: Sunday, January 17, 2027</p>
   </footer>
 
-  <script src="app_main.js?v=3.9.2"></script>
+  <script src="app_main.js?v=3.9.3"></script>
 </body>
 </html>

@@ -8842,6 +8842,10 @@ function toggleWorkoutDone(key, distKm, isChecked, workoutDate, targetPace) {
     delete completedWorkouts[key];
   }
   localStorage.setItem('tmm_completed_workouts', JSON.stringify(completedWorkouts));
+  try {
+    const wNum = key.split('_')[0];
+    if (wNum) invalidateWeekCardCache(Number(wNum));
+  } catch (e) {}
   
   const el = document.getElementById(`day-${key}`);
   if (el) {
@@ -9535,6 +9539,9 @@ async function initSupabase(url, key) {
 
       rawWeeksData = Object.values(weeksMap).sort((a, b) => a.week_number - b.week_number);
       localStorage.setItem('tmm_completed_workouts', JSON.stringify(completedWorkouts));
+
+      // Invalidate memoization cache so cloud data immediately re-renders fresh cards
+      invalidateWeekCardCache();
 
       // Re-render UI with live cloud data
       renderPhases();
