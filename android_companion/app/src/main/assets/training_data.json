@@ -8,7 +8,7 @@
     "goal_pace_min_km": 7.1,
     "current_10k_time": "01:00:00",
     "baseline_easy_pace": "7:15 min/km",
-    "shoe": "Adidas Adizero Evo SL 2",
+    "shoe": "Adidas Adizero EVO SL",
     "procam_slam": [
       {
         "event": "Vedanta Delhi Half Marathon (VDHM)",
@@ -30,6 +30,53 @@
         "distance_km": 42.195,
         "week": 22,
         "role": "THE GOAL RACE (Sub-5:00:00)"
+      }
+    ],
+    "gear_locker": [
+      {
+        "id": "adidas-evo-sl",
+        "name": "Adidas Adizero EVO SL",
+        "category": "Super-Trainer & Marathon Race Shoe",
+        "purchase_date": "2026-11-09",
+        "purchase_week": 13,
+        "status": "Active - Primary Race Shoe",
+        "specs": {
+          "foam": "100% Full-Length Lightstrike Pro",
+          "plate": "Non-plated / Natural Flex (Protects calves & Achilles from stiff lever fatigue)",
+          "stack_height": "38mm Heel / 31.4mm Forefoot",
+          "drop_mm": 6.6,
+          "weight_g": 224,
+          "outsole": "Continental\u2122 High-Traction Rubber"
+        },
+        "mileage_budget": {
+          "initial_km": 0.0,
+          "current_km": 0.0,
+          "break_in_target_km": 50.0,
+          "mid_build_target_km": 150.0,
+          "optimal_race_window_km": [
+            150.0,
+            350.0
+          ],
+          "pre_race_planned_km": 275.0,
+          "race_day_allocation_km": 42.195,
+          "lifespan_limit_km": 600.0
+        },
+        "role_allocation": [
+          "Wednesday Speed Sessions (MP Tempos, Pedder Road Hill Repeats, Sharpening)",
+          "Sunday Long Runs (12 to 32 km)",
+          "TSW Kolkata 25K Race Simulation (Week 18)",
+          "Tata Mumbai Marathon 2027 (Week 22)"
+        ]
+      },
+      {
+        "id": "daily-recovery-trainer",
+        "name": "Daily Recovery Trainer",
+        "category": "Easy / Shakeout Trainer",
+        "status": "Active (Rotation Partner)",
+        "role_allocation": [
+          "Monday Short Recovery Runs (4-6 km)",
+          "Pre-Race Shakeout Runs (3-4 km)"
+        ]
       }
     ]
   },
@@ -70,6 +117,51 @@
     "tempo_threshold": "6:15 - 6:35 min/km",
     "interval_10k": "5:45 - 6:00 min/km"
   },
+  "heart_rate_zones": {
+    "zone_1_recovery": {
+      "name": "Zone 1: Active Recovery",
+      "range_bpm": "< 130 bpm",
+      "pct_max_hr": "< 65%",
+      "description": "Warm-up, cool-down, light recovery runs. Promotes capillary vascularization and accelerates lactate clearance with zero cumulative fatigue.",
+      "ceiling_bpm": 130
+    },
+    "zone_2_aerobic_base": {
+      "name": "Zone 2: Aerobic Base & Endurance",
+      "range_bpm": "130 – 145 bpm",
+      "pct_max_hr": "65% – 75%",
+      "description": "Primary marathon engine. Builds mitochondrial density, stimulates fat oxidation, and spares calf muscle glycogen for late-race resistance.",
+      "ceiling_bpm": 145,
+      "long_run_drift_ceiling_bpm": 148
+    },
+    "zone_3_tempo": {
+      "name": "Zone 3: Aerobic Tempo & Marathon Pace",
+      "range_bpm": "146 – 158 bpm",
+      "pct_max_hr": "75% – 82%",
+      "description": "Marathon race pace cruise (7:00–7:06 min/km). Sustained steady-state aerobic power with efficient lactate processing.",
+      "ceiling_bpm": 160
+    },
+    "zone_4_threshold": {
+      "name": "Zone 4: Lactate Threshold & Hill Climbs",
+      "range_bpm": "159 – 172 bpm",
+      "pct_max_hr": "82% – 89%",
+      "description": "Pedder Road hill repeats and 1km/800m threshold intervals. Pushes speed lactate threshold. Rest intervals must drop below 135 bpm before starting next rep.",
+      "ceiling_bpm": 175
+    },
+    "zone_5_anaerobic": {
+      "name": "Zone 5: Anaerobic Peak",
+      "range_bpm": "> 172 bpm",
+      "pct_max_hr": "> 89%",
+      "description": "Short 100m–200m strides and final race kicks. High neuromuscular recruitment; kept brief to avoid heavy lactic accumulation.",
+      "ceiling_bpm": 185
+    },
+    "telemetry_rules": {
+      "hardware": "Samsung Galaxy Watch4 Classic (Optical BioActive Sensor linked to Strava)",
+      "fit_guideline": "Wear snug 1-finger above the wrist bone to prevent cadence-lock artifacts",
+      "cardiac_drift_threshold_pct": 5,
+      "cardiac_drift_action": "If HR creeps > 5% at identical pace in the second half of a run, take 1 salt capsule with 200ml water and ease pace by 15s/km to protect calves from seizing.",
+      "calf_cramp_protection_rule": "Every beat above Zone 2 (>145 bpm) on long runs accelerates carbohydrate burn and depletes intramuscular glycogen, triggering calf spasms on Pedder Road. Maintain aerobic discipline."
+    }
+  },
   "weeks": [
     {
       "week_number": 1,
@@ -92,24 +184,24 @@
           "fueling": "Hydration with water post-run",
           "strategy_splits": [
             {
-              "km": "0.0 – 0.8 km",
+              "km": "0.0 \u2013 0.8 km",
               "phase": "Phase 1: Warmup",
-              "pace": "8:00 – 8:15 min/km",
+              "pace": "8:00 \u2013 8:15 min/km",
               "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
               "color": "#10b981"
             },
             {
-              "km": "0.8 – 3.2 km",
+              "km": "0.8 \u2013 3.2 km",
               "phase": "Phase 2: Main Cruise (Majority)",
               "pace": "7:50 - 8:10 min/km",
               "desc": "Main aerobic base cruise (RPE 3, 2.4 km). 168 SPM cadence lock for active vascular capillary flushing.",
               "color": "#00f5d4"
             },
             {
-              "km": "3.2 – 4.0 km",
+              "km": "3.2 \u2013 4.0 km",
               "phase": "Phase 3: Cooldown",
               "pace": "8:15+ min/km / Brisk Walk",
-              "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+              "desc": "Gradual deceleration to RPE 1\u20132 easing down to a brisk walk before post-run calf release.",
               "color": "#38bdf8"
             }
           ]
@@ -160,9 +252,9 @@
           "fueling": "Light carbs pre-run",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.5",
+              "km": "Km 0 \u2013 1.5",
               "phase": "Phase 1: Warm-up Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
               "color": "#10b981"
             },
@@ -239,7 +331,7 @@
             {
               "km": "Final 2.0 km",
               "phase": "Phase 3: Cool-down Flush",
-              "pace": "7:50 – 8:15 min/km",
+              "pace": "7:50 \u2013 8:15 min/km",
               "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
               "color": "#a855f7"
             }
@@ -291,24 +383,24 @@
           "fueling": "Water as needed",
           "strategy_splits": [
             {
-              "km": "0.0 – 1.0 km",
+              "km": "0.0 \u2013 1.0 km",
               "phase": "Phase 1: Warmup",
-              "pace": "8:00 – 8:15 min/km",
+              "pace": "8:00 \u2013 8:15 min/km",
               "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
               "color": "#10b981"
             },
             {
-              "km": "1.0 – 4.2 km",
+              "km": "1.0 \u2013 4.2 km",
               "phase": "Phase 2: Main Cruise (Majority)",
               "pace": "7:20 - 7:35 min/km",
               "desc": "Main aerobic base cruise (RPE 3, 3.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
               "color": "#00f5d4"
             },
             {
-              "km": "4.2 – 5.0 km",
+              "km": "4.2 \u2013 5.0 km",
               "phase": "Phase 3: Cooldown",
               "pace": "8:15+ min/km / Brisk Walk",
-              "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+              "desc": "Gradual deceleration to RPE 1\u20132 easing down to a brisk walk before post-run calf release.",
               "color": "#38bdf8"
             }
           ]
@@ -359,14 +451,14 @@
           "fueling": "Water sips every 2 km",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.0",
+              "km": "Km 0 \u2013 1.0",
               "phase": "Phase 1: Conservative Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
               "color": "#10b981"
             },
             {
-              "km": "Km 1.1 – 6.0",
+              "km": "Km 1.1 \u2013 6.0",
               "phase": "Phase 2: Marathon Cruise",
               "pace": "7:35 - 7:45 min/km",
               "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
@@ -375,7 +467,7 @@
             {
               "km": "Final 1.0 km",
               "phase": "Phase 3: Finish & Prehab",
-              "pace": "7:06 – 7:35 min/km",
+              "pace": "7:06 \u2013 7:35 min/km",
               "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
               "color": "#ff7700"
             }
@@ -404,24 +496,24 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "0.0 – 1.0 km",
+              "km": "0.0 \u2013 1.0 km",
               "phase": "Phase 1: Warmup",
-              "pace": "8:00 – 8:15 min/km",
+              "pace": "8:00 \u2013 8:15 min/km",
               "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
               "color": "#10b981"
             },
             {
-              "km": "1.0 – 3.7 km",
+              "km": "1.0 \u2013 3.7 km",
               "phase": "Phase 2: Main Cruise (Majority)",
               "pace": "7:50 - 8:10 min/km",
               "desc": "Main aerobic base cruise (RPE 3, 2.7 km). 168 SPM cadence lock for active vascular capillary flushing.",
               "color": "#00f5d4"
             },
             {
-              "km": "3.7 – 4.5 km",
+              "km": "3.7 \u2013 4.5 km",
               "phase": "Phase 3: Cooldown",
               "pace": "8:15+ min/km / Brisk Walk",
-              "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+              "desc": "Gradual deceleration to RPE 1\u20132 easing down to a brisk walk before post-run calf release.",
               "color": "#38bdf8"
             }
           ]
@@ -472,9 +564,9 @@
           "fueling": "Banana/toast 45 min before",
           "strategy_splits": [
             {
-              "km": "Km 0 – 2.0",
+              "km": "Km 0 \u2013 2.0",
               "phase": "Phase 1: Warm-up Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
               "color": "#10b981"
             },
@@ -537,7 +629,7 @@
             {
               "km": "Final 2.0 km",
               "phase": "Phase 3: Cool-down Flush",
-              "pace": "7:50 – 8:15 min/km",
+              "pace": "7:50 \u2013 8:15 min/km",
               "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
               "color": "#a855f7"
             }
@@ -589,24 +681,24 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "0.0 – 1.0 km",
+              "km": "0.0 \u2013 1.0 km",
               "phase": "Phase 1: Warmup",
-              "pace": "8:00 – 8:15 min/km",
+              "pace": "8:00 \u2013 8:15 min/km",
               "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
               "color": "#10b981"
             },
             {
-              "km": "1.0 – 4.7 km",
+              "km": "1.0 \u2013 4.7 km",
               "phase": "Phase 2: Main Cruise (Majority)",
               "pace": "7:15 - 7:30 min/km",
               "desc": "Main aerobic base cruise (RPE 3, 3.7 km). 168 SPM cadence lock for active vascular capillary flushing.",
               "color": "#00f5d4"
             },
             {
-              "km": "4.7 – 5.5 km",
+              "km": "4.7 \u2013 5.5 km",
               "phase": "Phase 3: Cooldown",
               "pace": "8:15+ min/km / Brisk Walk",
-              "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+              "desc": "Gradual deceleration to RPE 1\u20132 easing down to a brisk walk before post-run calf release.",
               "color": "#38bdf8"
             }
           ]
@@ -657,14 +749,14 @@
           "fueling": "1 Energy Gel at 45 min + water sips",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.0",
+              "km": "Km 0 \u2013 1.0",
               "phase": "Phase 1: Conservative Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
               "color": "#10b981"
             },
             {
-              "km": "Km 1.1 – 7.0",
+              "km": "Km 1.1 \u2013 7.0",
               "phase": "Phase 2: Marathon Cruise",
               "pace": "7:30 - 7:45 min/km",
               "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
@@ -673,7 +765,7 @@
             {
               "km": "Final 1.0 km",
               "phase": "Phase 3: Finish & Prehab",
-              "pace": "7:06 – 7:35 min/km",
+              "pace": "7:06 \u2013 7:35 min/km",
               "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
               "color": "#ff7700"
             }
@@ -686,7 +778,7 @@
       "phase": "Prep & Foundation",
       "start_date": "2026-08-31",
       "end_date": "2026-09-06",
-      "total_planned_km": 27,
+      "total_planned_km": 16,
       "is_deload": false,
       "focus": "First double-digit long run + hydration & salt capsule test",
       "workouts": [
@@ -702,24 +794,24 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "0.0 – 1.0 km",
+              "km": "0.0 \u2013 1.0 km",
               "phase": "Phase 1: Warmup",
-              "pace": "8:00 – 8:15 min/km",
+              "pace": "8:00 \u2013 8:15 min/km",
               "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
               "color": "#10b981"
             },
             {
-              "km": "1.0 – 4.2 km",
+              "km": "1.0 \u2013 4.2 km",
               "phase": "Phase 2: Main Cruise (Majority)",
               "pace": "7:50 - 8:10 min/km",
               "desc": "Main aerobic base cruise (RPE 3, 3.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
               "color": "#00f5d4"
             },
             {
-              "km": "4.2 – 5.0 km",
+              "km": "4.2 \u2013 5.0 km",
               "phase": "Phase 3: Cooldown",
               "pace": "8:15+ min/km / Brisk Walk",
-              "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+              "desc": "Gradual deceleration to RPE 1\u20132 easing down to a brisk walk before post-run calf release.",
               "color": "#38bdf8"
             }
           ]
@@ -770,9 +862,9 @@
           "fueling": "Carb snack pre-run",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.5",
+              "km": "Km 0 \u2013 1.5",
               "phase": "Phase 1: Warm-up Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
               "color": "#10b981"
             },
@@ -821,7 +913,7 @@
             {
               "km": "Final 1.5 km",
               "phase": "Phase 3: Cool-down Flush",
-              "pace": "7:50 – 8:15 min/km",
+              "pace": "7:50 \u2013 8:15 min/km",
               "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
               "color": "#a855f7"
             }
@@ -873,24 +965,24 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "0.0 – 1.0 km",
+              "km": "0.0 \u2013 1.0 km",
               "phase": "Phase 1: Warmup",
-              "pace": "8:00 – 8:15 min/km",
+              "pace": "8:00 \u2013 8:15 min/km",
               "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
               "color": "#10b981"
             },
             {
-              "km": "1.0 – 5.2 km",
+              "km": "1.0 \u2013 5.2 km",
               "phase": "Phase 2: Main Cruise (Majority)",
               "pace": "7:15 - 7:30 min/km",
               "desc": "Main aerobic base cruise (RPE 3, 4.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
               "color": "#00f5d4"
             },
             {
-              "km": "5.2 – 6.0 km",
+              "km": "5.2 \u2013 6.0 km",
               "phase": "Phase 3: Cooldown",
               "pace": "8:15+ min/km / Brisk Walk",
-              "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+              "desc": "Gradual deceleration to RPE 1\u20132 easing down to a brisk walk before post-run calf release.",
               "color": "#38bdf8"
             }
           ]
@@ -941,14 +1033,14 @@
           "fueling": "1 Gel at km 6 + 1 Salt capsule at km 5 + water",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.0",
+              "km": "Km 0 \u2013 1.0",
               "phase": "Phase 1: Conservative Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
               "color": "#10b981"
             },
             {
-              "km": "Km 1.1 – 9.0",
+              "km": "Km 1.1 \u2013 9.0",
               "phase": "Phase 2: Marathon Cruise",
               "pace": "7:30 - 7:45 min/km",
               "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
@@ -957,7 +1049,7 @@
             {
               "km": "Final 1.0 km",
               "phase": "Phase 3: Finish & Prehab",
-              "pace": "7:06 – 7:35 min/km",
+              "pace": "7:06 \u2013 7:35 min/km",
               "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
               "color": "#ff7700"
             }
@@ -970,7 +1062,7 @@
       "phase": "Prep & Foundation",
       "start_date": "2026-09-07",
       "end_date": "2026-09-13",
-      "total_planned_km": 20,
+      "total_planned_km": 25,
       "is_deload": true,
       "focus": "DELOAD WEEK 1: Neuromuscular recovery & soft-tissue adaptation",
       "workouts": [
@@ -986,24 +1078,24 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "0.0 – 0.8 km",
+              "km": "0.0 \u2013 0.8 km",
               "phase": "Phase 1: Warmup",
-              "pace": "8:00 – 8:15 min/km",
+              "pace": "8:00 \u2013 8:15 min/km",
               "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
               "color": "#10b981"
             },
             {
-              "km": "0.8 – 3.2 km",
+              "km": "0.8 \u2013 3.2 km",
               "phase": "Phase 2: Main Cruise (Majority)",
               "pace": "8:00 min/km",
               "desc": "Main aerobic base cruise (RPE 3, 2.4 km). 168 SPM cadence lock for active vascular capillary flushing.",
               "color": "#00f5d4"
             },
             {
-              "km": "3.2 – 4.0 km",
+              "km": "3.2 \u2013 4.0 km",
               "phase": "Phase 3: Cooldown",
               "pace": "8:15+ min/km / Brisk Walk",
-              "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+              "desc": "Gradual deceleration to RPE 1\u20132 easing down to a brisk walk before post-run calf release.",
               "color": "#38bdf8"
             }
           ]
@@ -1054,16 +1146,16 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "Km 0 – 2.0",
+              "km": "Km 0 \u2013 2.0",
               "phase": "Phase 1: Warm-up Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
               "color": "#10b981"
             },
             {
               "km": "1. 100m Stride 1",
               "phase": "Rep 1/4",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 1 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -1077,7 +1169,7 @@
             {
               "km": "3. 100m Stride 2",
               "phase": "Rep 2/4",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 2 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -1091,7 +1183,7 @@
             {
               "km": "5. 100m Stride 3",
               "phase": "Rep 3/4",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 3 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -1105,7 +1197,7 @@
             {
               "km": "7. 100m Stride 4",
               "phase": "Rep 4/4",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 4 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -1119,7 +1211,7 @@
             {
               "km": "Final 2.0 km",
               "phase": "Phase 3: Cool-down Flush",
-              "pace": "7:50 – 8:15 min/km",
+              "pace": "7:50 \u2013 8:15 min/km",
               "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
               "color": "#a855f7"
             }
@@ -1171,24 +1263,24 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "0.0 – 1.0 km",
+              "km": "0.0 \u2013 1.0 km",
               "phase": "Phase 1: Warmup",
-              "pace": "8:00 – 8:15 min/km",
+              "pace": "8:00 \u2013 8:15 min/km",
               "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
               "color": "#10b981"
             },
             {
-              "km": "1.0 – 4.2 km",
+              "km": "1.0 \u2013 4.2 km",
               "phase": "Phase 2: Main Cruise (Majority)",
               "pace": "7:25 - 7:40 min/km",
               "desc": "Main aerobic base cruise (RPE 3, 3.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
               "color": "#00f5d4"
             },
             {
-              "km": "4.2 – 5.0 km",
+              "km": "4.2 \u2013 5.0 km",
               "phase": "Phase 3: Cooldown",
               "pace": "8:15+ min/km / Brisk Walk",
-              "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+              "desc": "Gradual deceleration to RPE 1\u20132 easing down to a brisk walk before post-run calf release.",
               "color": "#38bdf8"
             }
           ]
@@ -1239,14 +1331,14 @@
           "fueling": "Water sips",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.0",
+              "km": "Km 0 \u2013 1.0",
               "phase": "Phase 1: Conservative Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
               "color": "#10b981"
             },
             {
-              "km": "Km 1.1 – 6.0",
+              "km": "Km 1.1 \u2013 6.0",
               "phase": "Phase 2: Marathon Cruise",
               "pace": "7:40 - 7:50 min/km",
               "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
@@ -1255,7 +1347,7 @@
             {
               "km": "Final 1.0 km",
               "phase": "Phase 3: Finish & Prehab",
-              "pace": "7:06 – 7:35 min/km",
+              "pace": "7:06 \u2013 7:35 min/km",
               "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
               "color": "#ff7700"
             }
@@ -1284,24 +1376,24 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "0.0 – 1.0 km",
+              "km": "0.0 \u2013 1.0 km",
               "phase": "Phase 1: Warmup",
-              "pace": "8:00 – 8:15 min/km",
+              "pace": "8:00 \u2013 8:15 min/km",
               "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
               "color": "#10b981"
             },
             {
-              "km": "1.0 – 4.2 km",
+              "km": "1.0 \u2013 4.2 km",
               "phase": "Phase 2: Main Cruise (Majority)",
               "pace": "7:50 min/km",
               "desc": "Main aerobic base cruise (RPE 3, 3.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
               "color": "#00f5d4"
             },
             {
-              "km": "4.2 – 5.0 km",
+              "km": "4.2 \u2013 5.0 km",
               "phase": "Phase 3: Cooldown",
               "pace": "8:15+ min/km / Brisk Walk",
-              "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+              "desc": "Gradual deceleration to RPE 1\u20132 easing down to a brisk walk before post-run calf release.",
               "color": "#38bdf8"
             }
           ]
@@ -1352,9 +1444,9 @@
           "fueling": "Carb snack",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.5",
+              "km": "Km 0 \u2013 1.5",
               "phase": "Phase 1: Warm-up Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
               "color": "#10b981"
             },
@@ -1417,7 +1509,7 @@
             {
               "km": "Final 2.0 km",
               "phase": "Phase 3: Cool-down Flush",
-              "pace": "7:50 – 8:15 min/km",
+              "pace": "7:50 \u2013 8:15 min/km",
               "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
               "color": "#a855f7"
             }
@@ -1469,24 +1561,24 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "0.0 – 1.0 km",
+              "km": "0.0 \u2013 1.0 km",
               "phase": "Phase 1: Warmup",
-              "pace": "8:00 – 8:15 min/km",
+              "pace": "8:00 \u2013 8:15 min/km",
               "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
               "color": "#10b981"
             },
             {
-              "km": "1.0 – 5.2 km",
+              "km": "1.0 \u2013 5.2 km",
               "phase": "Phase 2: Main Cruise (Majority)",
               "pace": "7:15 - 7:30 min/km",
               "desc": "Main aerobic base cruise (RPE 3, 4.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
               "color": "#00f5d4"
             },
             {
-              "km": "5.2 – 6.0 km",
+              "km": "5.2 \u2013 6.0 km",
               "phase": "Phase 3: Cooldown",
               "pace": "8:15+ min/km / Brisk Walk",
-              "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+              "desc": "Gradual deceleration to RPE 1\u20132 easing down to a brisk walk before post-run calf release.",
               "color": "#38bdf8"
             }
           ]
@@ -1537,14 +1629,14 @@
           "fueling": "2 Gels + 1 Salt capsule + water",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.0",
+              "km": "Km 0 \u2013 1.0",
               "phase": "Phase 1: Conservative Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
               "color": "#10b981"
             },
             {
-              "km": "Km 1.1 – 11.0",
+              "km": "Km 1.1 \u2013 11.0",
               "phase": "Phase 2: Marathon Cruise",
               "pace": "7:30 - 7:45 min/km",
               "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
@@ -1553,7 +1645,7 @@
             {
               "km": "Final 1.0 km",
               "phase": "Phase 3: Finish & Prehab",
-              "pace": "7:06 – 7:35 min/km",
+              "pace": "7:06 \u2013 7:35 min/km",
               "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
               "color": "#ff7700"
             }
@@ -1566,7 +1658,7 @@
       "phase": "Aerobic Base Building",
       "start_date": "2026-09-21",
       "end_date": "2026-09-27",
-      "total_planned_km": 33,
+      "total_planned_km": 34,
       "is_deload": false,
       "focus": "Pedder Road hill simulation workout #1",
       "workouts": [
@@ -1582,24 +1674,24 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "0.0 – 1.0 km",
+              "km": "0.0 \u2013 1.0 km",
               "phase": "Phase 1: Warmup",
-              "pace": "8:00 – 8:15 min/km",
+              "pace": "8:00 \u2013 8:15 min/km",
               "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
               "color": "#10b981"
             },
             {
-              "km": "1.0 – 4.2 km",
+              "km": "1.0 \u2013 4.2 km",
               "phase": "Phase 2: Main Cruise (Majority)",
               "pace": "7:50 min/km",
               "desc": "Main aerobic base cruise (RPE 3, 3.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
               "color": "#00f5d4"
             },
             {
-              "km": "4.2 – 5.0 km",
+              "km": "4.2 \u2013 5.0 km",
               "phase": "Phase 3: Cooldown",
               "pace": "8:15+ min/km / Brisk Walk",
-              "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+              "desc": "Gradual deceleration to RPE 1\u20132 easing down to a brisk walk before post-run calf release.",
               "color": "#38bdf8"
             }
           ]
@@ -1650,9 +1742,9 @@
           "fueling": "Carb snack",
           "strategy_splits": [
             {
-              "km": "Km 0 – 2.0",
+              "km": "Km 0 \u2013 2.0",
               "phase": "Phase 1: Warm-up Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
               "color": "#10b981"
             },
@@ -1729,7 +1821,7 @@
             {
               "km": "Final 2.0 km",
               "phase": "Phase 3: Cool-down Flush",
-              "pace": "7:50 – 8:15 min/km",
+              "pace": "7:50 \u2013 8:15 min/km",
               "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
               "color": "#a855f7"
             }
@@ -1781,14 +1873,14 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.0",
+              "km": "Km 0 \u2013 1.0",
               "phase": "Phase 1: Conservative Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
               "color": "#10b981"
             },
             {
-              "km": "Km 1.1 – 6.0",
+              "km": "Km 1.1 \u2013 6.0",
               "phase": "Phase 2: Marathon Cruise",
               "pace": "7:15 - 7:30 min/km",
               "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
@@ -1797,7 +1889,7 @@
             {
               "km": "Final 1.0 km",
               "phase": "Phase 3: Finish & Prehab",
-              "pace": "7:06 – 7:35 min/km",
+              "pace": "7:06 \u2013 7:35 min/km",
               "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
               "color": "#ff7700"
             }
@@ -1849,14 +1941,14 @@
           "fueling": "2 Gels (km 5, 10) + 1 Salt capsule (km 6) + 1L water",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.0",
+              "km": "Km 0 \u2013 1.0",
               "phase": "Phase 1: Conservative Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
               "color": "#10b981"
             },
             {
-              "km": "Km 1.1 – 13.0",
+              "km": "Km 1.1 \u2013 13.0",
               "phase": "Phase 2: Marathon Cruise",
               "pace": "7:30 - 7:45 min/km",
               "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
@@ -1865,7 +1957,7 @@
             {
               "km": "Final 1.0 km",
               "phase": "Phase 3: Finish & Prehab",
-              "pace": "7:06 – 7:35 min/km",
+              "pace": "7:06 \u2013 7:35 min/km",
               "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
               "color": "#ff7700"
             }
@@ -1894,24 +1986,24 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "0.0 – 1.0 km",
+              "km": "0.0 \u2013 1.0 km",
               "phase": "Phase 1: Warmup",
-              "pace": "8:00 – 8:15 min/km",
+              "pace": "8:00 \u2013 8:15 min/km",
               "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
               "color": "#10b981"
             },
             {
-              "km": "1.0 – 5.2 km",
+              "km": "1.0 \u2013 5.2 km",
               "phase": "Phase 2: Main Cruise (Majority)",
               "pace": "7:50 min/km",
               "desc": "Main aerobic base cruise (RPE 3, 4.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
               "color": "#00f5d4"
             },
             {
-              "km": "5.2 – 6.0 km",
+              "km": "5.2 \u2013 6.0 km",
               "phase": "Phase 3: Cooldown",
               "pace": "8:15+ min/km / Brisk Walk",
-              "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+              "desc": "Gradual deceleration to RPE 1\u20132 easing down to a brisk walk before post-run calf release.",
               "color": "#38bdf8"
             }
           ]
@@ -1962,23 +2054,23 @@
           "fueling": "Carb snack pre-run",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.5",
+              "km": "Km 0 \u2013 1.5",
               "phase": "Phase 1: Warm-up Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Easy aerobic warmup, activate glutes, loosen ankles & soleus (RPE 3)",
               "color": "#10b981"
             },
             {
-              "km": "Km 1.5 – 5.5",
+              "km": "Km 1.5 \u2013 5.5",
               "phase": "Phase 2: Marathon Pace Block",
               "pace": "6:25-6:35 min/km",
               "desc": "4.0 km continuous locked-in effort, 172+ SPM, 2:2 rhythmic breathing (RPE 6-7)",
               "color": "#ff7700"
             },
             {
-              "km": "Km 5.5 – 7.0",
+              "km": "Km 5.5 \u2013 7.0",
               "phase": "Phase 3: Cool-down Flush",
-              "pace": "7:50 – 8:15 min/km",
+              "pace": "7:50 \u2013 8:15 min/km",
               "desc": "1.5 km easy flush jog and walking transition to clear lactate (RPE 2)",
               "color": "#38bdf8"
             }
@@ -2030,14 +2122,14 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.0",
+              "km": "Km 0 \u2013 1.0",
               "phase": "Phase 1: Conservative Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
               "color": "#10b981"
             },
             {
-              "km": "Km 1.1 – 7.0",
+              "km": "Km 1.1 \u2013 7.0",
               "phase": "Phase 2: Marathon Cruise",
               "pace": "7:15 - 7:30 min/km",
               "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
@@ -2046,7 +2138,7 @@
             {
               "km": "Final 1.0 km",
               "phase": "Phase 3: Finish & Prehab",
-              "pace": "7:06 – 7:35 min/km",
+              "pace": "7:06 \u2013 7:35 min/km",
               "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
               "color": "#ff7700"
             }
@@ -2098,14 +2190,14 @@
           "fueling": "3 Gels + 2 Salt capsules + water",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.0",
+              "km": "Km 0 \u2013 1.0",
               "phase": "Phase 1: Conservative Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
               "color": "#10b981"
             },
             {
-              "km": "Km 1.1 – 15.0",
+              "km": "Km 1.1 \u2013 15.0",
               "phase": "Phase 2: Marathon Cruise",
               "pace": "7:30 - 7:45 min/km",
               "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
@@ -2114,7 +2206,7 @@
             {
               "km": "Final 1.0 km",
               "phase": "Phase 3: Finish & Prehab",
-              "pace": "7:06 – 7:35 min/km",
+              "pace": "7:06 \u2013 7:35 min/km",
               "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
               "color": "#ff7700"
             }
@@ -2127,7 +2219,7 @@
       "phase": "Aerobic Base Building",
       "start_date": "2026-10-05",
       "end_date": "2026-10-11",
-      "total_planned_km": 26,
+      "total_planned_km": 22,
       "is_deload": true,
       "focus": "DELOAD WEEK 2: Mid-Base 10K Time Trial Benchmark (Aim: Sub-59 min)",
       "workouts": [
@@ -2143,24 +2235,24 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "0.0 – 0.8 km",
+              "km": "0.0 \u2013 0.8 km",
               "phase": "Phase 1: Warmup",
-              "pace": "8:00 – 8:15 min/km",
+              "pace": "8:00 \u2013 8:15 min/km",
               "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
               "color": "#10b981"
             },
             {
-              "km": "0.8 – 3.2 km",
+              "km": "0.8 \u2013 3.2 km",
               "phase": "Phase 2: Main Cruise (Majority)",
               "pace": "8:00 min/km",
               "desc": "Main aerobic base cruise (RPE 3, 2.4 km). 168 SPM cadence lock for active vascular capillary flushing.",
               "color": "#00f5d4"
             },
             {
-              "km": "3.2 – 4.0 km",
+              "km": "3.2 \u2013 4.0 km",
               "phase": "Phase 3: Cooldown",
               "pace": "8:15+ min/km / Brisk Walk",
-              "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+              "desc": "Gradual deceleration to RPE 1\u20132 easing down to a brisk walk before post-run calf release.",
               "color": "#38bdf8"
             }
           ]
@@ -2211,9 +2303,9 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "Km 0 – 3.0",
+              "km": "Km 0 \u2013 3.0",
               "phase": "Phase 1: Warm-up Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
               "color": "#10b981"
             },
@@ -2262,7 +2354,7 @@
             {
               "km": "Final 3.0 km",
               "phase": "Phase 3: Cool-down Flush",
-              "pace": "7:50 – 8:15 min/km",
+              "pace": "7:50 \u2013 8:15 min/km",
               "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
               "color": "#a855f7"
             }
@@ -2314,16 +2406,16 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "Km 0 – 5.0",
+              "km": "Km 0 \u2013 5.0",
               "phase": "Phase 1: Warm-up Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
               "color": "#10b981"
             },
             {
               "km": "1. 100m Stride 1",
               "phase": "Rep 1/3",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 1 of 3: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -2337,7 +2429,7 @@
             {
               "km": "3. 100m Stride 2",
               "phase": "Rep 2/3",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 2 of 3: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -2351,7 +2443,7 @@
             {
               "km": "5. 100m Stride 3",
               "phase": "Rep 3/3",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 3 of 3: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -2365,7 +2457,7 @@
             {
               "km": "Final 5.0 km",
               "phase": "Phase 3: Cool-down Flush",
-              "pace": "7:50 – 8:15 min/km",
+              "pace": "7:50 \u2013 8:15 min/km",
               "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
               "color": "#a855f7"
             }
@@ -2417,23 +2509,23 @@
           "fueling": "Pre-race snack + water",
           "strategy_splits": [
             {
-              "km": "Km 1 – 2",
+              "km": "Km 1 \u2013 2",
               "phase": "Controlled Start",
-              "pace": "7:15 – 7:25 min/km",
+              "pace": "7:15 \u2013 7:25 min/km",
               "desc": "Disciplined start, resist surging with adrenaline, settle heart rate",
               "color": "#10b981"
             },
             {
-              "km": "Km 3 – 8",
+              "km": "Km 3 \u2013 8",
               "phase": "Target Pace Lock",
               "pace": "5:50 - 5:55 min/km race effort",
               "desc": "Locked-in goal cadence (170+ SPM), take sips of hydration every 2.5 km",
               "color": "#00f5d4"
             },
             {
-              "km": "Km 9 – 10",
+              "km": "Km 9 \u2013 10",
               "phase": "Negative Split Finish",
-              "pace": "7:00 – 7:06 min/km",
+              "pace": "7:00 \u2013 7:06 min/km",
               "desc": "Strong finish, maintain tall posture, empty the tank over final km",
               "color": "#ff3b00"
             }
@@ -2448,7 +2540,7 @@
       "end_date": "2026-10-18",
       "total_planned_km": 41.1,
       "is_deload": false,
-      "focus": "PROCAM SLAM #1: Vedanta Delhi Half Marathon (VDHM) — Non-Tapered Training Effort",
+      "focus": "PROCAM SLAM #1: Vedanta Delhi Half Marathon (VDHM) \u2014 Non-Tapered Training Effort",
       "workouts": [
         {
           "day": "Monday",
@@ -2462,24 +2554,24 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "0.0 – 1.0 km",
+              "km": "0.0 \u2013 1.0 km",
               "phase": "Phase 1: Warmup",
-              "pace": "8:00 – 8:15 min/km",
+              "pace": "8:00 \u2013 8:15 min/km",
               "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
               "color": "#10b981"
             },
             {
-              "km": "1.0 – 4.2 km",
+              "km": "1.0 \u2013 4.2 km",
               "phase": "Phase 2: Main Cruise (Majority)",
               "pace": "7:55 min/km",
               "desc": "Main aerobic base cruise (RPE 3, 3.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
               "color": "#00f5d4"
             },
             {
-              "km": "4.2 – 5.0 km",
+              "km": "4.2 \u2013 5.0 km",
               "phase": "Phase 3: Cooldown",
               "pace": "8:15+ min/km / Brisk Walk",
-              "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+              "desc": "Gradual deceleration to RPE 1\u20132 easing down to a brisk walk before post-run calf release.",
               "color": "#38bdf8"
             }
           ]
@@ -2530,16 +2622,16 @@
           "fueling": "Carb snack",
           "strategy_splits": [
             {
-              "km": "Km 0 – 2.0",
+              "km": "Km 0 \u2013 2.0",
               "phase": "Phase 1: Warm-up Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
               "color": "#10b981"
             },
             {
               "km": "1. 100m Stride 1",
               "phase": "Rep 1/4",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 1 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -2553,7 +2645,7 @@
             {
               "km": "3. 100m Stride 2",
               "phase": "Rep 2/4",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 2 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -2567,7 +2659,7 @@
             {
               "km": "5. 100m Stride 3",
               "phase": "Rep 3/4",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 3 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -2581,7 +2673,7 @@
             {
               "km": "7. 100m Stride 4",
               "phase": "Rep 4/4",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 4 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -2595,7 +2687,7 @@
             {
               "km": "Final 4.5 km",
               "phase": "Phase 3: Cool-down Flush",
-              "pace": "7:50 – 8:15 min/km",
+              "pace": "7:50 \u2013 8:15 min/km",
               "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
               "color": "#a855f7"
             }
@@ -2647,14 +2739,14 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.0",
+              "km": "Km 0 \u2013 1.0",
               "phase": "Phase 1: Conservative Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
               "color": "#10b981"
             },
             {
-              "km": "Km 1.1 – 7.0",
+              "km": "Km 1.1 \u2013 7.0",
               "phase": "Phase 2: Marathon Cruise",
               "pace": "7:15 - 7:30 min/km",
               "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
@@ -2663,7 +2755,7 @@
             {
               "km": "Final 1.0 km",
               "phase": "Phase 3: Finish & Prehab",
-              "pace": "7:06 – 7:35 min/km",
+              "pace": "7:06 \u2013 7:35 min/km",
               "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
               "color": "#ff7700"
             }
@@ -2715,23 +2807,23 @@
           "fueling": "3 Gels + 2 Salt capsules + on-course water",
           "strategy_splits": [
             {
-              "km": "Km 1 – 2",
+              "km": "Km 1 \u2013 2",
               "phase": "Controlled Start",
-              "pace": "7:15 – 7:25 min/km",
+              "pace": "7:15 \u2013 7:25 min/km",
               "desc": "Disciplined start, resist surging with adrenaline, settle heart rate",
               "color": "#10b981"
             },
             {
-              "km": "Km 3 – 18.1",
+              "km": "Km 3 \u2013 18.1",
               "phase": "Target Pace Lock",
               "pace": "7:20 - 7:35 min/km",
               "desc": "Locked-in goal cadence (170+ SPM), take sips of hydration every 2.5 km",
               "color": "#00f5d4"
             },
             {
-              "km": "Km 19.1 – 21.1",
+              "km": "Km 19.1 \u2013 21.1",
               "phase": "Negative Split Finish",
-              "pace": "7:00 – 7:06 min/km",
+              "pace": "7:00 \u2013 7:06 min/km",
               "desc": "Strong finish, maintain tall posture, empty the tank over final km",
               "color": "#ff3b00"
             }
@@ -2760,24 +2852,24 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "0.0 – 1.0 km",
+              "km": "0.0 \u2013 1.0 km",
               "phase": "Phase 1: Warmup",
-              "pace": "8:00 – 8:15 min/km",
+              "pace": "8:00 \u2013 8:15 min/km",
               "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
               "color": "#10b981"
             },
             {
-              "km": "1.0 – 5.2 km",
+              "km": "1.0 \u2013 5.2 km",
               "phase": "Phase 2: Main Cruise (Majority)",
               "pace": "7:50 min/km",
               "desc": "Main aerobic base cruise (RPE 3, 4.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
               "color": "#00f5d4"
             },
             {
-              "km": "5.2 – 6.0 km",
+              "km": "5.2 \u2013 6.0 km",
               "phase": "Phase 3: Cooldown",
               "pace": "8:15+ min/km / Brisk Walk",
-              "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+              "desc": "Gradual deceleration to RPE 1\u20132 easing down to a brisk walk before post-run calf release.",
               "color": "#38bdf8"
             }
           ]
@@ -2828,9 +2920,9 @@
           "fueling": "Carb snack",
           "strategy_splits": [
             {
-              "km": "Km 0 – 2.0",
+              "km": "Km 0 \u2013 2.0",
               "phase": "Phase 1: Warm-up Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Easy aerobic warmup on flat ground, dynamic ankle mobility (RPE 3)",
               "color": "#10b981"
             },
@@ -2891,7 +2983,7 @@
               "color": "#38bdf8"
             },
             {
-              "km": "Km 2.0 – 4.0",
+              "km": "Km 2.0 \u2013 4.0",
               "phase": "Phase 2: Continuous Tempo Block",
               "pace": "6:30 min/km",
               "desc": "2.0 km sustained threshold lock post-hills. Lock into 172+ SPM rhythm (RPE 7)",
@@ -2900,7 +2992,7 @@
             {
               "km": "Final 1.5 km",
               "phase": "Phase 3: Cool-down Flush",
-              "pace": "7:50 – 8:15 min/km",
+              "pace": "7:50 \u2013 8:15 min/km",
               "desc": "Easy recovery flush to clear lactate from calves and quads (RPE 2)",
               "color": "#a855f7"
             }
@@ -2952,14 +3044,14 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.0",
+              "km": "Km 0 \u2013 1.0",
               "phase": "Phase 1: Conservative Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
               "color": "#10b981"
             },
             {
-              "km": "Km 1.1 – 7.0",
+              "km": "Km 1.1 \u2013 7.0",
               "phase": "Phase 2: Marathon Cruise",
               "pace": "7:15 - 7:30 min/km",
               "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
@@ -2968,7 +3060,7 @@
             {
               "km": "Final 1.0 km",
               "phase": "Phase 3: Finish & Prehab",
-              "pace": "7:06 – 7:35 min/km",
+              "pace": "7:06 \u2013 7:35 min/km",
               "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
               "color": "#ff7700"
             }
@@ -3020,23 +3112,23 @@
           "fueling": "4 Gels + 2 Salt capsules + 1.5L water",
           "strategy_splits": [
             {
-              "km": "Km 1 – 2",
+              "km": "Km 1 \u2013 2",
               "phase": "Controlled Start",
-              "pace": "7:15 – 7:25 min/km",
+              "pace": "7:15 \u2013 7:25 min/km",
               "desc": "Disciplined start, resist surging with adrenaline, settle heart rate",
               "color": "#10b981"
             },
             {
-              "km": "Km 3 – 17",
+              "km": "Km 3 \u2013 17",
               "phase": "Target Pace Lock",
               "pace": "7:30 - 7:45 min/km",
               "desc": "Locked-in goal cadence (170+ SPM), take sips of hydration every 2.5 km",
               "color": "#00f5d4"
             },
             {
-              "km": "Km 18 – 20",
+              "km": "Km 18 \u2013 20",
               "phase": "Negative Split Finish",
-              "pace": "7:00 – 7:06 min/km",
+              "pace": "7:00 \u2013 7:06 min/km",
               "desc": "Strong finish, maintain tall posture, empty the tank over final km",
               "color": "#ff3b00"
             }
@@ -3065,24 +3157,24 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "0.0 – 1.0 km",
+              "km": "0.0 \u2013 1.0 km",
               "phase": "Phase 1: Warmup",
-              "pace": "8:00 – 8:15 min/km",
+              "pace": "8:00 \u2013 8:15 min/km",
               "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
               "color": "#10b981"
             },
             {
-              "km": "1.0 – 5.2 km",
+              "km": "1.0 \u2013 5.2 km",
               "phase": "Phase 2: Main Cruise (Majority)",
               "pace": "7:50 min/km",
               "desc": "Main aerobic base cruise (RPE 3, 4.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
               "color": "#00f5d4"
             },
             {
-              "km": "5.2 – 6.0 km",
+              "km": "5.2 \u2013 6.0 km",
               "phase": "Phase 3: Cooldown",
               "pace": "8:15+ min/km / Brisk Walk",
-              "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+              "desc": "Gradual deceleration to RPE 1\u20132 easing down to a brisk walk before post-run calf release.",
               "color": "#38bdf8"
             }
           ]
@@ -3133,9 +3225,9 @@
           "fueling": "Carb snack",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.5",
+              "km": "Km 0 \u2013 1.5",
               "phase": "Phase 1: Warm-up Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
               "color": "#10b981"
             },
@@ -3198,7 +3290,7 @@
             {
               "km": "Final 1.5 km",
               "phase": "Phase 3: Cool-down Flush",
-              "pace": "7:50 – 8:15 min/km",
+              "pace": "7:50 \u2013 8:15 min/km",
               "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
               "color": "#a855f7"
             }
@@ -3250,14 +3342,14 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.0",
+              "km": "Km 0 \u2013 1.0",
               "phase": "Phase 1: Conservative Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
               "color": "#10b981"
             },
             {
-              "km": "Km 1.1 – 8.0",
+              "km": "Km 1.1 \u2013 8.0",
               "phase": "Phase 2: Marathon Cruise",
               "pace": "7:15 - 7:30 min/km",
               "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
@@ -3266,7 +3358,7 @@
             {
               "km": "Final 1.0 km",
               "phase": "Phase 3: Finish & Prehab",
-              "pace": "7:06 – 7:35 min/km",
+              "pace": "7:06 \u2013 7:35 min/km",
               "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
               "color": "#ff7700"
             }
@@ -3318,23 +3410,23 @@
           "fueling": "4 Gels + 3 Salt capsules + 1.5L water",
           "strategy_splits": [
             {
-              "km": "Km 1 – 2",
+              "km": "Km 1 \u2013 2",
               "phase": "Controlled Start",
-              "pace": "7:15 – 7:25 min/km",
+              "pace": "7:15 \u2013 7:25 min/km",
               "desc": "Disciplined start, resist surging with adrenaline, settle heart rate",
               "color": "#10b981"
             },
             {
-              "km": "Km 3 – 19",
+              "km": "Km 3 \u2013 19",
               "phase": "Target Pace Lock",
               "pace": "7:30 - 7:45 min/km (Last 2k @ 7:06)",
               "desc": "Locked-in goal cadence (170+ SPM), take sips of hydration every 2.5 km",
               "color": "#00f5d4"
             },
             {
-              "km": "Km 20 – 22",
+              "km": "Km 20 \u2013 22",
               "phase": "Negative Split Finish",
-              "pace": "7:00 – 7:06 min/km",
+              "pace": "7:00 \u2013 7:06 min/km",
               "desc": "Strong finish, maintain tall posture, empty the tank over final km",
               "color": "#ff3b00"
             }
@@ -3363,23 +3455,23 @@
           "fueling": "Hydration with electrolytes",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.0",
+              "km": "Km 0 \u2013 1.0",
               "phase": "Phase 1: Warm-up Float",
-              "pace": "8:00 – 8:15 min/km",
+              "pace": "8:00 \u2013 8:15 min/km",
               "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 2)",
               "color": "#10b981"
             },
             {
-              "km": "Km 1.0 – 5.0",
+              "km": "Km 1.0 \u2013 5.0",
               "phase": "Phase 2: Conversational Recovery",
-              "pace": "7:50 – 8:10 min/km",
+              "pace": "7:50 \u2013 8:10 min/km",
               "desc": "Relaxed conversational recovery cruise, promoting capillary blood flow (RPE 2)",
               "color": "#38bdf8"
             },
             {
               "km": "Final 1.0 km",
               "phase": "Phase 3: Cool-down Flush",
-              "pace": "8:00 – 8:20 min/km",
+              "pace": "8:00 \u2013 8:20 min/km",
               "desc": "Gentle deceleration & walking transition to soft tissue stretches (RPE 2)",
               "color": "#a855f7"
             }
@@ -3431,23 +3523,23 @@
           "fueling": "Water + light carbs pre-run",
           "strategy_splits": [
             {
-              "km": "Km 0 – 2.0",
+              "km": "Km 0 \u2013 2.0",
               "phase": "Phase 1: Warm-up Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
               "color": "#10b981"
             },
             {
-              "km": "Km 2.0 – 6.0",
+              "km": "Km 2.0 \u2013 6.0",
               "phase": "Phase 2: Marathon Pace Block",
-              "pace": "7:00 – 7:06 min/km",
+              "pace": "7:00 \u2013 7:06 min/km",
               "desc": "4.0 km continuous locked at marathon goal pace, cadence 172+ SPM (RPE 5-6)",
               "color": "#ff7700"
             },
             {
-              "km": "Km 6.0 – 8.0",
+              "km": "Km 6.0 \u2013 8.0",
               "phase": "Phase 3: Cool-down Flush",
-              "pace": "7:50 – 8:15 min/km",
+              "pace": "7:50 \u2013 8:15 min/km",
               "desc": "2.0 km gentle aerobic flush jog to clear lactate (RPE 2)",
               "color": "#38bdf8"
             }
@@ -3499,23 +3591,23 @@
           "fueling": "Water as needed",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.5",
+              "km": "Km 0 \u2013 1.5",
               "phase": "Phase 1: Aerobic Ease-in",
-              "pace": "7:30 – 7:45 min/km",
+              "pace": "7:30 \u2013 7:45 min/km",
               "desc": "Controlled conversational start, settle heart rate into low Zone 2",
               "color": "#10b981"
             },
             {
-              "km": "Km 1.5 – 6.5",
+              "km": "Km 1.5 \u2013 6.5",
               "phase": "Phase 2: Steady Aerobic Cruise",
-              "pace": "7:15 – 7:30 min/km",
+              "pace": "7:15 \u2013 7:30 min/km",
               "desc": "Conversational rhythm cruising, building capillary network & aerobic stamina",
               "color": "#00f5d4"
             },
             {
               "km": "Final 1.5 km",
               "phase": "Phase 3: Cool-down",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Gentle deceleration & walking transition to soft tissue flush",
               "color": "#a855f7"
             }
@@ -3567,23 +3659,23 @@
           "fueling": "3 Gels (km 6, 12, 17) + 2 Salt capsules (km 6, 14) + water every 2.5 km",
           "strategy_splits": [
             {
-              "km": "Km 1 – 2",
+              "km": "Km 1 \u2013 2",
               "phase": "Controlled Start",
-              "pace": "7:15 – 7:25 min/km",
+              "pace": "7:15 \u2013 7:25 min/km",
               "desc": "Disciplined start, resist surging with adrenaline, settle heart rate",
               "color": "#10b981"
             },
             {
-              "km": "Km 3 – 19",
+              "km": "Km 3 \u2013 19",
               "phase": "Target Pace Lock",
               "pace": "7:30 - 7:45 min/km (Last 2k @ 7:06)",
               "desc": "Locked-in goal cadence (170+ SPM), take sips of hydration every 2.5 km",
               "color": "#00f5d4"
             },
             {
-              "km": "Km 20 – 22",
+              "km": "Km 20 \u2013 22",
               "phase": "Negative Split Finish",
-              "pace": "7:00 – 7:06 min/km",
+              "pace": "7:00 \u2013 7:06 min/km",
               "desc": "Strong finish, maintain tall posture, empty the tank over final km",
               "color": "#ff3b00"
             }
@@ -3596,15 +3688,15 @@
       "phase": "Peak & Race Specificity",
       "start_date": "2026-11-09",
       "end_date": "2026-11-15",
-      "total_planned_km": 46,
+      "total_planned_km": 38,
       "is_deload": false,
-      "focus": "Peak phase opening; Marathon Pace threshold blocks",
+      "focus": "Safe Volume Rebuild & Left Knee Care; 21 km Sunday Long Run",
       "workouts": [
         {
           "day": "Monday",
           "date": "2026-11-09",
           "type": "Recovery Run",
-          "distance_km": 6,
+          "distance_km": 5,
           "target_pace": "7:50 min/km",
           "rpe": 2,
           "description": "Recovery run.",
@@ -3612,24 +3704,24 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "0.0 – 1.0 km",
+              "km": "0.0 \u2013 1.0 km",
               "phase": "Phase 1: Warmup",
-              "pace": "8:00 – 8:15 min/km",
+              "pace": "8:00 \u2013 8:15 min/km",
               "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
               "color": "#10b981"
             },
             {
-              "km": "1.0 – 5.2 km",
+              "km": "1.0 \u2013 5.2 km",
               "phase": "Phase 2: Main Cruise (Majority)",
               "pace": "7:50 min/km",
               "desc": "Main aerobic base cruise (RPE 3, 4.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
               "color": "#00f5d4"
             },
             {
-              "km": "5.2 – 6.0 km",
+              "km": "5.2 \u2013 6.0 km",
               "phase": "Phase 3: Cooldown",
               "pace": "8:15+ min/km / Brisk Walk",
-              "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+              "desc": "Gradual deceleration to RPE 1\u20132 easing down to a brisk walk before post-run calf release.",
               "color": "#38bdf8"
             }
           ]
@@ -3671,32 +3763,32 @@
         {
           "day": "Wednesday",
           "date": "2026-11-11",
-          "type": "Speed (MP Tempo)",
-          "distance_km": 8,
+          "type": "Speed (MP Tempo Intro)",
+          "distance_km": 5,
           "target_pace": "7:00 - 7:06 min/km MP block",
           "rpe": 6,
-          "description": "2 km warmup, 4 km continuous @ Marathon Pace (7:00-7:06 min/km), 2 km cooldown.",
+          "description": "1.5 km warmup, 2.5 km @ Marathon Pace, 1 km cooldown.",
           "strength_prehab": "Dynamic stretches",
           "fueling": "Carb snack",
           "strategy_splits": [
             {
-              "km": "Km 0 – 2.0",
+              "km": "Km 0 \u2013 2.0",
               "phase": "Phase 1: Warm-up Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Easy aerobic warmup, activate glutes, loosen ankles & soleus (RPE 3)",
               "color": "#10b981"
             },
             {
-              "km": "Km 2.0 – 6.0",
+              "km": "Km 2.0 \u2013 6.0",
               "phase": "Phase 2: Marathon Pace Block",
               "pace": "7:00-7:06 min/km",
               "desc": "4.0 km continuous locked-in effort, 172+ SPM, 2:2 rhythmic breathing (RPE 6-7)",
               "color": "#ff7700"
             },
             {
-              "km": "Km 6.0 – 8.0",
+              "km": "Km 6.0 \u2013 8.0",
               "phase": "Phase 3: Cool-down Flush",
-              "pace": "7:50 – 8:15 min/km",
+              "pace": "7:50 \u2013 8:15 min/km",
               "desc": "2.0 km easy flush jog and walking transition to clear lactate (RPE 2)",
               "color": "#38bdf8"
             }
@@ -3740,22 +3832,22 @@
           "day": "Friday",
           "date": "2026-11-13",
           "type": "Mid-Week Aerobic",
-          "distance_km": 8,
-          "target_pace": "7:15 - 7:25 min/km",
+          "distance_km": 7,
+          "target_pace": "7:25 - 7:35 min/km",
           "rpe": 3,
           "description": "Aerobic rhythm run.",
           "strength_prehab": "Hip mobility",
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.0",
+              "km": "Km 0 \u2013 1.0",
               "phase": "Phase 1: Conservative Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
               "color": "#10b981"
             },
             {
-              "km": "Km 1.1 – 7.0",
+              "km": "Km 1.1 \u2013 7.0",
               "phase": "Phase 2: Marathon Cruise",
               "pace": "7:15 - 7:25 min/km",
               "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
@@ -3764,7 +3856,7 @@
             {
               "km": "Final 1.0 km",
               "phase": "Phase 3: Finish & Prehab",
-              "pace": "7:06 – 7:35 min/km",
+              "pace": "7:06 \u2013 7:35 min/km",
               "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
               "color": "#ff7700"
             }
@@ -3808,31 +3900,31 @@
           "day": "Sunday",
           "date": "2026-11-15",
           "type": "Long Run",
-          "distance_km": 24,
-          "target_pace": "7:30 - 7:45 min/km",
+          "distance_km": 21,
+          "target_pace": "7:35 - 7:45 min/km",
           "rpe": 4,
-          "description": "24 km Long Run. Gels every 40 mins + Salt capsules at km 6, 12, 18.",
+          "description": "21 km Half Marathon distance. Strict 7:35-7:45 pace to spare knees. 3 Gels + 2 Salt capsules.",
           "strength_prehab": "Post-run calf recovery",
           "fueling": "5 Gels + 3 Salt capsules + 1.5L water",
           "strategy_splits": [
             {
-              "km": "Km 1 – 2",
+              "km": "Km 1 \u2013 2",
               "phase": "Controlled Start",
-              "pace": "7:15 – 7:25 min/km",
+              "pace": "7:15 \u2013 7:25 min/km",
               "desc": "Disciplined start, resist surging with adrenaline, settle heart rate",
               "color": "#10b981"
             },
             {
-              "km": "Km 3 – 21",
+              "km": "Km 3 \u2013 21",
               "phase": "Target Pace Lock",
               "pace": "7:30 - 7:45 min/km",
               "desc": "Locked-in goal cadence (170+ SPM), take sips of hydration every 2.5 km",
               "color": "#00f5d4"
             },
             {
-              "km": "Km 22 – 24",
+              "km": "Km 22 \u2013 24",
               "phase": "Negative Split Finish",
-              "pace": "7:00 – 7:06 min/km",
+              "pace": "7:00 \u2013 7:06 min/km",
               "desc": "Strong finish, maintain tall posture, empty the tank over final km",
               "color": "#ff3b00"
             }
@@ -3845,9 +3937,9 @@
       "phase": "Peak & Race Specificity",
       "start_date": "2026-11-16",
       "end_date": "2026-11-22",
-      "total_planned_km": 40,
+      "total_planned_km": 42,
       "is_deload": false,
-      "focus": "HALF MARATHON RACE SIMULATION (Aim: 2:23-2:27)",
+      "focus": "Aerobic Stamina Extension: 23 km Sunday Long Run",
       "workouts": [
         {
           "day": "Monday",
@@ -3861,24 +3953,24 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "0.0 – 1.0 km",
+              "km": "0.0 \u2013 1.0 km",
               "phase": "Phase 1: Warmup",
-              "pace": "8:00 – 8:15 min/km",
+              "pace": "8:00 \u2013 8:15 min/km",
               "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
               "color": "#10b981"
             },
             {
-              "km": "1.0 – 4.2 km",
+              "km": "1.0 \u2013 4.2 km",
               "phase": "Phase 2: Main Cruise (Majority)",
               "pace": "8:00 min/km",
               "desc": "Main aerobic base cruise (RPE 3, 3.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
               "color": "#00f5d4"
             },
             {
-              "km": "4.2 – 5.0 km",
+              "km": "4.2 \u2013 5.0 km",
               "phase": "Phase 3: Cooldown",
               "pace": "8:15+ min/km / Brisk Walk",
-              "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+              "desc": "Gradual deceleration to RPE 1\u20132 easing down to a brisk walk before post-run calf release.",
               "color": "#38bdf8"
             }
           ]
@@ -3920,25 +4012,25 @@
         {
           "day": "Wednesday",
           "date": "2026-11-18",
-          "type": "Speed (Shakeout)",
-          "distance_km": 4,
-          "target_pace": "7:45 min/km + strides",
+          "type": "Speed (MP Tempo)",
+          "distance_km": 7,
+          "target_pace": "7:00 - 7:06 min/km",
           "rpe": 4,
-          "description": "4 km shakeout + 4x100m strides.",
+          "description": "1.5 km warmup, 4 km @ MP, 1.5 km cooldown.",
           "strength_prehab": "Dynamic stretches",
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "Km 0 – 4.0",
+              "km": "Km 0 \u2013 4.0",
               "phase": "Phase 1: Warm-up Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
               "color": "#10b981"
             },
             {
               "km": "1. 100m Stride 1",
               "phase": "Rep 1/4",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 1 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -3952,7 +4044,7 @@
             {
               "km": "3. 100m Stride 2",
               "phase": "Rep 2/4",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 2 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -3966,7 +4058,7 @@
             {
               "km": "5. 100m Stride 3",
               "phase": "Rep 3/4",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 3 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -3980,7 +4072,7 @@
             {
               "km": "7. 100m Stride 4",
               "phase": "Rep 4/4",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 4 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -3994,7 +4086,7 @@
             {
               "km": "Final 4.0 km",
               "phase": "Phase 3: Cool-down Flush",
-              "pace": "7:50 – 8:15 min/km",
+              "pace": "7:50 \u2013 8:15 min/km",
               "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
               "color": "#a855f7"
             }
@@ -4038,32 +4130,32 @@
           "day": "Friday",
           "date": "2026-11-20",
           "type": "Mid-Week Aerobic",
-          "distance_km": 6,
-          "target_pace": "7:20 min/km",
+          "distance_km": 7,
+          "target_pace": "7:20 - 7:30 min/km",
           "rpe": 3,
           "description": "Easy aerobic run.",
           "strength_prehab": "Dynamic mobility",
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "0.0 – 1.0 km",
+              "km": "0.0 \u2013 1.0 km",
               "phase": "Phase 1: Warmup",
-              "pace": "8:00 – 8:15 min/km",
+              "pace": "8:00 \u2013 8:15 min/km",
               "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
               "color": "#10b981"
             },
             {
-              "km": "1.0 – 5.2 km",
+              "km": "1.0 \u2013 5.2 km",
               "phase": "Phase 2: Main Cruise (Majority)",
               "pace": "7:20 min/km",
               "desc": "Main aerobic base cruise (RPE 3, 4.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
               "color": "#00f5d4"
             },
             {
-              "km": "5.2 – 6.0 km",
+              "km": "5.2 \u2013 6.0 km",
               "phase": "Phase 3: Cooldown",
               "pace": "8:15+ min/km / Brisk Walk",
-              "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+              "desc": "Gradual deceleration to RPE 1\u20132 easing down to a brisk walk before post-run calf release.",
               "color": "#38bdf8"
             }
           ]
@@ -4105,32 +4197,32 @@
         {
           "day": "Sunday",
           "date": "2026-11-22",
-          "type": "HM Simulation",
-          "distance_km": 21.1,
-          "target_pace": "Progressive: 7:10 -> 6:50 -> 6:35 min/km",
+          "type": "Long Run",
+          "distance_km": 23,
+          "target_pace": "7:35 - 7:45 min/km",
           "rpe": 8,
-          "description": "HALF MARATHON RACE SIMULATION (21.1 km): First 5 km @ 7:10, km 5-16 @ 6:45-6:55, km 16-21.1 @ 6:30-6:40. Target: 2:23:00-2:27:00.",
+          "description": "23 km Long Run. Last 2 km progressive to 7:06 min/km MP.",
           "strength_prehab": "Full post-race recovery protocol",
           "fueling": "3 Gels (km 6, 12, 17) + 2 Salt capsules + 1.2L water",
           "strategy_splits": [
             {
-              "km": "Km 1 – 2",
+              "km": "Km 1 \u2013 2",
               "phase": "Controlled Start",
-              "pace": "7:15 – 7:25 min/km",
+              "pace": "7:15 \u2013 7:25 min/km",
               "desc": "Disciplined start, resist surging with adrenaline, settle heart rate",
               "color": "#10b981"
             },
             {
-              "km": "Km 3 – 18.1",
+              "km": "Km 3 \u2013 18.1",
               "phase": "Target Pace Lock",
               "pace": "Progressive: 7:10 -> 6:50 -> 6:35 min/km",
               "desc": "Locked-in goal cadence (170+ SPM), take sips of hydration every 2.5 km",
               "color": "#00f5d4"
             },
             {
-              "km": "Km 19.1 – 21.1",
+              "km": "Km 19.1 \u2013 21.1",
               "phase": "Negative Split Finish",
-              "pace": "7:00 – 7:06 min/km",
+              "pace": "7:00 \u2013 7:06 min/km",
               "desc": "Strong finish, maintain tall posture, empty the tank over final km",
               "color": "#ff3b00"
             }
@@ -4143,9 +4235,9 @@
       "phase": "Peak & Race Specificity",
       "start_date": "2026-11-23",
       "end_date": "2026-11-29",
-      "total_planned_km": 32,
+      "total_planned_km": 34,
       "is_deload": true,
-      "focus": "DELOAD WEEK 3: Mid-program recovery, soft-tissue absorption post-HM simulation & glycogen reset",
+      "focus": "Pre-Peak Deload & Absorption: Musculoskeletal rest & tendon remodeling; 16 km LR",
       "workouts": [
         {
           "day": "Monday",
@@ -4159,24 +4251,24 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "0.0 – 1.0 km",
+              "km": "0.0 \u2013 1.0 km",
               "phase": "Phase 1: Warmup",
-              "pace": "8:00 – 8:15 min/km",
+              "pace": "8:00 \u2013 8:15 min/km",
               "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
               "color": "#10b981"
             },
             {
-              "km": "1.0 – 4.2 km",
+              "km": "1.0 \u2013 4.2 km",
               "phase": "Phase 2: Main Cruise (Majority)",
               "pace": "8:00 min/km",
               "desc": "Main aerobic base cruise (RPE 3, 3.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
               "color": "#00f5d4"
             },
             {
-              "km": "4.2 – 5.0 km",
+              "km": "4.2 \u2013 5.0 km",
               "phase": "Phase 3: Cooldown",
               "pace": "8:15+ min/km / Brisk Walk",
-              "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+              "desc": "Gradual deceleration to RPE 1\u20132 easing down to a brisk walk before post-run calf release.",
               "color": "#38bdf8"
             }
           ]
@@ -4219,7 +4311,7 @@
           "day": "Wednesday",
           "date": "2026-11-25",
           "type": "Speed (Strides)",
-          "distance_km": 5,
+          "distance_km": 6,
           "target_pace": "7:45 warmup, strides",
           "rpe": 5,
           "description": "2 km easy, 5x100m strides, 1.5 km easy.",
@@ -4227,16 +4319,16 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "Km 0 – 2.0",
+              "km": "Km 0 \u2013 2.0",
               "phase": "Phase 1: Warm-up Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
               "color": "#10b981"
             },
             {
               "km": "1. 100m Stride 1",
               "phase": "Rep 1/5",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 1 of 5: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -4250,7 +4342,7 @@
             {
               "km": "3. 100m Stride 2",
               "phase": "Rep 2/5",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 2 of 5: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -4264,7 +4356,7 @@
             {
               "km": "5. 100m Stride 3",
               "phase": "Rep 3/5",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 3 of 5: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -4278,7 +4370,7 @@
             {
               "km": "7. 100m Stride 4",
               "phase": "Rep 4/5",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 4 of 5: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -4292,7 +4384,7 @@
             {
               "km": "9. 100m Stride 5",
               "phase": "Rep 5/5",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 5 of 5: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -4306,7 +4398,7 @@
             {
               "km": "Final 2.0 km",
               "phase": "Phase 3: Cool-down Flush",
-              "pace": "7:50 – 8:15 min/km",
+              "pace": "7:50 \u2013 8:15 min/km",
               "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
               "color": "#a855f7"
             }
@@ -4350,7 +4442,7 @@
           "day": "Friday",
           "date": "2026-11-27",
           "type": "Mid-Week Aerobic",
-          "distance_km": 6,
+          "distance_km": 7,
           "target_pace": "7:25 min/km",
           "rpe": 3,
           "description": "Easy aerobic run.",
@@ -4358,24 +4450,24 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "0.0 – 1.0 km",
+              "km": "0.0 \u2013 1.0 km",
               "phase": "Phase 1: Warmup",
-              "pace": "8:00 – 8:15 min/km",
+              "pace": "8:00 \u2013 8:15 min/km",
               "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
               "color": "#10b981"
             },
             {
-              "km": "1.0 – 5.2 km",
+              "km": "1.0 \u2013 5.2 km",
               "phase": "Phase 2: Main Cruise (Majority)",
               "pace": "7:25 min/km",
               "desc": "Main aerobic base cruise (RPE 3, 4.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
               "color": "#00f5d4"
             },
             {
-              "km": "5.2 – 6.0 km",
+              "km": "5.2 \u2013 6.0 km",
               "phase": "Phase 3: Cooldown",
               "pace": "8:15+ min/km / Brisk Walk",
-              "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+              "desc": "Gradual deceleration to RPE 1\u20132 easing down to a brisk walk before post-run calf release.",
               "color": "#38bdf8"
             }
           ]
@@ -4418,7 +4510,7 @@
           "day": "Sunday",
           "date": "2026-11-29",
           "type": "Long Run",
-          "distance_km": 14,
+          "distance_km": 16,
           "target_pace": "7:35 - 7:45 min/km",
           "rpe": 3,
           "description": "Deload long run. Low heart rate, smooth cruising.",
@@ -4426,14 +4518,14 @@
           "fueling": "2 Gels + 1 Salt capsule + water",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.0",
+              "km": "Km 0 \u2013 1.0",
               "phase": "Phase 1: Conservative Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
               "color": "#10b981"
             },
             {
-              "km": "Km 1.1 – 13.0",
+              "km": "Km 1.1 \u2013 13.0",
               "phase": "Phase 2: Marathon Cruise",
               "pace": "7:35 - 7:45 min/km",
               "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
@@ -4442,7 +4534,7 @@
             {
               "km": "Final 1.0 km",
               "phase": "Phase 3: Finish & Prehab",
-              "pace": "7:06 – 7:35 min/km",
+              "pace": "7:06 \u2013 7:35 min/km",
               "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
               "color": "#ff7700"
             }
@@ -4455,9 +4547,9 @@
       "phase": "Peak & Race Specificity",
       "start_date": "2026-11-30",
       "end_date": "2026-12-06",
-      "total_planned_km": 50,
+      "total_planned_km": 46,
       "is_deload": false,
-      "focus": "High volume peak week; Pedder Road Hill Attack; 26 km Long Run volume builder",
+      "focus": "Build 2 Kickoff: Pedder Road Hill Attack & 25 km Long Run",
       "workouts": [
         {
           "day": "Monday",
@@ -4471,24 +4563,24 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "0.0 – 1.0 km",
+              "km": "0.0 \u2013 1.0 km",
               "phase": "Phase 1: Warmup",
-              "pace": "8:00 – 8:15 min/km",
+              "pace": "8:00 \u2013 8:15 min/km",
               "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
               "color": "#10b981"
             },
             {
-              "km": "1.0 – 5.2 km",
+              "km": "1.0 \u2013 5.2 km",
               "phase": "Phase 2: Main Cruise (Majority)",
               "pace": "7:55 min/km",
               "desc": "Main aerobic base cruise (RPE 3, 4.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
               "color": "#00f5d4"
             },
             {
-              "km": "5.2 – 6.0 km",
+              "km": "5.2 \u2013 6.0 km",
               "phase": "Phase 3: Cooldown",
               "pace": "8:15+ min/km / Brisk Walk",
-              "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+              "desc": "Gradual deceleration to RPE 1\u20132 easing down to a brisk walk before post-run calf release.",
               "color": "#38bdf8"
             }
           ]
@@ -4530,8 +4622,8 @@
         {
           "day": "Wednesday",
           "date": "2026-12-02",
-          "type": "Speed (Hill Attack)",
-          "distance_km": 9,
+          "type": "Speed (Hill Repeats)",
+          "distance_km": 8,
           "target_pace": "Uphill RPE 8, cooldown 7:45",
           "rpe": 8,
           "description": "2 km warmup, 6x90-sec hill repeats @ RPE 8 (Pedder Road prep), 2 km cooldown.",
@@ -4539,9 +4631,9 @@
           "fueling": "Carb snack",
           "strategy_splits": [
             {
-              "km": "Km 0 – 2.0",
+              "km": "Km 0 \u2013 2.0",
               "phase": "Phase 1: Warm-up Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
               "color": "#10b981"
             },
@@ -4632,7 +4724,7 @@
             {
               "km": "Final 2.0 km",
               "phase": "Phase 3: Cool-down Flush",
-              "pace": "7:50 – 8:15 min/km",
+              "pace": "7:50 \u2013 8:15 min/km",
               "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
               "color": "#a855f7"
             }
@@ -4676,7 +4768,7 @@
           "day": "Friday",
           "date": "2026-12-04",
           "type": "Mid-Week Aerobic",
-          "distance_km": 9,
+          "distance_km": 7,
           "target_pace": "7:15 - 7:30 min/km",
           "rpe": 3,
           "description": "Aerobic volume builder.",
@@ -4684,14 +4776,14 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.0",
+              "km": "Km 0 \u2013 1.0",
               "phase": "Phase 1: Conservative Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
               "color": "#10b981"
             },
             {
-              "km": "Km 1.1 – 8.0",
+              "km": "Km 1.1 \u2013 8.0",
               "phase": "Phase 2: Marathon Cruise",
               "pace": "7:15 - 7:30 min/km",
               "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
@@ -4700,7 +4792,7 @@
             {
               "km": "Final 1.0 km",
               "phase": "Phase 3: Finish & Prehab",
-              "pace": "7:06 – 7:35 min/km",
+              "pace": "7:06 \u2013 7:35 min/km",
               "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
               "color": "#ff7700"
             }
@@ -4744,7 +4836,7 @@
           "day": "Sunday",
           "date": "2026-12-06",
           "type": "Long Run",
-          "distance_km": 26,
+          "distance_km": 25,
           "target_pace": "7:30 - 7:45 min/km",
           "rpe": 5,
           "description": "26 km Long Run. Practice taking 5 full gels + 3 salt capsules.",
@@ -4752,23 +4844,23 @@
           "fueling": "5 Gels + 3 Salt capsules + 1.8L water",
           "strategy_splits": [
             {
-              "km": "Km 1 – 2",
+              "km": "Km 1 \u2013 2",
               "phase": "Controlled Start",
-              "pace": "7:15 – 7:25 min/km",
+              "pace": "7:15 \u2013 7:25 min/km",
               "desc": "Disciplined start, resist surging with adrenaline, settle heart rate",
               "color": "#10b981"
             },
             {
-              "km": "Km 3 – 23",
+              "km": "Km 3 \u2013 23",
               "phase": "Target Pace Lock",
               "pace": "7:30 - 7:45 min/km",
               "desc": "Locked-in goal cadence (170+ SPM), take sips of hydration every 2.5 km",
               "color": "#00f5d4"
             },
             {
-              "km": "Km 24 – 26",
+              "km": "Km 24 \u2013 26",
               "phase": "Negative Split Finish",
-              "pace": "7:00 – 7:06 min/km",
+              "pace": "7:00 \u2013 7:06 min/km",
               "desc": "Strong finish, maintain tall posture, empty the tank over final km",
               "color": "#ff3b00"
             }
@@ -4781,15 +4873,15 @@
       "phase": "Peak & Race Specificity",
       "start_date": "2026-12-07",
       "end_date": "2026-12-13",
-      "total_planned_km": 55,
+      "total_planned_km": 48,
       "is_deload": false,
-      "focus": "Heavy volume builder; 30 km Peak Distance Long Run",
+      "focus": "Pre-Kolkata High Distance Builder: 27 km Long Run",
       "workouts": [
         {
           "day": "Monday",
           "date": "2026-12-07",
           "type": "Recovery Run",
-          "distance_km": 7,
+          "distance_km": 6,
           "target_pace": "7:50 min/km",
           "rpe": 2,
           "description": "Recovery run.",
@@ -4797,14 +4889,14 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.0",
+              "km": "Km 0 \u2013 1.0",
               "phase": "Phase 1: Conservative Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
               "color": "#10b981"
             },
             {
-              "km": "Km 1.1 – 6.0",
+              "km": "Km 1.1 \u2013 6.0",
               "phase": "Phase 2: Marathon Cruise",
               "pace": "7:50 min/km",
               "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
@@ -4813,7 +4905,7 @@
             {
               "km": "Final 1.0 km",
               "phase": "Phase 3: Finish & Prehab",
-              "pace": "7:06 – 7:35 min/km",
+              "pace": "7:06 \u2013 7:35 min/km",
               "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
               "color": "#ff7700"
             }
@@ -4856,7 +4948,7 @@
         {
           "day": "Wednesday",
           "date": "2026-12-09",
-          "type": "Speed (Threshold Blocks)",
+          "type": "Speed (MP Tempo)",
           "distance_km": 8,
           "target_pace": "6:25 min/km tempo blocks",
           "rpe": 7,
@@ -4865,9 +4957,9 @@
           "fueling": "Carb snack",
           "strategy_splits": [
             {
-              "km": "Km 0 – 2.0",
+              "km": "Km 0 \u2013 2.0",
               "phase": "Phase 1: Warm-up Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
               "color": "#10b981"
             },
@@ -4916,7 +5008,7 @@
             {
               "km": "Final 1.5 km",
               "phase": "Phase 3: Cool-down Flush",
-              "pace": "7:50 – 8:15 min/km",
+              "pace": "7:50 \u2013 8:15 min/km",
               "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
               "color": "#a855f7"
             }
@@ -4960,7 +5052,7 @@
           "day": "Friday",
           "date": "2026-12-11",
           "type": "Mid-Week Aerobic",
-          "distance_km": 10,
+          "distance_km": 7,
           "target_pace": "7:15 - 7:30 min/km",
           "rpe": 3,
           "description": "Double-digit mid-week aerobic run.",
@@ -4968,14 +5060,14 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.0",
+              "km": "Km 0 \u2013 1.0",
               "phase": "Phase 1: Conservative Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
               "color": "#10b981"
             },
             {
-              "km": "Km 1.1 – 9.0",
+              "km": "Km 1.1 \u2013 9.0",
               "phase": "Phase 2: Marathon Cruise",
               "pace": "7:15 - 7:30 min/km",
               "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
@@ -4984,7 +5076,7 @@
             {
               "km": "Final 1.0 km",
               "phase": "Phase 3: Finish & Prehab",
-              "pace": "7:06 – 7:35 min/km",
+              "pace": "7:06 \u2013 7:35 min/km",
               "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
               "color": "#ff7700"
             }
@@ -5027,32 +5119,32 @@
         {
           "day": "Sunday",
           "date": "2026-12-13",
-          "type": "Peak Long Run",
-          "distance_km": 30,
-          "target_pace": "7:35 - 7:45 min/km (Last 3k @ 7:06)",
+          "type": "Long Run",
+          "distance_km": 27,
+          "target_pace": "7:35 - 7:45 min/km",
           "rpe": 6,
-          "description": "30 km Peak Distance Run. First 27 km @ 7:35 min/km, last 3 km @ Marathon Pace (7:06 min/km). Max time-on-feet conditioning.",
+          "description": "27 km High Distance Long Run. Steady fat-burning cruise before Kolkata mini-taper.",
           "strength_prehab": "Post-run calf recovery",
           "fueling": "6 Gels + 4 Salt capsules + 2L water",
           "strategy_splits": [
             {
-              "km": "Km 1 – 2",
+              "km": "Km 1 \u2013 2",
               "phase": "Controlled Start",
-              "pace": "7:15 – 7:25 min/km",
+              "pace": "7:15 \u2013 7:25 min/km",
               "desc": "Disciplined start, resist surging with adrenaline, settle heart rate",
               "color": "#10b981"
             },
             {
-              "km": "Km 3 – 27",
+              "km": "Km 3 \u2013 27",
               "phase": "Target Pace Lock",
               "pace": "7:35 - 7:45 min/km (Last 3k @ 7:06)",
               "desc": "Locked-in goal cadence (170+ SPM), take sips of hydration every 2.5 km",
               "color": "#00f5d4"
             },
             {
-              "km": "Km 28 – 30",
+              "km": "Km 28 \u2013 30",
               "phase": "Negative Split Finish",
-              "pace": "7:00 – 7:06 min/km",
+              "pace": "7:00 \u2013 7:06 min/km",
               "desc": "Strong finish, maintain tall posture, empty the tank over final km",
               "color": "#ff3b00"
             }
@@ -5065,40 +5157,40 @@
       "phase": "Peak & Race Specificity",
       "start_date": "2026-12-14",
       "end_date": "2026-12-20",
-      "total_planned_km": 49,
-      "is_deload": false,
-      "focus": "PROCAM SLAM #2: Tata Steel World 25K Kolkata — Marathon Pace Dress Rehearsal",
+      "total_planned_km": 39,
+      "is_deload": true,
+      "focus": "TSW Kolkata 25K: Race-Week Mini-Taper & Procam Slam #2 Dress Rehearsal",
       "workouts": [
         {
           "day": "Monday",
           "date": "2026-12-14",
           "type": "Recovery Run",
-          "distance_km": 6,
+          "distance_km": 5,
           "target_pace": "7:55 min/km",
           "rpe": 2,
-          "description": "Gentle recovery run.",
+          "description": "Light 5 km flush jog.",
           "strength_prehab": "Calf & hamstring flush",
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "0.0 – 1.0 km",
+              "km": "0.0 \u2013 1.0 km",
               "phase": "Phase 1: Warmup",
-              "pace": "8:00 – 8:15 min/km",
+              "pace": "8:00 \u2013 8:15 min/km",
               "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
               "color": "#10b981"
             },
             {
-              "km": "1.0 – 5.2 km",
+              "km": "1.0 \u2013 5.2 km",
               "phase": "Phase 2: Main Cruise (Majority)",
               "pace": "7:55 min/km",
               "desc": "Main aerobic base cruise (RPE 3, 4.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
               "color": "#00f5d4"
             },
             {
-              "km": "5.2 – 6.0 km",
+              "km": "5.2 \u2013 6.0 km",
               "phase": "Phase 3: Cooldown",
               "pace": "8:15+ min/km / Brisk Walk",
-              "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+              "desc": "Gradual deceleration to RPE 1\u20132 easing down to a brisk walk before post-run calf release.",
               "color": "#38bdf8"
             }
           ]
@@ -5140,25 +5232,25 @@
         {
           "day": "Wednesday",
           "date": "2026-12-16",
-          "type": "Pre-Race Easy + Strides",
-          "distance_km": 8,
-          "target_pace": "7:30 - 7:45 min/km",
+          "type": "Pre-Race Sharpening",
+          "distance_km": 5,
+          "target_pace": "7:30 min/km + 4x100m strides",
           "rpe": 6,
-          "description": "2 km warmup, 4x100m strides, 5.5 km easy shakeout before traveling to Kolkata.",
+          "description": "3 km easy + 4x100m strides + 1 km cooldown.",
           "strength_prehab": "Dynamic stretches",
           "fueling": "Carb snack",
           "strategy_splits": [
             {
-              "km": "Km 0 – 2.0",
+              "km": "Km 0 \u2013 2.0",
               "phase": "Phase 1: Warm-up Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
               "color": "#10b981"
             },
             {
               "km": "1. 100m Stride 1",
               "phase": "Rep 1/4",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 1 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -5172,7 +5264,7 @@
             {
               "km": "3. 100m Stride 2",
               "phase": "Rep 2/4",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 2 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -5186,7 +5278,7 @@
             {
               "km": "5. 100m Stride 3",
               "phase": "Rep 3/4",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 3 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -5200,7 +5292,7 @@
             {
               "km": "7. 100m Stride 4",
               "phase": "Rep 4/4",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 4 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -5214,7 +5306,7 @@
             {
               "km": "Final 5.5 km",
               "phase": "Phase 3: Cool-down Flush",
-              "pace": "7:50 – 8:15 min/km",
+              "pace": "7:50 \u2013 8:15 min/km",
               "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
               "color": "#a855f7"
             }
@@ -5258,22 +5350,22 @@
           "day": "Friday",
           "date": "2026-12-18",
           "type": "Mid-Week Aerobic",
-          "distance_km": 10,
-          "target_pace": "7:15 - 7:30 min/km",
+          "distance_km": 4,
+          "target_pace": "7:40 - 7:50 min/km",
           "rpe": 3,
-          "description": "Mid-week aerobic anchor.",
+          "description": "4 km easy travel shakeout to keep legs fresh.",
           "strength_prehab": "Hip mobility",
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.0",
+              "km": "Km 0 \u2013 1.0",
               "phase": "Phase 1: Conservative Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
               "color": "#10b981"
             },
             {
-              "km": "Km 1.1 – 9.0",
+              "km": "Km 1.1 \u2013 9.0",
               "phase": "Phase 2: Marathon Cruise",
               "pace": "7:15 - 7:30 min/km",
               "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
@@ -5282,7 +5374,7 @@
             {
               "km": "Final 1.0 km",
               "phase": "Phase 3: Finish & Prehab",
-              "pace": "7:06 – 7:35 min/km",
+              "pace": "7:06 \u2013 7:35 min/km",
               "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
               "color": "#ff7700"
             }
@@ -5327,30 +5419,30 @@
           "date": "2026-12-20",
           "type": "TSW Kolkata 25K",
           "distance_km": 25,
-          "target_pace": "First 15k @ 7:25, Last 10k @ 7:05 min/km",
+          "target_pace": "First 15k @ 7:25, Last 10k @ 7:06",
           "rpe": 6,
-          "description": "PROCAM SLAM #2: TATA STEEL WORLD 25K KOLKATA (25 km). Marathon Goal Pace Dress Rehearsal. First 15 km steady @ 7:25 min/km, last 10 km locked at Marathon Goal Pace (7:00-7:06 min/km). Target: ~3:00:00.",
+          "description": "PROCAM SLAM MILESTONE #2: Controlled MP Dress Rehearsal.",
           "strength_prehab": "Full post-run ice/foam roll & elevation",
           "fueling": "5 Gels + 3 Salt capsules + water",
           "strategy_splits": [
             {
-              "km": "Km 1 – 2",
+              "km": "Km 1 \u2013 2",
               "phase": "Controlled Start",
-              "pace": "7:15 – 7:25 min/km",
+              "pace": "7:15 \u2013 7:25 min/km",
               "desc": "Disciplined start, resist surging with adrenaline, settle heart rate",
               "color": "#10b981"
             },
             {
-              "km": "Km 3 – 22",
+              "km": "Km 3 \u2013 22",
               "phase": "Target Pace Lock",
               "pace": "First 15k @ 7:25, Last 10k @ 7:05 min/km",
               "desc": "Locked-in goal cadence (170+ SPM), take sips of hydration every 2.5 km",
               "color": "#00f5d4"
             },
             {
-              "km": "Km 23 – 25",
+              "km": "Km 23 \u2013 25",
               "phase": "Negative Split Finish",
-              "pace": "7:00 – 7:06 min/km",
+              "pace": "7:00 \u2013 7:06 min/km",
               "desc": "Strong finish, maintain tall posture, empty the tank over final km",
               "color": "#ff3b00"
             }
@@ -5363,40 +5455,40 @@
       "phase": "Peak & Race Specificity",
       "start_date": "2026-12-21",
       "end_date": "2026-12-27",
-      "total_planned_km": 36,
+      "total_planned_km": 46,
       "is_deload": true,
-      "focus": "DELOAD WEEK 4: Post-Kolkata 25K recovery, musculoskeletal absorption & pre-taper reset",
+      "focus": "Post-Kolkata Provisional Peak Week: Low Mid-Week + Provisional Sunday (30k Plan A vs 21k Plan B)",
       "workouts": [
         {
           "day": "Monday",
           "date": "2026-12-21",
           "type": "Recovery Run",
-          "distance_km": 5,
+          "distance_km": 4,
           "target_pace": "8:00 min/km",
           "rpe": 2,
-          "description": "Gentle recovery run.",
+          "description": "Gentle post-race shakeout.",
           "strength_prehab": "Gentle stretching",
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "0.0 – 1.0 km",
+              "km": "0.0 \u2013 1.0 km",
               "phase": "Phase 1: Warmup",
-              "pace": "8:00 – 8:15 min/km",
+              "pace": "8:00 \u2013 8:15 min/km",
               "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
               "color": "#10b981"
             },
             {
-              "km": "1.0 – 4.2 km",
+              "km": "1.0 \u2013 4.2 km",
               "phase": "Phase 2: Main Cruise (Majority)",
               "pace": "8:00 min/km",
               "desc": "Main aerobic base cruise (RPE 3, 3.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
               "color": "#00f5d4"
             },
             {
-              "km": "4.2 – 5.0 km",
+              "km": "4.2 \u2013 5.0 km",
               "phase": "Phase 3: Cooldown",
               "pace": "8:15+ min/km / Brisk Walk",
-              "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+              "desc": "Gradual deceleration to RPE 1\u20132 easing down to a brisk walk before post-run calf release.",
               "color": "#38bdf8"
             }
           ]
@@ -5438,25 +5530,25 @@
         {
           "day": "Wednesday",
           "date": "2026-12-23",
-          "type": "Speed (Strides)",
+          "type": "Easy Aerobic",
           "distance_km": 6,
-          "target_pace": "7:45 warmup, strides",
+          "target_pace": "7:35 min/km",
           "rpe": 5,
           "description": "2 km easy, 5x100m strides, 2 km easy.",
           "strength_prehab": "Dynamic prep",
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "Km 0 – 2.0",
+              "km": "Km 0 \u2013 2.0",
               "phase": "Phase 1: Warm-up Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
               "color": "#10b981"
             },
             {
               "km": "1. 100m Stride 1",
               "phase": "Rep 1/5",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 1 of 5: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -5470,7 +5562,7 @@
             {
               "km": "3. 100m Stride 2",
               "phase": "Rep 2/5",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 2 of 5: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -5484,7 +5576,7 @@
             {
               "km": "5. 100m Stride 3",
               "phase": "Rep 3/5",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 3 of 5: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -5498,7 +5590,7 @@
             {
               "km": "7. 100m Stride 4",
               "phase": "Rep 4/5",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 4 of 5: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -5512,7 +5604,7 @@
             {
               "km": "9. 100m Stride 5",
               "phase": "Rep 5/5",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 5 of 5: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -5526,7 +5618,7 @@
             {
               "km": "Final 2.0 km",
               "phase": "Phase 3: Cool-down Flush",
-              "pace": "7:50 – 8:15 min/km",
+              "pace": "7:50 \u2013 8:15 min/km",
               "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
               "color": "#a855f7"
             }
@@ -5570,22 +5662,22 @@
           "day": "Friday",
           "date": "2026-12-25",
           "type": "Mid-Week Aerobic",
-          "distance_km": 7,
-          "target_pace": "7:25 min/km",
+          "distance_km": 6,
+          "target_pace": "7:30 min/km + 3x100m strides",
           "rpe": 3,
           "description": "Easy aerobic run.",
           "strength_prehab": "Dynamic mobility",
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.0",
+              "km": "Km 0 \u2013 1.0",
               "phase": "Phase 1: Conservative Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
               "color": "#10b981"
             },
             {
-              "km": "Km 1.1 – 6.0",
+              "km": "Km 1.1 \u2013 6.0",
               "phase": "Phase 2: Marathon Cruise",
               "pace": "7:25 min/km",
               "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
@@ -5594,7 +5686,7 @@
             {
               "km": "Final 1.0 km",
               "phase": "Phase 3: Finish & Prehab",
-              "pace": "7:06 – 7:35 min/km",
+              "pace": "7:06 \u2013 7:35 min/km",
               "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
               "color": "#ff7700"
             }
@@ -5637,23 +5729,23 @@
         {
           "day": "Sunday",
           "date": "2026-12-27",
-          "type": "Long Run",
-          "distance_km": 16,
+          "type": "Provisional Peak Long Run",
+          "distance_km": 30,
           "target_pace": "7:35 - 7:45 min/km",
           "rpe": 3,
-          "description": "Deload long run. Easy, relaxed rhythm.",
+          "description": "Provisional Peak Run: Plan A is 30.0 km if feeling amazing; Plan B is chill 21.0 km cruise.",
           "strength_prehab": "Calf stretching",
           "fueling": "2 Gels + 1 Salt capsule + water",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.0",
+              "km": "Km 0 \u2013 1.0",
               "phase": "Phase 1: Conservative Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
               "color": "#10b981"
             },
             {
-              "km": "Km 1.1 – 15.0",
+              "km": "Km 1.1 \u2013 15.0",
               "phase": "Phase 2: Marathon Cruise",
               "pace": "7:35 - 7:45 min/km",
               "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
@@ -5662,7 +5754,7 @@
             {
               "km": "Final 1.0 km",
               "phase": "Phase 3: Finish & Prehab",
-              "pace": "7:06 – 7:35 min/km",
+              "pace": "7:06 \u2013 7:35 min/km",
               "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
               "color": "#ff7700"
             }
@@ -5691,24 +5783,24 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "0.0 – 1.0 km",
+              "km": "0.0 \u2013 1.0 km",
               "phase": "Phase 1: Warmup",
-              "pace": "8:00 – 8:15 min/km",
+              "pace": "8:00 \u2013 8:15 min/km",
               "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
               "color": "#10b981"
             },
             {
-              "km": "1.0 – 4.2 km",
+              "km": "1.0 \u2013 4.2 km",
               "phase": "Phase 2: Main Cruise (Majority)",
               "pace": "7:55 min/km",
               "desc": "Main aerobic base cruise (RPE 3, 3.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
               "color": "#00f5d4"
             },
             {
-              "km": "4.2 – 5.0 km",
+              "km": "4.2 \u2013 5.0 km",
               "phase": "Phase 3: Cooldown",
               "pace": "8:15+ min/km / Brisk Walk",
-              "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+              "desc": "Gradual deceleration to RPE 1\u20132 easing down to a brisk walk before post-run calf release.",
               "color": "#38bdf8"
             }
           ]
@@ -5751,7 +5843,7 @@
           "day": "Wednesday",
           "date": "2026-12-30",
           "type": "Speed (MP Sharpening)",
-          "distance_km": 5,
+          "distance_km": 6,
           "target_pace": "7:00 min/km MP block",
           "rpe": 5,
           "description": "1.5 km warmup, 2 km @ Marathon Pace (7:00 min/km), 1.5 km cooldown.",
@@ -5759,23 +5851,23 @@
           "fueling": "Carb snack",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.5",
+              "km": "Km 0 \u2013 1.5",
               "phase": "Phase 1: Warm-up Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Easy aerobic warmup, activate glutes, loosen ankles & soleus (RPE 3)",
               "color": "#10b981"
             },
             {
-              "km": "Km 1.5 – 3.5",
+              "km": "Km 1.5 \u2013 3.5",
               "phase": "Phase 2: Marathon Pace Block",
               "pace": "7:00 min/km",
               "desc": "2.0 km continuous locked-in effort, 172+ SPM, 2:2 rhythmic breathing (RPE 6-7)",
               "color": "#ff7700"
             },
             {
-              "km": "Km 3.5 – 5.0",
+              "km": "Km 3.5 \u2013 5.0",
               "phase": "Phase 3: Cool-down Flush",
-              "pace": "7:50 – 8:15 min/km",
+              "pace": "7:50 \u2013 8:15 min/km",
               "desc": "1.5 km easy flush jog and walking transition to clear lactate (RPE 2)",
               "color": "#38bdf8"
             }
@@ -5819,7 +5911,7 @@
           "day": "Friday",
           "date": "2027-01-01",
           "type": "Mid-Week Aerobic",
-          "distance_km": 7,
+          "distance_km": 6,
           "target_pace": "7:15 - 7:30 min/km",
           "rpe": 3,
           "description": "Light, springy aerobic run.",
@@ -5827,14 +5919,14 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.0",
+              "km": "Km 0 \u2013 1.0",
               "phase": "Phase 1: Conservative Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
               "color": "#10b981"
             },
             {
-              "km": "Km 1.1 – 6.0",
+              "km": "Km 1.1 \u2013 6.0",
               "phase": "Phase 2: Marathon Cruise",
               "pace": "7:15 - 7:30 min/km",
               "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
@@ -5843,7 +5935,7 @@
             {
               "km": "Final 1.0 km",
               "phase": "Phase 3: Finish & Prehab",
-              "pace": "7:06 – 7:35 min/km",
+              "pace": "7:06 \u2013 7:35 min/km",
               "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
               "color": "#ff7700"
             }
@@ -5895,14 +5987,14 @@
           "fueling": "3 Gels + 2 Salt capsules + water",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.0",
+              "km": "Km 0 \u2013 1.0",
               "phase": "Phase 1: Conservative Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
               "color": "#10b981"
             },
             {
-              "km": "Km 1.1 – 17.0",
+              "km": "Km 1.1 \u2013 17.0",
               "phase": "Phase 2: Marathon Cruise",
               "pace": "7:30 - 7:40 min/km",
               "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
@@ -5911,7 +6003,7 @@
             {
               "km": "Final 1.0 km",
               "phase": "Phase 3: Finish & Prehab",
-              "pace": "7:06 – 7:35 min/km",
+              "pace": "7:06 \u2013 7:35 min/km",
               "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
               "color": "#ff7700"
             }
@@ -5924,7 +6016,7 @@
       "phase": "Taper & Race Execution",
       "start_date": "2027-01-04",
       "end_date": "2027-01-10",
-      "total_planned_km": 26,
+      "total_planned_km": 25,
       "is_deload": true,
       "focus": "TAPER WEEK 2: 55% Volume Reduction; Final race gear rehearsal",
       "workouts": [
@@ -5940,24 +6032,24 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "0.0 – 0.8 km",
+              "km": "0.0 \u2013 0.8 km",
               "phase": "Phase 1: Warmup",
-              "pace": "8:00 – 8:15 min/km",
+              "pace": "8:00 \u2013 8:15 min/km",
               "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
               "color": "#10b981"
             },
             {
-              "km": "0.8 – 3.2 km",
+              "km": "0.8 \u2013 3.2 km",
               "phase": "Phase 2: Main Cruise (Majority)",
               "pace": "8:00 min/km",
               "desc": "Main aerobic base cruise (RPE 3, 2.4 km). 168 SPM cadence lock for active vascular capillary flushing.",
               "color": "#00f5d4"
             },
             {
-              "km": "3.2 – 4.0 km",
+              "km": "3.2 \u2013 4.0 km",
               "phase": "Phase 3: Cooldown",
               "pace": "8:15+ min/km / Brisk Walk",
-              "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+              "desc": "Gradual deceleration to RPE 1\u20132 easing down to a brisk walk before post-run calf release.",
               "color": "#38bdf8"
             }
           ]
@@ -6008,23 +6100,23 @@
           "fueling": "Carb snack",
           "strategy_splits": [
             {
-              "km": "Km 0 – 2.0",
+              "km": "Km 0 \u2013 2.0",
               "phase": "Phase 1: Warm-up Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Easy aerobic warmup, activate glutes, loosen ankles & soleus (RPE 3)",
               "color": "#10b981"
             },
             {
-              "km": "Km 2.0 – 3.5",
+              "km": "Km 2.0 \u2013 3.5",
               "phase": "Phase 2: Marathon Pace Block",
               "pace": "7:05 min/km",
               "desc": "1.5 km continuous locked-in effort, 172+ SPM, 2:2 rhythmic breathing (RPE 6-7)",
               "color": "#ff7700"
             },
             {
-              "km": "Km 3.5 – 5.0",
+              "km": "Km 3.5 \u2013 5.0",
               "phase": "Phase 3: Cool-down Flush",
-              "pace": "7:50 – 8:15 min/km",
+              "pace": "7:50 \u2013 8:15 min/km",
               "desc": "2.0 km easy flush jog and walking transition to clear lactate (RPE 2)",
               "color": "#38bdf8"
             }
@@ -6068,7 +6160,7 @@
           "day": "Friday",
           "date": "2027-01-08",
           "type": "Mid-Week Aerobic",
-          "distance_km": 5,
+          "distance_km": 4,
           "target_pace": "7:20 min/km + 3 strides",
           "rpe": 3,
           "description": "5 km easy with 3x100m strides.",
@@ -6076,16 +6168,16 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "Km 0 – 5.0",
+              "km": "Km 0 \u2013 5.0",
               "phase": "Phase 1: Warm-up Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
               "color": "#10b981"
             },
             {
               "km": "1. 100m Stride 1",
               "phase": "Rep 1/3",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 1 of 3: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -6099,7 +6191,7 @@
             {
               "km": "3. 100m Stride 2",
               "phase": "Rep 2/3",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 2 of 3: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -6113,7 +6205,7 @@
             {
               "km": "5. 100m Stride 3",
               "phase": "Rep 3/3",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 3 of 3: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -6127,7 +6219,7 @@
             {
               "km": "Final 5.0 km",
               "phase": "Phase 3: Cool-down Flush",
-              "pace": "7:50 – 8:15 min/km",
+              "pace": "7:50 \u2013 8:15 min/km",
               "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
               "color": "#a855f7"
             }
@@ -6174,19 +6266,19 @@
           "distance_km": 12,
           "target_pace": "7:30 - 7:40 min/km",
           "rpe": 3,
-          "description": "Final dress rehearsal: 12 km @ 7:30-7:40 min/km with Adidas Evo SL 2 and race vest.",
+          "description": "Final dress rehearsal: 12 km @ 7:30-7:40 min/km with Adidas Adizero EVO SL and race vest.",
           "strength_prehab": "Calf stretching",
           "fueling": "2 Gels + 1 Salt capsule + water",
           "strategy_splits": [
             {
-              "km": "Km 0 – 1.0",
+              "km": "Km 0 \u2013 1.0",
               "phase": "Phase 1: Conservative Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
               "color": "#10b981"
             },
             {
-              "km": "Km 1.1 – 11.0",
+              "km": "Km 1.1 \u2013 11.0",
               "phase": "Phase 2: Marathon Cruise",
               "pace": "7:30 - 7:40 min/km",
               "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
@@ -6195,7 +6287,7 @@
             {
               "km": "Final 1.0 km",
               "phase": "Phase 3: Finish & Prehab",
-              "pace": "7:06 – 7:35 min/km",
+              "pace": "7:06 \u2013 7:35 min/km",
               "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
               "color": "#ff7700"
             }
@@ -6208,7 +6300,7 @@
       "phase": "Taper & Race Execution",
       "start_date": "2027-01-11",
       "end_date": "2027-01-17",
-      "total_planned_km": 54.2,
+      "total_planned_km": 53.2,
       "is_deload": false,
       "focus": "RACE WEEK: TATA MUMBAI MARATHON 2027 (Sub-5:00:00 Target: 4:58:30)",
       "workouts": [
@@ -6224,24 +6316,24 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "0.0 – 0.8 km",
+              "km": "0.0 \u2013 0.8 km",
               "phase": "Phase 1: Warmup",
-              "pace": "8:00 – 8:15 min/km",
+              "pace": "8:00 \u2013 8:15 min/km",
               "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
               "color": "#10b981"
             },
             {
-              "km": "0.8 – 3.2 km",
+              "km": "0.8 \u2013 3.2 km",
               "phase": "Phase 2: Main Cruise (Majority)",
               "pace": "8:00 min/km",
               "desc": "Main aerobic base cruise (RPE 3, 2.4 km). 168 SPM cadence lock for active vascular capillary flushing.",
               "color": "#00f5d4"
             },
             {
-              "km": "3.2 – 4.0 km",
+              "km": "3.2 \u2013 4.0 km",
               "phase": "Phase 3: Cooldown",
               "pace": "8:15+ min/km / Brisk Walk",
-              "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+              "desc": "Gradual deceleration to RPE 1\u20132 easing down to a brisk walk before post-run calf release.",
               "color": "#38bdf8"
             }
           ]
@@ -6253,7 +6345,7 @@
           "distance_km": 0,
           "target_pace": "N/A",
           "rpe": 1,
-          "description": "Rest & Travel Packing (Vest, Gels, Salt Tabs, Shoes).",
+          "description": "Rest & Travel Packing (Vest, Gels, Salt Tabs, Adidas Adizero EVO SL shoes).",
           "strength_prehab": "Rest",
           "fueling": "Balanced meals",
           "strategy_splits": [
@@ -6292,24 +6384,24 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "0.0 – 0.8 km",
+              "km": "0.0 \u2013 0.8 km",
               "phase": "Phase 1: Warmup",
-              "pace": "8:00 – 8:15 min/km",
+              "pace": "8:00 \u2013 8:15 min/km",
               "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
               "color": "#10b981"
             },
             {
-              "km": "0.8 – 2.2 km",
+              "km": "0.8 \u2013 2.2 km",
               "phase": "Phase 2: Main Cruise (Majority)",
               "pace": "7:45 min/km + 2 strides",
               "desc": "Main aerobic base cruise (RPE 3, 1.4 km). 168 SPM cadence lock for active vascular capillary flushing.",
               "color": "#00f5d4"
             },
             {
-              "km": "2.2 – 3.0 km",
+              "km": "2.2 \u2013 3.0 km",
               "phase": "Phase 3: Cooldown",
               "pace": "8:15+ min/km / Brisk Walk",
-              "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+              "desc": "Gradual deceleration to RPE 1\u20132 easing down to a brisk walk before post-run calf release.",
               "color": "#38bdf8"
             }
           ]
@@ -6360,16 +6452,16 @@
           "fueling": "Water",
           "strategy_splits": [
             {
-              "km": "Km 0 – 4.0",
+              "km": "Km 0 \u2013 4.0",
               "phase": "Phase 1: Warm-up Float",
-              "pace": "7:45 – 8:00 min/km",
+              "pace": "7:45 \u2013 8:00 min/km",
               "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
               "color": "#10b981"
             },
             {
               "km": "1. 60m Stride 1",
               "phase": "Rep 1/3",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 1 of 3: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -6383,7 +6475,7 @@
             {
               "km": "3. 60m Stride 2",
               "phase": "Rep 2/3",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 2 of 3: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -6397,7 +6489,7 @@
             {
               "km": "5. 60m Stride 3",
               "phase": "Rep 3/3",
-              "pace": "5:20 – 5:45 min/km",
+              "pace": "5:20 \u2013 5:45 min/km",
               "desc": "Rep 3 of 3: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
               "color": "#ff3b00"
             },
@@ -6411,7 +6503,7 @@
             {
               "km": "Final 4.0 km",
               "phase": "Phase 3: Cool-down Flush",
-              "pace": "7:50 – 8:15 min/km",
+              "pace": "7:50 \u2013 8:15 min/km",
               "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
               "color": "#a855f7"
             }
@@ -6459,27 +6551,27 @@
           "target_pace": "7:05 min/km avg (Sub-5:00 Target: 4:58:30)",
           "rpe": 9,
           "description": "TATA MUMBAI MARATHON 2027: Gun off ~5:00 AM. km 0-10 @ 7:10-7:15, Pedder Rd #1 @ 7:25, Sea Link @ 7:02-7:06, Pedder Rd #2 @ 7:35, Finish sprint @ 6:55-7:00!",
-          "strength_prehab": "FINISH LINE MEDAL CELEBRATION! 🏅",
+          "strength_prehab": "FINISH LINE MEDAL CELEBRATION! \ud83c\udfc5",
           "fueling": "6 Gels + 5 Salt capsules + water sips every 15 mins",
           "strategy_splits": [
             {
-              "km": "Km 1 – 2",
+              "km": "Km 1 \u2013 2",
               "phase": "Controlled Start",
-              "pace": "7:15 – 7:25 min/km",
+              "pace": "7:15 \u2013 7:25 min/km",
               "desc": "Disciplined start, resist surging with adrenaline, settle heart rate",
               "color": "#10b981"
             },
             {
-              "km": "Km 3 – 39.195",
+              "km": "Km 3 \u2013 39.195",
               "phase": "Target Pace Lock",
               "pace": "7:05 min/km avg (Sub-5:00 Target: 4:58:30)",
               "desc": "Locked-in goal cadence (170+ SPM), take sips of hydration every 2.5 km",
               "color": "#00f5d4"
             },
             {
-              "km": "Km 40.195 – 42.195",
+              "km": "Km 40.195 \u2013 42.195",
               "phase": "Negative Split Finish",
-              "pace": "7:00 – 7:06 min/km",
+              "pace": "7:00 \u2013 7:06 min/km",
               "desc": "Strong finish, maintain tall posture, empty the tank over final km",
               "color": "#ff3b00"
             }

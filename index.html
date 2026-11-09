@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=3.9.3">
+  <link rel="stylesheet" href="styles.css?v=3.9.6">
 
   <!-- Immediate startup migration: purge phantom rest & strength day completions & bust stale SW -->
   <script>
@@ -63,7 +63,7 @@
         <button class="nav-tab-btn" data-tab="procam" role="tab">🏅 Procam Slam</button>
         
         <button class="nav-tab-btn" data-tab="strength" role="tab">💪 Strength & Prehab</button>
-        <button class="nav-tab-btn" data-tab="fueling" role="tab">⚡ Anti-Cramp Fueling</button>
+        <button class="nav-tab-btn" data-tab="fueling" role="tab">⚡ Fueling &amp; Gear</button>
         <button class="nav-tab-btn" data-tab="calculator" role="tab">⏱️ Pace Calculator</button>
         <button class="nav-tab-btn" data-tab="supabase" role="tab">🗄️ Database Hub</button>
       </nav>
@@ -103,6 +103,11 @@
         <button class="btn-icon" id="btn-strava-sync" onclick="triggerStravaSyncWorkflow()" style="border-color: rgba(252, 76, 2, 0.5); background: linear-gradient(135deg, rgba(252, 76, 2, 0.18), rgba(255, 140, 0, 0.15)); color: #fc4c02; font-weight: 800;" title="Instantly trigger GitHub Action to scrape Strava and sync workouts to Supabase">
           <span id="strava-sync-icon">⚡</span>
           <span id="strava-sync-label">Sync Strava</span>
+        </button>
+
+        <!-- Cadence Metronome Button -->
+        <button class="btn-icon" id="btn-web-metronome" onclick="toggleWebMetronome()" style="border-color: rgba(56, 189, 248, 0.4); background: rgba(56, 189, 248, 0.1); color: #38bdf8;" title="170 BPM Cadence Metronome">
+          <span>⏱️ Metronome</span>
         </button>
 
         <!-- Live Phone Simulator Button -->
@@ -182,6 +187,7 @@
       <div class="hero-card" id="hero-card-adherence" onclick="showAdherenceBreakdownModal()" style="cursor: pointer;" title="Click to view detailed Adherence & Possibility breakdown">
         <div class="metric-label">
           <span>Adherence</span>
+          <span id="metric-possibility-badge" class="badge" style="font-size: 0.65rem; padding: 0.15rem 0.45rem; border-radius: 999px; font-weight: 700; border: 1px solid rgba(16, 185, 129, 0.35); background: rgba(16, 185, 129, 0.18); color: #10b981;">100% Possible</span>
           <span>🎯</span>
         </div>
         <div class="metric-value" id="metric-adherence-pct" style="color: #10b981;">100%</div>
@@ -195,6 +201,25 @@
           <div class="progress-fill" id="metric-adherence-fill" style="width: 100%; background: linear-gradient(90deg, #10b981, #06b6d4);"></div>
         </div>
       </div>
+
+      <!-- Gear & Shoe Mileage Budget Card -->
+      <div class="hero-card" id="hero-card-gear" onclick="openGearLockerModal()" style="cursor: pointer;" title="Click to inspect Adidas Adizero EVO SL 10-Week Mileage Budget & Lifespan Ledger">
+        <div class="metric-label">
+          <span>Shoe Budget</span>
+          <span class="badge" style="font-size: 0.65rem; padding: 0.15rem 0.45rem; border-radius: 999px; font-weight: 700; border: 1px solid rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.2); color: #10b981;">Race Prime</span>
+          <span>👟</span>
+        </div>
+        <div class="metric-value" id="metric-shoe-name" style="font-size: 1.15rem; font-weight: 800; color: var(--text-main); margin: 0.2rem 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Adidas EVO SL</div>
+        <div class="metric-sub" id="metric-shoe-odometer">
+          Odometer: <strong id="shoe-current-km" style="color: #10b981;">0.0 km</strong> / <span id="shoe-target-km">275 km pre-race</span>
+        </div>
+        <div class="metric-sub" id="metric-shoe-status" style="font-size: 0.74rem; color: var(--text-dim); margin-top: 0.25rem;">
+          Lifecycle: <strong id="shoe-lifecycle-phase" style="color: #38bdf8;">🟢 Break-in (0–50k)</strong> • <strong>6.6mm Drop</strong>
+        </div>
+        <div class="progress-track" style="margin-top: 0.65rem;">
+          <div class="progress-fill" id="metric-shoe-fill" style="width: 0%; background: linear-gradient(90deg, #10b981, #06b6d4);"></div>
+        </div>
+      </div>
     </section>
 
     <!-- TAB 1: WEEKLY PLAN & SCHEDULE -->
@@ -202,6 +227,11 @@
       
       <!-- Phase Timeline Navigator -->
       <div class="phase-timeline" id="phase-timeline-container">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+
+      <!-- Periodization Mileage Ramp Chart -->
+      <div id="mileage-ramp-chart-container" class="mileage-ramp-wrapper">
         <!-- Rendered dynamically by app.js -->
       </div>
 
@@ -239,6 +269,11 @@
       <!-- Quick Week Jumper Bar -->
       <div class="week-jumper-bar" id="week-jumper-bar">
         <!-- Rendered by app.js -->
+      </div>
+
+      <!-- Today's Mission Daily Horizon Strip -->
+      <div id="today-horizon-container" class="today-horizon-wrapper">
+        <!-- Rendered dynamically by app.js -->
       </div>
 
       <!-- Weekly Cards Container -->
@@ -578,6 +613,107 @@
             </tr>
           </tbody>
         </table>
+
+        <!-- ADIDAS ADIZERO EVO SL: FOOTWEAR & MILEAGE BUDGET STRATEGY -->
+        <div style="margin-top: 2rem; border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.75rem;">
+            <div>
+              <div style="font-size: 0.75rem; font-weight: 800; color: #10b981; text-transform: uppercase; letter-spacing: 0.08em;">ACQUIRED WEEK 13 • PRIMARY RACE SHOE</div>
+              <h3 style="font-size: 1.4rem; font-weight: 800; margin-top: 0.2rem;">👟 Adidas Adizero EVO SL: Biomechanical &amp; Mileage Budget Blueprint</h3>
+            </div>
+            <button class="btn-icon" onclick="openGearLockerModal()" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4); color: var(--primary); font-weight: 800;">
+              <span>⚙️ Open Gear Locker &amp; Ledger</span>
+            </button>
+          </div>
+          <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;">
+            Tailored specifically for the athlete's sub-5:00 goal at Tata Mumbai Marathon. Combining 100% full-length Lightstrike Pro superfoam with a non-plated natural flex architecture to prevent the athlete's historical km 18–19 calf cramping barrier.
+          </p>
+
+          <div class="gear-specs-grid">
+            <div class="gear-spec-card">
+              <div class="gear-spec-title">Midsole Foam</div>
+              <div class="gear-spec-val" style="color: #10b981;">Lightstrike Pro</div>
+              <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.2rem;">100% full-length superfoam (85%+ return)</div>
+            </div>
+            <div class="gear-spec-card">
+              <div class="gear-spec-title">Plate Architecture</div>
+              <div class="gear-spec-val" style="color: #38bdf8;">Non-Plated</div>
+              <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.2rem;">Natural flex spares soleus &amp; Achilles</div>
+            </div>
+            <div class="gear-spec-card">
+              <div class="gear-spec-title">Stack &amp; Drop</div>
+              <div class="gear-spec-val" style="color: #fbbf24;">38mm / 6.6mm</div>
+              <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.2rem;">Comfortable drop for calf armor prehab</div>
+            </div>
+            <div class="gear-spec-card">
+              <div class="gear-spec-title">Weight &amp; Outsole</div>
+              <div class="gear-spec-val" style="color: #f472b6;">224g / Continental™</div>
+              <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.2rem;">High traction on coastal Marine Drive</div>
+            </div>
+          </div>
+
+          <h4 style="font-size: 1.1rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem;">10-Week Mileage Allocation Ledger (Weeks 13–22)</h4>
+          <table class="gear-ledger-table">
+            <thead>
+              <tr>
+                <th>Training Phase</th>
+                <th>Weeks</th>
+                <th>Prescribed Sessions in EVO SL</th>
+                <th>Allocated Km</th>
+                <th>Projected Odometer</th>
+                <th>Lifecycle Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Break-in &amp; Adaptation</strong></td>
+                <td>W13 – W14</td>
+                <td>Wed Speed (MP Intro/Tempo) + Sun Long Run (14–16 km)</td>
+                <td>26 – 32 km/wk</td>
+                <td>~58 km</td>
+                <td><span style="color: #10b981; font-weight: 700;">🟢 Break-In Complete</span></td>
+              </tr>
+              <tr>
+                <td><strong>Deload &amp; Mid-Build</strong></td>
+                <td>W15 – W16</td>
+                <td>Wed Hill Repeats + Sun Long Run (18–22 km)</td>
+                <td>24 – 36 km/wk</td>
+                <td>~118 km</td>
+                <td><span style="color: #38bdf8; font-weight: 700;">🔵 Mid-Build Cushion</span></td>
+              </tr>
+              <tr>
+                <td><strong>Peak Specificity &amp; Sim</strong></td>
+                <td>W17 – W19</td>
+                <td>Wed MP Sharpening + Sun Long Runs + <strong>TSW Kolkata 25K</strong></td>
+                <td>32 – 42 km/wk</td>
+                <td>~230 km</td>
+                <td><span style="color: #f59e0b; font-weight: 800;">🟡 GOLDEN RACE WINDOW</span></td>
+              </tr>
+              <tr>
+                <td><strong>Taper &amp; Dress Rehearsal</strong></td>
+                <td>W20 – W21</td>
+                <td>Wed Strides + Sun 16k &amp; Sun 12k Dress Rehearsal</td>
+                <td>18 – 25 km/wk</td>
+                <td>~275 km</td>
+                <td><span style="color: #f59e0b; font-weight: 800;">🟡 Race Morning Prime</span></td>
+              </tr>
+              <tr>
+                <td><strong>Tata Mumbai Marathon</strong></td>
+                <td>W22 (Jan 17)</td>
+                <td>42.195 km Goal Race (Target: 4:58:30)</td>
+                <td>42.2 km</td>
+                <td><strong>~317 km</strong></td>
+                <td><span style="color: #10b981; font-weight: 800;">🏆 Marathon Finish Locked</span></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div style="margin-top: 1.25rem; background: rgba(0,0,0,0.25); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem 1.25rem; font-size: 0.85rem; line-height: 1.5;">
+            <div style="font-weight: 700; color: #fbbf24; margin-bottom: 0.3rem;">🔄 Two-Shoe Tactical Rotation Rule:</div>
+            • <strong>Adidas Adizero EVO SL:</strong> Reserved exclusively for Wednesday Quality/Speed Sessions, Sunday Long Runs, the TSW Kolkata 25K Race Simulation, and Race Day.<br>
+            • <strong>Daily Recovery Trainer:</strong> Wear for Monday Short Recovery Runs (4–6 km) and light shakeouts. This spares ~90 km of unnecessary pavement pounding on the EVO SL, ensuring optimal Lightstrike Pro bounce is preserved for race morning!
+          </div>
+        </div>
       </div>
     </section>
 
@@ -733,6 +869,7 @@
   <!-- Run Upload & Strava Ingestion Modal -->
   <div class="modal-overlay" id="run-upload-modal" onclick="if(event.target===this) closeRunUploadModal()">
     <div class="modal-content" style="max-width: 680px;">
+      <div class="bottom-sheet-handle"></div>
       <button class="modal-close-btn" onclick="closeRunUploadModal()">✕</button>
       <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
         <span style="font-size: 1.8rem;">📥</span>
@@ -840,14 +977,21 @@
           </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 0.75rem; margin-bottom: 1rem;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1.8fr; gap: 0.75rem; margin-bottom: 1rem;">
           <div>
             <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-dim); margin-bottom: 0.3rem;">AVG HEART RATE (BPM)</label>
             <input type="number" id="manual-run-hr" placeholder="e.g. 144" class="search-input" style="width: 100%;">
           </div>
           <div>
+            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-dim); margin-bottom: 0.3rem;">SHOE / GEAR USED</label>
+            <select id="manual-run-shoe" class="search-input" style="width: 100%; background: var(--bg-surface);">
+              <option value="adidas-evo-sl" selected>👟 Adidas Adizero EVO SL</option>
+              <option value="daily-trainer">👟 Daily Recovery Trainer</option>
+            </select>
+          </div>
+          <div>
             <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-dim); margin-bottom: 0.3rem;">ATHLETE NOTES (Cramps, Hydration, Shoes)</label>
-            <input type="text" id="manual-run-notes" placeholder="e.g. Evo SL 2 felt great, 1 salt cap @ km 6, zero calf tightness" class="search-input" style="width: 100%;">
+            <input type="text" id="manual-run-notes" placeholder="e.g. Evo SL felt explosive, zero calf cramp, 1 gel @ km 8" class="search-input" style="width: 100%;">
           </div>
         </div>
 
@@ -960,6 +1104,18 @@
     <!-- Dynamic Real-Time Training Horizon Bar -->
     <div id="coach-horizon-bar" class="coach-horizon-bar">
       <!-- Populated dynamically by updateVegaHorizonBar() -->
+    </div>
+
+    <!-- Dedicated Run Sync & Vega Analyze Preset Action Bar -->
+    <div id="vega-run-sync-bar" class="vega-run-sync-bar">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <button id="vega-sync-run-btn" class="action-pill-btn vega-preset-sync-btn" onclick="syncAndPullLatestRunForVega()" title="Sync newest runs and pull latest workout">
+          <span>🔄</span> <span>Sync Latest Run</span>
+        </button>
+      </div>
+      <div id="vega-latest-run-action-slot" style="display: inline-flex; align-items: center; gap: 0.4rem;">
+        <!-- Dynamically rendered: either '✨ View Vega Analysis' or '⚡ Vega Analyze' -->
+      </div>
     </div>
 
     <!-- Quick Triage Chips by Category -->
@@ -1313,7 +1469,10 @@
           <div style="font-size: 0.72rem; font-weight: 800; color: #38bdf8; text-transform: uppercase; letter-spacing: 0.08em;">
             🥁 Cadence Metronome Mode
           </div>
-          <span style="font-size: 0.72rem; color: #e5a93c; font-weight: 800;">AUTO SYNC (170 SPM)</span>
+          <div style="display: flex; gap: 0.4rem; align-items: center;">
+            <span style="font-size: 0.72rem; color: #e5a93c; font-weight: 800;">AUTO SYNC (170 SPM)</span>
+            <button id="btn-web-metronome" class="btn-icon" onclick="toggleWebMetronome()" style="padding: 0.15rem 0.5rem; font-size: 0.65rem; background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: none; border-radius: 4px; cursor: pointer;">START</button>
+          </div>
         </div>
         <select id="audio-cadence-select" class="kold-select">
           <option value="AUTO" selected>⚡ Auto-Pace Sync (Smart Governor — shifts BPM based on live pace)</option>
@@ -1581,6 +1740,133 @@
     </div>
   </div>
 
+  <!-- Athlete Gear Locker & Shoe Budget Modal -->
+  <div class="modal-overlay" id="gear-locker-modal" onclick="if(event.target===this) closeGearLockerModal()">
+    <div class="modal-content" style="max-width: 680px; background: #070d14; border: 1px solid rgba(16, 185, 129, 0.45); box-shadow: 0 25px 70px rgba(0,0,0,0.9), 0 0 35px rgba(16, 185, 129, 0.2);">
+      <button class="modal-close-btn" onclick="closeGearLockerModal()">✕</button>
+
+      <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem;">
+        <div style="width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); font-size: 1.5rem;">
+          👟
+        </div>
+        <div>
+          <h2 style="margin: 0; font-size: 1.35rem; font-weight: 800; color: #fff;">Athlete Gear Locker &amp; Shoe Budget</h2>
+          <div style="font-size: 0.8rem; color: #94a3b8;">10-Week Mileage Allocation &amp; Biomechanical Lifespan Ledger</div>
+        </div>
+      </div>
+
+      <!-- Shoe Hero Banner -->
+      <div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(6, 182, 212, 0.08)); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem;">
+          <div>
+            <div style="font-size: 0.72rem; font-weight: 800; color: #10b981; text-transform: uppercase; letter-spacing: 0.08em;">PRIMARY RACE &amp; WORKOUT SHOE</div>
+            <div style="font-size: 1.5rem; font-weight: 800; color: #fff; margin: 0.15rem 0;">Adidas Adizero EVO SL</div>
+            <div style="font-size: 0.82rem; color: #cbd5e1;">Acquired: Week 13 Kickoff (Nov 9, 2026) • Non-Plated Lightstrike Pro Super-Trainer</div>
+          </div>
+          <span style="font-size: 0.75rem; padding: 0.25rem 0.65rem; border-radius: 999px; font-weight: 800; background: #10b981; color: #000;">Active In Rotation</span>
+        </div>
+
+        <div class="gear-specs-grid" style="margin-top: 1rem;">
+          <div class="gear-spec-card">
+            <div class="gear-spec-title">Midsole Foam</div>
+            <div class="gear-spec-val" style="color: #10b981;">Lightstrike Pro</div>
+            <div style="font-size: 0.7rem; color: #94a3b8; margin-top: 0.2rem;">100% full-length PEBA</div>
+          </div>
+          <div class="gear-spec-card">
+            <div class="gear-spec-title">Plate Architecture</div>
+            <div class="gear-spec-val" style="color: #38bdf8;">Non-Plated</div>
+            <div style="font-size: 0.7rem; color: #94a3b8; margin-top: 0.2rem;">Natural flex; zero calf torque</div>
+          </div>
+          <div class="gear-spec-card">
+            <div class="gear-spec-title">Stack &amp; Drop</div>
+            <div class="gear-spec-val" style="color: #fbbf24;">38mm / 6.6mm</div>
+            <div style="font-size: 0.7rem; color: #94a3b8; margin-top: 0.2rem;">Optimal soleus relief</div>
+          </div>
+          <div class="gear-spec-card">
+            <div class="gear-spec-title">Weight &amp; Grip</div>
+            <div class="gear-spec-val" style="color: #f472b6;">224g / Continental™</div>
+            <div style="font-size: 0.7rem; color: #94a3b8; margin-top: 0.2rem;">Lightweight race weapon</div>
+          </div>
+        </div>
+
+        <!-- Live Odometer Progress Bar -->
+        <div style="margin-top: 1rem;">
+          <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 700; margin-bottom: 0.35rem;">
+            <span>Current Odometer: <strong id="modal-shoe-current-km" style="color: #10b981;">0.0 km</strong></span>
+            <span>Target Pre-Race: <strong style="color: #fbbf24;">275 km</strong> (Max 350 km)</span>
+          </div>
+          <div class="progress-track" style="height: 10px; background: rgba(0,0,0,0.5);">
+            <div class="progress-fill" id="modal-shoe-fill" style="width: 0%; height: 100%; background: linear-gradient(90deg, #10b981, #06b6d4);"></div>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.68rem; color: #64748b; margin-top: 0.3rem;">
+            <span>0k (Unboxing)</span>
+            <span>50k (Break-In)</span>
+            <span>150k (Sweet Spot Entry)</span>
+            <span>275k (Race Morning)</span>
+            <span>350k (Upper Sweet Spot)</span>
+            <span>600k (Retire)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Biomechanical Calf Cramp Defense Callout -->
+      <div style="background: rgba(255, 140, 0, 0.08); border: 1px solid rgba(255, 140, 0, 0.3); border-radius: 10px; padding: 0.85rem 1rem; margin-bottom: 1.25rem;">
+        <div style="font-size: 0.82rem; font-weight: 800; color: #ffb703; margin-bottom: 0.25rem;">
+          🛡️ Biomechanical Insight: Why Adidas EVO SL Beats Stiff Carbon Shoes
+        </div>
+        <div style="font-size: 0.8rem; color: #e2e8f0; line-height: 1.45;">
+          Rigid carbon plates act as high-torque lever arms that force the gastrocnemius, soleus, and Achilles tendon to endure immense eccentric strain over 42 kilometers, directly causing the runner's historical km 18–19 cramping. The non-plated Adidas Adizero EVO SL preserves natural foot flex while delivering the exact same €500 Lightstrike Pro superfoam bounce, keeping the calves compliant and fatigue-free!
+        </div>
+      </div>
+
+      <!-- 10-Week Mileage Allocation Ledger Table -->
+      <div style="margin-bottom: 1.25rem;">
+        <h4 style="font-size: 0.95rem; font-weight: 800; color: #fff; margin-bottom: 0.5rem;">📅 Week-by-Week Mileage Allocation Ledger (Weeks 13–22)</h4>
+        <div style="max-height: 240px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px;">
+          <table class="gear-ledger-table" style="margin-top: 0;">
+            <thead>
+              <tr>
+                <th>Week</th>
+                <th>Phase</th>
+                <th>Prescribed Sessions</th>
+                <th>Evo SL Km</th>
+                <th>Cumul. Km</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="gear-ledger-tbody">
+              <!-- Rendered dynamically by app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Manual Odometer Calibration -->
+      <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 0.85rem 1rem; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap;">
+        <div>
+          <div style="font-size: 0.82rem; font-weight: 800; color: #fff;">⚙️ Calibrate Initial / Manual Shoe Odometer</div>
+          <div style="font-size: 0.72rem; color: #94a3b8;">If you've already logged test runs on these shoes outside the app, enter total kilometers here.</div>
+        </div>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <input type="number" step="0.1" id="shoe-manual-odometer-input" placeholder="0.0" class="search-input" style="width: 90px; padding: 0.4rem 0.6rem; font-size: 0.85rem;">
+          <button type="button" class="btn-icon" onclick="saveManualShoeOdometer()" style="background: #10b981; color: #000; font-weight: 800; font-size: 0.78rem; padding: 0.45rem 0.85rem;">
+            Save
+          </button>
+        </div>
+      </div>
+
+      <!-- Footer Buttons -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+        <button type="button" class="btn-icon" onclick="closeGearLockerModal(); sendQuickPrompt('How should I budget my newly purchased Adidas Adizero EVO SL shoes for long runs vs recovery runs?'); toggleCoachDrawer();" style="border-color: rgba(255,140,0,0.5); color: #ffcc00; font-size: 0.8rem;">
+          💬 Ask Coach Vega About Shoe Rotation
+        </button>
+        <button type="button" class="btn-icon" onclick="closeGearLockerModal()" style="background: rgba(255,255,255,0.08); font-size: 0.8rem;">
+          ✕ Close
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Floating Toast Notifications Container -->
   <div id="tmm-toast-container"></div>
 
@@ -1590,6 +1876,6 @@
     <p style="margin-top: 0.3rem;">Kickoff: Monday, August 17, 2026 • Race Day: Sunday, January 17, 2027</p>
   </footer>
 
-  <script src="app_main.js?v=3.9.3"></script>
+  <script src="app_main.js?v=3.9.6"></script>
 </body>
 </html>

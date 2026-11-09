@@ -6772,6 +6772,8 @@ document.addEventListener('DOMContentLoaded', () => {
   setupSearch();
   setupPaceCalculator();
   renderPhases();
+  renderMileageRampChart();
+  renderTodayMission();
   renderWeekJumper();
   renderWeeklyPlan();
   renderProcamRaceDetails();
@@ -6781,6 +6783,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initBookmarklet();
   updateCoachStatusDot();
   pruneCoachChatHistory();
+  if (typeof updateVegaHorizonBar === 'function') {
+    try { updateVegaHorizonBar(); } catch (e) {}
+  }
   checkAndResumePendingCoachQuery();
 
   // Register PWA Service Worker with Automatic Update Trigger
@@ -6874,7 +6879,9 @@ function setupNavigation() {
       const activePanel = document.getElementById(`tab-${targetTab}`);
       if (activePanel) activePanel.classList.add('active');
       if (targetTab === 'plan') {
-        setTimeout(() => scrollToCurrentWeek(true), 50);
+        renderTodayMission();
+        updateMileageRampChart();
+        setTimeout(() => scrollToCurrentWeek(false), 50);
       }
     });
   });
@@ -6962,6 +6969,290 @@ function getCurrentTrainingWeek() {
   return 1;
 }
 
+// ------------------------------------------------------------------------------
+// 1. TODAY'S MISSION DAILY HORIZON STRIP
+// ------------------------------------------------------------------------------
+function renderTodayMission() {
+  const container = document.getElementById('today-horizon-container');
+  if (!container) return;
+
+  const todayStr = getLocalDateString();
+  const currentWeekNum = getCurrentTrainingWeek();
+  const currentWeek = rawWeeksData.find(w => w.week_number === currentWeekNum);
+
+  // Find today's workout
+  let todayWorkout = null;
+  let workoutWeekNum = currentWeekNum;
+
+  if (currentWeek && currentWeek.workouts) {
+    todayWorkout = currentWeek.workouts.find(wo => wo.date === todayStr);
+  }
+
+  // Fallback search across all weeks
+  if (!todayWorkout) {
+    for (const w of rawWeeksData) {
+      const match = w.workouts ? w.workouts.find(wo => wo.date === todayStr) : null;
+      if (match) {
+        todayWorkout = match;
+        workoutWeekNum = w.week_number;
+        break;
+      }
+    }
+  }
+
+  const todayDateObj = new Date();
+  const dateFormatted = todayDateObj.toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  });
+
+  // If outside plan dates or no workout on this exact day
+  if (!todayWorkout) {
+    if (rawWeeksData.length > 0 && todayStr < rawWeeksData[0].start_date) {
+      container.innerHTML = `
+        <div class="today-horizon-card rest-day">
+          <div class="today-horizon-header">
+            <div class="today-tag-group">
+              <span class="today-beacon-badge"><span class="beacon-dot"></span> CYCLE COUNTDOWN</span>
+              <span class="today-date-text">${dateFormatted}</span>
+            </div>
+            <span class="today-week-pill">Kickoff: ${rawWeeksData[0].start_date}</span>
+          </div>
+          <div class="today-horizon-body">
+            <div class="today-details-column">
+              <div class="today-workout-title">Pre-Cycle Foundation &amp; Conditioning</div>
+              <div class="today-desc-text">Training begins on Monday, August 17, 2026. Focus on easy aerobic walks, light foam rolling, and calf eccentric stretches.</div>
+            </div>
+          </div>
+        </div>
+      `;
+      return;
+    }
+    if (rawWeeksData.length > 0 && todayStr > rawWeeksData[rawWeeksData.length - 1].end_date) {
+      container.innerHTML = `
+        <div class="today-horizon-card completed-day">
+          <div class="today-horizon-header">
+            <div class="today-tag-group">
+              <span class="today-beacon-badge">🏆 TMM 2027 COMPLETED</span>
+              <span class="today-date-text">${dateFormatted}</span>
+            </div>
+            <span class="today-week-pill">Sub-5:00 Finish Achieved!</span>
+          </div>
+          <div class="today-horizon-body">
+            <div class="today-details-column">
+              <div class="today-workout-title">Post-Marathon Recovery &amp; Celebration</div>
+              <div class="today-desc-text">Cycle complete. Rest, rehydrate, and celebrate 22 weeks of dedicated periodized training!</div>
+            </div>
+          </div>
+        </div>
+      `;
+      return;
+    }
+    // Default inside active cycle when no workout is logged for today
+    todayWorkout = (currentWeek && currentWeek.workouts && currentWeek.workouts.length > 0) ? currentWeek.workouts[0] : null;
+    if (!todayWorkout) return;
+  }
+
+  const wo = todayWorkout;
+  const workoutKey = `${workoutWeekNum}_${wo.day}_${wo.date}`;
+  const logData = completedWorkouts[workoutKey];
+  const isDone = !!logData;
+  const isRest = wo.distance_km === 0 || wo.type.toLowerCase().includes('rest');
+
+  let statusBadgeHtml = '';
+  if (isDone) {
+    const actualDist = logData.dist !== undefined ? logData.dist : wo.distance_km;
+    const actualPace = logData.actualPace || wo.target_pace;
+    const hrText = logData.avgHr ? ` • HR: ${logData.avgHr} bpm` : '';
+    statusBadgeHtml = `<span class="badge" style="background: rgba(16, 185, 129, 0.25); color: var(--primary); border: 1px solid var(--primary); font-weight: 800;">✓ MISSION COMPLETED • ${actualDist} KM @ ${actualPace}${hrText}</span>`;
+  } else if (isRest) {
+    statusBadgeHtml = `<span class="badge badge-deload">🔋 RECOVERY &amp; REPAIR</span>`;
+  } else {
+    statusBadgeHtml = `<span class="badge badge-peak">🔥 TODAY'S MISSION</span>`;
+  }
+
+  container.innerHTML = `
+    <div class="today-horizon-card ${isRest ? 'rest-day' : ''} ${isDone ? 'completed-day' : ''}">
+      <div class="today-horizon-header">
+        <div class="today-tag-group">
+          <span class="today-beacon-badge"><span class="beacon-dot"></span> TODAY'S MISSION</span>
+          <span class="today-date-text">${dateFormatted}</span>
+          <span class="today-week-pill">Week ${workoutWeekNum} (${currentWeek ? currentWeek.phase : 'Training Plan'})</span>
+        </div>
+        <div>
+          ${statusBadgeHtml}
+        </div>
+      </div>
+
+      <div class="today-horizon-body">
+        <div class="today-dist-hero">
+          ${wo.distance_km > 0 
+            ? `<span class="today-dist-val">${wo.distance_km}</span><span class="today-dist-unit">KM</span>`
+            : `<span style="font-family: 'Outfit', sans-serif; font-size: 1.6rem; font-weight: 900; color: #f59e0b;">REST DAY</span>`
+          }
+        </div>
+
+        <div class="today-details-column">
+          <div class="today-title-row">
+            <span class="workout-tag ${getTagClass(wo.type)}">${wo.type}</span>
+            <div class="today-workout-title">${wo.day} • ${wo.type}</div>
+          </div>
+
+          <div class="today-metrics-pills">
+            ${wo.target_pace !== 'N/A' ? `<span class="today-metric-pill pace">⏱️ ${wo.target_pace}</span>` : ''}
+            <span class="today-metric-pill">🎯 RPE ${wo.rpe || 3}/10 Target</span>
+            ${currentWeek && currentWeek.focus ? `<span class="today-metric-pill" style="color: var(--text-muted);">Weekly Focus: ${currentWeek.focus}</span>` : ''}
+          </div>
+
+          <div class="today-desc-text">${wo.description || 'Follow structured pacing and tall upright athletic posture.'}</div>
+
+          ${wo.strength_prehab && wo.strength_prehab !== 'N/A' ? `
+            <div class="today-prehab-snippet">
+              <span>💪 <strong>Strength/Prehab:</strong> ${escapeHtml(wo.strength_prehab)}</span>
+            </div>
+          ` : ''}
+        </div>
+
+        <div class="today-actions-column">
+          ${!isDone && wo.distance_km > 0 ? `
+            <button class="btn-today-primary" onclick="toggleWorkoutDone('${workoutKey}', ${wo.distance_km}, true, '${wo.date}', '${wo.target_pace}')">
+              <span>✓ Mark Completed</span>
+            </button>
+            <button class="btn-today-secondary" onclick="openManualLogForDate('${wo.date}', ${wo.distance_km})">
+              <span>✏️ Log Run &amp; HR</span>
+            </button>
+          ` : ''}
+          ${isDone ? `
+            <button class="btn-today-secondary" style="border-color: rgba(16, 185, 129, 0.4); color: var(--primary);" onclick="openManualLogForDate('${wo.date}', ${wo.distance_km})">
+              <span>✏️ Edit Log Details</span>
+            </button>
+            <button class="btn-today-secondary" style="color: var(--text-dim);" onclick="toggleWorkoutDone('${workoutKey}', ${wo.distance_km}, false, '${wo.date}', '${wo.target_pace}')">
+              <span>Undo Completion</span>
+            </button>
+          ` : ''}
+          ${isRest ? `
+            <button class="btn-today-secondary" onclick="showStrengthModal('${escapeHtml(wo.strength_prehab || 'Calf eccentric heel drops & gentle mobility')}')">
+              <span>🧘 View Mobility Protocol</span>
+            </button>
+          ` : ''}
+          <button class="btn-today-secondary" onclick="showDailyWorkoutStrategyModal('${wo.date}', ${workoutWeekNum}, '${wo.day}')">
+            <span>🎯 View Full Strategy</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ------------------------------------------------------------------------------
+// 2. PERIODIZATION MILEAGE RAMP CHART
+// ------------------------------------------------------------------------------
+function renderMileageRampChart() {
+  const container = document.getElementById('mileage-ramp-chart-container');
+  if (!container || !rawWeeksData || rawWeeksData.length === 0) return;
+
+  const currentWeekNum = getCurrentTrainingWeek();
+  const maxPlanned = Math.max(...rawWeeksData.map(w => w.total_planned_km), 58);
+
+  let totalCyclePlanned = 0;
+  let totalCycleCompleted = 0;
+
+  const weekStats = rawWeeksData.map(w => {
+    const planned = w.total_planned_km || 0;
+    totalCyclePlanned += planned;
+
+    let doneKm = 0;
+    if (w.workouts) {
+      w.workouts.forEach(wo => {
+        const key = `${w.week_number}_${wo.day}_${wo.date}`;
+        if (completedWorkouts[key]) {
+          const actual = completedWorkouts[key].dist;
+          doneKm += (actual !== undefined && actual !== null) ? Number(actual) : Number(wo.distance_km);
+        }
+      });
+    }
+    totalCycleCompleted += doneKm;
+
+    return {
+      week_number: w.week_number,
+      phase: w.phase,
+      planned,
+      doneKm: Math.round(doneKm * 10) / 10,
+      isDeload: w.is_deload,
+      isCurrent: w.week_number === currentWeekNum
+    };
+  });
+
+  const completionPct = totalCyclePlanned > 0 ? Math.round((totalCycleCompleted / totalCyclePlanned) * 100) : 0;
+
+  const barsHtml = weekStats.map(ws => {
+    const plannedHeightPct = Math.round((ws.planned / maxPlanned) * 100);
+    const actualHeightPct = ws.planned > 0 ? Math.min(100, Math.round((ws.doneKm / ws.planned) * 100)) : 0;
+
+    let phaseClass = 'phase-1';
+    if (ws.week_number >= 5 && ws.week_number <= 12) phaseClass = 'phase-2';
+    else if (ws.week_number >= 13 && ws.week_number <= 19) phaseClass = 'phase-3';
+    else if (ws.week_number >= 20) phaseClass = 'phase-4';
+
+    if (ws.isDeload) phaseClass += ' deload';
+    if (ws.week_number === 17 || ws.week_number === 18) phaseClass += ' peak';
+
+    let marker = '';
+    if (ws.week_number === 9) marker = '🇮🇳';
+    else if (ws.week_number === 17) marker = '🔥';
+    else if (ws.week_number === 18) marker = '🏃';
+    else if (ws.week_number === 22) marker = '🏆';
+    else if (ws.isDeload) marker = '🔋';
+
+    const tooltip = `Week ${ws.week_number} • ${ws.phase} | Planned: ${ws.planned} km | Done: ${ws.doneKm} km (${actualHeightPct}%)`;
+
+    return `
+      <div class="ramp-bar-col ${ws.isCurrent ? 'active' : ''}" onclick="scrollToWeek(${ws.week_number})" title="${tooltip}">
+        ${marker ? `<span class="ramp-milestone-marker">${marker}</span>` : ''}
+        <span class="ramp-km-label">${ws.planned}k</span>
+        <div class="ramp-bar-track">
+          <div class="ramp-bar-planned ${phaseClass}" style="height: ${plannedHeightPct}%;">
+            ${ws.doneKm > 0 ? `<div class="ramp-bar-actual" style="height: ${actualHeightPct}%;"></div>` : ''}
+          </div>
+        </div>
+        <span class="ramp-week-label">${ws.isCurrent ? '📍W' + ws.week_number : 'W' + ws.week_number}</span>
+      </div>
+    `;
+  }).join('');
+
+  container.innerHTML = `
+    <div class="mileage-ramp-card">
+      <div class="mileage-ramp-header">
+        <div class="ramp-title-group">
+          <span style="font-size: 1.25rem;">📊</span>
+          <span class="ramp-title">22-Week Periodization &amp; Mileage Ramp</span>
+          <span class="today-week-pill" style="color: var(--primary); font-weight: 800;">
+            ${Math.round(totalCycleCompleted)} / ${totalCyclePlanned} KM (${completionPct}%)
+          </span>
+        </div>
+        <div class="ramp-legend">
+          <span class="legend-item"><span class="legend-dot" style="background: rgba(56, 189, 248, 0.7);"></span> Base</span>
+          <span class="legend-item"><span class="legend-dot" style="background: rgba(16, 185, 129, 0.7);"></span> Build</span>
+          <span class="legend-item"><span class="legend-dot" style="background: rgba(249, 115, 22, 0.8);"></span> Peak</span>
+          <span class="legend-item"><span class="legend-dot" style="background: rgba(168, 85, 247, 0.7);"></span> Taper</span>
+          <span class="legend-item"><span class="legend-dot" style="background: #f59e0b;"></span> 🔋 Deload</span>
+          <span class="legend-item"><span class="legend-dot" style="background: #10b981; box-shadow: 0 0 6px #10b981;"></span> Done</span>
+        </div>
+      </div>
+
+      <div class="ramp-bars-container">
+        ${barsHtml}
+      </div>
+    </div>
+  `;
+}
+
+function updateMileageRampChart() {
+  renderMileageRampChart();
+}
+
 // Render Week Jumper Bar
 function renderWeekJumper() {
   const container = document.getElementById('week-jumper-bar');
@@ -7040,6 +7331,9 @@ window.getLocalDateString = getLocalDateString;
 window.getCurrentTrainingWeek = getCurrentTrainingWeek;
 window.scrollToWeek = scrollToWeek;
 window.scrollToCurrentWeek = scrollToCurrentWeek;
+window.renderTodayMission = renderTodayMission;
+window.renderMileageRampChart = renderMileageRampChart;
+window.updateMileageRampChart = updateMileageRampChart;
 
 // View Mode Switching
 function setViewMode(mode) {
@@ -7281,6 +7575,7 @@ function renderWeekTableView(week) {
                   ${actualsHtml}
                   <div style="margin-top: 0.35rem; display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
                     <button class="workout-card-strategy-btn" onclick="showDailyWorkoutStrategyModal('${wo.date}', ${week.week_number}, '${wo.day}')">🎯 Strategy</button>
+                    <button class="workout-card-vega-btn" onclick="askVegaAboutWorkout('${wo.date}', ${week.week_number}, '${wo.day}')">💬 Ask Vega</button>
                     ${wo.strength_prehab && wo.strength_prehab !== 'N/A' ? `<button class="action-pill-btn" onclick="showStrengthModal('${escapeHtml(wo.strength_prehab)}')">💪 Prehab</button>` : ''}
                     ${wo.fueling && wo.fueling !== 'N/A' ? `<button class="action-pill-btn" onclick="showFuelingModal('${escapeHtml(wo.fueling)}')">⚡ Fueling</button>` : ''}
                     ${!isDone && wo.distance_km > 0 ? `<button class="action-pill-btn" style="border-color: rgba(16, 185, 129, 0.4); color: var(--primary);" onclick="openManualLogForDate('${wo.date}', ${wo.distance_km})">✏️ Log Run</button>` : ''}
@@ -7366,6 +7661,12 @@ function renderActualsBox(logData, plannedDist, targetPace, dateStr, workoutKey)
     </span>
   ` : '';
 
+  const vegaPill = (logData.vega_analysis && logData.vega_analysis.big_picture_purpose) ? `
+    <span class="vega-badge-mini" onclick="event.stopPropagation(); showVarianceDetailModal('${workoutKey}', '${dateStr}')" title="Coach Vega Analysis Ready">
+      <span>✨</span> <span>Vega Analyzed</span>
+    </span>
+  ` : '';
+
   return `
     <div style="display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; margin-top: 0.25rem;">
       <button class="variance-pill-btn ${pillClass}" onclick="event.stopPropagation(); showVarianceDetailModal('${workoutKey}', '${dateStr}')" title="Click to view detailed execution report">
@@ -7377,6 +7678,7 @@ function renderActualsBox(logData, plannedDist, targetPace, dateStr, workoutKey)
       </button>
       ${hrPill}
       ${splitsPill}
+      ${vegaPill}
     </div>
   `;
 }
@@ -7437,6 +7739,69 @@ function showVarianceDetailModal(workoutKey, dateStr) {
 
   const scoreColor = score >= 90 ? 'var(--primary)' : score >= 75 ? 'var(--accent-orange)' : 'var(--accent-red)';
 
+  const vegaAnalysis = logData.vega_analysis;
+  let vegaAnalysisHtml = '';
+
+  if (vegaAnalysis && vegaAnalysis.big_picture_purpose) {
+    const speechAttr = encodeURIComponent(vegaAnalysis.speech_text || (vegaAnalysis.verdict_summary + ' ' + vegaAnalysis.big_picture_purpose));
+    vegaAnalysisHtml = `
+      <!-- Coach Vega Clinical Run Analysis -->
+      <div class="vega-critique-card" id="vega-critique-box-${workoutKey.replace(/[^a-zA-Z0-9]/g, '_')}">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span style="font-size: 1.25rem;">✨</span>
+            <h3 style="margin: 0; font-size: 1.05rem; font-weight: 800; color: #ffcc00; letter-spacing: 0.02em;">Vega Run Analysis</h3>
+            <span style="font-size: 0.65rem; font-weight: 700; background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.35); padding: 0.15rem 0.45rem; border-radius: 999px;">Ready</span>
+          </div>
+          <div style="display: flex; gap: 0.4rem; align-items: center;">
+            <button class="action-pill-btn" onclick="playCoachAudioPreview('${speechAttr}', false)" style="background: rgba(255, 204, 0, 0.15); border-color: rgba(255, 204, 0, 0.5); color: #ffcc00; font-size: 0.72rem; font-weight: 800;">
+              🎙️ Listen to Vega
+            </button>
+            <button class="action-pill-btn" onclick="triggerVegaAnalyze('${workoutKey}', '${dateStr}', true)" style="background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.2); color: var(--text-muted); font-size: 0.72rem;">
+              🔄 Re-analyze
+            </button>
+          </div>
+        </div>
+
+        <!-- Crisp 1-Line Scientific Purpose -->
+        <div class="vega-purpose-box">
+          <div style="font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 800; color: #ffcc00; margin-bottom: 0.2rem;">
+            🎯 Purpose in the Larger Picture (Biology &amp; Physiology)
+          </div>
+          <div style="font-size: 0.85rem; color: #f9fafb; line-height: 1.45; font-weight: 600;">
+            ${escapeHtml(vegaAnalysis.big_picture_purpose)}
+          </div>
+        </div>
+
+        <!-- Simple Indian English Critique Content -->
+        <div style="font-size: 0.83rem; color: #e5e7eb; line-height: 1.55; display: flex; flex-direction: column; gap: 0.55rem;">
+          <div><strong style="color: #ffb703;">📋 Verdict:</strong> ${escapeHtml(vegaAnalysis.verdict_summary || '')}</div>
+          ${vegaAnalysis.pacing_and_splits_insight ? `<div><strong style="color: #38bdf8;">⏱️ Splits &amp; Rhythm:</strong> ${escapeHtml(vegaAnalysis.pacing_and_splits_insight)}</div>` : ''}
+          ${vegaAnalysis.calf_and_recovery_prehab ? `<div><strong style="color: #f87171;">🦵 Calf &amp; Recovery:</strong> ${escapeHtml(vegaAnalysis.calf_and_recovery_prehab)}</div>` : ''}
+          ${vegaAnalysis.tomorrow_directive ? `<div><strong style="color: #a7f3d0;">⚡ Tomorrow:</strong> ${escapeHtml(vegaAnalysis.tomorrow_directive)}</div>` : ''}
+        </div>
+      </div>
+    `;
+  } else {
+    vegaAnalysisHtml = `
+      <!-- Vega Analyze Call to Action Slot -->
+      <div class="vega-critique-card" id="vega-critique-box-${workoutKey.replace(/[^a-zA-Z0-9]/g, '_')}" style="background: rgba(255, 140, 0, 0.05); border: 2px dashed rgba(255, 140, 0, 0.35); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.45rem;">
+            <span style="font-size: 1.15rem;">🏃</span>
+            <strong style="color: #ffcc00; font-size: 0.95rem;">Coach Vega Run Critique</strong>
+          </div>
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem;">
+            Get Vega's clinical review, big-picture scientific purpose, and calf prehab advice in simple Indian English.
+          </div>
+        </div>
+        <button class="vega-analyze-btn" onclick="triggerVegaAnalyze('${workoutKey}', '${dateStr}')">
+          <span>⚡</span> <span>Vega Analyze</span>
+        </button>
+      </div>
+    `;
+  }
+
   container.innerHTML = `
     <div style="margin-bottom: 1.25rem;">
       <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
@@ -7453,6 +7818,8 @@ function showVarianceDetailModal(workoutKey, dateStr) {
         </div>
       </div>
     </div>
+
+    ${vegaAnalysisHtml}
 
     <!-- Section 1: Wins -->
     <div class="breakdown-section" style="border-left: 3px solid var(--primary);">
@@ -8773,12 +9140,23 @@ function renderDayCard(weekNum, wo) {
       </div>
       
       <div>
-        <span class="workout-tag ${tagClass}">${wo.type}</span>
-        <div class="day-distance">${wo.distance_km > 0 ? `${wo.distance_km} <span style="font-size: 0.85rem; font-weight: 500; color: var(--text-muted);">km</span>` : '<span style="font-size: 0.9rem; color: var(--text-dim);">No Running</span>'}</div>
-        <div class="day-pace">${wo.target_pace !== 'N/A' ? wo.target_pace : 'Rest / Strength Day'}</div>
-        <div class="day-rpe-bar" title="Effort: ${rpeVal}/10">
-          <span style="font-weight: 600;">RPE ${rpeVal}</span>
-          <div class="rpe-pills-wrap">${rpeBars}</div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.35rem;">
+          <span class="workout-tag ${tagClass}">${wo.type}</span>
+          ${wo.target_pace !== 'N/A' ? `<span class="workout-pace-pill">${wo.target_pace}</span>` : ''}
+        </div>
+        <div class="workout-metric-display">
+          ${wo.distance_km > 0 ? `
+            <div class="workout-dist-hero">
+              <span class="dist-num">${wo.distance_km}</span>
+              <span class="dist-unit">KM</span>
+            </div>
+          ` : `
+            <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-dim); padding: 0.35rem 0;">No Running</div>
+          `}
+          <div class="day-rpe-bar" title="Effort: ${rpeVal}/10" style="margin: 0;">
+            <span style="font-weight: 600;">RPE ${rpeVal}</span>
+            <div class="rpe-pills-wrap">${rpeBars}</div>
+          </div>
         </div>
       </div>
 
@@ -8789,6 +9167,9 @@ function renderDayCard(weekNum, wo) {
       <div class="day-footer">
         <button class="workout-card-strategy-btn" onclick="showDailyWorkoutStrategyModal('${wo.date}', ${weekNum}, '${wo.day}')">
           🎯 Strategy
+        </button>
+        <button class="workout-card-vega-btn" onclick="askVegaAboutWorkout('${wo.date}', ${weekNum}, '${wo.day}')">
+          💬 Ask Vega
         </button>
         ${wo.strength_prehab && wo.strength_prehab !== 'N/A' ? `
           <button class="action-pill-btn" onclick="showStrengthModal('${escapeHtml(wo.strength_prehab)}')">
@@ -8825,6 +9206,11 @@ function toggleWeekCollapse(weekNum) {
 
 // Workout Completion State (Optimized: Targeted DOM update instead of recreating 6,000 nodes)
 function toggleWorkoutDone(key, distKm, isChecked, workoutDate, targetPace) {
+  // Athletic haptic confirmation on check
+  if (isChecked && 'vibrate' in navigator) {
+    try { navigator.vibrate(18); } catch (e) {}
+  }
+
   if (isChecked) {
     completedWorkouts[key] = { 
       done: true, 
@@ -8850,6 +9236,11 @@ function toggleWorkoutDone(key, distKm, isChecked, workoutDate, targetPace) {
   const el = document.getElementById(`day-${key}`);
   if (el) {
     el.classList.toggle('completed', isChecked);
+    const chk = el.querySelector('input[type="checkbox"]');
+    if (chk && isChecked) {
+      chk.classList.add('checkmark-spring-pop');
+      setTimeout(() => chk.classList.remove('checkmark-spring-pop'), 450);
+    }
     const existingActuals = el.querySelector('.actuals-box');
     if (isChecked) {
       const logData = completedWorkouts[key];
@@ -8879,6 +9270,14 @@ function toggleWorkoutDone(key, distKm, isChecked, workoutDate, targetPace) {
     renderWeeklyPlan();
   }
 
+  // Update table row checkbox if table view is rendered
+  const tableCheckboxes = document.querySelectorAll(`input[type="checkbox"][onchange*="'${key}'"]`);
+  tableCheckboxes.forEach(tc => {
+    if (tc.checked !== isChecked) tc.checked = isChecked;
+    const row = tc.closest('tr');
+    if (row) row.classList.toggle('completed-row', isChecked);
+  });
+
   // Sync to Supabase asynchronously in background
   if (supabaseClient && workoutDate) {
     supabaseClient.from('daily_workouts').update({
@@ -8892,6 +9291,12 @@ function toggleWorkoutDone(key, distKm, isChecked, workoutDate, targetPace) {
   }
 
   updateProgressMetrics();
+  if (typeof updateMileageRampChart === 'function') {
+    updateMileageRampChart();
+  }
+  if (typeof renderTodayMission === 'function') {
+    renderTodayMission();
+  }
 }
 
 // Update Hero Progress Bars
@@ -8919,6 +9324,9 @@ function updateProgressMetrics() {
   if (progPct) progPct.textContent = `${percent}% completed (${completedRunsCount} runs done)`;
 
   updateAdherenceMetrics();
+  if (typeof updateVegaHorizonBar === 'function') {
+    try { updateVegaHorizonBar(); } catch (e) {}
+  }
 }
 
 // ==============================================================================
@@ -9532,6 +9940,7 @@ async function initSupabase(url, key) {
             actualSplits: row.actual_splits || null,
             avgHeartRate: row.avg_heart_rate || null,
             maxHeartRate: row.max_heart_rate || null,
+            vega_analysis: row.vega_analysis || (completedWorkouts[key] ? completedWorkouts[key].vega_analysis : null),
             completedAt: new Date().toISOString()
           };
         }
@@ -9545,9 +9954,12 @@ async function initSupabase(url, key) {
 
       // Re-render UI with live cloud data
       renderPhases();
+      renderMileageRampChart();
+      renderTodayMission();
       renderWeekJumper();
       renderWeeklyPlan();
       updateProgressMetrics();
+      if (typeof updateVegaSyncPresetButtons === 'function') updateVegaSyncPresetButtons();
       setTimeout(() => scrollToCurrentWeek(false), 200);
 
       // Seamless Background Strava Auto-Sync: automatically triggers if last sync > 2 hours ago
@@ -9782,6 +10194,166 @@ function switchIngestTab(tabName) {
   }
 }
 
+// GPX / File Drag and Drop Handlers for Run Ingestion
+function handleDragOver(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  const zone = document.getElementById('file-dropzone');
+  if (zone) zone.classList.add('dragover');
+}
+
+function handleDragLeave(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  const zone = document.getElementById('file-dropzone');
+  if (zone) zone.classList.remove('dragover');
+}
+
+function handleFileDrop(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  const zone = document.getElementById('file-dropzone');
+  if (zone) zone.classList.remove('dragover');
+  const files = e.dataTransfer ? e.dataTransfer.files : null;
+  if (files && files.length > 0) {
+    handleGpxFile(files[0]);
+  }
+}
+
+function handleFileSelect(e) {
+  const files = e.target ? e.target.files : null;
+  if (files && files.length > 0) {
+    handleGpxFile(files[0]);
+  }
+}
+
+function handleGpxFile(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    const text = evt.target.result;
+    parseAndPreviewGpx(text, file.name);
+  };
+  reader.readAsText(file);
+}
+
+function parseAndPreviewGpx(xmlText, fileName) {
+  try {
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+    const trkpts = xmlDoc.getElementsByTagName("trkpt");
+    
+    let totalDistKm = 0;
+    let startTime = null;
+    let endTime = null;
+    
+    function deg2rad(deg) { return deg * (Math.PI / 180); }
+    function getDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = deg2rad(lat2 - lat1);
+      const dLon = deg2rad(lon2 - lon1);
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+
+    if (trkpts.length > 1) {
+      for (let i = 0; i < trkpts.length - 1; i++) {
+        const lat1 = parseFloat(trkpts[i].getAttribute("lat"));
+        const lon1 = parseFloat(trkpts[i].getAttribute("lon"));
+        const lat2 = parseFloat(trkpts[i+1].getAttribute("lat"));
+        const lon2 = parseFloat(trkpts[i+1].getAttribute("lon"));
+        if (!isNaN(lat1) && !isNaN(lon1) && !isNaN(lat2) && !isNaN(lon2)) {
+          totalDistKm += getDistance(lat1, lon1, lat2, lon2);
+        }
+      }
+      const timeEls = xmlDoc.getElementsByTagName("time");
+      if (timeEls.length > 0) {
+        startTime = new Date(timeEls[0].textContent);
+        endTime = new Date(timeEls[timeEls.length - 1].textContent);
+      }
+    }
+
+    totalDistKm = Math.round(totalDistKm * 100) / 100;
+    let durationSecs = 0;
+    if (startTime && endTime && !isNaN(startTime.getTime()) && !isNaN(endTime.getTime())) {
+      durationSecs = Math.max(0, Math.round((endTime.getTime() - startTime.getTime()) / 1000));
+    }
+
+    const dateStr = startTime ? startTime.toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+    const paceSec = (totalDistKm > 0 && durationSecs > 0) ? (durationSecs / totalDistKm) : 0;
+    const paceMin = Math.floor(paceSec / 60);
+    const paceRemSec = Math.round(paceSec % 60);
+    const paceStr = paceSec > 0 ? `${paceMin}:${paceRemSec.toString().padStart(2, '0')} min/km` : 'N/A';
+
+    const resultEl = document.getElementById('gpx-parse-result');
+    if (resultEl) {
+      resultEl.style.display = 'block';
+      resultEl.innerHTML = `
+        <div style="font-weight: 800; color: var(--primary); margin-bottom: 0.35rem;">✅ File Parsed: ${fileName}</div>
+        <div style="font-size: 0.85rem; color: var(--text-main);"><strong>Date:</strong> ${dateStr} • <strong>Distance:</strong> ${totalDistKm} km • <strong>Duration:</strong> ${Math.floor(durationSecs/60)}m ${durationSecs%60}s • <strong>Pace:</strong> ${paceStr}</div>
+        <button class="btn-primary" style="margin-top: 0.75rem; padding: 0.4rem 1rem; font-size: 0.8rem;" onclick="applyIngestedRun('${dateStr}', ${totalDistKm}, ${durationSecs}, '${paceStr}', 'gpx_file')">Save Run to Plan</button>
+      `;
+    }
+  } catch (err) {
+    showToastNotification('⚠️ Could not parse GPX file: ' + err.message, 'warning');
+  }
+}
+
+window.handleDragOver = handleDragOver;
+window.handleDragLeave = handleDragLeave;
+window.handleFileDrop = handleFileDrop;
+window.handleFileSelect = handleFileSelect;
+window.handleGpxFile = handleGpxFile;
+window.toggleWebMetronome = toggleWebMetronome;
+
+async function syncAndPullLatestRunForVega() {
+  const btn = document.getElementById('vega-sync-run-btn');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerText = '⚡ Syncing Runs...';
+  }
+  showToastNotification('⚡ Checking newest runs from cloud & Strava...', 'info');
+  if (typeof triggerStravaSyncWorkflow === 'function') {
+    await triggerStravaSyncWorkflow(false);
+  }
+  setTimeout(() => {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerText = '⚡ Sync Latest Run';
+    }
+    const input = document.getElementById('coach-input');
+    if (input) {
+      input.value = "Analyze my latest run and give me targeted feedback on heart rate and pacing.";
+      sendCoachQuery();
+    }
+  }, 3500);
+}
+window.syncAndPullLatestRunForVega = syncAndPullLatestRunForVega;
+
+function openGearLockerModal() {
+  showToastNotification('👟 Adidas Adizero EVO SL: 0.0 km logged / 275 km pre-race budget. In Break-in phase (6.6mm drop).', 'info', 6000);
+}
+window.openGearLockerModal = openGearLockerModal;
+
+function triggerVegaAnalyze(workoutKey, dateStr, isFollowUp = false) {
+  if (typeof closeVarianceDetailModal === 'function') closeVarianceDetailModal();
+  if (typeof openCoachDrawer === 'function') openCoachDrawer();
+  const match = findWorkoutInfoByDate(dateStr);
+  const log = completedWorkouts[workoutKey];
+  const query = isFollowUp 
+    ? `Coach Vega, what targeted recovery or prehab should I do after my run on ${dateStr}?`
+    : `Coach Vega, please debrief and analyze my run on ${dateStr}${log ? ` (${log.dist} km @ ${log.actualPace})` : ''} against the planned target${match ? ` (${match.workout.distance_km} km @ ${match.workout.target_pace})` : ''}.`;
+  const input = document.getElementById('coach-input');
+  if (input) {
+    input.value = query;
+    if (typeof sendCoachQuery === 'function') sendCoachQuery();
+  }
+}
+window.triggerVegaAnalyze = triggerVegaAnalyze;
+
 function openManualLogForDate(dateStr, plannedDist) {
   openRunUploadModal();
   switchIngestTab('manual');
@@ -9960,6 +10532,8 @@ function clearWorkoutLogFromModal() {
 
   renderWeeklyPlan();
   updateProgressMetrics();
+  if (typeof updateMileageRampChart === 'function') updateMileageRampChart();
+  if (typeof renderTodayMission === 'function') renderTodayMission();
   closeRunUploadModal();
 }
 
@@ -10080,7 +10654,15 @@ function applyIngestedRun(dateStr, dist, durationSecs, paceStr, source = 'manual
 
   updateProgressMetrics();
   renderWeeklyPlan();
+  updateVegaSyncPresetButtons();
+  if (typeof updateMileageRampChart === 'function') updateMileageRampChart();
+  if (typeof renderTodayMission === 'function') renderTodayMission();
   showToastNotification(`Run saved! Compliance: ${scorePct}%`, 'success');
+
+  // Trigger background Vega analysis if not yet analyzed
+  setTimeout(() => {
+    triggerBackgroundVegaAnalysis(workoutKey, dateStr);
+  }, 400);
 }
 
 // Manual Form Handler
@@ -10331,6 +10913,12 @@ function toggleCoachDrawer() {
   if (isOpen) {
     updateCoachStatusDot();
     updateVegaIconEverywhere();
+    if (typeof updateVegaSyncPresetButtons === 'function') {
+      try { updateVegaSyncPresetButtons(); } catch (e) {}
+    }
+    if (typeof updateVegaHorizonBar === 'function') {
+      try { updateVegaHorizonBar(); } catch (e) { console.warn('Horizon bar update error:', e); }
+    }
     setTimeout(() => {
       const input = document.getElementById('coach-input');
       if (input && typeof input.focus === 'function') input.focus();
@@ -11036,13 +11624,391 @@ async function testCoachApiConnection() {
   }
 }
 
+// Input Area Auto-Expansion & Enter-to-Send Handlers
+function handleCoachInputInput(el) {
+  if (!el) return;
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+window.handleCoachInputInput = handleCoachInputInput;
+
+function handleCoachInputKeydown(event) {
+  if (event.key === 'Enter' && !event.shiftKey) {
+    event.preventDefault();
+    sendCoachMessage();
+  }
+}
+window.handleCoachInputKeydown = handleCoachInputKeydown;
+
+// Quick Triage Prompt Trigger (Accessible globally from anywhere in the app)
+function sendQuickPrompt(promptText) {
+  if (!promptText || typeof promptText !== 'string') return;
+  const cleanPrompt = promptText.trim();
+  if (!cleanPrompt) return;
+
+  const drawer = document.getElementById('ai-coach-drawer');
+  if (drawer && !drawer.classList.contains('open')) {
+    toggleCoachDrawer();
+  }
+
+  coachChatHistory.push({
+    role: 'user',
+    content: cleanPrompt,
+    timestamp: new Date().toISOString()
+  });
+  pruneCoachChatHistory();
+  renderCoachMessages();
+
+  processCoachQuery(cleanPrompt, 1);
+}
+window.sendQuickPrompt = sendQuickPrompt;
+
+// 1-Tap 'Ask Vega' from Calendar Cards
+function askVegaAboutWorkout(workoutDate, weekNum, dayName) {
+  const drawer = document.getElementById('ai-coach-drawer');
+  if (drawer && !drawer.classList.contains('open')) {
+    toggleCoachDrawer();
+  }
+
+  const woInfo = typeof findWorkoutInfoByDate === 'function' ? findWorkoutInfoByDate(workoutDate) : null;
+  const wo = woInfo ? woInfo.workout : null;
+  const prompt = wo 
+    ? `Can you provide a tactical coach brief for my ${dayName} workout (${workoutDate}): ${wo.type} (${wo.distance_km > 0 ? `${wo.distance_km} km` : 'Rest'} at target pace ${wo.target_pace})? Include specific pacing cues, hydration/fueling strategy, and calf injury prevention advice.`
+    : `Can you give me a tactical coach brief and pacing strategy for ${dayName} (${workoutDate})?`;
+
+  sendQuickPrompt(prompt);
+}
+window.askVegaAboutWorkout = askVegaAboutWorkout;
+
+// Voice Dictation (Speech-to-Text via Web Speech Recognition)
+let vegaSpeechRecognizer = null;
+let isVegaDictating = false;
+
+function toggleVegaVoiceDictation() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    alert('Voice dictation is supported in Google Chrome, Microsoft Edge, and Safari. You can type your question directly in the text box.');
+    return;
+  }
+
+  const micBtn = document.getElementById('coach-mic-btn');
+  const inputEl = document.getElementById('coach-input');
+
+  if (isVegaDictating) {
+    if (vegaSpeechRecognizer) {
+      try { vegaSpeechRecognizer.stop(); } catch (e) {}
+    }
+    isVegaDictating = false;
+    if (micBtn) micBtn.classList.remove('listening');
+    if (inputEl) inputEl.placeholder = 'Ask Coach Vega or tap mic to speak...';
+    return;
+  }
+
+  try {
+    vegaSpeechRecognizer = new SpeechRecognition();
+    vegaSpeechRecognizer.continuous = false;
+    vegaSpeechRecognizer.interimResults = true;
+    vegaSpeechRecognizer.lang = 'en-US';
+
+    vegaSpeechRecognizer.onstart = () => {
+      isVegaDictating = true;
+      if (micBtn) micBtn.classList.add('listening');
+      if (inputEl) {
+        inputEl.placeholder = '🎙️ Listening... Speak your coaching question now...';
+      }
+    };
+
+    vegaSpeechRecognizer.onresult = (event) => {
+      let finalTranscript = '';
+      let interimTranscript = '';
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        if (event.results[i].isFinal) {
+          finalTranscript += event.results[i][0].transcript;
+        } else {
+          interimTranscript += event.results[i][0].transcript;
+        }
+      }
+      if (inputEl) {
+        inputEl.value = (finalTranscript || interimTranscript).trim();
+        handleCoachInputInput(inputEl);
+      }
+    };
+
+    vegaSpeechRecognizer.onerror = (event) => {
+      console.warn('Voice recognition error:', event.error);
+      isVegaDictating = false;
+      if (micBtn) micBtn.classList.remove('listening');
+      if (inputEl) inputEl.placeholder = 'Ask Coach Vega or tap mic to speak...';
+    };
+
+    vegaSpeechRecognizer.onend = () => {
+      isVegaDictating = false;
+      if (micBtn) micBtn.classList.remove('listening');
+      if (inputEl) {
+        inputEl.placeholder = 'Ask Coach Vega or tap mic to speak...';
+        if (inputEl.value.trim().length > 3) {
+          inputEl.focus();
+        }
+      }
+    };
+
+    vegaSpeechRecognizer.start();
+  } catch (err) {
+    console.error('Failed to start speech recognition:', err);
+    isVegaDictating = false;
+    if (micBtn) micBtn.classList.remove('listening');
+    if (inputEl) inputEl.placeholder = 'Ask Coach Vega or tap mic to speak...';
+    alert('Could not start microphone dictation: ' + err.message);
+  }
+}
+window.toggleVegaVoiceDictation = toggleVegaVoiceDictation;
+
+// Text-to-Speech Audio Readout Engine
+let currentSpeechAudio = null;
+let currentSpeechUtterance = null;
+let currentPlayingSpeechIdx = null;
+
+function stopVegaSpeech() {
+  if (currentSpeechAudio) {
+    try {
+      currentSpeechAudio.pause();
+      currentSpeechAudio.currentTime = 0;
+    } catch (e) {}
+    currentSpeechAudio = null;
+  }
+  if ('speechSynthesis' in window) {
+    try { window.speechSynthesis.cancel(); } catch (e) {}
+  }
+  if (currentPlayingSpeechIdx !== null) {
+    const btn = document.getElementById(`coach-voice-btn-${currentPlayingSpeechIdx}`);
+    if (btn) {
+      btn.classList.remove('playing');
+      btn.innerHTML = '🔊 Listen';
+    }
+    currentPlayingSpeechIdx = null;
+  }
+}
+window.stopVegaSpeech = stopVegaSpeech;
+
+async function toggleVegaAudioReadout(msgIdx) {
+  if (currentPlayingSpeechIdx === msgIdx) {
+    stopVegaSpeech();
+    return;
+  }
+  stopVegaSpeech();
+
+  let rawText = '';
+  if (msgIdx === 'welcome') {
+    rawText = "Hi! I'm Coach Vega, your personal marathon coach and recovery specialist for the Tata Mumbai Marathon 2027. I have full live visibility into your 22-week plan, your recent Strava runs, and your training variance. If your calves feel tight, you miss a session, or you want to adjust your schedule, just ask!";
+  } else if (coachChatHistory[msgIdx]) {
+    rawText = coachChatHistory[msgIdx].content || '';
+  }
+
+  if (!rawText) return;
+
+  // Clean text: strip code blocks, proposals, HTML tags, and markdown formatting
+  let cleanText = rawText
+    .replace(/```plan_change_proposal[\s\S]*?```/g, 'I have created an adjusted workout proposal shown on your screen.')
+    .replace(/```[\s\S]*?```/g, '')
+    .replace(/<[^>]*>/g, '')
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    .replace(/#{1,6}\s?/g, '')
+    .replace(/[🟢🔴⚡🎯🛡️🗓️🔄✅❌⚠️⏳👋🏃‍♀️🏃🦵👟💧]/gu, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (!cleanText) return;
+
+  const btn = document.getElementById(`coach-voice-btn-${msgIdx}`);
+  if (btn) {
+    btn.classList.add('playing');
+    btn.innerHTML = `<span class="voice-wave-bars"><span></span><span></span><span></span></span> Stop`;
+  }
+  currentPlayingSpeechIdx = msgIdx;
+
+  // Try ElevenLabs if configured
+  const elKey = (typeof elevenlabsApiKey !== 'undefined' && elevenlabsApiKey ? elevenlabsApiKey : localStorage.getItem('tmm_elevenlabs_api_key'))?.trim();
+  let playedWithElevenLabs = false;
+
+  if (elKey && elKey.length > 20 && cleanText.length < 500) {
+    try {
+      const res = await fetch("https://api.elevenlabs.io/v1/text-to-speech/EXAVITQu4vr4xnSDxMaL", {
+        method: "POST",
+        headers: {
+          "xi-api-key": elKey,
+          "Content-Type": "application/json",
+          "Accept": "audio/mpeg"
+        },
+        body: JSON.stringify({
+          text: cleanText.slice(0, 350),
+          model_id: "eleven_multilingual_v2",
+          voice_settings: { stability: 0.5, similarity_boost: 0.75 }
+        })
+      });
+      if (res.ok) {
+        const blob = await res.blob();
+        const audioUrl = URL.createObjectURL(blob);
+        currentSpeechAudio = new Audio(audioUrl);
+        currentSpeechAudio.onended = () => stopVegaSpeech();
+        currentSpeechAudio.onerror = () => stopVegaSpeech();
+        await currentSpeechAudio.play();
+        playedWithElevenLabs = true;
+      }
+    } catch (e) {
+      console.warn('ElevenLabs readout fallback to speech synthesis:', e);
+    }
+  }
+
+  if (!playedWithElevenLabs) {
+    if (!('speechSynthesis' in window)) {
+      stopVegaSpeech();
+      alert('Speech synthesis audio is not supported in this browser.');
+      return;
+    }
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.rate = 1.05;
+    utterance.pitch = 1.0;
+    const voices = window.speechSynthesis.getVoices();
+    const preferredVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('Karen'))) || voices.find(v => v.lang.startsWith('en'));
+    if (preferredVoice) utterance.voice = preferredVoice;
+
+    utterance.onend = () => stopVegaSpeech();
+    utterance.onerror = () => stopVegaSpeech();
+    currentSpeechUtterance = utterance;
+    window.speechSynthesis.speak(utterance);
+  }
+}
+window.toggleVegaAudioReadout = toggleVegaAudioReadout;
+
+// Predictive Contextual Follow-Up Suggestions Engine
+function generatePredictiveRepliesHtml(content) {
+  const lower = (content || '').toLowerCase();
+  const suggestions = [];
+
+  if (lower.includes('calf') || lower.includes('tight') || lower.includes('strain') || lower.includes('achilles') || lower.includes('soleus') || lower.includes('pain') || lower.includes('injury')) {
+    suggestions.push({ label: '🦵 Eccentric Prehab Drill', prompt: 'Can you show me the step-by-step eccentric heel drop protocol to protect my calves?' });
+    suggestions.push({ label: '📉 Deload Next Run 25%', prompt: 'I want to deload my next run by 25% to protect my calves. Please propose an updated schedule.' });
+    suggestions.push({ label: '🩺 When can I run fast?', prompt: 'How will I know when my calf tissues are healed enough to resume faster tempo or interval paces?' });
+  } else if (lower.includes('plan_change_proposal') || lower.includes('schedule') || lower.includes('adjust') || lower.includes('restructure')) {
+    suggestions.push({ label: '🎯 Impact on Sub-5 Goal?', prompt: 'How do these proposed changes impact my chances of hitting sub-5:00 at TMM 2027?' });
+    suggestions.push({ label: '🌧️ Move Long Run', prompt: 'Can we shift the weekend long run by one day or make it flatter to preserve recovery?' });
+    suggestions.push({ label: '👟 Shoe Rotation Advice', prompt: 'Which shoe should I use for this adjusted session: Adizero Evo SL 2 or a daily trainer?' });
+  } else if (lower.includes('pace') || lower.includes('heart rate') || lower.includes('zone 2') || lower.includes('debrief') || lower.includes('telemetry')) {
+    suggestions.push({ label: '⚡ Zone 2 HR Ceiling', prompt: 'What is my strict heart rate ceiling and breathing rhythm to keep this in true Zone 2?' });
+    suggestions.push({ label: '💧 Fueling & Gel Plan', prompt: 'What is the exact fueling, carb intake, and hydration timing for this upcoming long run?' });
+    suggestions.push({ label: '🔄 Adjust Weekly Volume', prompt: 'Can we re-balance my mileage across the rest of the week?' });
+  } else {
+    suggestions.push({ label: '⚡ Today\'s Tactical Brief', prompt: 'Give me a concise tactical brief for today\'s scheduled workout.' });
+    suggestions.push({ label: '🦵 Calf & Achilles Check', prompt: 'What prehab drills should I do today to reinforce my calves and Achilles tendons?' });
+    suggestions.push({ label: '🌧️ Swap Today with Rest', prompt: 'I cannot run today due to schedule or weather. Can you reschedule or swap with rest?' });
+  }
+
+  return `
+    <div class="coach-quick-replies">
+      ${suggestions.slice(0, 3).map(s => `
+        <button type="button" class="coach-reply-pill" onclick="sendQuickPrompt('${escapeHtml(s.prompt)}')">
+          ${s.label}
+        </button>
+      `).join('')}
+    </div>
+  `;
+}
+window.generatePredictiveRepliesHtml = generatePredictiveRepliesHtml;
+
+// Live Real-Time Training Horizon Bar Engine
+function updateVegaHorizonBar() {
+  const container = document.getElementById('coach-horizon-bar');
+  if (!container) return;
+
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate()).padStart(2, '0');
+  const todayStr = `${yyyy}-${mm}-${dd}`;
+
+  let matchedWorkoutInfo = typeof findWorkoutInfoByDate === 'function' ? findWorkoutInfoByDate(todayStr) : null;
+
+  let currentWeek = null;
+  let activeWorkout = null;
+  let weekNum = 1;
+
+  if (matchedWorkoutInfo) {
+    currentWeek = matchedWorkoutInfo.week;
+    activeWorkout = matchedWorkoutInfo.workout;
+    weekNum = matchedWorkoutInfo.weekNumber;
+  } else if (Array.isArray(rawWeeksData) && rawWeeksData.length > 0) {
+    currentWeek = rawWeeksData.find(w => w.workouts && w.workouts.some(wo => wo.date >= todayStr)) || rawWeeksData[0];
+    weekNum = currentWeek.week_number;
+    activeWorkout = (currentWeek.workouts || []).find(wo => wo.date >= todayStr) || (currentWeek.workouts || [])[0];
+  }
+
+  const phase = currentWeek?.phase || 'Base Building';
+  const workouts = currentWeek?.workouts || [];
+  const plannedKm = currentWeek?.total_planned_km || workouts.reduce((acc, w) => acc + (w.distance_km || 0), 0);
+  
+  let completedKm = 0;
+  workouts.forEach(wo => {
+    const k = `${weekNum}_${wo.day}_${wo.date}`;
+    const log = typeof completedWorkouts !== 'undefined' ? completedWorkouts[k] : null;
+    if (log && log.done) {
+      completedKm += (log.dist || wo.distance_km || 0);
+    }
+  });
+
+  const progressPct = plannedKm > 0 ? Math.min(100, Math.round((completedKm / plannedKm) * 100)) : 0;
+  const woTitle = activeWorkout 
+    ? `${activeWorkout.type} (${activeWorkout.distance_km > 0 ? `${activeWorkout.distance_km} km` : 'Rest Day'})`
+    : 'Rest & Active Recovery';
+  const woPace = activeWorkout?.target_pace && activeWorkout.target_pace !== 'N/A' ? activeWorkout.target_pace : 'Rest / Easy Pace';
+  const woRpe = activeWorkout?.rpe || 2;
+  const dayDisplay = activeWorkout ? `${activeWorkout.day} (${activeWorkout.date})` : `Today (${todayStr})`;
+
+  container.innerHTML = `
+    <div class="coach-horizon-today">
+      <span class="coach-horizon-tag">📅 ${dayDisplay}</span>
+      <span class="coach-horizon-status">Week ${weekNum} • ${phase}</span>
+    </div>
+    <div class="coach-horizon-title">
+      🏃 ${woTitle}
+    </div>
+    <div class="coach-horizon-sub">
+      <span>🎯 Target Pace: <span class="mono-stat">${woPace}</span></span>
+      <span>⚡ Effort: <strong style="color: #fbbf24;">RPE ${woRpe}/10</strong></span>
+      <span>👟 Gear: <strong>Adizero Evo SL 2</strong></span>
+    </div>
+    <div class="coach-horizon-progress">
+      <span>Week ${weekNum} Volume:</span>
+      <div class="coach-horizon-track">
+        <div class="coach-horizon-fill" style="width: ${progressPct}%;"></div>
+      </div>
+      <span class="mono-stat">${completedKm.toFixed(1)} / ${plannedKm.toFixed(1)} km (${progressPct}%)</span>
+    </div>
+    <div class="coach-horizon-actions">
+      <button type="button" class="coach-action-pill" onclick="sendQuickPrompt('Give me a concise tactical brief for today\\'s workout (${escapeHtml(dayDisplay)}: ${escapeHtml(woTitle)}): pacing cues, fueling, and heart rate caps.')">
+        ⚡ Pre-Run Brief
+      </button>
+      <button type="button" class="coach-action-pill" onclick="sendQuickPrompt('What specific calf &amp; Achilles armor drills should I do before or after today\\'s session (${escapeHtml(woTitle)})?')">
+        🦵 Calf Check
+      </button>
+      <button type="button" class="coach-action-pill" onclick="sendQuickPrompt('I cannot run today due to schedule or fatigue. Can you swap today (${escapeHtml(dayDisplay)}) with a rest day or reschedule?')">
+        🌧️ Swap with Rest
+      </button>
+    </div>
+  `;
+}
+window.updateVegaHorizonBar = updateVegaHorizonBar;
+
 // Main Send Message Function
 async function sendCoachMessage() {
   const input = document.getElementById('coach-input');
   const userText = input?.value.trim();
   if (!userText) return;
 
-  if (input) input.value = '';
+  if (input) {
+    input.value = '';
+    handleCoachInputInput(input);
+  }
 
   coachChatHistory.push({ role: 'user', content: userText, timestamp: new Date().toISOString() });
   pruneCoachChatHistory();
@@ -11494,7 +12460,17 @@ function renderCoachMessages() {
             If your calves feel tight, you miss a workout, or you want to deload an entire week or month, just tell me! I will investigate what happened and suggest tailored plan changes.
           </p>
           ${welcomeKeyBox}
+          <div style="display: flex; align-items: center; justify-content: flex-end; margin-top: 0.5rem;">
+            <button type="button" class="coach-voice-read-btn" id="coach-voice-btn-welcome" onclick="toggleVegaAudioReadout('welcome')" title="Listen to Vega's introduction">
+              🔊 Listen
+            </button>
+          </div>
         </div>
+      </div>
+      <div class="coach-quick-replies">
+        <button type="button" class="coach-reply-pill" onclick="sendQuickPrompt('Give me a quick tactical brief for today\'s scheduled workout.')">⚡ Today's Brief</button>
+        <button type="button" class="coach-reply-pill" onclick="sendQuickPrompt('My calves felt tight and strained during my run yesterday. What should I do?')">🦵 Calf Strain Check</button>
+        <button type="button" class="coach-reply-pill" onclick="sendQuickPrompt('Can you review my recent pace and variance from Strava?')">⚡ Pacing Check</button>
       </div>
     `;
     return;
@@ -11526,6 +12502,21 @@ function renderCoachMessages() {
 
     const inlineKeyBox = (isBot && msg.showKeyInput && !geminiApiKey) ? renderKeyActivatorSnippet() : '';
 
+    let voiceReadoutHtml = '';
+    let quickRepliesHtml = '';
+    if (isBot) {
+      voiceReadoutHtml = `
+        <div style="display: flex; align-items: center; justify-content: flex-end; margin-top: 0.5rem;">
+          <button type="button" class="coach-voice-read-btn" id="coach-voice-btn-${idx}" onclick="toggleVegaAudioReadout(${idx})" title="Listen to Vega's coaching advice">
+            🔊 Listen
+          </button>
+        </div>
+      `;
+      if (idx === coachChatHistory.length - 1 && typeof generatePredictiveRepliesHtml === 'function') {
+        quickRepliesHtml = generatePredictiveRepliesHtml(msg.content);
+      }
+    }
+
     html += `
       <div class="coach-msg ${isBot ? 'bot' : 'user'}">
         <div class="coach-msg-avatar">${isBot ? currentIconSvg : '🏃'}</div>
@@ -11533,8 +12524,10 @@ function renderCoachMessages() {
           <p>${formattedText}</p>
           ${planProposalHtml}
           ${inlineKeyBox}
+          ${voiceReadoutHtml}
         </div>
       </div>
+      ${quickRepliesHtml}
     `;
   });
 
