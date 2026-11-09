@@ -48,6 +48,9 @@ CREATE TABLE IF NOT EXISTS daily_workouts (
     ingestion_source VARCHAR(50),
     strategy_splits JSONB,
     coach_script JSONB,
+    actual_splits JSONB,
+    avg_heart_rate INT,
+    max_heart_rate INT,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 

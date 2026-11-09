@@ -6765,11 +6765,35 @@ document.addEventListener('DOMContentLoaded', () => {
   pruneCoachChatHistory();
   checkAndResumePendingCoachQuery();
 
-  // Register PWA Service Worker
+  // Register PWA Service Worker with Automatic Update Trigger
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js').catch(err => {
+      navigator.serviceWorker.register('./sw.js').then((registration) => {
+        // Force immediate check for sw.js updates on GitHub Pages
+        registration.update().catch(() => {});
+
+        registration.onupdatefound = () => {
+          const installingWorker = registration.installing;
+          if (installingWorker) {
+            installingWorker.onstatechange = () => {
+              if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                console.log('🔄 New app version detected! Reloading for fresh experience...');
+                window.location.reload();
+              }
+            };
+          }
+        };
+      }).catch(err => {
         console.log('SW registration notice:', err);
+      });
+
+      // Seamless reload when new service worker activates
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          refreshing = true;
+          window.location.reload();
+        }
       });
     });
   }
@@ -7310,14 +7334,32 @@ function renderActualsBox(logData, plannedDist, targetPace, dateStr, workoutKey)
     subText = `${Math.abs(distDelta).toFixed(1)}k Under`;
   }
 
+  const hrPill = logData.avgHeartRate ? `
+    <span class="hr-metric-pill" style="display: inline-flex; align-items: center; gap: 0.25rem; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.35); color: #f87171; border-radius: 999px; padding: 0.15rem 0.5rem; font-size: 0.7rem; font-weight: 700; font-family: 'JetBrains Mono', monospace;" title="Average Heart Rate (Galaxy Watch4): ${logData.avgHeartRate} BPM">
+      <span>❤️</span>
+      <span>${logData.avgHeartRate}</span><span style="font-size: 0.62rem; opacity: 0.85;">bpm</span>
+    </span>
+  ` : '';
+
+  const splitsCount = (logData.actualSplits && Array.isArray(logData.actualSplits)) ? logData.actualSplits.length : 0;
+  const splitsPill = splitsCount > 0 ? `
+    <span style="display: inline-flex; align-items: center; gap: 0.2rem; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; border-radius: 999px; padding: 0.15rem 0.45rem; font-size: 0.68rem; font-weight: 700; font-family: 'JetBrains Mono', monospace;" title="${splitsCount} Kilometer Splits recorded from Strava">
+      <span>⏱️</span> ${splitsCount}k splits
+    </span>
+  ` : '';
+
   return `
-    <button class="variance-pill-btn ${pillClass}" onclick="event.stopPropagation(); showVarianceDetailModal('${workoutKey}', '${dateStr}')" title="Click to view detailed execution report">
-      <span style="display: flex; align-items: center; gap: 0.35rem;">
-        <span>${pillText}</span>
-        <span style="opacity: 0.8; font-weight: 500; font-size: 0.68rem;">(${subText})</span>
-      </span>
-      <span style="font-size: 0.65rem; opacity: 0.75; font-weight: 800;">Breakdown ▾</span>
-    </button>
+    <div style="display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; margin-top: 0.25rem;">
+      <button class="variance-pill-btn ${pillClass}" onclick="event.stopPropagation(); showVarianceDetailModal('${workoutKey}', '${dateStr}')" title="Click to view detailed execution report">
+        <span style="display: flex; align-items: center; gap: 0.35rem;">
+          <span>${pillText}</span>
+          <span style="opacity: 0.8; font-weight: 500; font-size: 0.68rem;">(${subText})</span>
+        </span>
+        <span style="font-size: 0.65rem; opacity: 0.75; font-weight: 800;">Breakdown ▾</span>
+      </button>
+      ${hrPill}
+      ${splitsPill}
+    </div>
   `;
 }
 
@@ -7443,6 +7485,16 @@ function showVarianceDetailModal(workoutKey, dateStr) {
               ${paceDeltaSec < 0 ? `⚡ ${Math.abs(paceDeltaSec)}s fast` : paceDeltaSec > 0 ? `🐢 ${paceDeltaSec}s slow` : '🎯 On Target'}
             </td>
           </tr>
+          ${logData.avgHeartRate ? `
+            <tr>
+              <td><strong>Heart Rate (Watch4)</strong></td>
+              <td>Zone 2 Aerobic (&lt;145 bpm)</td>
+              <td><strong style="color: #f87171; font-family: monospace;">❤️ ${logData.avgHeartRate} bpm</strong> ${logData.maxHeartRate ? `<span style="font-size: 0.75rem; color: var(--text-dim);">(Max: ${logData.maxHeartRate} bpm)</span>` : ''}</td>
+              <td style="font-weight: 700; color: ${logData.avgHeartRate <= 145 ? 'var(--primary)' : logData.avgHeartRate <= 158 ? 'var(--accent-orange)' : 'var(--accent-red)'};">
+                ${logData.avgHeartRate <= 145 ? '🎯 Zone 2 Base Lock' : logData.avgHeartRate <= 158 ? '⚡ Steady Aerobic (Z3)' : '🔥 High Heart Rate (Z4)'}
+              </td>
+            </tr>
+          ` : ''}
           ${logData.notes ? `
             <tr>
               <td><strong>Notes</strong></td>
@@ -7452,6 +7504,70 @@ function showVarianceDetailModal(workoutKey, dateStr) {
         </tbody>
       </table>
     </div>
+
+    <!-- Section 4: Kilometer-by-Kilometer Splits (Strava & Galaxy Watch Telemetry) -->
+    ${(logData.actualSplits && Array.isArray(logData.actualSplits) && logData.actualSplits.length > 0) ? `
+      <div class="breakdown-section" style="border-left: 3px solid #38bdf8;">
+        <div class="breakdown-section-title" style="color: #38bdf8; display: flex; justify-content: space-between; align-items: center;">
+          <span><span>⏱️</span> Kilometer Splits &amp; Optical Heart Rate</span>
+          <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">${logData.actualSplits.length} Splits Ingested</span>
+        </div>
+        
+        <div style="overflow-x: auto; margin-top: 0.5rem;">
+          <table class="comparison-table" style="font-size: 0.8rem; width: 100%;">
+            <thead>
+              <tr>
+                <th style="width: 70px;">Split</th>
+                <th style="width: 80px;">Distance</th>
+                <th style="width: 110px;">Pace</th>
+                <th style="width: 90px;">Time</th>
+                <th style="width: 110px;">Heart Rate</th>
+                <th>Elev Delta</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${logData.actualSplits.map(s => `
+                <tr>
+                  <td><strong>${s.km || `Km ${s.split}`}</strong></td>
+                  <td>${s.distance_km || 1.0} km</td>
+                  <td><strong style="color: var(--accent-orange); font-family: 'JetBrains Mono', monospace;">${s.pace}</strong></td>
+                  <td style="color: var(--text-muted); font-family: monospace;">${Math.floor((s.duration_sec || 0)/60)}m ${String((s.duration_sec || 0)%60).padStart(2,'0')}s</td>
+                  <td>${s.heart_rate ? `<span style="color: #f87171; font-weight: 700; font-family: monospace;">❤️ ${s.heart_rate} bpm</span>` : '<span style="color: var(--text-dim);">—</span>'}</td>
+                  <td style="color: var(--text-dim);">${s.elevation_diff_m !== undefined ? `${s.elevation_diff_m > 0 ? '+' : ''}${s.elevation_diff_m} m` : '—'}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+
+        ${(() => {
+          const validHrSplits = logData.actualSplits.filter(s => s.heart_rate && s.heart_rate > 50);
+          if (validHrSplits.length >= 4) {
+            const half = Math.floor(validHrSplits.length / 2);
+            const firstHalf = validHrSplits.slice(0, half);
+            const secondHalf = validHrSplits.slice(half);
+            const avg1 = Math.round(firstHalf.reduce((acc, s) => acc + s.heart_rate, 0) / firstHalf.length);
+            const avg2 = Math.round(secondHalf.reduce((acc, s) => acc + s.heart_rate, 0) / secondHalf.length);
+            const driftBpm = avg2 - avg1;
+            const driftPct = Math.round((driftBpm / avg1) * 100);
+            if (driftBpm > 8) {
+              return `
+                <div style="margin-top: 0.75rem; background: rgba(255, 140, 0, 0.1); border: 1px solid rgba(255, 140, 0, 0.3); border-radius: var(--radius-sm); padding: 0.65rem 0.85rem; font-size: 0.78rem; line-height: 1.4;">
+                  <strong style="color: var(--accent-orange);">⚠️ Cardiac Drift Detected (+${driftBpm} bpm / +${driftPct}% in 2nd half):</strong> First half averaged ${avg1} bpm vs second half ${avg2} bpm. Under high humidity, this indicates early glycogen depletion or sodium loss. Maintain sodium intake (400-600mg/hr) to avoid calf fatigue!
+                </div>
+              `;
+            } else {
+              return `
+                <div style="margin-top: 0.75rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: var(--radius-sm); padding: 0.65rem 0.85rem; font-size: 0.78rem; line-height: 1.4;">
+                  <strong style="color: var(--primary);">✅ Aerobic Cardiovascular Stability:</strong> Heart rate stayed rock-solid across the entire run (1st half avg ${avg1} bpm vs 2nd half ${avg2} bpm; drift: ${driftBpm > 0 ? '+' : ''}${driftBpm} bpm). Excellent aerobic conditioning!
+                </div>
+              `;
+            }
+          }
+          return '';
+        })()}
+      </div>
+    ` : ''}
 
     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.25rem; flex-wrap: wrap; gap: 0.5rem;">
       <button class="action-pill-btn" style="color: var(--primary); border-color: rgba(16, 185, 129, 0.4);" onclick="closeVarianceModal(); openManualLogForDate('${dateStr}', ${plannedDist});">
@@ -9352,8 +9468,16 @@ async function initSupabase(url, key) {
         }
 
         // Sync completion, actuals, and variance logs from cloud row
-        if (row.is_completed || row.actual_distance_km > 0) {
-          const key = `${wNum}_${row.day_of_week}_${row.workout_date}`;
+        // Strict guard: ONLY actual running workouts (distance_km > 0 and not Rest/Strength)
+        const isRunWorkout = Number(row.distance_km) > 0 &&
+          !String(row.workout_type || '').toLowerCase().includes('rest') &&
+          !String(row.workout_type || '').toLowerCase().includes('strength');
+
+        const key = `${wNum}_${row.day_of_week}_${row.workout_date}`;
+
+        if (!isRunWorkout || (!row.is_completed && !row.actual_distance_km)) {
+          delete completedWorkouts[key];
+        } else if ((row.is_completed || row.actual_distance_km > 0) && isRunWorkout) {
           const plannedDist = Number(row.distance_km) || 0;
           const actualDist = Number(row.actual_distance_km) || plannedDist;
           const targetPace = row.target_pace || 'N/A';
@@ -9383,6 +9507,9 @@ async function initSupabase(url, key) {
             rpe: row.actual_rpe || row.rpe_target || 3,
             notes: row.athlete_notes || '',
             source: row.ingestion_source || 'cloud_db',
+            actualSplits: row.actual_splits || null,
+            avgHeartRate: row.avg_heart_rate || null,
+            maxHeartRate: row.max_heart_rate || null,
             completedAt: new Date().toISOString()
           };
         }
@@ -9431,8 +9558,14 @@ async function initSupabase(url, key) {
             const { data: refreshedRows } = await supabaseClient.from('daily_workouts').select('*').order('workout_date', { ascending: true });
             if (refreshedRows && refreshedRows.length > 0) {
               refreshedRows.forEach(row => {
-                if (row.is_completed || row.actual_distance_km > 0) {
-                  const key = `${row.week_number}_${row.day_of_week}_${row.workout_date}`;
+                const key = `${row.week_number}_${row.day_of_week}_${row.workout_date}`;
+                const isRunWorkout = Number(row.distance_km) > 0 &&
+                  !String(row.workout_type || '').toLowerCase().includes('rest') &&
+                  !String(row.workout_type || '').toLowerCase().includes('strength');
+
+                if (!isRunWorkout || (!row.is_completed && !row.actual_distance_km)) {
+                  delete completedWorkouts[key];
+                } else if ((row.is_completed || row.actual_distance_km > 0) && isRunWorkout) {
                   completedWorkouts[key] = {
                     done: true,
                     dist: Number(row.actual_distance_km) || Number(row.distance_km) || 0,
@@ -9445,6 +9578,9 @@ async function initSupabase(url, key) {
                     rpe: row.actual_rpe || row.rpe_target || 3,
                     notes: row.athlete_notes || '',
                     source: row.ingestion_source || 'cloud_db',
+                    actualSplits: row.actual_splits || null,
+                    avgHeartRate: row.avg_heart_rate || null,
+                    maxHeartRate: row.max_heart_rate || null,
                     completedAt: new Date().toISOString()
                   };
                 }
@@ -9867,7 +10003,7 @@ function calculateVariance(plannedDist, actualDist, targetPace, actualPaceStr) {
 }
 
 // Ingestion Processor with Automatic Variance Calculation and Local/Cloud Sync
-function applyIngestedRun(dateStr, dist, durationSecs, paceStr, source = 'manual', rpe = 3, notes = '') {
+function applyIngestedRun(dateStr, dist, durationSecs, paceStr, source = 'manual', rpe = 3, notes = '', splits = null, avgHr = null, maxHr = null) {
   const match = findWorkoutInfoByDate(dateStr);
   const workoutKey = match ? `${match.weekNumber}_${match.workout.day}_${dateStr}` : `custom_${dateStr}`;
   const plannedDist = match ? (match.workout.distance_km || 0) : dist;
@@ -9887,6 +10023,9 @@ function applyIngestedRun(dateStr, dist, durationSecs, paceStr, source = 'manual
     rpe: rpe,
     notes: notes,
     source: source,
+    actualSplits: splits,
+    avgHeartRate: avgHr,
+    maxHeartRate: maxHr,
     completedAt: new Date().toISOString()
   };
 
@@ -9894,7 +10033,7 @@ function applyIngestedRun(dateStr, dist, durationSecs, paceStr, source = 'manual
   invalidateWeekCardCache(match ? match.weekNumber : undefined);
 
   if (supabaseClient && dateStr) {
-    supabaseClient.from('daily_workouts').update({
+    const updatePayload = {
       is_completed: true,
       actual_distance_km: dist,
       actual_pace: paceStr,
@@ -9904,7 +10043,12 @@ function applyIngestedRun(dateStr, dist, durationSecs, paceStr, source = 'manual
       pace_variance_sec: paceDeltaSec,
       compliance_score_pct: scorePct,
       actual_duration_min: Math.round(durationSecs / 60)
-    }).eq('workout_date', dateStr).then(({ error }) => {
+    };
+    if (splits) updatePayload.actual_splits = splits;
+    if (avgHr) updatePayload.avg_heart_rate = avgHr;
+    if (maxHr) updatePayload.max_heart_rate = maxHr;
+
+    supabaseClient.from('daily_workouts').update(updatePayload).eq('workout_date', dateStr).then(({ error }) => {
       if (error) console.warn('Supabase log sync warning:', error);
     });
   }
@@ -9921,6 +10065,7 @@ function saveManualRunLog() {
   const mins = parseInt(document.getElementById('manual-run-mins')?.value) || 0;
   const secs = parseInt(document.getElementById('manual-run-secs')?.value) || 0;
   const rpe = parseInt(document.getElementById('manual-run-rpe')?.value) || 3;
+  const avgHr = parseInt(document.getElementById('manual-run-hr')?.value) || null;
   const notes = document.getElementById('manual-run-notes')?.value || '';
 
   if (!dateStr || isNaN(dist) || dist <= 0) {
@@ -9934,7 +10079,7 @@ function saveManualRunLog() {
   const paceS = Math.round(paceSecs % 60);
   const paceStr = `${paceM}:${String(paceS).padStart(2, '0')} min/km`;
 
-  applyIngestedRun(dateStr, dist, durationSecs, paceStr, 'Manual Quick-Log', rpe, notes);
+  applyIngestedRun(dateStr, dist, durationSecs, paceStr, 'Manual Quick-Log', rpe, notes, null, avgHr);
   closeRunUploadModal();
 }
 
@@ -9943,13 +10088,32 @@ function initBookmarklet() {
   const scriptCode = `javascript:(function(){
     var distEl = document.querySelector('.inline-stats .stat:nth-child(1) .stat-value') || document.querySelector('[data-testid="stat-distance"]');
     var timeEl = document.querySelector('.inline-stats .stat:nth-child(2) .stat-value') || document.querySelector('[data-testid="stat-moving_time"]');
+    var hrEl = document.querySelector('[data-testid="stat-heartrate"]') || document.querySelector('.heartrate-stat .stat-value') || document.querySelector('.stat-heartrate');
     var dateEl = document.querySelector('time') || document.querySelector('.activity-date');
+    
     var dist = distEl ? distEl.innerText.replace(/[^0-9.]/g,'') : prompt('Enter Distance in KM:');
     var time = timeEl ? timeEl.innerText.trim() : prompt('Enter Moving Time (e.g. 45:30):');
+    var hr = hrEl ? parseInt(hrEl.innerText.replace(/[^0-9]/g,'')) : null;
     var d = dateEl && dateEl.getAttribute('datetime') ? dateEl.getAttribute('datetime').slice(0,10) : new Date().toISOString().slice(0,10);
-    var targetUrl = '${window.location.origin + window.location.pathname}';
-    alert('Run extracted from Strava:\\nDate: ' + d + '\\nDistance: ' + dist + ' km\\nTime: ' + time + '\\n\\nCopying to clipboard for TMM 2027 plan!');
-    navigator.clipboard.writeText(JSON.stringify({date: d, dist: parseFloat(dist), time: time}));
+    
+    var splits = [];
+    var splitRows = document.querySelectorAll('#splits tbody tr, .splits-table tbody tr');
+    if (splitRows && splitRows.length > 0) {
+      splitRows.forEach(function(row, idx) {
+        var cells = row.querySelectorAll('td');
+        if (cells.length >= 3) {
+          var splitNum = parseInt(cells[0].innerText) || (idx + 1);
+          var paceText = cells[1].innerText.trim();
+          var elevText = cells[2] ? cells[2].innerText.trim() : '';
+          var splitHr = cells[3] ? parseInt(cells[3].innerText.replace(/[^0-9]/g,'')) : null;
+          splits.push({ split: splitNum, km: 'Km ' + splitNum, pace: paceText, elevation: elevText, heart_rate: splitHr });
+        }
+      });
+    }
+
+    var payload = { date: d, dist: parseFloat(dist), time: time, avg_heart_rate: hr, actual_splits: splits.length > 0 ? splits : null };
+    navigator.clipboard.writeText(JSON.stringify(payload));
+    alert('Run extracted from Strava:\\nDate: ' + d + '\\nDistance: ' + dist + ' km\\nTime: ' + time + (hr ? ('\\nHeart Rate: ' + hr + ' bpm') : '') + (splits.length ? ('\\nSplits: ' + splits.length + ' km captured') : '') + '\\n\\nCopied to clipboard for TMM 2027 plan!');
   })();`;
 
   const link = document.getElementById('strava-bookmarklet-link');

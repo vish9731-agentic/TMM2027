@@ -98,43 +98,25 @@ def calculate_variance(planned_dist, actual_dist, target_pace, actual_pace_str):
     return dist_delta, pace_delta_sec, score_pct
 
 def extract_date_str(act):
-    """Robustly extracts YYYY-MM-DD from various possible Strava date fields with IST awareness."""
-    # 1. Prefer explicit local date fields (already in athlete's timezone)
-    for field in ["start_date_local", "start_date_local_raw", "start_day", "start_time"]:
+    """Robustly extracts local YYYY-MM-DD from various possible Strava date fields without erroneous timezone drift."""
+    for field in ["start_date_local", "start_date_local_raw", "start_date", "start_day", "start_time"]:
         val = act.get(field)
         if not val:
             continue
+        # Check standard ISO YYYY-MM-DD (already represents athlete local date in Strava web models)
         m = re.search(r"(\d{4}-\d{2}-\d{2})", str(val))
         if m:
             return m.group(1)
+        # Check numeric epoch timestamp
         if isinstance(val, (int, float)) and val > 1000000000:
             ts = val / 1000.0 if val > 1000000000000 else val
             return datetime.fromtimestamp(ts, IST_TZ).strftime("%Y-%m-%d")
+        # Check month name format (e.g. Nov 02, 2026)
         try:
             parsed = datetime.strptime(str(val)[:20], "%b %d, %Y")
             return parsed.strftime("%Y-%m-%d")
         except Exception:
             pass
-
-    # 2. Check UTC start_date converted to IST (+05:30)
-    for field in ["start_date"]:
-        val = act.get(field)
-        if not val:
-            continue
-        if isinstance(val, (int, float)) and val > 1000000000:
-            ts = val / 1000.0 if val > 1000000000000 else val
-            return datetime.fromtimestamp(ts, IST_TZ).strftime("%Y-%m-%d")
-        iso_str = str(val).strip()
-        if "T" in iso_str and (iso_str.endswith("Z") or "+" in iso_str):
-            try:
-                clean_iso = iso_str.replace("Z", "+00:00")
-                dt = datetime.fromisoformat(clean_iso)
-                return dt.astimezone(IST_TZ).strftime("%Y-%m-%d")
-            except Exception:
-                pass
-        m = re.search(r"(\d{4}-\d{2}-\d{2})", iso_str)
-        if m:
-            return m.group(1)
     return None
 
 def parse_distance_km(act):
@@ -219,6 +201,98 @@ def fetch_strava_activities():
     except Exception as e:
         print(f"❌ Error scraping Strava: {e}")
         return []
+
+def fetch_strava_activity_splits_and_hr(activity_id):
+    """
+    Fetches detailed per-km splits (splits_metric) and heart rate from Strava activity page.
+    Extracts split-by-split pace, duration, elevation, and optical heart rate recorded by Galaxy Watch.
+    """
+    if not activity_id or not STRAVA_COOKIE:
+        return {"splits": [], "avg_hr": None, "max_hr": None}
+
+    cookie_header = STRAVA_COOKIE
+    if not cookie_header.startswith("_strava4_session="):
+        cookie_header = f"_strava4_session={cookie_header}"
+
+    url = f"https://www.strava.com/activities/{activity_id}"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Cookie": cookie_header,
+        "Referer": "https://www.strava.com/athlete/training"
+    }
+
+    req = urllib.request.Request(url, headers=headers)
+    try:
+        with urllib.request.urlopen(req, timeout=15) as response:
+            html = response.read().decode("utf-8", errors="replace")
+
+            # 1. Parse splits_metric JSON array
+            splits_data = []
+            m = re.search(r'"splits_metric"\s*:\s*(\[\{.*?\}\])', html)
+            if not m:
+                m = re.search(r'&quot;splits_metric&quot;\s*:\s*(\[.*?\])(?:,\s*&quot;|})', html)
+                if m:
+                    unescaped = m.group(1).replace("&quot;", '"')
+                    try:
+                        splits_data = json.loads(unescaped)
+                    except Exception:
+                        pass
+            else:
+                try:
+                    splits_data = json.loads(m.group(1))
+                except Exception:
+                    pass
+
+            formatted_splits = []
+            if splits_data and isinstance(splits_data, list):
+                for s in splits_data:
+                    split_num = s.get("split") or (len(formatted_splits) + 1)
+                    dist_m = float(s.get("distance", 1000.0))
+                    moving_sec = int(s.get("moving_time") or s.get("elapsed_time", 0))
+                    elevation_diff = round(float(s.get("elevation_difference", 0.0)), 1)
+                    split_hr = s.get("average_heartrate")
+                    split_hr_val = int(round(float(split_hr))) if split_hr else None
+
+                    split_km = dist_m / 1000.0
+                    if moving_sec > 0 and split_km > 0:
+                        pace_sec = moving_sec / split_km
+                        pm = math.floor(pace_sec / 60)
+                        ps = round(pace_sec % 60)
+                        p_str = f"{pm}:{ps:02d} min/km"
+                    else:
+                        pace_sec = 0
+                        p_str = "N/A"
+
+                    formatted_splits.append({
+                        "split": split_num,
+                        "km": f"Km {split_num}",
+                        "distance_km": round(split_km, 2),
+                        "pace": p_str,
+                        "pace_sec": round(pace_sec),
+                        "duration_sec": moving_sec,
+                        "elevation_diff_m": elevation_diff,
+                        "heart_rate": split_hr_val
+                    })
+
+            # 2. Extract average and max heart rate if present
+            avg_hr = None
+            max_hr = None
+            hr_m = re.search(r'"average_heartrate"\s*:\s*([0-9.]+)', html)
+            if hr_m:
+                avg_hr = int(round(float(hr_m.group(1))))
+            max_hr_m = re.search(r'"max_heartrate"\s*:\s*([0-9.]+)', html)
+            if max_hr_m:
+                max_hr = int(round(float(max_hr_m.group(1))))
+
+            return {
+                "splits": formatted_splits,
+                "avg_hr": avg_hr,
+                "max_hr": max_hr
+            }
+    except Exception as e:
+        print(f"      ℹ️ Note: Detailed split fetch for activity {activity_id}: {e}")
+        return {"splits": [], "avg_hr": None, "max_hr": None}
 
 def query_supabase_workout(date_str):
     if not SUPABASE_URL or not SUPABASE_KEY:
@@ -332,7 +406,25 @@ def main():
         else:
             pace_str = "N/A"
 
-        print(f"[{idx+1}] \"{name}\" • Type: {act_type} • Date: {date_str} • Distance: {dist_km} km • Pace: {pace_str}")
+        # Check heart rate telemetry from activity feed
+        raw_avg_hr = act.get("average_heartrate") or act.get("avg_hr")
+        raw_max_hr = act.get("max_heartrate") or act.get("max_hr")
+        avg_hr = int(round(float(raw_avg_hr))) if raw_avg_hr else None
+        max_hr = int(round(float(raw_max_hr))) if raw_max_hr else None
+
+        # Fetch detailed per-km splits and optical heart rate
+        act_id = act.get("id")
+        splits = []
+        if act_id:
+            details = fetch_strava_activity_splits_and_hr(act_id)
+            splits = details.get("splits", [])
+            if not avg_hr and details.get("avg_hr"):
+                avg_hr = details.get("avg_hr")
+            if not max_hr and details.get("max_hr"):
+                max_hr = details.get("max_hr")
+
+        hr_str = f" • HR: {avg_hr} bpm" if avg_hr else ""
+        print(f"[{idx+1}] \"{name}\" • Type: {act_type} • Date: {date_str} • Distance: {dist_km} km • Pace: {pace_str}{hr_str}")
 
         is_run = any(t in act_type.lower() for t in ["run", "jog", "treadmill"]) or act_type == "" or "run" in name.lower() or "vdhm" in name.lower() or "shakeout" in name.lower()
         if not is_run or dist_km <= 0 or date_str == "Unknown Date":
@@ -344,7 +436,10 @@ def main():
             "date_str": date_str,
             "dist_km": dist_km,
             "duration_secs": duration_secs,
-            "pace_str": pace_str
+            "pace_str": pace_str,
+            "splits": splits,
+            "avg_hr": avg_hr,
+            "max_hr": max_hr
         }
         activities_by_date.setdefault(date_str, []).append(item)
 
@@ -357,8 +452,14 @@ def main():
             print(f"   ℹ️ Date {date_str} is outside the 22-week plan dates in Supabase.")
             continue
 
-        planned_dist = float(planned_wo.get("distance_km", 0))
+        planned_dist = float(planned_wo.get("distance_km") or 0)
+        wo_type = str(planned_wo.get("workout_type") or "").lower()
         target_pace = planned_wo.get("target_pace", "N/A")
+
+        # Guard: NEVER match or overwrite Rest or Strength days with runs
+        if planned_dist <= 0 or "rest" in wo_type or "strength" in wo_type:
+            print(f"   ℹ️ Skipping non-running day {date_str} ({planned_wo.get('workout_type')}, planned: {planned_dist} km)")
+            continue
 
         # Pick the best run or combine them
         # If one run is an exact / close match to planned distance, prioritize it over an aborted/crashed run
@@ -387,6 +488,10 @@ def main():
 
         print(f"\n   🎯 MATCHED SCHEDULED WORKOUT: Week {planned_wo.get('week_number')} {planned_wo.get('day_of_week')} ({date_str})")
         print(f"      • Planned: {planned_dist} km @ {target_pace} | Actual: {dist_km} km @ {pace_str}")
+        if primary_run.get("avg_hr"):
+            print(f"      • Heart Rate Telemetry: Avg {primary_run['avg_hr']} bpm (Max {primary_run.get('max_hr') or 'N/A'} bpm)")
+        if primary_run.get("splits"):
+            print(f"      • Kilometer Splits: {len(primary_run['splits'])} splits captured from Strava")
         print(f"      • Variance: {dist_delta:+} km, Pace Delta: {pace_delta_sec:+}s/km -> Precision: {score_pct}%")
 
         payload = {
@@ -397,6 +502,9 @@ def main():
             "distance_variance_km": dist_delta,
             "pace_variance_sec": pace_delta_sec,
             "compliance_score_pct": score_pct,
+            "actual_splits": primary_run.get("splits"),
+            "avg_heart_rate": primary_run.get("avg_hr"),
+            "max_heart_rate": primary_run.get("max_hr"),
             "ingestion_source": "strava_github_action",
             "athlete_notes": notes_str
         }

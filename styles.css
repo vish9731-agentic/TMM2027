@@ -93,15 +93,12 @@ h1, h2, h3, h4, .brand-font {
   position: sticky;
   top: 0;
   z-index: 100;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  background: rgba(10, 14, 23, 0.94);
+  background: #0a0e17;
   border-bottom: 1px solid var(--border-subtle);
   padding: 0.85rem 1.5rem;
   width: 100%;
   max-width: 100vw;
   box-sizing: border-box;
-  transform: translateZ(0); /* Hardware accelerated layer */
 }
 
 .nav-container {
@@ -1509,7 +1506,6 @@ h1, h2, h3, h4, .brand-font {
   font-weight: 800;
   cursor: pointer;
   box-shadow: 0 10px 30px rgba(255, 69, 0, 0.4), 0 0 18px rgba(255, 183, 3, 0.3);
-  backdrop-filter: blur(12px);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -2404,15 +2400,12 @@ h1, h2, h3, h4, .brand-font {
 }
 
 /* ==============================================================================
-   CINEMATIC AESTHETIC - ZERO-CPU HIGH-PERFORMANCE GRAIN
+   ZERO-OVERHEAD PURGED GRAIN LAYER
    ============================================================================== */
 .kold-grain-overlay {
-  display: none !important; /* Zero CPU/GPU overhead; completely eliminated noise jitter */
+  display: none !important;
+  overflow: hidden;
   pointer-events: none;
-}
-
-@keyframes koldFilmGrain {
-  0%, 100% { transform: none; }
 }
 
 .kold-select {
