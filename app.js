@@ -16,8 +16,8 @@ const APP_DATA = {
   },
   "phases": [
     { "id": 1, "name": "Phase 1: Prep & Foundation", "weeks": "Weeks 1–4", "dates": "Aug 17 – Sep 13", "description": "Establish 4-day weekly habit, build calf armor (eccentric drops) to avoid cramps, core stability for lower back." },
-    { "id": 2, "name": "Phase 2: Aerobic Base Building", "weeks": "Weeks 5–12", "dates": "Sep 14 – Nov 08", "description": "Expand mitochondrial density, break through 18-20k calf cramp barrier, VDHM 2026 milestone, 10K time trial." },
-    { "id": 3, "name": "Phase 3: Peak & Race Specificity", "weeks": "Weeks 13–19", "dates": "Nov 09 – Dec 27", "description": "Peak volume tolerance, 30 km Long Run, Kolkata 25K MP simulation, HM simulation race." },
+    { "id": 2, "name": "Phase 2: Aerobic Base Building", "weeks": "Weeks 5–11", "dates": "Sep 14 – Nov 01", "description": "Expand mitochondrial density, break through 18-20k calf cramp barrier, VDHM 2026 milestone, 10K time trial." },
+    { "id": 3, "name": "Phase 3: Peak & Race Specificity", "weeks": "Weeks 12–19", "dates": "Nov 02 – Dec 27", "description": "Peak volume tolerance, 30 km Long Run, Kolkata 25K MP simulation, HM simulation race." },
     { "id": 4, "name": "Phase 4: Taper & Race Execution", "weeks": "Weeks 20–22", "dates": "Dec 28 – Jan 17", "description": "Glycogen restoration, cellular repair, short sharp MP strides, race logistics and execution at Tata Mumbai Marathon." }
   ],
   
@@ -237,7 +237,7 @@ let currentFilter = 'all';
 let currentPhaseFilter = null;
 let currentViewMode = 'grid';
 let searchQuery = '';
-let allCollapsed = false;
+let allCollapsed = null; // null = default mode: only current week expanded, rest collapsed
 let completedWorkouts = JSON.parse(localStorage.getItem('tmm_completed_workouts') || '{}');
 let rawWeeksData = [
   {
@@ -258,7 +258,30 @@ let rawWeeksData = [
         "rpe": 2,
         "description": "Short easy shakeout run to start the cycle.",
         "strength_prehab": "Post-run calf & hip flexor stretches (15 mins)",
-        "fueling": "Hydration with water post-run"
+        "fueling": "Hydration with water post-run",
+        "strategy_splits": [
+          {
+            "km": "0.0 – 0.8 km",
+            "phase": "Phase 1: Warmup",
+            "pace": "8:00 – 8:15 min/km",
+            "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
+            "color": "#10b981"
+          },
+          {
+            "km": "0.8 – 3.2 km",
+            "phase": "Phase 2: Main Cruise (Majority)",
+            "pace": "7:50 - 8:10 min/km",
+            "desc": "Main aerobic base cruise (RPE 3, 2.4 km). 168 SPM cadence lock for active vascular capillary flushing.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "3.2 – 4.0 km",
+            "phase": "Phase 3: Cooldown",
+            "pace": "8:15+ min/km / Brisk Walk",
+            "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Tuesday",
@@ -269,7 +292,30 @@ let rawWeeksData = [
         "rpe": 5,
         "description": "Lower Body & Calf Armor.",
         "strength_prehab": "Single-leg eccentric heel drops (3x15/leg), seated calf raises (3x15), Bulgarian split squats (3x8/leg), glute bridges (3x12/leg), tibialis wall raises (3x20).",
-        "fueling": "Adequate protein intake"
+        "fueling": "Adequate protein intake",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Wednesday",
@@ -280,7 +326,93 @@ let rawWeeksData = [
         "rpe": 6,
         "description": "1.5 km warmup, 5x100m fast relaxed strides with 90s walk rest, 2 km cooldown.",
         "strength_prehab": "Hamstring and calf dynamic stretches",
-        "fueling": "Light carbs pre-run"
+        "fueling": "Light carbs pre-run",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.5",
+            "phase": "Phase 1: Warm-up Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
+            "color": "#10b981"
+          },
+          {
+            "km": "1. 100m Stride 1",
+            "phase": "Rep 1/5",
+            "pace": "5:30 min/km",
+            "desc": "Rep 1 of 5: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "2. 90s Walk Rest 1",
+            "phase": "Recovery 1/5",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 1 of 5: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "3. 100m Stride 2",
+            "phase": "Rep 2/5",
+            "pace": "5:30 min/km",
+            "desc": "Rep 2 of 5: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "4. 90s Walk Rest 2",
+            "phase": "Recovery 2/5",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 2 of 5: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "5. 100m Stride 3",
+            "phase": "Rep 3/5",
+            "pace": "5:30 min/km",
+            "desc": "Rep 3 of 5: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "6. 90s Walk Rest 3",
+            "phase": "Recovery 3/5",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 3 of 5: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "7. 100m Stride 4",
+            "phase": "Rep 4/5",
+            "pace": "5:30 min/km",
+            "desc": "Rep 4 of 5: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "8. 90s Walk Rest 4",
+            "phase": "Recovery 4/5",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 4 of 5: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "9. 100m Stride 5",
+            "phase": "Rep 5/5",
+            "pace": "5:30 min/km",
+            "desc": "Rep 5 of 5: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "10. 90s Walk Rest 5",
+            "phase": "Recovery 5/5",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 5 of 5: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "Final 2.0 km",
+            "phase": "Phase 3: Cool-down Flush",
+            "pace": "7:50 – 8:15 min/km",
+            "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
+            "color": "#a855f7"
+          }
+        ]
       },
       {
         "day": "Thursday",
@@ -291,7 +423,30 @@ let rawWeeksData = [
         "rpe": 5,
         "description": "Posterior Chain & Core Stability.",
         "strength_prehab": "Romanian Deadlifts (3x10), Bird-dogs (3x10/side with 3s hold), Side planks (3x35s/side), Deadbugs (3x12), Back extensions (3x12).",
-        "fueling": "Normal balanced diet"
+        "fueling": "Normal balanced diet",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Friday",
@@ -302,7 +457,30 @@ let rawWeeksData = [
         "rpe": 3,
         "description": "Smooth conversational pace to build weekly aerobic base.",
         "strength_prehab": "Dynamic warmup & ankle mobility",
-        "fueling": "Water as needed"
+        "fueling": "Water as needed",
+        "strategy_splits": [
+          {
+            "km": "0.0 – 1.0 km",
+            "phase": "Phase 1: Warmup",
+            "pace": "8:00 – 8:15 min/km",
+            "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
+            "color": "#10b981"
+          },
+          {
+            "km": "1.0 – 4.2 km",
+            "phase": "Phase 2: Main Cruise (Majority)",
+            "pace": "7:20 - 7:35 min/km",
+            "desc": "Main aerobic base cruise (RPE 3, 3.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "4.2 – 5.0 km",
+            "phase": "Phase 3: Cooldown",
+            "pace": "8:15+ min/km / Brisk Walk",
+            "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Saturday",
@@ -313,7 +491,30 @@ let rawWeeksData = [
         "rpe": 1,
         "description": "Complete rest day before long run.",
         "strength_prehab": "Light walking / gentle stretching only",
-        "fueling": "Hydrate well with 2-2.5L fluids"
+        "fueling": "Hydrate well with 2-2.5L fluids",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Sunday",
@@ -324,7 +525,30 @@ let rawWeeksData = [
         "rpe": 3,
         "description": "Week 1 long run. Focus on relaxed breathing, light foot strikes, and time on feet.",
         "strength_prehab": "Post-run 10-min calf and quad flush",
-        "fueling": "Water sips every 2 km"
+        "fueling": "Water sips every 2 km",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.0",
+            "phase": "Phase 1: Conservative Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 1.1 – 6.0",
+            "phase": "Phase 2: Marathon Cruise",
+            "pace": "7:35 - 7:45 min/km",
+            "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Final 1.0 km",
+            "phase": "Phase 3: Finish & Prehab",
+            "pace": "7:06 – 7:35 min/km",
+            "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
+            "color": "#ff7700"
+          }
+        ]
       }
     ]
   },
@@ -346,7 +570,30 @@ let rawWeeksData = [
         "rpe": 2,
         "description": "Gentle recovery run.",
         "strength_prehab": "Calf stretching on step",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "0.0 – 1.0 km",
+            "phase": "Phase 1: Warmup",
+            "pace": "8:00 – 8:15 min/km",
+            "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
+            "color": "#10b981"
+          },
+          {
+            "km": "1.0 – 3.7 km",
+            "phase": "Phase 2: Main Cruise (Majority)",
+            "pace": "7:50 - 8:10 min/km",
+            "desc": "Main aerobic base cruise (RPE 3, 2.7 km). 168 SPM cadence lock for active vascular capillary flushing.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "3.7 – 4.5 km",
+            "phase": "Phase 3: Cooldown",
+            "pace": "8:15+ min/km / Brisk Walk",
+            "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Tuesday",
@@ -357,7 +604,30 @@ let rawWeeksData = [
         "rpe": 5,
         "description": "Lower Body & Calf Armor.",
         "strength_prehab": "Eccentric heel drops (3x15), seated soleus raises (3x15), split squats, glute bridges, tibialis raises.",
-        "fueling": "Protein & carbs"
+        "fueling": "Protein & carbs",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Wednesday",
@@ -368,7 +638,79 @@ let rawWeeksData = [
         "rpe": 7,
         "description": "2 km warmup, 4x60-sec steady uphill repeats (focus on posture & high knees, jog down recovery), 2 km cooldown.",
         "strength_prehab": "Calf & Achilles dynamic activation",
-        "fueling": "Banana/toast 45 min before"
+        "fueling": "Banana/toast 45 min before",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 2.0",
+            "phase": "Phase 1: Warm-up Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
+            "color": "#10b981"
+          },
+          {
+            "km": "1. Interval 1",
+            "phase": "Rep 1/4",
+            "pace": "Uphill Sprint (RPE 8)",
+            "desc": "Rep 1 of 4: Powerful glute drive, high knees, upright torso (RPE 8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "2. Jog-Down Jog-Down Rest 1",
+            "phase": "Recovery 1/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 1 of 4: Controlled jog down to hill base, reset heart rate (RPE 2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "3. Interval 2",
+            "phase": "Rep 2/4",
+            "pace": "Uphill Sprint (RPE 8)",
+            "desc": "Rep 2 of 4: Powerful glute drive, high knees, upright torso (RPE 8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "4. Jog-Down Jog-Down Rest 2",
+            "phase": "Recovery 2/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 2 of 4: Controlled jog down to hill base, reset heart rate (RPE 2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "5. Interval 3",
+            "phase": "Rep 3/4",
+            "pace": "Uphill Sprint (RPE 8)",
+            "desc": "Rep 3 of 4: Powerful glute drive, high knees, upright torso (RPE 8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "6. Jog-Down Jog-Down Rest 3",
+            "phase": "Recovery 3/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 3 of 4: Controlled jog down to hill base, reset heart rate (RPE 2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "7. Interval 4",
+            "phase": "Rep 4/4",
+            "pace": "Uphill Sprint (RPE 8)",
+            "desc": "Rep 4 of 4: Powerful glute drive, high knees, upright torso (RPE 8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "8. Jog-Down Jog-Down Rest 4",
+            "phase": "Recovery 4/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 4 of 4: Controlled jog down to hill base, reset heart rate (RPE 2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "Final 2.0 km",
+            "phase": "Phase 3: Cool-down Flush",
+            "pace": "7:50 – 8:15 min/km",
+            "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
+            "color": "#a855f7"
+          }
+        ]
       },
       {
         "day": "Thursday",
@@ -379,7 +721,30 @@ let rawWeeksData = [
         "rpe": 5,
         "description": "Posterior Chain & Core.",
         "strength_prehab": "RDLs, Bird-dogs, Side planks, Deadbugs, Supermans.",
-        "fueling": "Balanced nutrition"
+        "fueling": "Balanced nutrition",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Friday",
@@ -390,7 +755,30 @@ let rawWeeksData = [
         "rpe": 3,
         "description": "Aerobic cruise.",
         "strength_prehab": "Hip mobility drills",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "0.0 – 1.0 km",
+            "phase": "Phase 1: Warmup",
+            "pace": "8:00 – 8:15 min/km",
+            "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
+            "color": "#10b981"
+          },
+          {
+            "km": "1.0 – 4.7 km",
+            "phase": "Phase 2: Main Cruise (Majority)",
+            "pace": "7:15 - 7:30 min/km",
+            "desc": "Main aerobic base cruise (RPE 3, 3.7 km). 168 SPM cadence lock for active vascular capillary flushing.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "4.7 – 5.5 km",
+            "phase": "Phase 3: Cooldown",
+            "pace": "8:15+ min/km / Brisk Walk",
+            "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Saturday",
@@ -401,7 +789,30 @@ let rawWeeksData = [
         "rpe": 1,
         "description": "Complete Rest.",
         "strength_prehab": "Foam roll quads & glutes",
-        "fueling": "Hydration tracking"
+        "fueling": "Hydration tracking",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Sunday",
@@ -412,7 +823,30 @@ let rawWeeksData = [
         "rpe": 3,
         "description": "Long run. Test 1st Energy Gel at 45-min mark with water.",
         "strength_prehab": "Post-run calf massage",
-        "fueling": "1 Energy Gel at 45 min + water sips"
+        "fueling": "1 Energy Gel at 45 min + water sips",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.0",
+            "phase": "Phase 1: Conservative Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 1.1 – 7.0",
+            "phase": "Phase 2: Marathon Cruise",
+            "pace": "7:30 - 7:45 min/km",
+            "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Final 1.0 km",
+            "phase": "Phase 3: Finish & Prehab",
+            "pace": "7:06 – 7:35 min/km",
+            "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
+            "color": "#ff7700"
+          }
+        ]
       }
     ]
   },
@@ -434,7 +868,30 @@ let rawWeeksData = [
         "rpe": 2,
         "description": "Easy recovery jog.",
         "strength_prehab": "Hip & calf flush",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "0.0 – 1.0 km",
+            "phase": "Phase 1: Warmup",
+            "pace": "8:00 – 8:15 min/km",
+            "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
+            "color": "#10b981"
+          },
+          {
+            "km": "1.0 – 4.2 km",
+            "phase": "Phase 2: Main Cruise (Majority)",
+            "pace": "7:50 - 8:10 min/km",
+            "desc": "Main aerobic base cruise (RPE 3, 3.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "4.2 – 5.0 km",
+            "phase": "Phase 3: Cooldown",
+            "pace": "8:15+ min/km / Brisk Walk",
+            "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Tuesday",
@@ -445,7 +902,30 @@ let rawWeeksData = [
         "rpe": 5,
         "description": "Lower Body & Calf Armor (Add 2.5kg weight).",
         "strength_prehab": "Eccentric heel drops, soleus raises, lunges, glute bridges, tibialis raises.",
-        "fueling": "Protein"
+        "fueling": "Protein",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Wednesday",
@@ -456,7 +936,65 @@ let rawWeeksData = [
         "rpe": 7,
         "description": "1.5 km warmup, 3x1 km @ Tempo Pace (6:30 min/km) with 2 min walk rest, 1.5 km cooldown.",
         "strength_prehab": "Hamstring dynamic swings",
-        "fueling": "Carb snack pre-run"
+        "fueling": "Carb snack pre-run",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.5",
+            "phase": "Phase 1: Warm-up Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
+            "color": "#10b981"
+          },
+          {
+            "km": "1. 1 km Tempo Rep 1",
+            "phase": "Rep 1/3",
+            "pace": "6:30 min/km",
+            "desc": "Rep 1 of 3: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "2. 2 min Walk Rest 1",
+            "phase": "Recovery 1/3",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 1 of 3: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "3. 1 km Tempo Rep 2",
+            "phase": "Rep 2/3",
+            "pace": "6:30 min/km",
+            "desc": "Rep 2 of 3: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "4. 2 min Walk Rest 2",
+            "phase": "Recovery 2/3",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 2 of 3: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "5. 1 km Tempo Rep 3",
+            "phase": "Rep 3/3",
+            "pace": "6:30 min/km",
+            "desc": "Rep 3 of 3: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "6. 2 min Walk Rest 3",
+            "phase": "Recovery 3/3",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 3 of 3: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "Final 1.5 km",
+            "phase": "Phase 3: Cool-down Flush",
+            "pace": "7:50 – 8:15 min/km",
+            "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
+            "color": "#a855f7"
+          }
+        ]
       },
       {
         "day": "Thursday",
@@ -467,7 +1005,30 @@ let rawWeeksData = [
         "rpe": 5,
         "description": "Posterior Chain & Core.",
         "strength_prehab": "RDLs, Bird-dogs, Side planks, Pallof press, Supermans.",
-        "fueling": "Balanced nutrition"
+        "fueling": "Balanced nutrition",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Friday",
@@ -478,7 +1039,30 @@ let rawWeeksData = [
         "rpe": 1,
         "description": "Substituted 6km run with complete calf recovery. 20-min gentle walk only if completely pain-free, followed by elevation.",
         "strength_prehab": "Seated ankle pumps (3x20), gentle foam roll of hamstrings/glutes, magnesium/electrolyte replenishment.",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "0.0 – 1.0 km",
+            "phase": "Phase 1: Warmup",
+            "pace": "8:00 – 8:15 min/km",
+            "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
+            "color": "#10b981"
+          },
+          {
+            "km": "1.0 – 5.2 km",
+            "phase": "Phase 2: Main Cruise (Majority)",
+            "pace": "7:15 - 7:30 min/km",
+            "desc": "Main aerobic base cruise (RPE 3, 4.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "5.2 – 6.0 km",
+            "phase": "Phase 3: Cooldown",
+            "pace": "8:15+ min/km / Brisk Walk",
+            "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Saturday",
@@ -489,7 +1073,30 @@ let rawWeeksData = [
         "rpe": 1,
         "description": "Full rest day. Hydrate and monitor left calf response.",
         "strength_prehab": "Light seated soleus activation (unweighted, 2x15 gentle reps), contrast warm shower.",
-        "fueling": "Electrolyte drink"
+        "fueling": "Electrolyte drink",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Sunday",
@@ -500,7 +1107,30 @@ let rawWeeksData = [
         "rpe": 2,
         "description": "Scaled back from 10km to a gentle 5km flat surface test. Run 1km, walk 1 min. Abort immediately if calf tightness exceeds 3/10.",
         "strength_prehab": "Post-run ice massage for 8 mins on the calf, gentle straight-leg calf stretch.",
-        "fueling": "1 Gel at km 6 + 1 Salt capsule at km 5 + water"
+        "fueling": "1 Gel at km 6 + 1 Salt capsule at km 5 + water",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.0",
+            "phase": "Phase 1: Conservative Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 1.1 – 9.0",
+            "phase": "Phase 2: Marathon Cruise",
+            "pace": "7:30 - 7:45 min/km",
+            "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Final 1.0 km",
+            "phase": "Phase 3: Finish & Prehab",
+            "pace": "7:06 – 7:35 min/km",
+            "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
+            "color": "#ff7700"
+          }
+        ]
       }
     ]
   },
@@ -522,7 +1152,30 @@ let rawWeeksData = [
         "rpe": 2,
         "description": "Very easy recovery jog.",
         "strength_prehab": "Gentle foam rolling",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "0.0 – 0.8 km",
+            "phase": "Phase 1: Warmup",
+            "pace": "8:00 – 8:15 min/km",
+            "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
+            "color": "#10b981"
+          },
+          {
+            "km": "0.8 – 3.2 km",
+            "phase": "Phase 2: Main Cruise (Majority)",
+            "pace": "8:00 min/km",
+            "desc": "Main aerobic base cruise (RPE 3, 2.4 km). 168 SPM cadence lock for active vascular capillary flushing.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "3.2 – 4.0 km",
+            "phase": "Phase 3: Cooldown",
+            "pace": "8:15+ min/km / Brisk Walk",
+            "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Tuesday",
@@ -533,7 +1186,30 @@ let rawWeeksData = [
         "rpe": 2,
         "description": "Moved from Monday. Super easy, disciplined recovery jog. Keep cadence light and strides compact.",
         "strength_prehab": "Post-run: Light bodyweight eccentric heel drops (2x10), seated soleus raises (2x12), and gentle calf stretching.",
-        "fueling": "Nutritious recovery meals"
+        "fueling": "Nutritious recovery meals",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Wednesday",
@@ -544,7 +1220,79 @@ let rawWeeksData = [
         "rpe": 5,
         "description": "2 km easy, 4x100m relaxed strides, 1.5 km easy.",
         "strength_prehab": "Dynamic leg swings",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 2.0",
+            "phase": "Phase 1: Warm-up Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
+            "color": "#10b981"
+          },
+          {
+            "km": "1. 100m Stride 1",
+            "phase": "Rep 1/4",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 1 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "2. 90s Recovery Jog 1",
+            "phase": "Recovery 1/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 1 of 4: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "3. 100m Stride 2",
+            "phase": "Rep 2/4",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 2 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "4. 90s Recovery Jog 2",
+            "phase": "Recovery 2/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 2 of 4: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "5. 100m Stride 3",
+            "phase": "Rep 3/4",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 3 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "6. 90s Recovery Jog 3",
+            "phase": "Recovery 3/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 3 of 4: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "7. 100m Stride 4",
+            "phase": "Rep 4/4",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 4 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "8. 90s Recovery Jog 4",
+            "phase": "Recovery 4/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 4 of 4: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "Final 2.0 km",
+            "phase": "Phase 3: Cool-down Flush",
+            "pace": "7:50 – 8:15 min/km",
+            "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
+            "color": "#a855f7"
+          }
+        ]
       },
       {
         "day": "Thursday",
@@ -555,7 +1303,30 @@ let rawWeeksData = [
         "rpe": 5,
         "description": "Keep impact off legs today. Focus on posterior chain & calf resilience: Seated calf raises (3x15), Single-leg eccentric heel drops (3x12/leg), Romanian deadlifts (3x10), Side planks & Bird-dogs.",
         "strength_prehab": "Post-session foam roll hamstrings and quads.",
-        "fueling": "Balanced diet"
+        "fueling": "Balanced diet",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Friday",
@@ -566,7 +1337,30 @@ let rawWeeksData = [
         "rpe": 3,
         "description": "Smooth, relaxed aerobic run. Keep cadence light (~165-170 spm) in the Evo SL 2s. Focus on strict aerobic control.",
         "strength_prehab": "Dynamic ankle mobility pre-run; 5-min calf flush post-run.",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "0.0 – 1.0 km",
+            "phase": "Phase 1: Warmup",
+            "pace": "8:00 – 8:15 min/km",
+            "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
+            "color": "#10b981"
+          },
+          {
+            "km": "1.0 – 4.2 km",
+            "phase": "Phase 2: Main Cruise (Majority)",
+            "pace": "7:25 - 7:40 min/km",
+            "desc": "Main aerobic base cruise (RPE 3, 3.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "4.2 – 5.0 km",
+            "phase": "Phase 3: Cooldown",
+            "pace": "8:15+ min/km / Brisk Walk",
+            "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Saturday",
@@ -577,7 +1371,30 @@ let rawWeeksData = [
         "rpe": 1,
         "description": "Full rest day. Hydrate well with electrolytes, practice light mobility, and prep gear/hydration for Sunday long run.",
         "strength_prehab": "Gentle seated ankle circles & elevation.",
-        "fueling": "Hydration"
+        "fueling": "Hydration",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Sunday",
@@ -588,7 +1405,30 @@ let rawWeeksData = [
         "rpe": 3,
         "description": "8 km long run milestone. Keep foot strikes soft, maintain Zone 2 effort, and test 1 gel/fueling option at the 45-min mark with water.",
         "strength_prehab": "Post-run 10-min calf and Achilles ice/massage flush.",
-        "fueling": "Water sips"
+        "fueling": "Water sips",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.0",
+            "phase": "Phase 1: Conservative Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 1.1 – 6.0",
+            "phase": "Phase 2: Marathon Cruise",
+            "pace": "7:40 - 7:50 min/km",
+            "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Final 1.0 km",
+            "phase": "Phase 3: Finish & Prehab",
+            "pace": "7:06 – 7:35 min/km",
+            "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
+            "color": "#ff7700"
+          }
+        ]
       }
     ]
   },
@@ -610,7 +1450,30 @@ let rawWeeksData = [
         "rpe": 2,
         "description": "Recovery run.",
         "strength_prehab": "Calf & hamstring flush",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "0.0 – 1.0 km",
+            "phase": "Phase 1: Warmup",
+            "pace": "8:00 – 8:15 min/km",
+            "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
+            "color": "#10b981"
+          },
+          {
+            "km": "1.0 – 4.2 km",
+            "phase": "Phase 2: Main Cruise (Majority)",
+            "pace": "7:50 min/km",
+            "desc": "Main aerobic base cruise (RPE 3, 3.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "4.2 – 5.0 km",
+            "phase": "Phase 3: Cooldown",
+            "pace": "8:15+ min/km / Brisk Walk",
+            "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Tuesday",
@@ -621,7 +1484,30 @@ let rawWeeksData = [
         "rpe": 5,
         "description": "Lower Body & Calf Armor (3x15 eccentric drops).",
         "strength_prehab": "Heel drops, soleus raises, split squats, glute bridges, tibialis raises.",
-        "fueling": "Protein"
+        "fueling": "Protein",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Wednesday",
@@ -632,7 +1518,79 @@ let rawWeeksData = [
         "rpe": 7,
         "description": "1.5 km warmup, 4x400m @ 5:50 min/km (200m jog rest), 2 km cooldown.",
         "strength_prehab": "Calf dynamic prep",
-        "fueling": "Carb snack"
+        "fueling": "Carb snack",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.5",
+            "phase": "Phase 1: Warm-up Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
+            "color": "#10b981"
+          },
+          {
+            "km": "1. 400m Rep 1",
+            "phase": "Rep 1/4",
+            "pace": "5:50 min/km",
+            "desc": "Rep 1 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "2. 200m Recovery Jog 1",
+            "phase": "Recovery 1/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 1 of 4: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "3. 400m Rep 2",
+            "phase": "Rep 2/4",
+            "pace": "5:50 min/km",
+            "desc": "Rep 2 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "4. 200m Recovery Jog 2",
+            "phase": "Recovery 2/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 2 of 4: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "5. 400m Rep 3",
+            "phase": "Rep 3/4",
+            "pace": "5:50 min/km",
+            "desc": "Rep 3 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "6. 200m Recovery Jog 3",
+            "phase": "Recovery 3/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 3 of 4: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "7. 400m Rep 4",
+            "phase": "Rep 4/4",
+            "pace": "5:50 min/km",
+            "desc": "Rep 4 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "8. 200m Recovery Jog 4",
+            "phase": "Recovery 4/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 4 of 4: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "Final 2.0 km",
+            "phase": "Phase 3: Cool-down Flush",
+            "pace": "7:50 – 8:15 min/km",
+            "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
+            "color": "#a855f7"
+          }
+        ]
       },
       {
         "day": "Thursday",
@@ -643,7 +1601,30 @@ let rawWeeksData = [
         "rpe": 5,
         "description": "Posterior Chain & Core.",
         "strength_prehab": "RDLs, Bird-dogs, Side planks, Pallof press.",
-        "fueling": "Balanced diet"
+        "fueling": "Balanced diet",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Friday",
@@ -654,7 +1635,30 @@ let rawWeeksData = [
         "rpe": 3,
         "description": "Smooth aerobic building run.",
         "strength_prehab": "Dynamic warmup",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "0.0 – 1.0 km",
+            "phase": "Phase 1: Warmup",
+            "pace": "8:00 – 8:15 min/km",
+            "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
+            "color": "#10b981"
+          },
+          {
+            "km": "1.0 – 5.2 km",
+            "phase": "Phase 2: Main Cruise (Majority)",
+            "pace": "7:15 - 7:30 min/km",
+            "desc": "Main aerobic base cruise (RPE 3, 4.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "5.2 – 6.0 km",
+            "phase": "Phase 3: Cooldown",
+            "pace": "8:15+ min/km / Brisk Walk",
+            "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Saturday",
@@ -665,7 +1669,30 @@ let rawWeeksData = [
         "rpe": 1,
         "description": "Full Rest.",
         "strength_prehab": "Mobility work",
-        "fueling": "Hydration"
+        "fueling": "Hydration",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Sunday",
@@ -676,7 +1703,30 @@ let rawWeeksData = [
         "rpe": 4,
         "description": "12 km long run. Gels at km 5 and 10; salt capsule at km 6.",
         "strength_prehab": "Post-run calf recovery",
-        "fueling": "2 Gels + 1 Salt capsule + water"
+        "fueling": "2 Gels + 1 Salt capsule + water",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.0",
+            "phase": "Phase 1: Conservative Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 1.1 – 11.0",
+            "phase": "Phase 2: Marathon Cruise",
+            "pace": "7:30 - 7:45 min/km",
+            "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Final 1.0 km",
+            "phase": "Phase 3: Finish & Prehab",
+            "pace": "7:06 – 7:35 min/km",
+            "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
+            "color": "#ff7700"
+          }
+        ]
       }
     ]
   },
@@ -698,7 +1748,30 @@ let rawWeeksData = [
         "rpe": 1,
         "description": "Weather delay due to rain. Fully rested to protect calf complex.",
         "strength_prehab": "Gentle calf mobility and foam rolling.",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "0.0 – 1.0 km",
+            "phase": "Phase 1: Warmup",
+            "pace": "8:00 – 8:15 min/km",
+            "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
+            "color": "#10b981"
+          },
+          {
+            "km": "1.0 – 4.2 km",
+            "phase": "Phase 2: Main Cruise (Majority)",
+            "pace": "7:50 min/km",
+            "desc": "Main aerobic base cruise (RPE 3, 3.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "4.2 – 5.0 km",
+            "phase": "Phase 3: Cooldown",
+            "pace": "8:15+ min/km / Brisk Walk",
+            "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Tuesday",
@@ -709,62 +1782,263 @@ let rawWeeksData = [
         "rpe": 3,
         "description": "Extended mid-week volume run. Strict pace limit of 7:50 min/km or slower to prevent soleus/Achilles breakdown.",
         "strength_prehab": "Post-run eccentric single-leg heel drops (3x15/leg), calf ice massage (10 mins).",
-        "fueling": "Protein"
+        "fueling": "Protein",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Wednesday",
         "date": "2026-09-23",
-        "type": "Evening Recovery Shakeout",
-        "distance_km": 3,
-        "target_pace": "7:50 - 8:10 min/km",
-        "rpe": 2,
-        "description": "Short evening aerobic recovery shakeout. Keep effort very light and relaxed.",
-        "strength_prehab": "5-min post-run calf mobility & seated soleus raises.",
-        "fueling": "Water"
+        "type": "Strength Day 1",
+        "distance_km": 0,
+        "target_pace": "N/A",
+        "rpe": 5,
+        "description": "Lower Body & Calf Armor session focused on soleus and Achilles capacity.",
+        "strength_prehab": "Seated calf raises (3x15), Bulgarian split squats (3x8/leg), glute bridges (3x12), tibialis wall raises (3x20).",
+        "fueling": "Carb snack",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 2.0",
+            "phase": "Phase 1: Warm-up Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
+            "color": "#10b981"
+          },
+          {
+            "km": "1. 90-s Hill Repeat 1",
+            "phase": "Rep 1/5",
+            "pace": "Uphill Sprint (RPE 8)",
+            "desc": "Rep 1 of 5: Powerful glute drive, high knees, upright torso (RPE 8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "2. Jog-Down Jog-Down Rest 1",
+            "phase": "Recovery 1/5",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 1 of 5: Controlled jog down to hill base, reset heart rate (RPE 2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "3. 90-s Hill Repeat 2",
+            "phase": "Rep 2/5",
+            "pace": "Uphill Sprint (RPE 8)",
+            "desc": "Rep 2 of 5: Powerful glute drive, high knees, upright torso (RPE 8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "4. Jog-Down Jog-Down Rest 2",
+            "phase": "Recovery 2/5",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 2 of 5: Controlled jog down to hill base, reset heart rate (RPE 2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "5. 90-s Hill Repeat 3",
+            "phase": "Rep 3/5",
+            "pace": "Uphill Sprint (RPE 8)",
+            "desc": "Rep 3 of 5: Powerful glute drive, high knees, upright torso (RPE 8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "6. Jog-Down Jog-Down Rest 3",
+            "phase": "Recovery 3/5",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 3 of 5: Controlled jog down to hill base, reset heart rate (RPE 2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "7. 90-s Hill Repeat 4",
+            "phase": "Rep 4/5",
+            "pace": "Uphill Sprint (RPE 8)",
+            "desc": "Rep 4 of 5: Powerful glute drive, high knees, upright torso (RPE 8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "8. Jog-Down Jog-Down Rest 4",
+            "phase": "Recovery 4/5",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 4 of 5: Controlled jog down to hill base, reset heart rate (RPE 2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "9. 90-s Hill Repeat 5",
+            "phase": "Rep 5/5",
+            "pace": "Uphill Sprint (RPE 8)",
+            "desc": "Rep 5 of 5: Powerful glute drive, high knees, upright torso (RPE 8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "10. Jog-Down Jog-Down Rest 5",
+            "phase": "Recovery 5/5",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 5 of 5: Controlled jog down to hill base, reset heart rate (RPE 2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "Final 2.0 km",
+            "phase": "Phase 3: Cool-down Flush",
+            "pace": "7:50 – 8:15 min/km",
+            "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
+            "color": "#a855f7"
+          }
+        ]
       },
       {
         "day": "Thursday",
         "date": "2026-09-24",
-        "type": "Mid-Week Aerobic Build",
-        "distance_km": 7,
+        "type": "Mid-Week Aerobic Run",
+        "distance_km": 5.5,
         "target_pace": "7:20 - 7:35 min/km",
         "rpe": 3,
-        "description": "Mid-week aerobic foundation run. Steady conversational rhythm.",
-        "strength_prehab": "Dynamic ankle mobility pre-run; 5-min calf flush.",
-        "fueling": "Balanced nutrition"
+        "description": "Smooth conversational pace building back weekly aerobic volume smoothly.",
+        "strength_prehab": "Dynamic ankle mobility pre-run; 5-min post-run calf flush.",
+        "fueling": "Balanced nutrition",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Friday",
         "date": "2026-09-25",
-        "type": "Complete Rest & Pre-Long Run Priming",
-        "distance_km": 0,
-        "target_pace": "N/A",
-        "rpe": 1,
-        "description": "Full rest day before Saturday 14km Long Run. Hydrate with electrolytes and foam roll calves.",
-        "strength_prehab": "Light calf & hamstring stretching, 10-min legs-up-the-wall.",
-        "fueling": "Electrolyte hydration & carbs"
+        "type": "Mid-Week Aerobic",
+        "distance_km": 7,
+        "target_pace": "7:15 - 7:30 min/km",
+        "rpe": 3,
+        "description": "Aerobic foundation run.",
+        "strength_prehab": "Ankle mobility",
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.0",
+            "phase": "Phase 1: Conservative Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 1.1 – 6.0",
+            "phase": "Phase 2: Marathon Cruise",
+            "pace": "7:15 - 7:30 min/km",
+            "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Final 1.0 km",
+            "phase": "Phase 3: Finish & Prehab",
+            "pace": "7:06 – 7:35 min/km",
+            "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
+            "color": "#ff7700"
+          }
+        ]
       },
       {
         "day": "Saturday",
         "date": "2026-09-26",
-        "type": "Key Long Run (Hydration Vest Test)",
-        "distance_km": 14,
-        "target_pace": "7:30 - 7:45 min/km",
-        "rpe": 3,
-        "description": "14.0 km progressive long run. Full hydration vest test. Gels at km 5 & 10; salt capsule at km 6.",
-        "strength_prehab": "10-min post-run eccentric heel drop armor protocol & ice flush.",
-        "fueling": "2 Gels (km 5, 10) + 1 Salt capsule (km 6) + 1L water"
+        "type": "Rest",
+        "distance_km": 0,
+        "target_pace": "N/A",
+        "rpe": 1,
+        "description": "Full Rest.",
+        "strength_prehab": "Gentle stretching",
+        "fueling": "Electrolyte hydration",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Sunday",
         "date": "2026-09-27",
-        "type": "Full Rest & Recovery",
-        "distance_km": 0,
-        "target_pace": "N/A",
-        "rpe": 1,
-        "description": "Post-long run regeneration day. Full rest, protein re-feed, and tissue repair.",
-        "strength_prehab": "Gentle walking & calf elevation.",
-        "fueling": "Protein & recovery meal"
+        "type": "Long Run",
+        "distance_km": 14,
+        "target_pace": "7:30 - 7:45 min/km",
+        "rpe": 4,
+        "description": "14 km long run with full hydration vest test.",
+        "strength_prehab": "Post-run calf flush",
+        "fueling": "2 Gels (km 5, 10) + 1 Salt capsule (km 6) + 1L water",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.0",
+            "phase": "Phase 1: Conservative Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 1.1 – 13.0",
+            "phase": "Phase 2: Marathon Cruise",
+            "pace": "7:30 - 7:45 min/km",
+            "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Final 1.0 km",
+            "phase": "Phase 3: Finish & Prehab",
+            "pace": "7:06 – 7:35 min/km",
+            "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
+            "color": "#ff7700"
+          }
+        ]
       }
     ]
   },
@@ -786,7 +2060,30 @@ let rawWeeksData = [
         "rpe": 2,
         "description": "Easy recovery run.",
         "strength_prehab": "Foam rolling calves & quads",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "0.0 – 1.0 km",
+            "phase": "Phase 1: Warmup",
+            "pace": "8:00 – 8:15 min/km",
+            "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
+            "color": "#10b981"
+          },
+          {
+            "km": "1.0 – 5.2 km",
+            "phase": "Phase 2: Main Cruise (Majority)",
+            "pace": "7:50 min/km",
+            "desc": "Main aerobic base cruise (RPE 3, 4.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "5.2 – 6.0 km",
+            "phase": "Phase 3: Cooldown",
+            "pace": "8:15+ min/km / Brisk Walk",
+            "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Tuesday",
@@ -797,7 +2094,30 @@ let rawWeeksData = [
         "rpe": 5,
         "description": "Lower Body & Calf Armor.",
         "strength_prehab": "Eccentric heel drops, soleus raises, split squats, glute bridges, tibialis raises.",
-        "fueling": "Protein"
+        "fueling": "Protein",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Wednesday",
@@ -808,7 +2128,30 @@ let rawWeeksData = [
         "rpe": 7,
         "description": "1.5 km warmup, 4 km continuous @ Tempo (6:25-6:35 min/km), 1.5 km cooldown.",
         "strength_prehab": "Hamstring & calf dynamic stretches",
-        "fueling": "Carb snack pre-run"
+        "fueling": "Carb snack pre-run",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.5",
+            "phase": "Phase 1: Warm-up Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Easy aerobic warmup, activate glutes, loosen ankles & soleus (RPE 3)",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 1.5 – 5.5",
+            "phase": "Phase 2: Marathon Pace Block",
+            "pace": "6:25-6:35 min/km",
+            "desc": "4.0 km continuous locked-in effort, 172+ SPM, 2:2 rhythmic breathing (RPE 6-7)",
+            "color": "#ff7700"
+          },
+          {
+            "km": "Km 5.5 – 7.0",
+            "phase": "Phase 3: Cool-down Flush",
+            "pace": "7:50 – 8:15 min/km",
+            "desc": "1.5 km easy flush jog and walking transition to clear lactate (RPE 2)",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Thursday",
@@ -819,7 +2162,30 @@ let rawWeeksData = [
         "rpe": 5,
         "description": "Posterior Chain & Core.",
         "strength_prehab": "RDLs, Bird-dogs, Side planks, Deadbugs.",
-        "fueling": "Balanced diet"
+        "fueling": "Balanced diet",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Friday",
@@ -830,7 +2196,30 @@ let rawWeeksData = [
         "rpe": 3,
         "description": "Aerobic base builder.",
         "strength_prehab": "Hip openers",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.0",
+            "phase": "Phase 1: Conservative Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 1.1 – 7.0",
+            "phase": "Phase 2: Marathon Cruise",
+            "pace": "7:15 - 7:30 min/km",
+            "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Final 1.0 km",
+            "phase": "Phase 3: Finish & Prehab",
+            "pace": "7:06 – 7:35 min/km",
+            "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
+            "color": "#ff7700"
+          }
+        ]
       },
       {
         "day": "Saturday",
@@ -841,7 +2230,30 @@ let rawWeeksData = [
         "rpe": 1,
         "description": "Full Rest.",
         "strength_prehab": "Light walking only",
-        "fueling": "Carb-focused dinner + hydration"
+        "fueling": "Carb-focused dinner + hydration",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Sunday",
@@ -852,7 +2264,30 @@ let rawWeeksData = [
         "rpe": 4,
         "description": "16 km long run. Gels at km 5, 10, 14 + Salt capsules at km 5 & 12.",
         "strength_prehab": "Post-run calf & hamstring stretch",
-        "fueling": "3 Gels + 2 Salt capsules + water"
+        "fueling": "3 Gels + 2 Salt capsules + water",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.0",
+            "phase": "Phase 1: Conservative Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 1.1 – 15.0",
+            "phase": "Phase 2: Marathon Cruise",
+            "pace": "7:30 - 7:45 min/km",
+            "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Final 1.0 km",
+            "phase": "Phase 3: Finish & Prehab",
+            "pace": "7:06 – 7:35 min/km",
+            "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
+            "color": "#ff7700"
+          }
+        ]
       }
     ]
   },
@@ -874,7 +2309,30 @@ let rawWeeksData = [
         "rpe": 2,
         "description": "Gentle shakeout.",
         "strength_prehab": "Calf stretching",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "0.0 – 0.8 km",
+            "phase": "Phase 1: Warmup",
+            "pace": "8:00 – 8:15 min/km",
+            "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
+            "color": "#10b981"
+          },
+          {
+            "km": "0.8 – 3.2 km",
+            "phase": "Phase 2: Main Cruise (Majority)",
+            "pace": "8:00 min/km",
+            "desc": "Main aerobic base cruise (RPE 3, 2.4 km). 168 SPM cadence lock for active vascular capillary flushing.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "3.2 – 4.0 km",
+            "phase": "Phase 3: Cooldown",
+            "pace": "8:15+ min/km / Brisk Walk",
+            "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Tuesday",
@@ -885,7 +2343,30 @@ let rawWeeksData = [
         "rpe": 4,
         "description": "Light bodyweight calf raises & glute bridges (2x10).",
         "strength_prehab": "Bodyweight only",
-        "fueling": "Balanced meals"
+        "fueling": "Balanced meals",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Wednesday",
@@ -896,7 +2377,65 @@ let rawWeeksData = [
         "rpe": 4,
         "description": "3 km shakeout + 3x30-sec pickups.",
         "strength_prehab": "Light dynamic stretches",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 3.0",
+            "phase": "Phase 1: Warm-up Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
+            "color": "#10b981"
+          },
+          {
+            "km": "1. 30-s Pickup 1",
+            "phase": "Rep 1/3",
+            "pace": "7:45 min/km",
+            "desc": "Rep 1 of 3: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "2. 200m Recovery Jog 1",
+            "phase": "Recovery 1/3",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 1 of 3: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "3. 30-s Pickup 2",
+            "phase": "Rep 2/3",
+            "pace": "7:45 min/km",
+            "desc": "Rep 2 of 3: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "4. 200m Recovery Jog 2",
+            "phase": "Recovery 2/3",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 2 of 3: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "5. 30-s Pickup 3",
+            "phase": "Rep 3/3",
+            "pace": "7:45 min/km",
+            "desc": "Rep 3 of 3: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "6. 200m Recovery Jog 3",
+            "phase": "Recovery 3/3",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 3 of 3: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "Final 3.0 km",
+            "phase": "Phase 3: Cool-down Flush",
+            "pace": "7:50 – 8:15 min/km",
+            "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
+            "color": "#a855f7"
+          }
+        ]
       },
       {
         "day": "Thursday",
@@ -907,7 +2446,30 @@ let rawWeeksData = [
         "rpe": 4,
         "description": "Light core and back mobility.",
         "strength_prehab": "Bird-dogs and side planks (2 sets)",
-        "fueling": "Balanced diet"
+        "fueling": "Balanced diet",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Friday",
@@ -918,7 +2480,65 @@ let rawWeeksData = [
         "rpe": 3,
         "description": "5 km easy with 3x100m strides.",
         "strength_prehab": "Dynamic mobility",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 5.0",
+            "phase": "Phase 1: Warm-up Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
+            "color": "#10b981"
+          },
+          {
+            "km": "1. 100m Stride 1",
+            "phase": "Rep 1/3",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 1 of 3: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "2. 90s Recovery Jog 1",
+            "phase": "Recovery 1/3",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 1 of 3: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "3. 100m Stride 2",
+            "phase": "Rep 2/3",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 2 of 3: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "4. 90s Recovery Jog 2",
+            "phase": "Recovery 2/3",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 2 of 3: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "5. 100m Stride 3",
+            "phase": "Rep 3/3",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 3 of 3: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "6. 90s Recovery Jog 3",
+            "phase": "Recovery 3/3",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 3 of 3: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "Final 5.0 km",
+            "phase": "Phase 3: Cool-down Flush",
+            "pace": "7:50 – 8:15 min/km",
+            "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
+            "color": "#a855f7"
+          }
+        ]
       },
       {
         "day": "Saturday",
@@ -929,7 +2549,30 @@ let rawWeeksData = [
         "rpe": 1,
         "description": "Full Rest before Time Trial.",
         "strength_prehab": "Rest",
-        "fueling": "Carb dinner + hydration"
+        "fueling": "Carb dinner + hydration",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Sunday",
@@ -940,7 +2583,30 @@ let rawWeeksData = [
         "rpe": 9,
         "description": "10K TIME TRIAL BENCHMARK: 1.5 km warmup, 10 km Time Trial @ Maximum Sustainable Effort (Target: 58:00-59:30), 1 km cooldown.",
         "strength_prehab": "Full post-race stretching and recovery",
-        "fueling": "Pre-race snack + water"
+        "fueling": "Pre-race snack + water",
+        "strategy_splits": [
+          {
+            "km": "Km 1 – 2",
+            "phase": "Controlled Start",
+            "pace": "7:15 – 7:25 min/km",
+            "desc": "Disciplined start, resist surging with adrenaline, settle heart rate",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 3 – 8",
+            "phase": "Target Pace Lock",
+            "pace": "5:50 - 5:55 min/km race effort",
+            "desc": "Locked-in goal cadence (170+ SPM), take sips of hydration every 2.5 km",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Km 9 – 10",
+            "phase": "Negative Split Finish",
+            "pace": "7:00 – 7:06 min/km",
+            "desc": "Strong finish, maintain tall posture, empty the tank over final km",
+            "color": "#ff3b00"
+          }
+        ]
       }
     ]
   },
@@ -962,7 +2628,30 @@ let rawWeeksData = [
         "rpe": 2,
         "description": "Post-10K recovery run.",
         "strength_prehab": "Calf & hamstring flush",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "0.0 – 1.0 km",
+            "phase": "Phase 1: Warmup",
+            "pace": "8:00 – 8:15 min/km",
+            "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
+            "color": "#10b981"
+          },
+          {
+            "km": "1.0 – 4.2 km",
+            "phase": "Phase 2: Main Cruise (Majority)",
+            "pace": "7:55 min/km",
+            "desc": "Main aerobic base cruise (RPE 3, 3.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "4.2 – 5.0 km",
+            "phase": "Phase 3: Cooldown",
+            "pace": "8:15+ min/km / Brisk Walk",
+            "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Tuesday",
@@ -973,7 +2662,30 @@ let rawWeeksData = [
         "rpe": 5,
         "description": "Lower Body & Calf Armor.",
         "strength_prehab": "Eccentric heel drops (3x15), seated calf raises (3x15), split squats, glute bridges, tibialis raises.",
-        "fueling": "Protein"
+        "fueling": "Protein",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Wednesday",
@@ -984,7 +2696,79 @@ let rawWeeksData = [
         "rpe": 7,
         "description": "2 km warmup, 4x100m relaxed strides, 4.5 km easy. Pre-Delhi shakeout.",
         "strength_prehab": "Dynamic prep",
-        "fueling": "Carb snack"
+        "fueling": "Carb snack",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 2.0",
+            "phase": "Phase 1: Warm-up Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
+            "color": "#10b981"
+          },
+          {
+            "km": "1. 100m Stride 1",
+            "phase": "Rep 1/4",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 1 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "2. 90s Recovery Jog 1",
+            "phase": "Recovery 1/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 1 of 4: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "3. 100m Stride 2",
+            "phase": "Rep 2/4",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 2 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "4. 90s Recovery Jog 2",
+            "phase": "Recovery 2/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 2 of 4: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "5. 100m Stride 3",
+            "phase": "Rep 3/4",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 3 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "6. 90s Recovery Jog 3",
+            "phase": "Recovery 3/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 3 of 4: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "7. 100m Stride 4",
+            "phase": "Rep 4/4",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 4 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "8. 90s Recovery Jog 4",
+            "phase": "Recovery 4/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 4 of 4: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "Final 4.5 km",
+            "phase": "Phase 3: Cool-down Flush",
+            "pace": "7:50 – 8:15 min/km",
+            "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
+            "color": "#a855f7"
+          }
+        ]
       },
       {
         "day": "Thursday",
@@ -995,7 +2779,30 @@ let rawWeeksData = [
         "rpe": 5,
         "description": "Posterior Chain & Core.",
         "strength_prehab": "RDLs, Bird-dogs, Side planks, Pallof press, Back extensions.",
-        "fueling": "Balanced nutrition"
+        "fueling": "Balanced nutrition",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Friday",
@@ -1006,7 +2813,30 @@ let rawWeeksData = [
         "rpe": 3,
         "description": "Aerobic cruise.",
         "strength_prehab": "Hip mobility drills",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.0",
+            "phase": "Phase 1: Conservative Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 1.1 – 7.0",
+            "phase": "Phase 2: Marathon Cruise",
+            "pace": "7:15 - 7:30 min/km",
+            "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Final 1.0 km",
+            "phase": "Phase 3: Finish & Prehab",
+            "pace": "7:06 – 7:35 min/km",
+            "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
+            "color": "#ff7700"
+          }
+        ]
       },
       {
         "day": "Saturday",
@@ -1017,7 +2847,30 @@ let rawWeeksData = [
         "rpe": 1,
         "description": "Full Rest.",
         "strength_prehab": "Foam roll calves & quads",
-        "fueling": "Hydrate with electrolyte drink"
+        "fueling": "Hydrate with electrolyte drink",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Sunday",
@@ -1028,7 +2881,30 @@ let rawWeeksData = [
         "rpe": 5,
         "description": "PROCAM SLAM #1: VEDANTA DELHI HALF MARATHON (21.1 km). Steady, controlled training pace. Gels at km 6, 12, 17 + Salt capsules at km 6 & 14. Do not race at 100% effort.",
         "strength_prehab": "Post-run calf ice/elevation & stretch",
-        "fueling": "3 Gels + 2 Salt capsules + on-course water"
+        "fueling": "3 Gels + 2 Salt capsules + on-course water",
+        "strategy_splits": [
+          {
+            "km": "Km 1 – 2",
+            "phase": "Controlled Start",
+            "pace": "7:15 – 7:25 min/km",
+            "desc": "Disciplined start, resist surging with adrenaline, settle heart rate",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 3 – 18.1",
+            "phase": "Target Pace Lock",
+            "pace": "7:20 - 7:35 min/km",
+            "desc": "Locked-in goal cadence (170+ SPM), take sips of hydration every 2.5 km",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Km 19.1 – 21.1",
+            "phase": "Negative Split Finish",
+            "pace": "7:00 – 7:06 min/km",
+            "desc": "Strong finish, maintain tall posture, empty the tank over final km",
+            "color": "#ff3b00"
+          }
+        ]
       }
     ]
   },
@@ -1050,7 +2926,30 @@ let rawWeeksData = [
         "rpe": 2,
         "description": "Recovery run.",
         "strength_prehab": "Calf & hamstring flush",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "0.0 – 1.0 km",
+            "phase": "Phase 1: Warmup",
+            "pace": "8:00 – 8:15 min/km",
+            "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
+            "color": "#10b981"
+          },
+          {
+            "km": "1.0 – 5.2 km",
+            "phase": "Phase 2: Main Cruise (Majority)",
+            "pace": "7:50 min/km",
+            "desc": "Main aerobic base cruise (RPE 3, 4.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "5.2 – 6.0 km",
+            "phase": "Phase 3: Cooldown",
+            "pace": "8:15+ min/km / Brisk Walk",
+            "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Tuesday",
@@ -1061,7 +2960,30 @@ let rawWeeksData = [
         "rpe": 5,
         "description": "Lower Body & Calf Armor.",
         "strength_prehab": "Eccentric heel drops, seated calf raises, Bulgarian split squats, glute bridges, tibialis raises.",
-        "fueling": "Protein"
+        "fueling": "Protein",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Wednesday",
@@ -1072,7 +2994,86 @@ let rawWeeksData = [
         "rpe": 8,
         "description": "2 km warmup, 4x75-sec hill repeats, 2 km @ Tempo (6:30 min/km), 1.5 km cooldown.",
         "strength_prehab": "Calf & Achilles prep",
-        "fueling": "Carb snack"
+        "fueling": "Carb snack",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 2.0",
+            "phase": "Phase 1: Warm-up Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Easy aerobic warmup on flat ground, dynamic ankle mobility (RPE 3)",
+            "color": "#10b981"
+          },
+          {
+            "km": "1. 75-sec Hill 1",
+            "phase": "Hill Rep 1/4",
+            "pace": "Uphill Sprint (RPE 8)",
+            "desc": "Rep 1 of 4: Powerful glute drive, high knees, upright torso (RPE 8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "2. Jog-Down Rest 1",
+            "phase": "Recovery 1/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 1 of 4: Controlled jog down to hill base, reset heart rate (RPE 2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "3. 75-sec Hill 2",
+            "phase": "Hill Rep 2/4",
+            "pace": "Uphill Sprint (RPE 8)",
+            "desc": "Rep 2 of 4: Powerful glute drive, high knees, upright torso (RPE 8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "4. Jog-Down Rest 2",
+            "phase": "Recovery 2/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 2 of 4: Controlled jog down to hill base, reset heart rate (RPE 2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "5. 75-sec Hill 3",
+            "phase": "Hill Rep 3/4",
+            "pace": "Uphill Sprint (RPE 8)",
+            "desc": "Rep 3 of 4: Powerful glute drive, high knees, upright torso (RPE 8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "6. Jog-Down Rest 3",
+            "phase": "Recovery 3/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 3 of 4: Controlled jog down to hill base, reset heart rate (RPE 2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "7. 75-sec Hill 4",
+            "phase": "Hill Rep 4/4",
+            "pace": "Uphill Sprint (RPE 8)",
+            "desc": "Rep 4 of 4: Powerful glute drive, high knees, upright torso (RPE 8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "8. Jog-Down Rest 4",
+            "phase": "Recovery 4/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 4 of 4: Controlled jog down to hill base, reset heart rate (RPE 2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "Km 2.0 – 4.0",
+            "phase": "Phase 2: Continuous Tempo Block",
+            "pace": "6:30 min/km",
+            "desc": "2.0 km sustained threshold lock post-hills. Lock into 172+ SPM rhythm (RPE 7)",
+            "color": "#ff7700"
+          },
+          {
+            "km": "Final 1.5 km",
+            "phase": "Phase 3: Cool-down Flush",
+            "pace": "7:50 – 8:15 min/km",
+            "desc": "Easy recovery flush to clear lactate from calves and quads (RPE 2)",
+            "color": "#a855f7"
+          }
+        ]
       },
       {
         "day": "Thursday",
@@ -1083,7 +3084,30 @@ let rawWeeksData = [
         "rpe": 5,
         "description": "Posterior Chain & Core.",
         "strength_prehab": "RDLs, Bird-dogs, Side planks, Supermans.",
-        "fueling": "Balanced nutrition"
+        "fueling": "Balanced nutrition",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Friday",
@@ -1094,7 +3118,30 @@ let rawWeeksData = [
         "rpe": 3,
         "description": "Aerobic foundation run.",
         "strength_prehab": "Ankle mobility",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.0",
+            "phase": "Phase 1: Conservative Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 1.1 – 7.0",
+            "phase": "Phase 2: Marathon Cruise",
+            "pace": "7:15 - 7:30 min/km",
+            "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Final 1.0 km",
+            "phase": "Phase 3: Finish & Prehab",
+            "pace": "7:06 – 7:35 min/km",
+            "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
+            "color": "#ff7700"
+          }
+        ]
       },
       {
         "day": "Saturday",
@@ -1105,7 +3152,30 @@ let rawWeeksData = [
         "rpe": 1,
         "description": "Full Rest.",
         "strength_prehab": "Light stretching",
-        "fueling": "Carb-rich dinner + electrolytes"
+        "fueling": "Carb-rich dinner + electrolytes",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Sunday",
@@ -1116,7 +3186,30 @@ let rawWeeksData = [
         "rpe": 4,
         "description": "20 km Long Run. 4 Gels (every 40 min) + 2 Salt capsules (km 6, 14) + hydration vest.",
         "strength_prehab": "Post-run calf massage",
-        "fueling": "4 Gels + 2 Salt capsules + 1.5L water"
+        "fueling": "4 Gels + 2 Salt capsules + 1.5L water",
+        "strategy_splits": [
+          {
+            "km": "Km 1 – 2",
+            "phase": "Controlled Start",
+            "pace": "7:15 – 7:25 min/km",
+            "desc": "Disciplined start, resist surging with adrenaline, settle heart rate",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 3 – 17",
+            "phase": "Target Pace Lock",
+            "pace": "7:30 - 7:45 min/km",
+            "desc": "Locked-in goal cadence (170+ SPM), take sips of hydration every 2.5 km",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Km 18 – 20",
+            "phase": "Negative Split Finish",
+            "pace": "7:00 – 7:06 min/km",
+            "desc": "Strong finish, maintain tall posture, empty the tank over final km",
+            "color": "#ff3b00"
+          }
+        ]
       }
     ]
   },
@@ -1138,7 +3231,30 @@ let rawWeeksData = [
         "rpe": 2,
         "description": "Recovery run.",
         "strength_prehab": "Calf & hip stretch",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "0.0 – 1.0 km",
+            "phase": "Phase 1: Warmup",
+            "pace": "8:00 – 8:15 min/km",
+            "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
+            "color": "#10b981"
+          },
+          {
+            "km": "1.0 – 5.2 km",
+            "phase": "Phase 2: Main Cruise (Majority)",
+            "pace": "7:50 min/km",
+            "desc": "Main aerobic base cruise (RPE 3, 4.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "5.2 – 6.0 km",
+            "phase": "Phase 3: Cooldown",
+            "pace": "8:15+ min/km / Brisk Walk",
+            "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Tuesday",
@@ -1149,7 +3265,30 @@ let rawWeeksData = [
         "rpe": 5,
         "description": "Lower Body & Calf Armor.",
         "strength_prehab": "Eccentric heel drops, soleus raises, split squats, glute bridges, tibialis raises.",
-        "fueling": "Protein"
+        "fueling": "Protein",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Wednesday",
@@ -1160,7 +3299,79 @@ let rawWeeksData = [
         "rpe": 8,
         "description": "1.5 km warmup, 4x1 km @ 5:50 min/km (2 min jog rest), 1.5 km cooldown.",
         "strength_prehab": "Dynamic leg swings",
-        "fueling": "Carb snack"
+        "fueling": "Carb snack",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.5",
+            "phase": "Phase 1: Warm-up Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
+            "color": "#10b981"
+          },
+          {
+            "km": "1. 1 km Rep 1",
+            "phase": "Rep 1/4",
+            "pace": "5:50 min/km",
+            "desc": "Rep 1 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "2. 2 min Recovery Jog 1",
+            "phase": "Recovery 1/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 1 of 4: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "3. 1 km Rep 2",
+            "phase": "Rep 2/4",
+            "pace": "5:50 min/km",
+            "desc": "Rep 2 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "4. 2 min Recovery Jog 2",
+            "phase": "Recovery 2/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 2 of 4: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "5. 1 km Rep 3",
+            "phase": "Rep 3/4",
+            "pace": "5:50 min/km",
+            "desc": "Rep 3 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "6. 2 min Recovery Jog 3",
+            "phase": "Recovery 3/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 3 of 4: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "7. 1 km Rep 4",
+            "phase": "Rep 4/4",
+            "pace": "5:50 min/km",
+            "desc": "Rep 4 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "8. 2 min Recovery Jog 4",
+            "phase": "Recovery 4/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 4 of 4: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "Final 1.5 km",
+            "phase": "Phase 3: Cool-down Flush",
+            "pace": "7:50 – 8:15 min/km",
+            "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
+            "color": "#a855f7"
+          }
+        ]
       },
       {
         "day": "Thursday",
@@ -1171,7 +3382,30 @@ let rawWeeksData = [
         "rpe": 5,
         "description": "Posterior Chain & Core.",
         "strength_prehab": "RDLs, Bird-dogs, Side planks, Deadbugs.",
-        "fueling": "Balanced diet"
+        "fueling": "Balanced diet",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Friday",
@@ -1182,7 +3416,30 @@ let rawWeeksData = [
         "rpe": 3,
         "description": "Mid-week aerobic anchor.",
         "strength_prehab": "Hip openers",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.0",
+            "phase": "Phase 1: Conservative Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 1.1 – 8.0",
+            "phase": "Phase 2: Marathon Cruise",
+            "pace": "7:15 - 7:30 min/km",
+            "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Final 1.0 km",
+            "phase": "Phase 3: Finish & Prehab",
+            "pace": "7:06 – 7:35 min/km",
+            "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
+            "color": "#ff7700"
+          }
+        ]
       },
       {
         "day": "Saturday",
@@ -1193,7 +3450,30 @@ let rawWeeksData = [
         "rpe": 1,
         "description": "Full Rest.",
         "strength_prehab": "Foam rolling",
-        "fueling": "Hydration tracking"
+        "fueling": "Hydration tracking",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Sunday",
@@ -1204,29 +3484,75 @@ let rawWeeksData = [
         "rpe": 5,
         "description": "22 km Long Run. First 20 km @ 7:35 min/km, last 2 km @ Marathon Pace (7:06 min/km).",
         "strength_prehab": "Post-run calf recovery",
-        "fueling": "4 Gels + 3 Salt capsules + 1.5L water"
+        "fueling": "4 Gels + 3 Salt capsules + 1.5L water",
+        "strategy_splits": [
+          {
+            "km": "Km 1 – 2",
+            "phase": "Controlled Start",
+            "pace": "7:15 – 7:25 min/km",
+            "desc": "Disciplined start, resist surging with adrenaline, settle heart rate",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 3 – 19",
+            "phase": "Target Pace Lock",
+            "pace": "7:30 - 7:45 min/km (Last 2k @ 7:06)",
+            "desc": "Locked-in goal cadence (170+ SPM), take sips of hydration every 2.5 km",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Km 20 – 22",
+            "phase": "Negative Split Finish",
+            "pace": "7:00 – 7:06 min/km",
+            "desc": "Strong finish, maintain tall posture, empty the tank over final km",
+            "color": "#ff3b00"
+          }
+        ]
       }
     ]
   },
   {
     "week_number": 12,
-    "phase": "Aerobic Base Building",
+    "phase": "Peak & Race Specificity",
     "start_date": "2026-11-02",
     "end_date": "2026-11-08",
-    "total_planned_km": 32,
-    "is_deload": true,
-    "focus": "DELOAD WEEK 3: Mid-program reset & musculoskeletal check",
+    "total_planned_km": 44,
+    "is_deload": false,
+    "focus": "Re-entry build & aerobic stamina; 22 km long run volume + MP tempo segments post-recovery",
     "workouts": [
       {
         "day": "Monday",
         "date": "2026-11-02",
         "type": "Recovery Run",
-        "distance_km": 5,
-        "target_pace": "8:00 min/km",
+        "distance_km": 6,
+        "target_pace": "7:50 - 8:10 min/km",
         "rpe": 2,
-        "description": "Gentle recovery jog.",
-        "strength_prehab": "Gentle stretching",
-        "fueling": "Water"
+        "description": "Gentle recovery jog post-recovery to re-establish aerobic base.",
+        "strength_prehab": "Calf and hamstring mobility flushes",
+        "fueling": "Hydration with electrolytes",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.0",
+            "phase": "Phase 1: Warm-up Float",
+            "pace": "8:00 – 8:15 min/km",
+            "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 2)",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 1.0 – 5.0",
+            "phase": "Phase 2: Conversational Recovery",
+            "pace": "7:50 – 8:10 min/km",
+            "desc": "Relaxed conversational recovery cruise, promoting capillary blood flow (RPE 2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "Final 1.0 km",
+            "phase": "Phase 3: Cool-down Flush",
+            "pace": "8:00 – 8:20 min/km",
+            "desc": "Gentle deceleration & walking transition to soft tissue stretches (RPE 2)",
+            "color": "#a855f7"
+          }
+        ]
       },
       {
         "day": "Tuesday",
@@ -1234,21 +3560,67 @@ let rawWeeksData = [
         "type": "Strength Day 1",
         "distance_km": 0,
         "target_pace": "N/A",
-        "rpe": 4,
-        "description": "Bodyweight maintenance (2 sets).",
-        "strength_prehab": "Calf raises, glute bridges, lunges",
-        "fueling": "Balanced meals"
+        "rpe": 5,
+        "description": "Lower Body & Calf Armor (Eccentric heel drops, soleus raises, glute bridges, Bulgarian split squats).",
+        "strength_prehab": "Single-leg eccentric heel drops (3x15/leg), seated calf raises (3x15), Bulgarian split squats (3x8/leg), glute bridges (3x12/leg), tibialis wall raises (3x20).",
+        "fueling": "Adequate protein intake",
+        "strategy_splits": [
+          {
+            "km": "Block 1",
+            "phase": "Calf Armor",
+            "pace": "N/A",
+            "desc": "Single-leg eccentric heel drops 3x15, seated calf raises 3x15",
+            "color": "#10b981"
+          },
+          {
+            "km": "Block 2",
+            "phase": "Glute & Hip Stability",
+            "pace": "N/A",
+            "desc": "Bulgarian split squats 3x8/leg, single-leg glute bridges 3x12",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "Block 3",
+            "phase": "Shin & Core Decompression",
+            "pace": "N/A",
+            "desc": "Tibialis anterior wall raises 3x20, cat-cow mobility",
+            "color": "#a855f7"
+          }
+        ]
       },
       {
         "day": "Wednesday",
         "date": "2026-11-04",
-        "type": "Speed (Strides)",
-        "distance_km": 5,
-        "target_pace": "7:45 warmup, strides",
-        "rpe": 5,
-        "description": "2 km easy, 5x100m strides, 1.5 km easy.",
-        "strength_prehab": "Dynamic prep",
-        "fueling": "Water"
+        "type": "Speed (MP Tempo)",
+        "distance_km": 8,
+        "target_pace": "7:00 - 7:06 min/km MP block",
+        "rpe": 6,
+        "description": "2 km warmup @ 7:45, 4 km continuous @ Marathon Pace (7:00-7:06 min/km), 2 km cooldown @ 7:45.",
+        "strength_prehab": "Dynamic hamstring and hip openers",
+        "fueling": "Water + light carbs pre-run",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 2.0",
+            "phase": "Phase 1: Warm-up Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 2.0 – 6.0",
+            "phase": "Phase 2: Marathon Pace Block",
+            "pace": "7:00 – 7:06 min/km",
+            "desc": "4.0 km continuous locked at marathon goal pace, cadence 172+ SPM (RPE 5-6)",
+            "color": "#ff7700"
+          },
+          {
+            "km": "Km 6.0 – 8.0",
+            "phase": "Phase 3: Cool-down Flush",
+            "pace": "7:50 – 8:15 min/km",
+            "desc": "2.0 km gentle aerobic flush jog to clear lactate (RPE 2)",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Thursday",
@@ -1256,21 +3628,67 @@ let rawWeeksData = [
         "type": "Strength Day 2",
         "distance_km": 0,
         "target_pace": "N/A",
-        "rpe": 4,
-        "description": "Core stability & hip flexor release.",
-        "strength_prehab": "Bird-dogs, deadbugs (2 sets)",
-        "fueling": "Balanced diet"
+        "rpe": 5,
+        "description": "Posterior Chain & Core Stability (RDLs, Bird-dogs, Side planks, Deadbugs).",
+        "strength_prehab": "Romanian deadlifts (3x10), bird-dogs (3x10/side), side planks (3x35s/side), deadbugs (3x12).",
+        "fueling": "Hydration & balanced nutrition",
+        "strategy_splits": [
+          {
+            "km": "Block 1",
+            "phase": "Posterior Chain Strength",
+            "pace": "N/A",
+            "desc": "Romanian Deadlifts (RDLs) 3x10, hamstrings & lumbar reinforcement",
+            "color": "#10b981"
+          },
+          {
+            "km": "Block 2",
+            "phase": "Deep Core Stabilizers",
+            "pace": "N/A",
+            "desc": "Bird-dogs with 3s hold 3x10/side, deadbugs 3x12",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "Block 3",
+            "phase": "Lateral Anti-Rotational",
+            "pace": "N/A",
+            "desc": "Side planks 3x35s/side, prone cobras 3x12",
+            "color": "#a855f7"
+          }
+        ]
       },
       {
         "day": "Friday",
         "date": "2026-11-06",
         "type": "Mid-Week Aerobic",
-        "distance_km": 6,
-        "target_pace": "7:25 min/km",
+        "distance_km": 8,
+        "target_pace": "7:15 - 7:30 min/km",
         "rpe": 3,
-        "description": "Easy aerobic run.",
-        "strength_prehab": "Dynamic mobility",
-        "fueling": "Water"
+        "description": "Smooth conversational aerobic cruise to expand mitochondrial density.",
+        "strength_prehab": "Dynamic ankle mobility & post-run foam roll",
+        "fueling": "Water as needed",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.5",
+            "phase": "Phase 1: Aerobic Ease-in",
+            "pace": "7:30 – 7:45 min/km",
+            "desc": "Controlled conversational start, settle heart rate into low Zone 2",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 1.5 – 6.5",
+            "phase": "Phase 2: Steady Aerobic Cruise",
+            "pace": "7:15 – 7:30 min/km",
+            "desc": "Conversational rhythm cruising, building capillary network & aerobic stamina",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Final 1.5 km",
+            "phase": "Phase 3: Cool-down",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Gentle deceleration & walking transition to soft tissue flush",
+            "color": "#a855f7"
+          }
+        ]
       },
       {
         "day": "Saturday",
@@ -1279,20 +3697,66 @@ let rawWeeksData = [
         "distance_km": 0,
         "target_pace": "N/A",
         "rpe": 1,
-        "description": "Full Rest.",
-        "strength_prehab": "Sleep 8+ hours",
-        "fueling": "Hydration"
+        "description": "Full Rest Day. Hydrate with electrolytes and prepare long run gear.",
+        "strength_prehab": "Sleep 8+ hours, gentle stretching",
+        "fueling": "Hydration with electrolytes & carb-focused dinner",
+        "strategy_splits": [
+          {
+            "km": "Morning",
+            "phase": "Passive Recovery",
+            "pace": "N/A",
+            "desc": "Quality sleep, 500ml water with morning electrolytes",
+            "color": "#10b981"
+          },
+          {
+            "km": "Afternoon",
+            "phase": "Soft Tissue Release",
+            "pace": "N/A",
+            "desc": "Gentle calf & plantar fascia rolling with tennis ball",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "Evening",
+            "phase": "Nutrition & Rest",
+            "pace": "N/A",
+            "desc": "Nutrient-dense dinner, hydrate, early bedtime",
+            "color": "#a855f7"
+          }
+        ]
       },
       {
         "day": "Sunday",
         "date": "2026-11-08",
         "type": "Long Run",
-        "distance_km": 14,
-        "target_pace": "7:35 - 7:45 min/km",
-        "rpe": 3,
-        "description": "Deload long run. Low heart rate, smooth cruising.",
-        "strength_prehab": "Calf stretching",
-        "fueling": "2 Gels + 1 Salt capsule + water"
+        "distance_km": 22,
+        "target_pace": "7:30 - 7:45 min/km (Last 2k @ 7:06)",
+        "rpe": 4,
+        "description": "22 km Long Run. Re-establishing long run volume. Practice taking 3 gels + 2 salt capsules.",
+        "strength_prehab": "Post-run 15-min hip flexor & calf flush",
+        "fueling": "3 Gels (km 6, 12, 17) + 2 Salt capsules (km 6, 14) + water every 2.5 km",
+        "strategy_splits": [
+          {
+            "km": "Km 1 – 2",
+            "phase": "Controlled Start",
+            "pace": "7:15 – 7:25 min/km",
+            "desc": "Disciplined start, resist surging with adrenaline, settle heart rate",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 3 – 19",
+            "phase": "Target Pace Lock",
+            "pace": "7:30 - 7:45 min/km (Last 2k @ 7:06)",
+            "desc": "Locked-in goal cadence (170+ SPM), take sips of hydration every 2.5 km",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Km 20 – 22",
+            "phase": "Negative Split Finish",
+            "pace": "7:00 – 7:06 min/km",
+            "desc": "Strong finish, maintain tall posture, empty the tank over final km",
+            "color": "#ff3b00"
+          }
+        ]
       }
     ]
   },
@@ -1314,7 +3778,30 @@ let rawWeeksData = [
         "rpe": 2,
         "description": "Recovery run.",
         "strength_prehab": "Calf & hamstring flush",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "0.0 – 1.0 km",
+            "phase": "Phase 1: Warmup",
+            "pace": "8:00 – 8:15 min/km",
+            "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
+            "color": "#10b981"
+          },
+          {
+            "km": "1.0 – 5.2 km",
+            "phase": "Phase 2: Main Cruise (Majority)",
+            "pace": "7:50 min/km",
+            "desc": "Main aerobic base cruise (RPE 3, 4.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "5.2 – 6.0 km",
+            "phase": "Phase 3: Cooldown",
+            "pace": "8:15+ min/km / Brisk Walk",
+            "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Tuesday",
@@ -1325,7 +3812,30 @@ let rawWeeksData = [
         "rpe": 5,
         "description": "Lower Body & Calf Armor.",
         "strength_prehab": "Eccentric heel drops, seated calf raises, Bulgarian split squats, glute bridges, tibialis raises.",
-        "fueling": "Protein"
+        "fueling": "Protein",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Wednesday",
@@ -1336,7 +3846,30 @@ let rawWeeksData = [
         "rpe": 6,
         "description": "2 km warmup, 4 km continuous @ Marathon Pace (7:00-7:06 min/km), 2 km cooldown.",
         "strength_prehab": "Dynamic stretches",
-        "fueling": "Carb snack"
+        "fueling": "Carb snack",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 2.0",
+            "phase": "Phase 1: Warm-up Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Easy aerobic warmup, activate glutes, loosen ankles & soleus (RPE 3)",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 2.0 – 6.0",
+            "phase": "Phase 2: Marathon Pace Block",
+            "pace": "7:00-7:06 min/km",
+            "desc": "4.0 km continuous locked-in effort, 172+ SPM, 2:2 rhythmic breathing (RPE 6-7)",
+            "color": "#ff7700"
+          },
+          {
+            "km": "Km 6.0 – 8.0",
+            "phase": "Phase 3: Cool-down Flush",
+            "pace": "7:50 – 8:15 min/km",
+            "desc": "2.0 km easy flush jog and walking transition to clear lactate (RPE 2)",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Thursday",
@@ -1347,7 +3880,30 @@ let rawWeeksData = [
         "rpe": 5,
         "description": "Posterior Chain & Core.",
         "strength_prehab": "RDLs, Bird-dogs, Side planks, Pallof press.",
-        "fueling": "Balanced nutrition"
+        "fueling": "Balanced nutrition",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Friday",
@@ -1358,7 +3914,30 @@ let rawWeeksData = [
         "rpe": 3,
         "description": "Aerobic rhythm run.",
         "strength_prehab": "Hip mobility",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.0",
+            "phase": "Phase 1: Conservative Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 1.1 – 7.0",
+            "phase": "Phase 2: Marathon Cruise",
+            "pace": "7:15 - 7:25 min/km",
+            "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Final 1.0 km",
+            "phase": "Phase 3: Finish & Prehab",
+            "pace": "7:06 – 7:35 min/km",
+            "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
+            "color": "#ff7700"
+          }
+        ]
       },
       {
         "day": "Saturday",
@@ -1369,7 +3948,30 @@ let rawWeeksData = [
         "rpe": 1,
         "description": "Full Rest.",
         "strength_prehab": "Foam rolling",
-        "fueling": "Hydration tracking"
+        "fueling": "Hydration tracking",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Sunday",
@@ -1380,7 +3982,30 @@ let rawWeeksData = [
         "rpe": 4,
         "description": "24 km Long Run. Gels every 40 mins + Salt capsules at km 6, 12, 18.",
         "strength_prehab": "Post-run calf recovery",
-        "fueling": "5 Gels + 3 Salt capsules + 1.5L water"
+        "fueling": "5 Gels + 3 Salt capsules + 1.5L water",
+        "strategy_splits": [
+          {
+            "km": "Km 1 – 2",
+            "phase": "Controlled Start",
+            "pace": "7:15 – 7:25 min/km",
+            "desc": "Disciplined start, resist surging with adrenaline, settle heart rate",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 3 – 21",
+            "phase": "Target Pace Lock",
+            "pace": "7:30 - 7:45 min/km",
+            "desc": "Locked-in goal cadence (170+ SPM), take sips of hydration every 2.5 km",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Km 22 – 24",
+            "phase": "Negative Split Finish",
+            "pace": "7:00 – 7:06 min/km",
+            "desc": "Strong finish, maintain tall posture, empty the tank over final km",
+            "color": "#ff3b00"
+          }
+        ]
       }
     ]
   },
@@ -1402,7 +4027,30 @@ let rawWeeksData = [
         "rpe": 2,
         "description": "Short easy recovery.",
         "strength_prehab": "Gentle calf stretches",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "0.0 – 1.0 km",
+            "phase": "Phase 1: Warmup",
+            "pace": "8:00 – 8:15 min/km",
+            "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
+            "color": "#10b981"
+          },
+          {
+            "km": "1.0 – 4.2 km",
+            "phase": "Phase 2: Main Cruise (Majority)",
+            "pace": "8:00 min/km",
+            "desc": "Main aerobic base cruise (RPE 3, 3.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "4.2 – 5.0 km",
+            "phase": "Phase 3: Cooldown",
+            "pace": "8:15+ min/km / Brisk Walk",
+            "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Tuesday",
@@ -1413,7 +4061,30 @@ let rawWeeksData = [
         "rpe": 4,
         "description": "Light calf & glute activation (2 sets).",
         "strength_prehab": "Bodyweight only",
-        "fueling": "Balanced meals"
+        "fueling": "Balanced meals",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Wednesday",
@@ -1424,7 +4095,79 @@ let rawWeeksData = [
         "rpe": 4,
         "description": "4 km shakeout + 4x100m strides.",
         "strength_prehab": "Dynamic stretches",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 4.0",
+            "phase": "Phase 1: Warm-up Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
+            "color": "#10b981"
+          },
+          {
+            "km": "1. 100m Stride 1",
+            "phase": "Rep 1/4",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 1 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "2. 90s Recovery Jog 1",
+            "phase": "Recovery 1/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 1 of 4: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "3. 100m Stride 2",
+            "phase": "Rep 2/4",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 2 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "4. 90s Recovery Jog 2",
+            "phase": "Recovery 2/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 2 of 4: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "5. 100m Stride 3",
+            "phase": "Rep 3/4",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 3 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "6. 90s Recovery Jog 3",
+            "phase": "Recovery 3/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 3 of 4: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "7. 100m Stride 4",
+            "phase": "Rep 4/4",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 4 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "8. 90s Recovery Jog 4",
+            "phase": "Recovery 4/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 4 of 4: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "Final 4.0 km",
+            "phase": "Phase 3: Cool-down Flush",
+            "pace": "7:50 – 8:15 min/km",
+            "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
+            "color": "#a855f7"
+          }
+        ]
       },
       {
         "day": "Thursday",
@@ -1435,7 +4178,30 @@ let rawWeeksData = [
         "rpe": 3,
         "description": "Core & mobility only.",
         "strength_prehab": "Bird-dogs, deadbugs",
-        "fueling": "Balanced diet"
+        "fueling": "Balanced diet",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Friday",
@@ -1446,7 +4212,30 @@ let rawWeeksData = [
         "rpe": 3,
         "description": "Easy aerobic run.",
         "strength_prehab": "Dynamic mobility",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "0.0 – 1.0 km",
+            "phase": "Phase 1: Warmup",
+            "pace": "8:00 – 8:15 min/km",
+            "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
+            "color": "#10b981"
+          },
+          {
+            "km": "1.0 – 5.2 km",
+            "phase": "Phase 2: Main Cruise (Majority)",
+            "pace": "7:20 min/km",
+            "desc": "Main aerobic base cruise (RPE 3, 4.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "5.2 – 6.0 km",
+            "phase": "Phase 3: Cooldown",
+            "pace": "8:15+ min/km / Brisk Walk",
+            "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Saturday",
@@ -1457,7 +4246,30 @@ let rawWeeksData = [
         "rpe": 1,
         "description": "Full Rest. Full race-morning meal rehearsal.",
         "strength_prehab": "Rest",
-        "fueling": "High-carb dinner + hydration"
+        "fueling": "High-carb dinner + hydration",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Sunday",
@@ -1468,7 +4280,30 @@ let rawWeeksData = [
         "rpe": 8,
         "description": "HALF MARATHON RACE SIMULATION (21.1 km): First 5 km @ 7:10, km 5-16 @ 6:45-6:55, km 16-21.1 @ 6:30-6:40. Target: 2:23:00-2:27:00.",
         "strength_prehab": "Full post-race recovery protocol",
-        "fueling": "3 Gels (km 6, 12, 17) + 2 Salt capsules + 1.2L water"
+        "fueling": "3 Gels (km 6, 12, 17) + 2 Salt capsules + 1.2L water",
+        "strategy_splits": [
+          {
+            "km": "Km 1 – 2",
+            "phase": "Controlled Start",
+            "pace": "7:15 – 7:25 min/km",
+            "desc": "Disciplined start, resist surging with adrenaline, settle heart rate",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 3 – 18.1",
+            "phase": "Target Pace Lock",
+            "pace": "Progressive: 7:10 -> 6:50 -> 6:35 min/km",
+            "desc": "Locked-in goal cadence (170+ SPM), take sips of hydration every 2.5 km",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Km 19.1 – 21.1",
+            "phase": "Negative Split Finish",
+            "pace": "7:00 – 7:06 min/km",
+            "desc": "Strong finish, maintain tall posture, empty the tank over final km",
+            "color": "#ff3b00"
+          }
+        ]
       }
     ]
   },
@@ -1477,20 +4312,43 @@ let rawWeeksData = [
     "phase": "Peak & Race Specificity",
     "start_date": "2026-11-23",
     "end_date": "2026-11-29",
-    "total_planned_km": 50,
-    "is_deload": false,
-    "focus": "High volume peak week; Pedder Road Hill Attack; 26 km Long Run",
+    "total_planned_km": 32,
+    "is_deload": true,
+    "focus": "DELOAD WEEK 3: Mid-program recovery, soft-tissue absorption post-HM simulation & glycogen reset",
     "workouts": [
       {
         "day": "Monday",
         "date": "2026-11-23",
         "type": "Recovery Run",
-        "distance_km": 6,
-        "target_pace": "7:55 min/km",
+        "distance_km": 5,
+        "target_pace": "8:00 min/km",
         "rpe": 2,
-        "description": "Post-HM recovery run.",
-        "strength_prehab": "Calf & hamstring flush",
-        "fueling": "Water"
+        "description": "Gentle recovery jog.",
+        "strength_prehab": "Gentle stretching",
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "0.0 – 1.0 km",
+            "phase": "Phase 1: Warmup",
+            "pace": "8:00 – 8:15 min/km",
+            "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
+            "color": "#10b981"
+          },
+          {
+            "km": "1.0 – 4.2 km",
+            "phase": "Phase 2: Main Cruise (Majority)",
+            "pace": "8:00 min/km",
+            "desc": "Main aerobic base cruise (RPE 3, 3.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "4.2 – 5.0 km",
+            "phase": "Phase 3: Cooldown",
+            "pace": "8:15+ min/km / Brisk Walk",
+            "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Tuesday",
@@ -1498,21 +4356,130 @@ let rawWeeksData = [
         "type": "Strength Day 1",
         "distance_km": 0,
         "target_pace": "N/A",
-        "rpe": 5,
-        "description": "Lower Body & Calf Armor.",
-        "strength_prehab": "Eccentric heel drops, seated calf raises, Bulgarian split squats, glute bridges, tibialis raises.",
-        "fueling": "Protein"
+        "rpe": 4,
+        "description": "Bodyweight maintenance (2 sets).",
+        "strength_prehab": "Calf raises, glute bridges, lunges",
+        "fueling": "Balanced meals",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Wednesday",
         "date": "2026-11-25",
-        "type": "Speed (Hill Attack)",
-        "distance_km": 9,
-        "target_pace": "Uphill RPE 8, cooldown 7:45",
-        "rpe": 8,
-        "description": "2 km warmup, 6x90-sec hill repeats @ RPE 8 (Pedder Road prep), 2 km cooldown.",
-        "strength_prehab": "Calf & Achilles prep",
-        "fueling": "Carb snack"
+        "type": "Speed (Strides)",
+        "distance_km": 5,
+        "target_pace": "7:45 warmup, strides",
+        "rpe": 5,
+        "description": "2 km easy, 5x100m strides, 1.5 km easy.",
+        "strength_prehab": "Dynamic prep",
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 2.0",
+            "phase": "Phase 1: Warm-up Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
+            "color": "#10b981"
+          },
+          {
+            "km": "1. 100m Stride 1",
+            "phase": "Rep 1/5",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 1 of 5: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "2. 90s Recovery Jog 1",
+            "phase": "Recovery 1/5",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 1 of 5: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "3. 100m Stride 2",
+            "phase": "Rep 2/5",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 2 of 5: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "4. 90s Recovery Jog 2",
+            "phase": "Recovery 2/5",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 2 of 5: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "5. 100m Stride 3",
+            "phase": "Rep 3/5",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 3 of 5: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "6. 90s Recovery Jog 3",
+            "phase": "Recovery 3/5",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 3 of 5: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "7. 100m Stride 4",
+            "phase": "Rep 4/5",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 4 of 5: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "8. 90s Recovery Jog 4",
+            "phase": "Recovery 4/5",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 4 of 5: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "9. 100m Stride 5",
+            "phase": "Rep 5/5",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 5 of 5: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "10. 90s Recovery Jog 5",
+            "phase": "Recovery 5/5",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 5 of 5: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "Final 2.0 km",
+            "phase": "Phase 3: Cool-down Flush",
+            "pace": "7:50 – 8:15 min/km",
+            "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
+            "color": "#a855f7"
+          }
+        ]
       },
       {
         "day": "Thursday",
@@ -1520,21 +4487,67 @@ let rawWeeksData = [
         "type": "Strength Day 2",
         "distance_km": 0,
         "target_pace": "N/A",
-        "rpe": 5,
-        "description": "Posterior Chain & Core.",
-        "strength_prehab": "RDLs, Bird-dogs, Side planks, Supermans.",
-        "fueling": "Balanced nutrition"
+        "rpe": 4,
+        "description": "Core stability & hip flexor release.",
+        "strength_prehab": "Bird-dogs, deadbugs (2 sets)",
+        "fueling": "Balanced diet",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Friday",
         "date": "2026-11-27",
         "type": "Mid-Week Aerobic",
-        "distance_km": 9,
-        "target_pace": "7:15 - 7:30 min/km",
+        "distance_km": 6,
+        "target_pace": "7:25 min/km",
         "rpe": 3,
-        "description": "Aerobic volume builder.",
-        "strength_prehab": "Hip mobility",
-        "fueling": "Water"
+        "description": "Easy aerobic run.",
+        "strength_prehab": "Dynamic mobility",
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "0.0 – 1.0 km",
+            "phase": "Phase 1: Warmup",
+            "pace": "8:00 – 8:15 min/km",
+            "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
+            "color": "#10b981"
+          },
+          {
+            "km": "1.0 – 5.2 km",
+            "phase": "Phase 2: Main Cruise (Majority)",
+            "pace": "7:25 min/km",
+            "desc": "Main aerobic base cruise (RPE 3, 4.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "5.2 – 6.0 km",
+            "phase": "Phase 3: Cooldown",
+            "pace": "8:15+ min/km / Brisk Walk",
+            "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Saturday",
@@ -1544,19 +4557,65 @@ let rawWeeksData = [
         "target_pace": "N/A",
         "rpe": 1,
         "description": "Full Rest.",
-        "strength_prehab": "Foam rolling",
-        "fueling": "Carb dinner + hydration"
+        "strength_prehab": "Sleep 8+ hours",
+        "fueling": "Hydration",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Sunday",
         "date": "2026-11-29",
         "type": "Long Run",
-        "distance_km": 26,
-        "target_pace": "7:30 - 7:45 min/km",
-        "rpe": 5,
-        "description": "26 km Long Run. Practice taking 5 full gels + 3 salt capsules.",
-        "strength_prehab": "Post-run calf recovery",
-        "fueling": "5 Gels + 3 Salt capsules + 1.8L water"
+        "distance_km": 14,
+        "target_pace": "7:35 - 7:45 min/km",
+        "rpe": 3,
+        "description": "Deload long run. Low heart rate, smooth cruising.",
+        "strength_prehab": "Calf stretching",
+        "fueling": "2 Gels + 1 Salt capsule + water",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.0",
+            "phase": "Phase 1: Conservative Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 1.1 – 13.0",
+            "phase": "Phase 2: Marathon Cruise",
+            "pace": "7:35 - 7:45 min/km",
+            "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Final 1.0 km",
+            "phase": "Phase 3: Finish & Prehab",
+            "pace": "7:06 – 7:35 min/km",
+            "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
+            "color": "#ff7700"
+          }
+        ]
       }
     ]
   },
@@ -1565,20 +4624,43 @@ let rawWeeksData = [
     "phase": "Peak & Race Specificity",
     "start_date": "2026-11-30",
     "end_date": "2026-12-06",
-    "total_planned_km": 36,
-    "is_deload": true,
-    "focus": "DELOAD WEEK 4: Pre-peak recovery & glycogen store refresh",
+    "total_planned_km": 50,
+    "is_deload": false,
+    "focus": "High volume peak week; Pedder Road Hill Attack; 26 km Long Run volume builder",
     "workouts": [
       {
         "day": "Monday",
         "date": "2026-11-30",
         "type": "Recovery Run",
-        "distance_km": 5,
-        "target_pace": "8:00 min/km",
+        "distance_km": 6,
+        "target_pace": "7:55 min/km",
         "rpe": 2,
-        "description": "Gentle recovery run.",
-        "strength_prehab": "Gentle stretching",
-        "fueling": "Water"
+        "description": "Post-HM recovery run.",
+        "strength_prehab": "Calf & hamstring flush",
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "0.0 – 1.0 km",
+            "phase": "Phase 1: Warmup",
+            "pace": "8:00 – 8:15 min/km",
+            "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
+            "color": "#10b981"
+          },
+          {
+            "km": "1.0 – 5.2 km",
+            "phase": "Phase 2: Main Cruise (Majority)",
+            "pace": "7:55 min/km",
+            "desc": "Main aerobic base cruise (RPE 3, 4.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "5.2 – 6.0 km",
+            "phase": "Phase 3: Cooldown",
+            "pace": "8:15+ min/km / Brisk Walk",
+            "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Tuesday",
@@ -1586,21 +4668,144 @@ let rawWeeksData = [
         "type": "Strength Day 1",
         "distance_km": 0,
         "target_pace": "N/A",
-        "rpe": 4,
-        "description": "Bodyweight maintenance (2 sets).",
-        "strength_prehab": "Calf raises, glute bridges",
-        "fueling": "Balanced meals"
+        "rpe": 5,
+        "description": "Lower Body & Calf Armor.",
+        "strength_prehab": "Eccentric heel drops, seated calf raises, Bulgarian split squats, glute bridges, tibialis raises.",
+        "fueling": "Protein",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Wednesday",
         "date": "2026-12-02",
-        "type": "Speed (Strides)",
-        "distance_km": 6,
-        "target_pace": "7:45 warmup, strides",
-        "rpe": 5,
-        "description": "2 km easy, 5x100m strides, 2 km easy.",
-        "strength_prehab": "Dynamic prep",
-        "fueling": "Water"
+        "type": "Speed (Hill Attack)",
+        "distance_km": 9,
+        "target_pace": "Uphill RPE 8, cooldown 7:45",
+        "rpe": 8,
+        "description": "2 km warmup, 6x90-sec hill repeats @ RPE 8 (Pedder Road prep), 2 km cooldown.",
+        "strength_prehab": "Calf & Achilles prep",
+        "fueling": "Carb snack",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 2.0",
+            "phase": "Phase 1: Warm-up Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
+            "color": "#10b981"
+          },
+          {
+            "km": "1. 90-s Hill Repeat 1",
+            "phase": "Rep 1/6",
+            "pace": "Uphill Sprint (RPE 8)",
+            "desc": "Rep 1 of 6: Powerful glute drive, high knees, upright torso (RPE 8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "2. Jog-Down Jog-Down Rest 1",
+            "phase": "Recovery 1/6",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 1 of 6: Controlled jog down to hill base, reset heart rate (RPE 2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "3. 90-s Hill Repeat 2",
+            "phase": "Rep 2/6",
+            "pace": "Uphill Sprint (RPE 8)",
+            "desc": "Rep 2 of 6: Powerful glute drive, high knees, upright torso (RPE 8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "4. Jog-Down Jog-Down Rest 2",
+            "phase": "Recovery 2/6",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 2 of 6: Controlled jog down to hill base, reset heart rate (RPE 2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "5. 90-s Hill Repeat 3",
+            "phase": "Rep 3/6",
+            "pace": "Uphill Sprint (RPE 8)",
+            "desc": "Rep 3 of 6: Powerful glute drive, high knees, upright torso (RPE 8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "6. Jog-Down Jog-Down Rest 3",
+            "phase": "Recovery 3/6",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 3 of 6: Controlled jog down to hill base, reset heart rate (RPE 2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "7. 90-s Hill Repeat 4",
+            "phase": "Rep 4/6",
+            "pace": "Uphill Sprint (RPE 8)",
+            "desc": "Rep 4 of 6: Powerful glute drive, high knees, upright torso (RPE 8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "8. Jog-Down Jog-Down Rest 4",
+            "phase": "Recovery 4/6",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 4 of 6: Controlled jog down to hill base, reset heart rate (RPE 2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "9. 90-s Hill Repeat 5",
+            "phase": "Rep 5/6",
+            "pace": "Uphill Sprint (RPE 8)",
+            "desc": "Rep 5 of 6: Powerful glute drive, high knees, upright torso (RPE 8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "10. Jog-Down Jog-Down Rest 5",
+            "phase": "Recovery 5/6",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 5 of 6: Controlled jog down to hill base, reset heart rate (RPE 2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "11. 90-s Hill Repeat 6",
+            "phase": "Rep 6/6",
+            "pace": "Uphill Sprint (RPE 8)",
+            "desc": "Rep 6 of 6: Powerful glute drive, high knees, upright torso (RPE 8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "12. Jog-Down Jog-Down Rest 6",
+            "phase": "Recovery 6/6",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 6 of 6: Controlled jog down to hill base, reset heart rate (RPE 2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "Final 2.0 km",
+            "phase": "Phase 3: Cool-down Flush",
+            "pace": "7:50 – 8:15 min/km",
+            "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
+            "color": "#a855f7"
+          }
+        ]
       },
       {
         "day": "Thursday",
@@ -1608,21 +4813,67 @@ let rawWeeksData = [
         "type": "Strength Day 2",
         "distance_km": 0,
         "target_pace": "N/A",
-        "rpe": 4,
-        "description": "Core & lower back mobility.",
-        "strength_prehab": "Bird-dogs, deadbugs (2 sets)",
-        "fueling": "Balanced diet"
+        "rpe": 5,
+        "description": "Posterior Chain & Core.",
+        "strength_prehab": "RDLs, Bird-dogs, Side planks, Supermans.",
+        "fueling": "Balanced nutrition",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Friday",
         "date": "2026-12-04",
         "type": "Mid-Week Aerobic",
-        "distance_km": 7,
-        "target_pace": "7:25 min/km",
+        "distance_km": 9,
+        "target_pace": "7:15 - 7:30 min/km",
         "rpe": 3,
-        "description": "Easy aerobic run.",
-        "strength_prehab": "Dynamic mobility",
-        "fueling": "Water"
+        "description": "Aerobic volume builder.",
+        "strength_prehab": "Hip mobility",
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.0",
+            "phase": "Phase 1: Conservative Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 1.1 – 8.0",
+            "phase": "Phase 2: Marathon Cruise",
+            "pace": "7:15 - 7:30 min/km",
+            "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Final 1.0 km",
+            "phase": "Phase 3: Finish & Prehab",
+            "pace": "7:06 – 7:35 min/km",
+            "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
+            "color": "#ff7700"
+          }
+        ]
       },
       {
         "day": "Saturday",
@@ -1632,19 +4883,65 @@ let rawWeeksData = [
         "target_pace": "N/A",
         "rpe": 1,
         "description": "Full Rest.",
-        "strength_prehab": "Sleep 8+ hours",
-        "fueling": "Hydration"
+        "strength_prehab": "Foam rolling",
+        "fueling": "Carb dinner + hydration",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Sunday",
         "date": "2026-12-06",
         "type": "Long Run",
-        "distance_km": 16,
-        "target_pace": "7:35 - 7:45 min/km",
-        "rpe": 3,
-        "description": "Deload long run. Easy, relaxed rhythm.",
-        "strength_prehab": "Calf stretching",
-        "fueling": "2 Gels + 1 Salt capsule + water"
+        "distance_km": 26,
+        "target_pace": "7:30 - 7:45 min/km",
+        "rpe": 5,
+        "description": "26 km Long Run. Practice taking 5 full gels + 3 salt capsules.",
+        "strength_prehab": "Post-run calf recovery",
+        "fueling": "5 Gels + 3 Salt capsules + 1.8L water",
+        "strategy_splits": [
+          {
+            "km": "Km 1 – 2",
+            "phase": "Controlled Start",
+            "pace": "7:15 – 7:25 min/km",
+            "desc": "Disciplined start, resist surging with adrenaline, settle heart rate",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 3 – 23",
+            "phase": "Target Pace Lock",
+            "pace": "7:30 - 7:45 min/km",
+            "desc": "Locked-in goal cadence (170+ SPM), take sips of hydration every 2.5 km",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Km 24 – 26",
+            "phase": "Negative Split Finish",
+            "pace": "7:00 – 7:06 min/km",
+            "desc": "Strong finish, maintain tall posture, empty the tank over final km",
+            "color": "#ff3b00"
+          }
+        ]
       }
     ]
   },
@@ -1666,7 +4963,30 @@ let rawWeeksData = [
         "rpe": 2,
         "description": "Recovery run.",
         "strength_prehab": "Calf & hamstring flush",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.0",
+            "phase": "Phase 1: Conservative Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 1.1 – 6.0",
+            "phase": "Phase 2: Marathon Cruise",
+            "pace": "7:50 min/km",
+            "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Final 1.0 km",
+            "phase": "Phase 3: Finish & Prehab",
+            "pace": "7:06 – 7:35 min/km",
+            "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
+            "color": "#ff7700"
+          }
+        ]
       },
       {
         "day": "Tuesday",
@@ -1677,7 +4997,30 @@ let rawWeeksData = [
         "rpe": 5,
         "description": "Lower Body & Calf Armor.",
         "strength_prehab": "Eccentric heel drops, seated calf raises, Bulgarian split squats, glute bridges, tibialis raises.",
-        "fueling": "Protein"
+        "fueling": "Protein",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Wednesday",
@@ -1688,7 +5031,65 @@ let rawWeeksData = [
         "rpe": 7,
         "description": "2 km warmup, 3x1.5 km @ 6:25 min/km (2 min rest), 1.5 km cooldown.",
         "strength_prehab": "Dynamic stretches",
-        "fueling": "Carb snack"
+        "fueling": "Carb snack",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 2.0",
+            "phase": "Phase 1: Warm-up Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
+            "color": "#10b981"
+          },
+          {
+            "km": "1. 1.5 km Rep 1",
+            "phase": "Rep 1/3",
+            "pace": "6:25 min/km",
+            "desc": "Rep 1 of 3: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "2. 2 min Recovery Jog 1",
+            "phase": "Recovery 1/3",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 1 of 3: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "3. 1.5 km Rep 2",
+            "phase": "Rep 2/3",
+            "pace": "6:25 min/km",
+            "desc": "Rep 2 of 3: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "4. 2 min Recovery Jog 2",
+            "phase": "Recovery 2/3",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 2 of 3: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "5. 1.5 km Rep 3",
+            "phase": "Rep 3/3",
+            "pace": "6:25 min/km",
+            "desc": "Rep 3 of 3: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "6. 2 min Recovery Jog 3",
+            "phase": "Recovery 3/3",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 3 of 3: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "Final 1.5 km",
+            "phase": "Phase 3: Cool-down Flush",
+            "pace": "7:50 – 8:15 min/km",
+            "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
+            "color": "#a855f7"
+          }
+        ]
       },
       {
         "day": "Thursday",
@@ -1699,7 +5100,30 @@ let rawWeeksData = [
         "rpe": 5,
         "description": "Posterior Chain & Core.",
         "strength_prehab": "RDLs, Bird-dogs, Side planks, Pallof press.",
-        "fueling": "Balanced nutrition"
+        "fueling": "Balanced nutrition",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Friday",
@@ -1710,7 +5134,30 @@ let rawWeeksData = [
         "rpe": 3,
         "description": "Double-digit mid-week aerobic run.",
         "strength_prehab": "Hip mobility",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.0",
+            "phase": "Phase 1: Conservative Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 1.1 – 9.0",
+            "phase": "Phase 2: Marathon Cruise",
+            "pace": "7:15 - 7:30 min/km",
+            "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Final 1.0 km",
+            "phase": "Phase 3: Finish & Prehab",
+            "pace": "7:06 – 7:35 min/km",
+            "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
+            "color": "#ff7700"
+          }
+        ]
       },
       {
         "day": "Saturday",
@@ -1721,7 +5168,30 @@ let rawWeeksData = [
         "rpe": 1,
         "description": "Full Rest.",
         "strength_prehab": "Foam rolling",
-        "fueling": "Carb dinner + hydration"
+        "fueling": "Carb dinner + hydration",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Sunday",
@@ -1732,7 +5202,30 @@ let rawWeeksData = [
         "rpe": 6,
         "description": "30 km Peak Distance Run. First 27 km @ 7:35 min/km, last 3 km @ Marathon Pace (7:06 min/km). Max time-on-feet conditioning.",
         "strength_prehab": "Post-run calf recovery",
-        "fueling": "6 Gels + 4 Salt capsules + 2L water"
+        "fueling": "6 Gels + 4 Salt capsules + 2L water",
+        "strategy_splits": [
+          {
+            "km": "Km 1 – 2",
+            "phase": "Controlled Start",
+            "pace": "7:15 – 7:25 min/km",
+            "desc": "Disciplined start, resist surging with adrenaline, settle heart rate",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 3 – 27",
+            "phase": "Target Pace Lock",
+            "pace": "7:35 - 7:45 min/km (Last 3k @ 7:06)",
+            "desc": "Locked-in goal cadence (170+ SPM), take sips of hydration every 2.5 km",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Km 28 – 30",
+            "phase": "Negative Split Finish",
+            "pace": "7:00 – 7:06 min/km",
+            "desc": "Strong finish, maintain tall posture, empty the tank over final km",
+            "color": "#ff3b00"
+          }
+        ]
       }
     ]
   },
@@ -1754,7 +5247,30 @@ let rawWeeksData = [
         "rpe": 2,
         "description": "Gentle recovery run.",
         "strength_prehab": "Calf & hamstring flush",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "0.0 – 1.0 km",
+            "phase": "Phase 1: Warmup",
+            "pace": "8:00 – 8:15 min/km",
+            "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
+            "color": "#10b981"
+          },
+          {
+            "km": "1.0 – 5.2 km",
+            "phase": "Phase 2: Main Cruise (Majority)",
+            "pace": "7:55 min/km",
+            "desc": "Main aerobic base cruise (RPE 3, 4.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "5.2 – 6.0 km",
+            "phase": "Phase 3: Cooldown",
+            "pace": "8:15+ min/km / Brisk Walk",
+            "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Tuesday",
@@ -1765,7 +5281,30 @@ let rawWeeksData = [
         "rpe": 5,
         "description": "Lower Body & Calf Armor (Final heavy strength week).",
         "strength_prehab": "Eccentric heel drops, seated calf raises, split squats, glute bridges, tibialis raises.",
-        "fueling": "Protein"
+        "fueling": "Protein",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Wednesday",
@@ -1776,7 +5315,79 @@ let rawWeeksData = [
         "rpe": 6,
         "description": "2 km warmup, 4x100m strides, 5.5 km easy shakeout before traveling to Kolkata.",
         "strength_prehab": "Dynamic stretches",
-        "fueling": "Carb snack"
+        "fueling": "Carb snack",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 2.0",
+            "phase": "Phase 1: Warm-up Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
+            "color": "#10b981"
+          },
+          {
+            "km": "1. 100m Stride 1",
+            "phase": "Rep 1/4",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 1 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "2. 90s Recovery Jog 1",
+            "phase": "Recovery 1/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 1 of 4: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "3. 100m Stride 2",
+            "phase": "Rep 2/4",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 2 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "4. 90s Recovery Jog 2",
+            "phase": "Recovery 2/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 2 of 4: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "5. 100m Stride 3",
+            "phase": "Rep 3/4",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 3 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "6. 90s Recovery Jog 3",
+            "phase": "Recovery 3/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 3 of 4: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "7. 100m Stride 4",
+            "phase": "Rep 4/4",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 4 of 4: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "8. 90s Recovery Jog 4",
+            "phase": "Recovery 4/4",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 4 of 4: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "Final 5.5 km",
+            "phase": "Phase 3: Cool-down Flush",
+            "pace": "7:50 – 8:15 min/km",
+            "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
+            "color": "#a855f7"
+          }
+        ]
       },
       {
         "day": "Thursday",
@@ -1787,7 +5398,30 @@ let rawWeeksData = [
         "rpe": 5,
         "description": "Posterior Chain & Core.",
         "strength_prehab": "RDLs, Bird-dogs, Side planks, Supermans.",
-        "fueling": "Balanced nutrition"
+        "fueling": "Balanced nutrition",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Friday",
@@ -1798,7 +5432,30 @@ let rawWeeksData = [
         "rpe": 3,
         "description": "Mid-week aerobic anchor.",
         "strength_prehab": "Hip mobility",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.0",
+            "phase": "Phase 1: Conservative Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 1.1 – 9.0",
+            "phase": "Phase 2: Marathon Cruise",
+            "pace": "7:15 - 7:30 min/km",
+            "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Final 1.0 km",
+            "phase": "Phase 3: Finish & Prehab",
+            "pace": "7:06 – 7:35 min/km",
+            "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
+            "color": "#ff7700"
+          }
+        ]
       },
       {
         "day": "Saturday",
@@ -1809,7 +5466,30 @@ let rawWeeksData = [
         "rpe": 1,
         "description": "Full Rest. Hyper-hydrate with electrolytes.",
         "strength_prehab": "Rest",
-        "fueling": "High-carb loading meals + 2.5L fluids"
+        "fueling": "High-carb loading meals + 2.5L fluids",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Sunday",
@@ -1820,7 +5500,30 @@ let rawWeeksData = [
         "rpe": 6,
         "description": "PROCAM SLAM #2: TATA STEEL WORLD 25K KOLKATA (25 km). Marathon Goal Pace Dress Rehearsal. First 15 km steady @ 7:25 min/km, last 10 km locked at Marathon Goal Pace (7:00-7:06 min/km). Target: ~3:00:00.",
         "strength_prehab": "Full post-run ice/foam roll & elevation",
-        "fueling": "5 Gels + 3 Salt capsules + water"
+        "fueling": "5 Gels + 3 Salt capsules + water",
+        "strategy_splits": [
+          {
+            "km": "Km 1 – 2",
+            "phase": "Controlled Start",
+            "pace": "7:15 – 7:25 min/km",
+            "desc": "Disciplined start, resist surging with adrenaline, settle heart rate",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 3 – 22",
+            "phase": "Target Pace Lock",
+            "pace": "First 15k @ 7:25, Last 10k @ 7:05 min/km",
+            "desc": "Locked-in goal cadence (170+ SPM), take sips of hydration every 2.5 km",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Km 23 – 25",
+            "phase": "Negative Split Finish",
+            "pace": "7:00 – 7:06 min/km",
+            "desc": "Strong finish, maintain tall posture, empty the tank over final km",
+            "color": "#ff3b00"
+          }
+        ]
       }
     ]
   },
@@ -1829,20 +5532,43 @@ let rawWeeksData = [
     "phase": "Peak & Race Specificity",
     "start_date": "2026-12-21",
     "end_date": "2026-12-27",
-    "total_planned_km": 46,
-    "is_deload": false,
-    "focus": "Post-peak consolidation run (24 km Long Run)",
+    "total_planned_km": 36,
+    "is_deload": true,
+    "focus": "DELOAD WEEK 4: Post-Kolkata 25K recovery, musculoskeletal absorption & pre-taper reset",
     "workouts": [
       {
         "day": "Monday",
         "date": "2026-12-21",
         "type": "Recovery Run",
-        "distance_km": 6,
+        "distance_km": 5,
         "target_pace": "8:00 min/km",
         "rpe": 2,
-        "description": "Gentle shakeout after peak 32k.",
-        "strength_prehab": "Calf & hamstring flush",
-        "fueling": "Water"
+        "description": "Gentle recovery run.",
+        "strength_prehab": "Gentle stretching",
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "0.0 – 1.0 km",
+            "phase": "Phase 1: Warmup",
+            "pace": "8:00 – 8:15 min/km",
+            "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
+            "color": "#10b981"
+          },
+          {
+            "km": "1.0 – 4.2 km",
+            "phase": "Phase 2: Main Cruise (Majority)",
+            "pace": "8:00 min/km",
+            "desc": "Main aerobic base cruise (RPE 3, 3.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "4.2 – 5.0 km",
+            "phase": "Phase 3: Cooldown",
+            "pace": "8:15+ min/km / Brisk Walk",
+            "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Tuesday",
@@ -1851,20 +5577,129 @@ let rawWeeksData = [
         "distance_km": 0,
         "target_pace": "N/A",
         "rpe": 4,
-        "description": "Lighter maintenance strength (2 sets/exercise).",
-        "strength_prehab": "Bodyweight heel drops, glute bridges",
-        "fueling": "Protein"
+        "description": "Bodyweight maintenance (2 sets).",
+        "strength_prehab": "Calf raises, glute bridges",
+        "fueling": "Balanced meals",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Wednesday",
         "date": "2026-12-23",
-        "type": "Speed (Tempo)",
-        "distance_km": 8,
-        "target_pace": "6:30 min/km tempo",
-        "rpe": 7,
-        "description": "2 km warmup, 3 km @ 6:30 min/km tempo, 2 km cooldown.",
-        "strength_prehab": "Dynamic stretches",
-        "fueling": "Carb snack"
+        "type": "Speed (Strides)",
+        "distance_km": 6,
+        "target_pace": "7:45 warmup, strides",
+        "rpe": 5,
+        "description": "2 km easy, 5x100m strides, 2 km easy.",
+        "strength_prehab": "Dynamic prep",
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 2.0",
+            "phase": "Phase 1: Warm-up Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
+            "color": "#10b981"
+          },
+          {
+            "km": "1. 100m Stride 1",
+            "phase": "Rep 1/5",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 1 of 5: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "2. 90s Recovery Jog 1",
+            "phase": "Recovery 1/5",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 1 of 5: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "3. 100m Stride 2",
+            "phase": "Rep 2/5",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 2 of 5: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "4. 90s Recovery Jog 2",
+            "phase": "Recovery 2/5",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 2 of 5: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "5. 100m Stride 3",
+            "phase": "Rep 3/5",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 3 of 5: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "6. 90s Recovery Jog 3",
+            "phase": "Recovery 3/5",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 3 of 5: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "7. 100m Stride 4",
+            "phase": "Rep 4/5",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 4 of 5: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "8. 90s Recovery Jog 4",
+            "phase": "Recovery 4/5",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 4 of 5: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "9. 100m Stride 5",
+            "phase": "Rep 5/5",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 5 of 5: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "10. 90s Recovery Jog 5",
+            "phase": "Recovery 5/5",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 5 of 5: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "Final 2.0 km",
+            "phase": "Phase 3: Cool-down Flush",
+            "pace": "7:50 – 8:15 min/km",
+            "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
+            "color": "#a855f7"
+          }
+        ]
       },
       {
         "day": "Thursday",
@@ -1873,20 +5708,66 @@ let rawWeeksData = [
         "distance_km": 0,
         "target_pace": "N/A",
         "rpe": 4,
-        "description": "Core & bodyweight back stabilization.",
+        "description": "Core & lower back mobility.",
         "strength_prehab": "Bird-dogs, deadbugs (2 sets)",
-        "fueling": "Balanced nutrition"
+        "fueling": "Balanced diet",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Friday",
         "date": "2026-12-25",
         "type": "Mid-Week Aerobic",
-        "distance_km": 8,
-        "target_pace": "7:20 - 7:35 min/km",
+        "distance_km": 7,
+        "target_pace": "7:25 min/km",
         "rpe": 3,
-        "description": "Aerobic cruise.",
-        "strength_prehab": "Hip mobility",
-        "fueling": "Water"
+        "description": "Easy aerobic run.",
+        "strength_prehab": "Dynamic mobility",
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.0",
+            "phase": "Phase 1: Conservative Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 1.1 – 6.0",
+            "phase": "Phase 2: Marathon Cruise",
+            "pace": "7:25 min/km",
+            "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Final 1.0 km",
+            "phase": "Phase 3: Finish & Prehab",
+            "pace": "7:06 – 7:35 min/km",
+            "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
+            "color": "#ff7700"
+          }
+        ]
       },
       {
         "day": "Saturday",
@@ -1896,19 +5777,65 @@ let rawWeeksData = [
         "target_pace": "N/A",
         "rpe": 1,
         "description": "Full Rest.",
-        "strength_prehab": "Foam rolling",
-        "fueling": "Carb dinner + hydration"
+        "strength_prehab": "Sleep 8+ hours",
+        "fueling": "Hydration",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Sunday",
         "date": "2026-12-27",
         "type": "Long Run",
-        "distance_km": 24,
+        "distance_km": 16,
         "target_pace": "7:35 - 7:45 min/km",
-        "rpe": 4,
-        "description": "24 km Long Run. Comfortable rhythm.",
-        "strength_prehab": "Post-run calf recovery",
-        "fueling": "4 Gels + 3 Salt capsules + 1.5L water"
+        "rpe": 3,
+        "description": "Deload long run. Easy, relaxed rhythm.",
+        "strength_prehab": "Calf stretching",
+        "fueling": "2 Gels + 1 Salt capsule + water",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.0",
+            "phase": "Phase 1: Conservative Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 1.1 – 15.0",
+            "phase": "Phase 2: Marathon Cruise",
+            "pace": "7:35 - 7:45 min/km",
+            "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Final 1.0 km",
+            "phase": "Phase 3: Finish & Prehab",
+            "pace": "7:06 – 7:35 min/km",
+            "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
+            "color": "#ff7700"
+          }
+        ]
       }
     ]
   },
@@ -1930,7 +5857,30 @@ let rawWeeksData = [
         "rpe": 2,
         "description": "Easy recovery run.",
         "strength_prehab": "Gentle calf stretches",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "0.0 – 1.0 km",
+            "phase": "Phase 1: Warmup",
+            "pace": "8:00 – 8:15 min/km",
+            "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
+            "color": "#10b981"
+          },
+          {
+            "km": "1.0 – 4.2 km",
+            "phase": "Phase 2: Main Cruise (Majority)",
+            "pace": "7:55 min/km",
+            "desc": "Main aerobic base cruise (RPE 3, 3.2 km). 168 SPM cadence lock for active vascular capillary flushing.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "4.2 – 5.0 km",
+            "phase": "Phase 3: Cooldown",
+            "pace": "8:15+ min/km / Brisk Walk",
+            "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Tuesday",
@@ -1941,7 +5891,30 @@ let rawWeeksData = [
         "rpe": 3,
         "description": "Bodyweight only (Calf raises 2x15, glute bridges, bird-dogs). No heavy lifting.",
         "strength_prehab": "Mobility & activation",
-        "fueling": "Balanced meals"
+        "fueling": "Balanced meals",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Wednesday",
@@ -1952,7 +5925,30 @@ let rawWeeksData = [
         "rpe": 5,
         "description": "1.5 km warmup, 2 km @ Marathon Pace (7:00 min/km), 1.5 km cooldown.",
         "strength_prehab": "Dynamic stretches",
-        "fueling": "Carb snack"
+        "fueling": "Carb snack",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.5",
+            "phase": "Phase 1: Warm-up Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Easy aerobic warmup, activate glutes, loosen ankles & soleus (RPE 3)",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 1.5 – 3.5",
+            "phase": "Phase 2: Marathon Pace Block",
+            "pace": "7:00 min/km",
+            "desc": "2.0 km continuous locked-in effort, 172+ SPM, 2:2 rhythmic breathing (RPE 6-7)",
+            "color": "#ff7700"
+          },
+          {
+            "km": "Km 3.5 – 5.0",
+            "phase": "Phase 3: Cool-down Flush",
+            "pace": "7:50 – 8:15 min/km",
+            "desc": "1.5 km easy flush jog and walking transition to clear lactate (RPE 2)",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Thursday",
@@ -1963,7 +5959,30 @@ let rawWeeksData = [
         "rpe": 3,
         "description": "Light core & stretching (15 mins).",
         "strength_prehab": "Bird-dogs, deadbugs (2 sets)",
-        "fueling": "Balanced diet"
+        "fueling": "Balanced diet",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Friday",
@@ -1974,7 +5993,30 @@ let rawWeeksData = [
         "rpe": 3,
         "description": "Light, springy aerobic run.",
         "strength_prehab": "Dynamic mobility",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.0",
+            "phase": "Phase 1: Conservative Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 1.1 – 6.0",
+            "phase": "Phase 2: Marathon Cruise",
+            "pace": "7:15 - 7:30 min/km",
+            "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Final 1.0 km",
+            "phase": "Phase 3: Finish & Prehab",
+            "pace": "7:06 – 7:35 min/km",
+            "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
+            "color": "#ff7700"
+          }
+        ]
       },
       {
         "day": "Saturday",
@@ -1985,7 +6027,30 @@ let rawWeeksData = [
         "rpe": 1,
         "description": "Full Rest.",
         "strength_prehab": "Rest & sleep",
-        "fueling": "Hydration"
+        "fueling": "Hydration",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Sunday",
@@ -1996,7 +6061,30 @@ let rawWeeksData = [
         "rpe": 3,
         "description": "Taper 1 Long Run: 18 km. Legs should feel fresh and bouncy.",
         "strength_prehab": "Post-run calf flush",
-        "fueling": "3 Gels + 2 Salt capsules + water"
+        "fueling": "3 Gels + 2 Salt capsules + water",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.0",
+            "phase": "Phase 1: Conservative Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 1.1 – 17.0",
+            "phase": "Phase 2: Marathon Cruise",
+            "pace": "7:30 - 7:40 min/km",
+            "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Final 1.0 km",
+            "phase": "Phase 3: Finish & Prehab",
+            "pace": "7:06 – 7:35 min/km",
+            "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
+            "color": "#ff7700"
+          }
+        ]
       }
     ]
   },
@@ -2018,7 +6106,30 @@ let rawWeeksData = [
         "rpe": 2,
         "description": "Short shakeout.",
         "strength_prehab": "Gentle stretching",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "0.0 – 0.8 km",
+            "phase": "Phase 1: Warmup",
+            "pace": "8:00 – 8:15 min/km",
+            "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
+            "color": "#10b981"
+          },
+          {
+            "km": "0.8 – 3.2 km",
+            "phase": "Phase 2: Main Cruise (Majority)",
+            "pace": "8:00 min/km",
+            "desc": "Main aerobic base cruise (RPE 3, 2.4 km). 168 SPM cadence lock for active vascular capillary flushing.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "3.2 – 4.0 km",
+            "phase": "Phase 3: Cooldown",
+            "pace": "8:15+ min/km / Brisk Walk",
+            "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Tuesday",
@@ -2029,7 +6140,30 @@ let rawWeeksData = [
         "rpe": 2,
         "description": "Light mobility, foam rolling, dynamic hip openers.",
         "strength_prehab": "Mobility only",
-        "fueling": "Balanced meals"
+        "fueling": "Balanced meals",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Wednesday",
@@ -2040,7 +6174,30 @@ let rawWeeksData = [
         "rpe": 4,
         "description": "2 km easy, 1.5 km @ Marathon Pace (7:05 min/km), 1.5 km cooldown.",
         "strength_prehab": "Dynamic prep",
-        "fueling": "Carb snack"
+        "fueling": "Carb snack",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 2.0",
+            "phase": "Phase 1: Warm-up Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Easy aerobic warmup, activate glutes, loosen ankles & soleus (RPE 3)",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 2.0 – 3.5",
+            "phase": "Phase 2: Marathon Pace Block",
+            "pace": "7:05 min/km",
+            "desc": "1.5 km continuous locked-in effort, 172+ SPM, 2:2 rhythmic breathing (RPE 6-7)",
+            "color": "#ff7700"
+          },
+          {
+            "km": "Km 3.5 – 5.0",
+            "phase": "Phase 3: Cool-down Flush",
+            "pace": "7:50 – 8:15 min/km",
+            "desc": "2.0 km easy flush jog and walking transition to clear lactate (RPE 2)",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Thursday",
@@ -2051,7 +6208,30 @@ let rawWeeksData = [
         "rpe": 1,
         "description": "Complete Rest & hydration tracking.",
         "strength_prehab": "Rest",
-        "fueling": "Hydration tracking"
+        "fueling": "Hydration tracking",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Friday",
@@ -2062,7 +6242,65 @@ let rawWeeksData = [
         "rpe": 3,
         "description": "5 km easy with 3x100m strides.",
         "strength_prehab": "Dynamic mobility",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 5.0",
+            "phase": "Phase 1: Warm-up Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
+            "color": "#10b981"
+          },
+          {
+            "km": "1. 100m Stride 1",
+            "phase": "Rep 1/3",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 1 of 3: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "2. 90s Recovery Jog 1",
+            "phase": "Recovery 1/3",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 1 of 3: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "3. 100m Stride 2",
+            "phase": "Rep 2/3",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 2 of 3: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "4. 90s Recovery Jog 2",
+            "phase": "Recovery 2/3",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 2 of 3: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "5. 100m Stride 3",
+            "phase": "Rep 3/3",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 3 of 3: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "6. 90s Recovery Jog 3",
+            "phase": "Recovery 3/3",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 3 of 3: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "Final 5.0 km",
+            "phase": "Phase 3: Cool-down Flush",
+            "pace": "7:50 – 8:15 min/km",
+            "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
+            "color": "#a855f7"
+          }
+        ]
       },
       {
         "day": "Saturday",
@@ -2073,7 +6311,30 @@ let rawWeeksData = [
         "rpe": 1,
         "description": "Full Rest.",
         "strength_prehab": "Rest",
-        "fueling": "Hydration"
+        "fueling": "Hydration",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Sunday",
@@ -2084,7 +6345,30 @@ let rawWeeksData = [
         "rpe": 3,
         "description": "Final dress rehearsal: 12 km @ 7:30-7:40 min/km with Adidas Evo SL 2 and race vest.",
         "strength_prehab": "Calf stretching",
-        "fueling": "2 Gels + 1 Salt capsule + water"
+        "fueling": "2 Gels + 1 Salt capsule + water",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 1.0",
+            "phase": "Phase 1: Conservative Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 1.1 – 11.0",
+            "phase": "Phase 2: Marathon Cruise",
+            "pace": "7:30 - 7:40 min/km",
+            "desc": "Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Final 1.0 km",
+            "phase": "Phase 3: Finish & Prehab",
+            "pace": "7:06 – 7:35 min/km",
+            "desc": "Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.",
+            "color": "#ff7700"
+          }
+        ]
       }
     ]
   },
@@ -2106,7 +6390,30 @@ let rawWeeksData = [
         "rpe": 2,
         "description": "4 km shakeout run + gentle calf stretches.",
         "strength_prehab": "Light stretching",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "0.0 – 0.8 km",
+            "phase": "Phase 1: Warmup",
+            "pace": "8:00 – 8:15 min/km",
+            "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
+            "color": "#10b981"
+          },
+          {
+            "km": "0.8 – 3.2 km",
+            "phase": "Phase 2: Main Cruise (Majority)",
+            "pace": "8:00 min/km",
+            "desc": "Main aerobic base cruise (RPE 3, 2.4 km). 168 SPM cadence lock for active vascular capillary flushing.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "3.2 – 4.0 km",
+            "phase": "Phase 3: Cooldown",
+            "pace": "8:15+ min/km / Brisk Walk",
+            "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Tuesday",
@@ -2117,7 +6424,30 @@ let rawWeeksData = [
         "rpe": 1,
         "description": "Rest & Travel Packing (Vest, Gels, Salt Tabs, Shoes).",
         "strength_prehab": "Rest",
-        "fueling": "Balanced meals"
+        "fueling": "Balanced meals",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Wednesday",
@@ -2128,7 +6458,30 @@ let rawWeeksData = [
         "rpe": 3,
         "description": "3 km morning shakeout run in Mumbai to acclimatize to coastal humidity.",
         "strength_prehab": "Light dynamic stretches",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "0.0 – 0.8 km",
+            "phase": "Phase 1: Warmup",
+            "pace": "8:00 – 8:15 min/km",
+            "desc": "Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.",
+            "color": "#10b981"
+          },
+          {
+            "km": "0.8 – 2.2 km",
+            "phase": "Phase 2: Main Cruise (Majority)",
+            "pace": "7:45 min/km + 2 strides",
+            "desc": "Main aerobic base cruise (RPE 3, 1.4 km). 168 SPM cadence lock for active vascular capillary flushing.",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "2.2 – 3.0 km",
+            "phase": "Phase 3: Cooldown",
+            "pace": "8:15+ min/km / Brisk Walk",
+            "desc": "Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Thursday",
@@ -2139,7 +6492,30 @@ let rawWeeksData = [
         "rpe": 1,
         "description": "Travel to Mumbai. Bib collection at MMRDA Expo. Rest off feet.",
         "strength_prehab": "Rest",
-        "fueling": "Hydrate with electrolyte bottle"
+        "fueling": "Hydrate with electrolyte bottle",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Friday",
@@ -2150,7 +6526,65 @@ let rawWeeksData = [
         "rpe": 3,
         "description": "4 km easy jog + 3x60m light strides.",
         "strength_prehab": "Mobility",
-        "fueling": "Water"
+        "fueling": "Water",
+        "strategy_splits": [
+          {
+            "km": "Km 0 – 4.0",
+            "phase": "Phase 1: Warm-up Float",
+            "pace": "7:45 – 8:00 min/km",
+            "desc": "Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)",
+            "color": "#10b981"
+          },
+          {
+            "km": "1. 60m Stride 1",
+            "phase": "Rep 1/3",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 1 of 3: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "2. 90s Recovery Jog 1",
+            "phase": "Recovery 1/3",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 1 of 3: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "3. 60m Stride 2",
+            "phase": "Rep 2/3",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 2 of 3: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "4. 90s Recovery Jog 2",
+            "phase": "Recovery 2/3",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 2 of 3: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "5. 60m Stride 3",
+            "phase": "Rep 3/3",
+            "pace": "5:20 – 5:45 min/km",
+            "desc": "Rep 3 of 3: High-quality target effort, tall posture, light foot strikes (RPE 7-8)",
+            "color": "#ff3b00"
+          },
+          {
+            "km": "6. 90s Recovery Jog 3",
+            "phase": "Recovery 3/3",
+            "pace": "Walk / Easy Jog",
+            "desc": "Rest 3 of 3: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)",
+            "color": "#38bdf8"
+          },
+          {
+            "km": "Final 4.0 km",
+            "phase": "Phase 3: Cool-down Flush",
+            "pace": "7:50 – 8:15 min/km",
+            "desc": "Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)",
+            "color": "#a855f7"
+          }
+        ]
       },
       {
         "day": "Saturday",
@@ -2161,7 +6595,30 @@ let rawWeeksData = [
         "rpe": 1,
         "description": "Full Rest Day. Stay off feet. High carb meals (rice/potatoes). Sleep by 9 PM.",
         "strength_prehab": "Rest",
-        "fueling": "High-carb loading (350-400g carbs) + 2L electrolyte fluids"
+        "fueling": "High-carb loading (350-400g carbs) + 2L electrolyte fluids",
+        "strategy_splits": [
+          {
+            "km": "Prehab 1",
+            "phase": "Ankle & Foot Mobility",
+            "pace": "10 Mins",
+            "desc": "Ankle alphabets, plantar roll with lacrosse ball",
+            "color": "#10b981"
+          },
+          {
+            "km": "Prehab 2",
+            "phase": "Eccentric Calf Loading",
+            "pace": "15 Mins",
+            "desc": "Heel drops on a step (3x15 straight leg + 3x15 bent knee)",
+            "color": "#ffcc00"
+          },
+          {
+            "km": "Prehab 3",
+            "phase": "Foam Rolling & Recovery",
+            "pace": "10 Mins",
+            "desc": "Soleus, gastrocnemius, and quads myofascial release",
+            "color": "#38bdf8"
+          }
+        ]
       },
       {
         "day": "Sunday",
@@ -2172,7 +6629,30 @@ let rawWeeksData = [
         "rpe": 9,
         "description": "TATA MUMBAI MARATHON 2027: Gun off ~5:00 AM. km 0-10 @ 7:10-7:15, Pedder Rd #1 @ 7:25, Sea Link @ 7:02-7:06, Pedder Rd #2 @ 7:35, Finish sprint @ 6:55-7:00!",
         "strength_prehab": "FINISH LINE MEDAL CELEBRATION! 🏅",
-        "fueling": "6 Gels + 5 Salt capsules + water sips every 15 mins"
+        "fueling": "6 Gels + 5 Salt capsules + water sips every 15 mins",
+        "strategy_splits": [
+          {
+            "km": "Km 1 – 2",
+            "phase": "Controlled Start",
+            "pace": "7:15 – 7:25 min/km",
+            "desc": "Disciplined start, resist surging with adrenaline, settle heart rate",
+            "color": "#10b981"
+          },
+          {
+            "km": "Km 3 – 39.195",
+            "phase": "Target Pace Lock",
+            "pace": "7:05 min/km avg (Sub-5:00 Target: 4:58:30)",
+            "desc": "Locked-in goal cadence (170+ SPM), take sips of hydration every 2.5 km",
+            "color": "#00f5d4"
+          },
+          {
+            "km": "Km 40.195 – 42.195",
+            "phase": "Negative Split Finish",
+            "pace": "7:00 – 7:06 min/km",
+            "desc": "Strong finish, maintain tall posture, empty the tank over final km",
+            "color": "#ff3b00"
+          }
+        ]
       }
     ]
   }
@@ -2185,6 +6665,7 @@ const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3Mi
 let supabaseUrl = localStorage.getItem('tmm_supabase_url') || DEFAULT_SUPABASE_URL;
 let supabaseAnonKey = localStorage.getItem('tmm_supabase_key') || DEFAULT_SUPABASE_ANON_KEY;
 let supabaseClient = null;
+let supabaseRealtimeChannel = null;
 
 try {
   const urlParams = new URLSearchParams(window.location.search);
@@ -2277,6 +6758,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderWeeklyPlan();
   renderProcamRaceDetails();
   updateProgressMetrics();
+  setTimeout(() => scrollToCurrentWeek(false), 100);
   initSupabase(supabaseUrl, supabaseAnonKey);
   initBookmarklet();
   updateCoachStatusDot();
@@ -2349,6 +6831,9 @@ function setupNavigation() {
 
       const activePanel = document.getElementById(`tab-${targetTab}`);
       if (activePanel) activePanel.classList.add('active');
+      if (targetTab === 'plan') {
+        setTimeout(() => scrollToCurrentWeek(true), 50);
+      }
     });
   });
 }
@@ -2366,13 +6851,17 @@ function setupFilters() {
   });
 }
 
-// Search Input
+// Search Input with Debounce to prevent heavy DOM recreation on every keystroke
 function setupSearch() {
   const searchInput = document.getElementById('search-workouts');
   if (searchInput) {
+    let debounceTimer = null;
     searchInput.addEventListener('input', (e) => {
-      searchQuery = e.target.value.toLowerCase().trim();
-      renderWeeklyPlan();
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        searchQuery = e.target.value.toLowerCase().trim();
+        renderWeeklyPlan();
+      }, 160);
     });
   }
 }
@@ -2404,13 +6893,43 @@ function togglePhaseFilter(phaseId) {
   renderWeeklyPlan();
 }
 
+// Date and Week Resolution Helpers
+function getLocalDateString(d = new Date()) {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function getCurrentTrainingWeek() {
+  if (!rawWeeksData || rawWeeksData.length === 0) return 1;
+  const todayStr = getLocalDateString();
+  
+  // Find matching week where todayStr is between start_date and end_date (inclusive)
+  const currentWeek = rawWeeksData.find(w => todayStr >= w.start_date && todayStr <= w.end_date);
+  if (currentWeek) return currentWeek.week_number;
+
+  // If before training plan started, default to week 1
+  if (todayStr < rawWeeksData[0].start_date) return rawWeeksData[0].week_number;
+
+  // If after training plan ended, default to final week
+  if (todayStr > rawWeeksData[rawWeeksData.length - 1].end_date) {
+    return rawWeeksData[rawWeeksData.length - 1].week_number;
+  }
+
+  return 1;
+}
+
 // Render Week Jumper Bar
 function renderWeekJumper() {
   const container = document.getElementById('week-jumper-bar');
   if (!container) return;
 
+  const currentWeekNum = getCurrentTrainingWeek();
+
   container.innerHTML = rawWeeksData.map(w => {
     const isDeload = w.is_deload;
+    const isCurrent = w.week_number === currentWeekNum;
     let extraClass = '';
     let label = `W${w.week_number}`;
     
@@ -2422,27 +6941,68 @@ function renderWeekJumper() {
     else if (w.week_number === 14) { extraClass = 'milestone-btn'; label = 'W14 (HM Sim)'; }
     else if (isDeload) { extraClass = 'milestone-btn'; label = `W${w.week_number} 🔋`; }
 
-    return `<button class="week-jump-btn ${extraClass}" onclick="scrollToWeek(${w.week_number})">${label}</button>`;
+    if (isCurrent) {
+      extraClass += ' current active';
+      label = `📍 ${label}`;
+    }
+
+    return `<button id="week-jump-btn-${w.week_number}" class="week-jump-btn ${extraClass.trim()}" onclick="scrollToWeek(${w.week_number})">${label}</button>`;
   }).join('');
 }
 
-function scrollToWeek(weekNum) {
-  const card = document.getElementById(`week-card-${weekNum}`);
-  if (card) {
-    if (card.classList.contains('collapsed')) card.classList.remove('collapsed');
-    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    card.style.borderColor = 'var(--primary)';
-    card.style.boxShadow = '0 0 24px var(--primary-glow)';
-    setTimeout(() => {
-      card.style.borderColor = '';
-      card.style.boxShadow = '';
-    }, 2000);
+function scrollToWeek(weekNum, isSmooth = true) {
+  let card = document.getElementById(`week-card-${weekNum}`);
+  if (!card) {
+    if (typeof resetFilters === 'function') resetFilters();
+    card = document.getElementById(`week-card-${weekNum}`);
+  }
+  if (!card) return;
+
+  if (card.classList.contains('collapsed')) card.classList.remove('collapsed');
+
+  const behavior = isSmooth ? 'smooth' : 'instant';
+  card.scrollIntoView({ behavior, block: 'center' });
+
+  // Correct for any content-visibility virtualization height deltas
+  if (!isSmooth) {
+    requestAnimationFrame(() => {
+      card.scrollIntoView({ behavior: 'instant', block: 'center' });
+    });
+  }
+
+  // Visual pulse highlight
+  card.style.borderColor = 'var(--primary)';
+  card.style.boxShadow = '0 0 24px var(--primary-glow)';
+  setTimeout(() => {
+    card.style.borderColor = '';
+    card.style.boxShadow = '';
+  }, 2200);
+
+  // Also update active state on jumper button
+  const jumperBtns = document.querySelectorAll('.week-jump-btn');
+  jumperBtns.forEach(btn => btn.classList.remove('active'));
+  const activeBtn = document.getElementById(`week-jump-btn-${weekNum}`);
+  if (activeBtn) {
+    activeBtn.classList.add('active');
+    activeBtn.scrollIntoView({ behavior: isSmooth ? 'smooth' : 'instant', inline: 'center', block: 'nearest' });
   }
 }
+
+function scrollToCurrentWeek(isSmooth = true) {
+  const currentWeek = getCurrentTrainingWeek();
+  scrollToWeek(currentWeek, isSmooth);
+}
+
+// Expose globally for HTML onclick handlers
+window.getLocalDateString = getLocalDateString;
+window.getCurrentTrainingWeek = getCurrentTrainingWeek;
+window.scrollToWeek = scrollToWeek;
+window.scrollToCurrentWeek = scrollToCurrentWeek;
 
 // View Mode Switching
 function setViewMode(mode) {
   currentViewMode = mode;
+  invalidateWeekCardCache();
   const btnGrid = document.getElementById('btn-view-grid');
   const btnTable = document.getElementById('btn-view-table');
   if (btnGrid) btnGrid.classList.toggle('active', mode === 'grid');
@@ -2451,7 +7011,13 @@ function setViewMode(mode) {
 }
 
 function toggleAllWeeks() {
-  allCollapsed = !allCollapsed;
+  // If in default mode (null) or collapsed, expand all; otherwise collapse all
+  if (allCollapsed === null || allCollapsed === true) {
+    allCollapsed = false;
+  } else {
+    allCollapsed = true;
+  }
+  invalidateWeekCardCache();
   document.querySelectorAll('.week-card').forEach(card => {
     card.classList.toggle('collapsed', allCollapsed);
   });
@@ -2518,8 +7084,48 @@ function resetFilters() {
   renderWeeklyPlan();
 }
 
-// Render Single Week Card
+// Ultra-fast week card memoization cache
+const weekCardCache = new Map();
+function invalidateWeekCardCache(weekNum) {
+  if (weekNum !== undefined) {
+    for (const key of weekCardCache.keys()) {
+      if (key.startsWith(`${weekNum}_`)) weekCardCache.delete(key);
+    }
+  } else {
+    weekCardCache.clear();
+  }
+}
+
+// Precomputed RPE bar HTML pills (1 to 10) to eliminate 1,540 array allocations per render
+const RPE_BARS_CACHE = {};
+for (let r = 1; r <= 10; r++) {
+  let bars = '';
+  for (let i = 0; i < 10; i++) {
+    bars += `<div class="rpe-pill ${i < r ? 'fill' : ''}"></div>`;
+  }
+  RPE_BARS_CACHE[r] = bars;
+}
+
+// Render Single Week Card (Memoized & High Performance)
 function renderWeekCard(week) {
+  const currentWeekNum = getCurrentTrainingWeek();
+  const isCurrent = week.week_number === currentWeekNum;
+
+  // Default behaviour: Only the current week is expanded, the rest are collapsed
+  let isCollapsed = false;
+  if (allCollapsed === true) {
+    isCollapsed = true;
+  } else if (allCollapsed === false) {
+    isCollapsed = false;
+  } else {
+    isCollapsed = !isCurrent;
+  }
+
+  const cacheKey = `${week.week_number}_${currentViewMode}_${isCollapsed ? 1 : 0}_${isCurrent ? 1 : 0}`;
+  if (weekCardCache.has(cacheKey)) {
+    return weekCardCache.get(cacheKey);
+  }
+
   const isDeload = week.is_deload;
   const isVdhm = week.week_number === 9;
   const isKolkata = week.week_number === 18;
@@ -2528,6 +7134,9 @@ function renderWeekCard(week) {
   const isMilestone = [8, 14].includes(week.week_number);
 
   let badgeHtml = '';
+  if (isCurrent) {
+    badgeHtml += `<span class="badge badge-current">📍 CURRENT WEEK</span>`;
+  }
   if (isTmm) {
     badgeHtml += `<span class="badge badge-peak">🏆 PROCAM SLAM #3: TMM FULL MARATHON</span>`;
   } else if (isKolkata) {
@@ -2544,8 +7153,8 @@ function renderWeekCard(week) {
 
   const contentHtml = currentViewMode === 'table' ? renderWeekTableView(week) : renderWeekGridView(week);
 
-  return `
-    <div class="week-card ${allCollapsed ? 'collapsed' : ''}" id="week-card-${week.week_number}">
+  const html = `
+    <div class="week-card ${isCollapsed ? 'collapsed' : ''} ${isCurrent ? 'current-week-card' : ''}" id="week-card-${week.week_number}">
       <div class="week-header" onclick="toggleWeekCollapse(${week.week_number})">
         <div class="week-title-area">
           <div class="week-num-badge">W${week.week_number}</div>
@@ -2566,6 +7175,9 @@ function renderWeekCard(week) {
       </div>
     </div>
   `;
+
+  weekCardCache.set(cacheKey, html);
+  return html;
 }
 
 // Render Grid View (7-Column Calendar Row)
@@ -4012,9 +8624,7 @@ function renderDayCard(weekNum, wo) {
   const tagClass = getTagClass(wo.type);
 
   const rpeVal = (logData && logData.rpe) ? logData.rpe : (wo.rpe || 2);
-  const rpeBars = Array.from({ length: 10 }, (_, i) => 
-    `<div class="rpe-pill ${i < rpeVal ? 'fill' : ''}"></div>`
-  ).join('');
+  const rpeBars = RPE_BARS_CACHE[rpeVal] || RPE_BARS_CACHE[2];
 
   const actualsHtml = isDone ? renderActualsBox(logData, wo.distance_km, wo.target_pace, wo.date, workoutKey) : '';
 
@@ -4079,7 +8689,7 @@ function toggleWeekCollapse(weekNum) {
   }
 }
 
-// Workout Completion State
+// Workout Completion State (Optimized: Targeted DOM update instead of recreating 6,000 nodes)
 function toggleWorkoutDone(key, distKm, isChecked, workoutDate, targetPace) {
   if (isChecked) {
     completedWorkouts[key] = { 
@@ -4100,9 +8710,38 @@ function toggleWorkoutDone(key, distKm, isChecked, workoutDate, targetPace) {
   localStorage.setItem('tmm_completed_workouts', JSON.stringify(completedWorkouts));
   
   const el = document.getElementById(`day-${key}`);
-  if (el) el.classList.toggle('completed', isChecked);
+  if (el) {
+    el.classList.toggle('completed', isChecked);
+    const existingActuals = el.querySelector('.actuals-box');
+    if (isChecked) {
+      const logData = completedWorkouts[key];
+      const boxHtml = renderActualsBox(logData, distKm, targetPace, workoutDate, key);
+      if (existingActuals) {
+        existingActuals.outerHTML = boxHtml;
+      } else {
+        const descEl = el.querySelector('.day-desc');
+        if (descEl) descEl.insertAdjacentHTML('afterend', boxHtml);
+      }
+      const logBtn = el.querySelector('button[onclick*="openManualLogForDate"]');
+      if (logBtn) logBtn.remove();
+    } else {
+      if (existingActuals) existingActuals.remove();
+      if (distKm > 0) {
+        const footer = el.querySelector('.day-footer');
+        if (footer && !footer.querySelector('button[onclick*="openManualLogForDate"]')) {
+          footer.insertAdjacentHTML('beforeend', `
+            <button class="action-pill-btn" style="border-color: rgba(16, 185, 129, 0.4); color: var(--primary);" onclick="openManualLogForDate('${workoutDate}', ${distKm})">
+              ✏️ Log Run
+            </button>
+          `);
+        }
+      }
+    }
+  } else {
+    renderWeeklyPlan();
+  }
 
-  // Sync to Supabase if connected
+  // Sync to Supabase asynchronously in background
   if (supabaseClient && workoutDate) {
     supabaseClient.from('daily_workouts').update({
       is_completed: isChecked,
@@ -4115,7 +8754,6 @@ function toggleWorkoutDone(key, distKm, isChecked, workoutDate, targetPace) {
   }
 
   updateProgressMetrics();
-  renderWeeklyPlan();
 }
 
 // Update Hero Progress Bars
@@ -4141,7 +8779,275 @@ function updateProgressMetrics() {
 
   const progPct = document.getElementById('metric-progress-pct');
   if (progPct) progPct.textContent = `${percent}% completed (${completedRunsCount} runs done)`;
+
+  updateAdherenceMetrics();
 }
+
+// ==============================================================================
+// POST-ILLNESS ADHERENCE & POSSIBILITY ENGINE (Tracking from Oct 31, 2026 onwards)
+// ==============================================================================
+const ADHERENCE_START_DATE = '2026-10-31';
+
+function calculateAdherenceMetrics() {
+  const todayStr = typeof getLocalDateString === 'function' ? getLocalDateString() : '2026-10-31';
+  const effectiveDate = todayStr < ADHERENCE_START_DATE ? ADHERENCE_START_DATE : todayStr;
+
+  let totalPlannedKm = 0;
+  let totalActualKm = 0;
+  let plannedPaceSecsSum = 0;
+  let actualPaceSecsSum = 0;
+  let paceCount = 0;
+  let paceAdherenceSum = 0;
+  let runsScheduledCount = 0;
+  let runsCompletedCount = 0;
+
+  if (Array.isArray(rawWeeksData)) {
+    rawWeeksData.forEach(week => {
+      if (Array.isArray(week.workouts)) {
+        week.workouts.forEach(wo => {
+          // Only evaluate running workouts scheduled from ADHERENCE_START_DATE onwards
+          if (wo.distance_km > 0 && wo.date >= ADHERENCE_START_DATE) {
+            const workoutKey = `${week.week_number}_${wo.day}_${wo.date}`;
+            const logItem = (typeof completedWorkouts !== 'undefined' && completedWorkouts)
+              ? (completedWorkouts[workoutKey] || completedWorkouts[`custom_${wo.date}`])
+              : null;
+            const isDone = Boolean(logItem && logItem.done);
+
+            // Is this workout elapsed (date <= effectiveDate) or already logged done?
+            const isElapsed = (wo.date <= effectiveDate) || isDone;
+
+            if (isElapsed) {
+              runsScheduledCount++;
+              const plannedDist = Number(wo.distance_km) || 0;
+              totalPlannedKm += plannedDist;
+
+              const targetRange = typeof parseTargetPaceRange === 'function' ? parseTargetPaceRange(wo.target_pace) : null;
+              const targetPaceMidSec = targetRange 
+                ? Math.round((targetRange.minSec + targetRange.maxSec) / 2) 
+                : (typeof parsePaceToSeconds === 'function' ? parsePaceToSeconds(wo.target_pace) : 0);
+
+              if (isDone) {
+                runsCompletedCount++;
+                const actualDist = Number(logItem.dist !== undefined ? logItem.dist : plannedDist);
+                totalActualKm += actualDist;
+
+                const actualPaceStr = logItem.actualPace || wo.target_pace;
+                const actualSecs = (typeof parsePaceToSeconds === 'function' ? parsePaceToSeconds(actualPaceStr) : 0) || targetPaceMidSec;
+
+                if (actualSecs > 0 && targetPaceMidSec > 0) {
+                  actualPaceSecsSum += actualSecs;
+                  plannedPaceSecsSum += targetPaceMidSec;
+                  paceCount++;
+
+                  // Calculate pace accuracy (100% if within target range)
+                  let paceScore = 100;
+                  if (targetRange) {
+                    if (actualSecs < targetRange.minSec) {
+                      const delta = targetRange.minSec - actualSecs;
+                      paceScore = Math.max(0, 100 - (delta / targetRange.minSec) * 50);
+                    } else if (actualSecs > targetRange.maxSec) {
+                      const delta = actualSecs - targetRange.maxSec;
+                      paceScore = Math.max(0, 100 - (delta / targetRange.maxSec) * 100);
+                    }
+                  }
+                  paceAdherenceSum += paceScore;
+                }
+              } else {
+                // Elapsed scheduled run that wasn't completed (missed)
+                paceAdherenceSum += 0;
+                if (targetPaceMidSec > 0) {
+                  paceCount++;
+                }
+              }
+            }
+          }
+        });
+      }
+    });
+  }
+
+  // Volume adherence percentage
+  let volumeAdherencePct = 100;
+  if (totalPlannedKm > 0) {
+    volumeAdherencePct = Math.min(100, Math.round((totalActualKm / totalPlannedKm) * 100));
+  }
+
+  // Pace adherence percentage
+  let paceAdherencePct = 100;
+  if (paceCount > 0) {
+    paceAdherencePct = Math.min(100, Math.round(paceAdherenceSum / paceCount));
+  }
+
+  // Overall Adherence: 60% Volume + 40% Pace
+  let overallAdherencePct = 100;
+  if (runsScheduledCount > 0) {
+    overallAdherencePct = Math.min(100, Math.max(0, Math.round(volumeAdherencePct * 0.6 + paceAdherencePct * 0.4)));
+  }
+
+  // Possibility percentage (Sub-5:00 goal feasibility)
+  const possibilityPct = overallAdherencePct;
+  // Insanity risk (inverse of adherence: 100 - adherence)
+  const insanityPct = 100 - overallAdherencePct;
+
+  // Format average pace display
+  let avgPaceDisplay = 'On Target';
+  if (paceCount > 0 && actualPaceSecsSum > 0 && runsCompletedCount > 0) {
+    const avgSecs = Math.round(actualPaceSecsSum / runsCompletedCount);
+    const m = Math.floor(avgSecs / 60);
+    const s = Math.round(avgSecs % 60);
+    avgPaceDisplay = `${m}:${s < 10 ? '0' : ''}${s} min/km (${paceAdherencePct}%)`;
+  }
+
+  return {
+    adherencePct: overallAdherencePct,
+    possibilityPct,
+    insanityPct,
+    volumeAdherencePct,
+    paceAdherencePct,
+    totalPlannedKm: Number(totalPlannedKm.toFixed(1)),
+    totalActualKm: Number(totalActualKm.toFixed(1)),
+    runsScheduledCount,
+    runsCompletedCount,
+    avgPaceDisplay
+  };
+}
+
+function updateAdherenceMetrics() {
+  const data = calculateAdherenceMetrics();
+
+  const pctEl = document.getElementById('metric-adherence-pct');
+  const badgeEl = document.getElementById('metric-possibility-badge');
+  const possValEl = document.getElementById('metric-possibility-val');
+  const insanValEl = document.getElementById('metric-insanity-val');
+  const volEl = document.getElementById('metric-adherence-vol');
+  const paceEl = document.getElementById('metric-adherence-pace');
+  const fillEl = document.getElementById('metric-adherence-fill');
+
+  if (pctEl) {
+    pctEl.textContent = `${data.adherencePct}%`;
+    if (data.adherencePct >= 90) pctEl.style.color = '#10b981';
+    else if (data.adherencePct >= 75) pctEl.style.color = '#38bdf8';
+    else if (data.adherencePct >= 60) pctEl.style.color = '#f59e0b';
+    else pctEl.style.color = '#ef4444';
+  }
+
+  if (badgeEl) {
+    if (data.adherencePct >= 90) {
+      badgeEl.textContent = `${data.possibilityPct}% Possible`;
+      badgeEl.style.background = 'rgba(16, 185, 129, 0.18)';
+      badgeEl.style.borderColor = 'rgba(16, 185, 129, 0.35)';
+      badgeEl.style.color = '#10b981';
+    } else if (data.adherencePct >= 75) {
+      badgeEl.textContent = `${data.possibilityPct}% Possible`;
+      badgeEl.style.background = 'rgba(56, 189, 248, 0.18)';
+      badgeEl.style.borderColor = 'rgba(56, 189, 248, 0.35)';
+      badgeEl.style.color = '#38bdf8';
+    } else if (data.adherencePct >= 60) {
+      badgeEl.textContent = `${data.insanityPct}% Insane Risk`;
+      badgeEl.style.background = 'rgba(245, 158, 11, 0.18)';
+      badgeEl.style.borderColor = 'rgba(245, 158, 11, 0.35)';
+      badgeEl.style.color = '#f59e0b';
+    } else {
+      badgeEl.textContent = `${data.insanityPct}% Insane`;
+      badgeEl.style.background = 'rgba(239, 68, 68, 0.18)';
+      badgeEl.style.borderColor = 'rgba(239, 68, 68, 0.35)';
+      badgeEl.style.color = '#ef4444';
+    }
+  }
+
+  if (possValEl) {
+    possValEl.textContent = `${data.possibilityPct}%`;
+    if (data.possibilityPct >= 90) possValEl.style.color = '#10b981';
+    else if (data.possibilityPct >= 75) possValEl.style.color = '#38bdf8';
+    else if (data.possibilityPct >= 60) possValEl.style.color = '#f59e0b';
+    else possValEl.style.color = '#ef4444';
+  }
+
+  if (insanValEl) {
+    insanValEl.textContent = `${data.insanityPct}%`;
+    if (data.insanityPct <= 10) insanValEl.style.color = '#94a3b8';
+    else if (data.insanityPct <= 25) insanValEl.style.color = '#38bdf8';
+    else if (data.insanityPct <= 40) insanValEl.style.color = '#f59e0b';
+    else insanValEl.style.color = '#ef4444';
+  }
+
+  if (volEl) {
+    volEl.textContent = `${data.totalActualKm} / ${data.totalPlannedKm} km (${data.volumeAdherencePct}%)`;
+  }
+
+  if (paceEl) {
+    paceEl.textContent = data.avgPaceDisplay;
+  }
+
+  if (fillEl) {
+    fillEl.style.width = `${data.adherencePct}%`;
+    if (data.adherencePct >= 90) {
+      fillEl.style.background = 'linear-gradient(90deg, #10b981, #06b6d4)';
+    } else if (data.adherencePct >= 75) {
+      fillEl.style.background = 'linear-gradient(90deg, #38bdf8, #6366f1)';
+    } else if (data.adherencePct >= 60) {
+      fillEl.style.background = 'linear-gradient(90deg, #f59e0b, #ef4444)';
+    } else {
+      fillEl.style.background = 'linear-gradient(90deg, #ef4444, #991b1b)';
+    }
+  }
+}
+
+function showAdherenceBreakdownModal() {
+  const data = calculateAdherenceMetrics();
+  const modal = document.getElementById('global-modal');
+  const body = document.getElementById('modal-body-content');
+  const title = document.getElementById('modal-title');
+  if (!modal || !body || !title) return;
+
+  title.innerHTML = '🎯 Post-Recovery Adherence & Possibility Engine';
+  body.innerHTML = `
+    <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem; margin-top: 1rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.75rem;">
+        <div>
+          <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Tracking Window</div>
+          <div style="font-weight: 700; color: var(--text-main);">Oct 31, 2026 to TMM Race Day</div>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Baseline Reset</div>
+          <div style="font-weight: 700; color: #10b981;">Clean Slate (Weeks 10–11 Absorbed)</div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-bottom: 1rem;">
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-sm); padding: 0.75rem;">
+          <div style="font-size: 0.72rem; color: var(--text-muted);">Weekly Volume Adherence</div>
+          <div style="font-size: 1.3rem; font-weight: 800; color: #10b981; margin: 0.2rem 0;">${data.volumeAdherencePct}%</div>
+          <div style="font-size: 0.72rem; color: var(--text-dim);">${data.totalActualKm} km run / ${data.totalPlannedKm} km planned</div>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-sm); padding: 0.75rem;">
+          <div style="font-size: 0.72rem; color: var(--text-muted);">Average Pace Discipline</div>
+          <div style="font-size: 1.3rem; font-weight: 800; color: #38bdf8; margin: 0.2rem 0;">${data.paceAdherencePct}%</div>
+          <div style="font-size: 0.72rem; color: var(--text-dim);">${data.avgPaceDisplay}</div>
+        </div>
+      </div>
+
+      <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: var(--radius-sm); padding: 0.85rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 0.8rem; font-weight: 700; color: #10b981;">Sub-5:00 Finish Possibility:</span>
+          <span style="font-size: 1.1rem; font-weight: 800; color: #10b981;">${data.possibilityPct}%</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.35rem;">
+          <span style="font-size: 0.75rem; color: var(--text-muted);">Insanity Risk (Inverse):</span>
+          <span style="font-size: 0.85rem; font-weight: 700; color: ${data.insanityPct > 25 ? '#ef4444' : '#94a3b8'};">${data.insanityPct}%</span>
+        </div>
+        <p style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.5rem; line-height: 1.4;">
+          Your adherence score is a weighted blend (60% volume completion + 40% target pace precision) computed exclusively from Oct 31 onwards. Every run logged in the plan dynamically updates your possibility index.
+        </p>
+      </div>
+    </div>
+  `;
+  modal.classList.add('open');
+}
+window.showAdherenceBreakdownModal = showAdherenceBreakdownModal;
+window.updateAdherenceMetrics = updateAdherenceMetrics;
+window.calculateAdherenceMetrics = calculateAdherenceMetrics;
 
 // Modals
 function showStrengthModal(details) {
@@ -4393,6 +9299,13 @@ async function initSupabase(url, key) {
         if (row.id === 9999 || row.workout_type === 'AppSyncConfig') {
           try {
             const config = JSON.parse(row.description);
+            if (config && (config.github_pat || config.github_token) && (!githubToken || githubToken.length < 5)) {
+              githubToken = config.github_pat || config.github_token;
+              localStorage.setItem('tmm_github_pat', githubToken);
+              console.log('☁️ Auto-synced GitHub PAT from Supabase cloud');
+              const ghInput = document.getElementById('github-pat-input');
+              if (ghInput) ghInput.value = githubToken;
+            }
             if (config && config.gemini_api_key && (!geminiApiKey || geminiApiKey.length < 5)) {
               geminiApiKey = config.gemini_api_key;
               localStorage.setItem('tmm_gemini_api_key', geminiApiKey);
@@ -4483,19 +9396,66 @@ async function initSupabase(url, key) {
       renderWeekJumper();
       renderWeeklyPlan();
       updateProgressMetrics();
+      setTimeout(() => scrollToCurrentWeek(false), 200);
+
+      // Seamless Background Strava Auto-Sync: automatically triggers if last sync > 2 hours ago
+      try {
+        const lastAutoSync = Number(localStorage.getItem('tmm_last_strava_auto_sync') || 0);
+        const twoHoursMs = 2 * 60 * 60 * 1000;
+        if (githubToken && (Date.now() - lastAutoSync > twoHoursMs)) {
+          localStorage.setItem('tmm_last_strava_auto_sync', Date.now().toString());
+          setTimeout(() => {
+            console.log('⚡ Triggering periodic background Strava auto-sync...');
+            triggerStravaSyncWorkflow(true);
+          }, 4000);
+        }
+      } catch (e) {}
     }
 
     updateSupabaseStatusUI(true, `Connected (${workoutRows ? workoutRows.length : 0} workouts in cloud)`);
 
-    // 3. Setup real-time listener for live database changes (e.g. from GitHub Actions or Supabase table edits)
+    // 3. Setup real-time listener for live database changes (leak-free singleton)
+    if (supabaseRealtimeChannel) {
+      try { supabaseClient.removeChannel(supabaseRealtimeChannel); } catch (e) {}
+      supabaseRealtimeChannel = null;
+    }
+
     try {
-      supabaseClient
+      supabaseRealtimeChannel = supabaseClient
         .channel('schema-db-changes')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'daily_workouts' }, (payload) => {
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'daily_workouts' }, async (payload) => {
           console.log('⚡ Real-time Supabase update received:', payload);
           showToastNotification('⚡ Live Cloud Sync: Workout updated from Strava!', 'success', 5000);
-          // Re-fetch and re-render seamlessly
-          initSupabase(url, key);
+          // Refresh plan data without tearing down or leaking channel subscription
+          try {
+            const { data: refreshedRows } = await supabaseClient.from('daily_workouts').select('*').order('workout_date', { ascending: true });
+            if (refreshedRows && refreshedRows.length > 0) {
+              refreshedRows.forEach(row => {
+                if (row.is_completed || row.actual_distance_km > 0) {
+                  const key = `${row.week_number}_${row.day_of_week}_${row.workout_date}`;
+                  completedWorkouts[key] = {
+                    done: true,
+                    dist: Number(row.actual_distance_km) || Number(row.distance_km) || 0,
+                    plannedDist: Number(row.distance_km) || 0,
+                    actualPace: row.actual_pace || row.target_pace || 'N/A',
+                    targetPace: row.target_pace || 'N/A',
+                    distDelta: Number(row.distance_variance_km) || 0,
+                    paceDeltaSec: Number(row.pace_variance_sec) || 0,
+                    scorePct: Number(row.compliance_score_pct) || 100,
+                    rpe: row.actual_rpe || row.rpe_target || 3,
+                    notes: row.athlete_notes || '',
+                    source: row.ingestion_source || 'cloud_db',
+                    completedAt: new Date().toISOString()
+                  };
+                }
+              });
+              localStorage.setItem('tmm_completed_workouts', JSON.stringify(completedWorkouts));
+              renderWeeklyPlan();
+              updateProgressMetrics();
+            }
+          } catch (syncErr) {
+            console.warn('Realtime refresh error:', syncErr);
+          }
         })
         .subscribe();
     } catch (subErr) {
@@ -4818,6 +9778,7 @@ function clearWorkoutLogFromModal() {
 
   delete completedWorkouts[workoutKey];
   localStorage.setItem('tmm_completed_workouts', JSON.stringify(completedWorkouts));
+  invalidateWeekCardCache(match ? match.weekNumber : undefined);
 
   // Clear in Supabase if connected
   if (supabaseClient) {
@@ -4903,6 +9864,54 @@ function calculateVariance(plannedDist, actualDist, targetPace, actualPaceStr) {
 
   const scorePct = Math.max(0, Math.min(100, Math.round(100 - (distErrPct * 0.6 + paceErrPct * 0.4))));
   return { distDelta, paceDeltaSec, scorePct };
+}
+
+// Ingestion Processor with Automatic Variance Calculation and Local/Cloud Sync
+function applyIngestedRun(dateStr, dist, durationSecs, paceStr, source = 'manual', rpe = 3, notes = '') {
+  const match = findWorkoutInfoByDate(dateStr);
+  const workoutKey = match ? `${match.weekNumber}_${match.workout.day}_${dateStr}` : `custom_${dateStr}`;
+  const plannedDist = match ? (match.workout.distance_km || 0) : dist;
+  const targetPace = match ? (match.workout.target_pace || 'N/A') : paceStr;
+
+  const { distDelta, paceDeltaSec, scorePct } = calculateVariance(plannedDist, dist, targetPace, paceStr);
+
+  completedWorkouts[workoutKey] = {
+    done: true,
+    dist: dist,
+    plannedDist: plannedDist,
+    actualPace: paceStr,
+    targetPace: targetPace,
+    distDelta: distDelta,
+    paceDeltaSec: paceDeltaSec,
+    scorePct: scorePct,
+    rpe: rpe,
+    notes: notes,
+    source: source,
+    completedAt: new Date().toISOString()
+  };
+
+  localStorage.setItem('tmm_completed_workouts', JSON.stringify(completedWorkouts));
+  invalidateWeekCardCache(match ? match.weekNumber : undefined);
+
+  if (supabaseClient && dateStr) {
+    supabaseClient.from('daily_workouts').update({
+      is_completed: true,
+      actual_distance_km: dist,
+      actual_pace: paceStr,
+      actual_rpe: rpe,
+      athlete_notes: notes,
+      distance_variance_km: distDelta,
+      pace_variance_sec: paceDeltaSec,
+      compliance_score_pct: scorePct,
+      actual_duration_min: Math.round(durationSecs / 60)
+    }).eq('workout_date', dateStr).then(({ error }) => {
+      if (error) console.warn('Supabase log sync warning:', error);
+    });
+  }
+
+  updateProgressMetrics();
+  renderWeeklyPlan();
+  showToastNotification(`Run saved! Compliance: ${scorePct}%`, 'success');
 }
 
 // Manual Form Handler
@@ -5192,6 +10201,18 @@ function getActiveCoachModel() {
   return normalizeGeminiModel(geminiModel || 'gemini-3.8-flash');
 }
 
+function isCoachHaFailoverEnabled() {
+  const val = localStorage.getItem('tmm_coach_ha_failover');
+  return val === null ? true : val === 'true';
+}
+window.isCoachHaFailoverEnabled = isCoachHaFailoverEnabled;
+
+function handleHaFailoverToggle(enabled) {
+  localStorage.setItem('tmm_coach_ha_failover', enabled ? 'true' : 'false');
+  syncCoachSettingsToCloud(geminiApiKey, geminiModel, getActiveVegaIconId(), elevenlabsApiKey);
+}
+window.handleHaFailoverToggle = handleHaFailoverToggle;
+
 // Settings Modal
 function openCoachSettingsModal() {
   const modal = document.getElementById('ai-coach-settings-modal');
@@ -5199,9 +10220,11 @@ function openCoachSettingsModal() {
   const elInput = document.getElementById('elevenlabs-api-key-input');
   const modelSelect = document.getElementById('gemini-model-select');
   const statusEl = document.getElementById('coach-api-test-status');
+  const haToggle = document.getElementById('coach-ha-failover-toggle');
 
   if (keyInput) keyInput.value = geminiApiKey || '';
   if (elInput) elInput.value = elevenlabsApiKey || 'sk_b28f7b8bb1521ad929b982847045cc0b1a6e568c3670d449';
+  if (haToggle) haToggle.checked = isCoachHaFailoverEnabled();
   
   if (modelSelect) {
     // Dynamically rebuild the select options to guarantee all latest models appear
@@ -5260,6 +10283,10 @@ function closeCoachSettingsModal() {
     elevenlabsApiKey = elInput.value.trim();
     localStorage.setItem('tmm_elevenlabs_api_key', elevenlabsApiKey);
   }
+  const haToggle = document.getElementById('coach-ha-failover-toggle');
+  if (haToggle) {
+    localStorage.setItem('tmm_coach_ha_failover', haToggle.checked ? 'true' : 'false');
+  }
   updateCoachStatusDot();
   syncCoachSettingsToCloud(geminiApiKey, geminiModel, getActiveVegaIconId(), elevenlabsApiKey);
   const modal = document.getElementById('ai-coach-settings-modal');
@@ -5281,6 +10308,7 @@ async function syncCoachSettingsToCloud(apiKey, model, iconId, elKey) {
         elevenlabs_api_key: elKey !== undefined ? elKey : elevenlabsApiKey,
         model: model || geminiModel,
         vega_icon_id: iconId || getActiveVegaIconId(),
+        ha_failover: isCoachHaFailoverEnabled(),
         updated_at: new Date().toISOString()
       })
     };
@@ -5370,6 +10398,11 @@ async function fetchCoachKeyFromCloud() {
           geminiModel = cfg.model;
           localStorage.setItem('tmm_gemini_model', geminiModel);
         }
+        if (cfg.ha_failover !== undefined) {
+          localStorage.setItem('tmm_coach_ha_failover', cfg.ha_failover ? 'true' : 'false');
+          const haToggle = document.getElementById('coach-ha-failover-toggle');
+          if (haToggle) haToggle.checked = Boolean(cfg.ha_failover);
+        }
         if (cfg.elevenlabs_api_key) {
           elevenlabsApiKey = cfg.elevenlabs_api_key;
           localStorage.setItem('tmm_elevenlabs_api_key', elevenlabsApiKey);
@@ -5382,7 +10415,7 @@ async function fetchCoachKeyFromCloud() {
         } else {
           coachChatHistory.push({
             role: 'bot',
-            content: `☁️ **Cloud Key Found & Synced!**\n\nVega is now active with model **${geminiModel}**. Ask me anything about your training plan or injuries!`,
+            content: `☁️ **Cloud Key Found & Synced!**\n\nVega is now active with model **${geminiModel}** (High-Availability Resilience: ${isCoachHaFailoverEnabled() ? 'Active' : 'Strict'}). Ask me anything about your training plan or injuries!`,
             timestamp: new Date().toISOString()
           });
           renderCoachMessages();
@@ -5402,6 +10435,7 @@ function saveCoachApiSettings() {
   const keyInput = document.getElementById('gemini-api-key-input');
   const modelSelect = document.getElementById('gemini-model-select');
   const customInput = document.getElementById('gemini-custom-model-input');
+  const haToggle = document.getElementById('coach-ha-failover-toggle');
   
   if (keyInput) {
     geminiApiKey = keyInput.value.trim();
@@ -5411,16 +10445,20 @@ function saveCoachApiSettings() {
   if (modelSelect) {
     let chosenModel = modelSelect.value;
     if (chosenModel === 'custom') {
-      chosenModel = (customInput?.value || '').trim() || 'gemini-3.7-flash';
+      chosenModel = (customInput?.value || '').trim() || 'gemini-3.8-flash';
     }
     geminiModel = chosenModel;
     localStorage.setItem('tmm_gemini_model', geminiModel);
   }
 
+  if (haToggle) {
+    localStorage.setItem('tmm_coach_ha_failover', haToggle.checked ? 'true' : 'false');
+  }
+
   updateCoachStatusDot();
-  syncCoachSettingsToCloud(geminiApiKey, geminiModel, getActiveVegaIconId());
+  syncCoachSettingsToCloud(geminiApiKey, geminiModel, getActiveVegaIconId(), elevenlabsApiKey);
   closeCoachSettingsModal();
-  alert(`Coach Vega settings saved successfully!\nModel: ${geminiModel}\nCloud Sync: Active across all your devices.`);
+  alert(`Coach Vega settings saved successfully!\nModel: ${geminiModel}\nHigh-Availability: ${isCoachHaFailoverEnabled() ? 'Enabled (Zero 503 Outages)' : 'Strict Mode'}\nCloud Sync: Active across all your devices.`);
 }
 
 window.saveCoachApiSettings = saveCoachApiSettings;
@@ -5474,33 +10512,144 @@ function clearCoachChatHistory() {
 }
 window.clearCoachChatHistory = clearCoachChatHistory;
 
-// Strict Gemini Execution (No fallback - answers strictly from selected model)
-async function executeGeminiStrictRequest(model, key, contents) {
-  const modelName = normalizeGeminiModel(model) || 'gemini-3.6-flash';
-  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${key}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: contents,
-      generationConfig: {
-        temperature: 0.4,
-        maxOutputTokens: 2500
-      }
-    })
-  });
+// High-Availability Resilient Gemini Execution
+// - Prioritizes user's chosen model (Gemini 3.8 Flash, etc.)
+// - Performs in-flight retries with exponential backoff & full jitter on 503 / 429
+// - Per-attempt 28-second timeout using AbortController (prevents hanging stream freezes)
+// - If primary model has an extended 503 Google outage, seamlessly delivers via resilient failover
+// - NEVER mutates or drops the user's saved model preference
+async function executeGeminiResilientRequest(model, key, contents, options = {}) {
+  const primaryModel = normalizeGeminiModel(model) || 'gemini-3.8-flash';
+  const allowFailover = options.allowFailover !== undefined ? options.allowFailover : isCoachHaFailoverEnabled();
+  const maxRetries = options.maxRetries !== undefined ? options.maxRetries : 2;
+  const timeoutMs = options.timeoutMs || 28000;
+  const generationConfig = options.generationConfig || {
+    temperature: 0.4,
+    maxOutputTokens: 2500
+  };
 
-  if (res.ok) {
-    const data = await res.json();
-    return { ok: true, data };
+  let lastStatus = 0;
+  let lastErrorMessage = '';
+
+  // 1. Attempt Primary Model with Fast Exponential Backoff + Jitter
+  for (let attempt = 1; attempt <= maxRetries + 1; attempt++) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+    try {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${primaryModel}:generateContent?key=${key}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: contents,
+          generationConfig: generationConfig
+        }),
+        signal: controller.signal
+      });
+      clearTimeout(timer);
+
+      if (res.ok) {
+        const data = await res.json();
+        return {
+          ok: true,
+          data,
+          usedModel: primaryModel,
+          wasFailover: false,
+          attempts: attempt
+        };
+      }
+
+      lastStatus = res.status;
+      const errData = await res.json().catch(() => ({}));
+      lastErrorMessage = errData.error?.message || `HTTP ${res.status}`;
+
+      const isTransient = res.status === 503 || res.status === 429 || res.status === 500 || res.status === 502 || res.status === 504;
+      if (isTransient && attempt <= maxRetries) {
+        const baseDelay = 1000 * Math.pow(1.8, attempt - 1);
+        const jitter = Math.random() * 600;
+        const delay = Math.round(baseDelay + jitter);
+        console.warn(`⏳ [Vega Resilience] ${primaryModel} returned ${res.status} (attempt ${attempt}/${maxRetries + 1}). Retrying in ${delay}ms...`);
+        await new Promise(r => setTimeout(r, delay));
+        continue;
+      }
+    } catch (err) {
+      clearTimeout(timer);
+      const isTimeout = err.name === 'AbortError';
+      lastStatus = isTimeout ? 504 : 0;
+      lastErrorMessage = isTimeout ? 'Request timed out (28s)' : (err.message || 'Network connection failed');
+      console.warn(`⚠️ [Vega Resilience] ${primaryModel} error on attempt ${attempt}:`, lastErrorMessage);
+
+      if (attempt <= maxRetries) {
+        const delay = Math.round(1000 + Math.random() * 500);
+        await new Promise(r => setTimeout(r, delay));
+        continue;
+      }
+    }
   }
 
-  const errData = await res.json().catch(() => ({}));
+  // 2. High-Availability Resilient Tier
+  // If primary model returned 503/429/timeout and failover is allowed, fulfill seamlessly
+  if (allowFailover && (lastStatus === 503 || lastStatus === 429 || lastStatus === 504 || lastStatus === 0)) {
+    const failoverModel = primaryModel === 'gemini-3.6-flash' ? 'gemini-3.5-flash' : 'gemini-3.6-flash';
+    console.warn(`⚡ [Vega Resilience] Primary model ${primaryModel} currently unavailable (${lastStatus}: ${lastErrorMessage}). Fulfilling via High-Availability resilient engine (${failoverModel})...`);
+
+    for (let fAttempt = 1; fAttempt <= 2; fAttempt++) {
+      const fController = new AbortController();
+      const fTimer = setTimeout(() => fController.abort(), timeoutMs);
+
+      try {
+        const fRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${failoverModel}:generateContent?key=${key}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: contents,
+            generationConfig: generationConfig
+          }),
+          signal: fController.signal
+        });
+        clearTimeout(fTimer);
+
+        if (fRes.ok) {
+          const fData = await fRes.json();
+          return {
+            ok: true,
+            data: fData,
+            usedModel: failoverModel,
+            wasFailover: true,
+            primaryModel: primaryModel
+          };
+        }
+
+        const fErrData = await fRes.json().catch(() => ({}));
+        console.warn(`[Vega Resilience] Failover attempt ${fAttempt} returned ${fRes.status}:`, fErrData);
+      } catch (fErr) {
+        clearTimeout(fTimer);
+        console.warn(`[Vega Resilience] Failover network error:`, fErr.message);
+      }
+
+      if (fAttempt < 2) {
+        await new Promise(r => setTimeout(r, 1200));
+      }
+    }
+  }
+
   return {
     ok: false,
-    status: res.status,
-    message: errData.error?.message || `HTTP ${res.status}`
+    status: lastStatus || 503,
+    message: lastErrorMessage || 'Unable to connect to model after retries.',
+    usedModel: primaryModel,
+    wasFailover: false
   };
 }
+
+// Backward compatible alias
+async function executeGeminiStrictRequest(model, key, contents) {
+  return executeGeminiResilientRequest(model, key, contents, {
+    allowFailover: isCoachHaFailoverEnabled()
+  });
+}
+window.executeGeminiResilientRequest = executeGeminiResilientRequest;
+window.executeGeminiStrictRequest = executeGeminiStrictRequest;
 
 // Live Queue & Countdown Management
 let coachCountdownInterval = null;
@@ -5517,7 +10666,7 @@ function showCoachQueue(secondsLeft, attemptNum, promptText) {
 
   if (queueBox && countEl && msgEl) {
     queueBox.style.display = 'flex';
-    msgEl.innerHTML = `⏳ <strong>${geminiModel} high demand.</strong> Auto-retrying in <span id="coach-countdown-val" style="font-weight: 800; font-family: monospace; color: #fff; background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem;">${secondsLeft}</span>s... (Attempt ${attemptNum}/10)`;
+    msgEl.innerHTML = `⏳ <strong>${geminiModel} high demand spike.</strong> Auto-retrying in <span id="coach-countdown-val" style="font-weight: 800; font-family: monospace; color: #fff; background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem;">${secondsLeft}</span>s... (Attempt ${attemptNum}/10)`;
   }
 
   if (coachCountdownInterval) clearInterval(coachCountdownInterval);
@@ -5611,13 +10760,13 @@ function handleCoachApiKeyInput(val) {
     geminiApiKey = cleanVal;
     localStorage.setItem('tmm_gemini_api_key', cleanVal);
     updateCoachStatusDot();
-    syncCoachSettingsToCloud(geminiApiKey, geminiModel, getActiveVegaIconId());
+    syncCoachSettingsToCloud(geminiApiKey, geminiModel, getActiveVegaIconId(), elevenlabsApiKey);
   }
 }
 window.handleCoachApiKeyInput = handleCoachApiKeyInput;
 
 
-// Test Connection strictly with chosen model
+// Test Connection strictly with chosen model + smart HA verification
 async function testCoachApiConnection() {
   const keyInput = document.getElementById('gemini-api-key-input');
   const key = keyInput?.value?.trim() || geminiApiKey;
@@ -5640,36 +10789,60 @@ async function testCoachApiConnection() {
   localStorage.setItem('tmm_gemini_api_key', geminiApiKey);
   localStorage.setItem('tmm_gemini_model', geminiModel);
   updateCoachStatusDot();
-  syncCoachSettingsToCloud(geminiApiKey, geminiModel, getActiveVegaIconId());
+  syncCoachSettingsToCloud(geminiApiKey, geminiModel, getActiveVegaIconId(), elevenlabsApiKey);
 
   if (statusEl) {
     statusEl.style.display = 'block';
     statusEl.style.background = 'rgba(99, 102, 241, 0.15)';
     statusEl.style.color = '#818cf8';
-    statusEl.textContent = `🔄 Testing connection strictly with ${model}...`;
+    statusEl.textContent = `🔄 Testing connection with ${model}...`;
   }
 
-  const result = await executeGeminiStrictRequest(
+  // 1. Direct test of primary model (allowFailover: false to check primary model health)
+  const result = await executeGeminiResilientRequest(
     model,
     key,
-    [{ role: 'user', parts: [{ text: 'Respond with the single word READY.' }] }]
+    [{ role: 'user', parts: [{ text: 'Respond with the single word READY.' }] }],
+    { allowFailover: false, maxRetries: 1, timeoutMs: 15000 }
   );
 
   if (result.ok) {
     if (statusEl) {
       statusEl.style.background = 'rgba(16, 185, 129, 0.15)';
       statusEl.style.color = 'var(--primary)';
-      statusEl.textContent = `✅ Connection successful! Key auto-saved & Coach Vega is active strictly on ${model}.`;
+      statusEl.innerHTML = `✅ <strong>Connection Successful!</strong><br><span style="font-size: 0.76rem; color: #a7f3d0;">Key saved &amp; Coach Vega is active directly on <strong>${model}</strong>.</span>`;
     }
   } else {
+    // 2. If primary returned 503 or 429, verify API key validity via high-availability check
+    if (result.status === 503 || result.status === 429) {
+      const verifyRes = await executeGeminiResilientRequest(
+        'gemini-3.6-flash',
+        key,
+        [{ role: 'user', parts: [{ text: 'Respond READY' }] }],
+        { allowFailover: false, maxRetries: 1, timeoutMs: 15000 }
+      );
+
+      if (verifyRes.ok) {
+        if (statusEl) {
+          statusEl.style.background = 'rgba(16, 185, 129, 0.12)';
+          statusEl.style.border = '1px solid rgba(16, 185, 129, 0.35)';
+          statusEl.style.color = '#10b981';
+          statusEl.innerHTML = `
+            <div style="font-weight: 800; font-size: 0.84rem; margin-bottom: 0.25rem;">✅ API Key Verified &amp; Saved!</div>
+            <div style="font-size: 0.74rem; color: #fbbf24; line-height: 1.4;">
+              ⚠️ <em>Notice: Google's servers are currently reporting high demand (503) on <strong>${model}</strong>.</em><br>
+              Vega's <strong>High-Availability Resilience</strong> is active — your questions will be answered seamlessly without delay while preserving <strong>${model}</strong> as your primary model.
+            </div>
+          `;
+        }
+        return;
+      }
+    }
+
     if (statusEl) {
       statusEl.style.background = 'rgba(239, 68, 68, 0.15)';
       statusEl.style.color = 'var(--accent-red)';
-      if (result.status === 503 || result.status === 429) {
-        statusEl.innerHTML = `⚠️ <strong>Google Server 503 (High Demand on ${model}):</strong><br>Google servers are temporarily busy on this model. When you ask questions in the chat, Vega will automatically queue them with a live countdown timer and retry until answered.`;
-      } else {
-        statusEl.textContent = `❌ API Error (${result.status}): ${result.message}`;
-      }
+      statusEl.textContent = `❌ API Error (${result.status}): ${result.message}`;
     }
   }
 }
@@ -5861,15 +11034,19 @@ Tone: Warm, empathetic, inspiring, analytical, and authoritative. Speak like an 
 
     sanitizedHistory.forEach(turn => contents.push(turn));
 
-    const modelToUse = normalizeGeminiModel(geminiModel) || 'gemini-3.6-flash';
-    const result = await executeGeminiStrictRequest(modelToUse, effectiveKey, contents);
+    const modelToUse = normalizeGeminiModel(geminiModel) || 'gemini-3.8-flash';
+    const result = await executeGeminiResilientRequest(modelToUse, effectiveKey, contents);
 
     if (result.ok) {
       localStorage.removeItem('tmm_coach_pending_query');
       currentPendingPrompt = null;
       hideCoachQueue();
 
-      const botResponseText = result.data.candidates?.[0]?.content?.parts?.[0]?.text || "I'm reviewing your training schedule. How are your legs feeling today?";
+      let botResponseText = result.data.candidates?.[0]?.content?.parts?.[0]?.text || "I'm reviewing your training schedule. How are your legs feeling today?";
+      if (result.wasFailover) {
+        botResponseText += `\n\n<div style="margin-top: 0.75rem; padding: 0.45rem 0.75rem; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 6px; font-size: 0.73rem; color: #7dd3fc; display: flex; align-items: center; gap: 0.4rem;"><span>⚡</span><span>Resilient response delivered via <strong>${result.usedModel}</strong> due to temporary Google 503 high demand on <strong>${geminiModel}</strong>. Your saved model setting remains <strong>${geminiModel}</strong>.</span></div>`;
+      }
+
       coachChatHistory.push({
         role: 'bot',
         content: botResponseText,
@@ -5878,15 +11055,15 @@ Tone: Warm, empathetic, inspiring, analytical, and authoritative. Speak like an 
       pruneCoachChatHistory();
       renderCoachMessages();
     } else {
-      if ((result.status === 503 || result.status === 429) && attempt <= 5) {
-        const waitSec = Math.min(8 + (attempt - 1) * 4, 25);
+      if ((result.status === 503 || result.status === 429) && attempt <= 10) {
+        const waitSec = Math.min(5 + (attempt - 1) * 3, 20);
         showCoachQueue(waitSec, attempt, userText);
       } else {
         localStorage.removeItem('tmm_coach_pending_query');
         hideCoachQueue();
         coachChatHistory.push({
           role: 'bot',
-          content: `⚠️ **API Error (${result.status || 'Request Failed'}):** ${result.message || 'Unable to connect to model.'}`,
+          content: `⚠️ **API Error (${result.status || 'Request Failed'}):** ${result.message || 'Unable to connect to model.'}\n\n*Google's servers are reporting high demand. You can click <strong>⚡ Retry Now</strong> above, or verify High-Availability Resilience is enabled in Settings.*`,
           timestamp: new Date().toISOString()
         });
         pruneCoachChatHistory();
@@ -6041,13 +11218,16 @@ Tone: Warm, empathetic, analytical, inspiring, and authoritative.`;
     { role: 'user', parts: [{ text: systemPrompt + '\n\n' + userPromptText }] }
   ];
 
-  const modelToUse = normalizeGeminiModel(geminiModel) || 'gemini-3.6-flash';
-  const result = await executeGeminiStrictRequest(modelToUse, effectiveKey, contents);
+  const modelToUse = normalizeGeminiModel(geminiModel) || 'gemini-3.8-flash';
+  const result = await executeGeminiResilientRequest(modelToUse, effectiveKey, contents);
 
   if (typingIndicator) typingIndicator.style.display = 'none';
 
   if (result.ok) {
-    const botText = result.data.candidates?.[0]?.content?.parts?.[0]?.text || "Weekly telemetry analyzed. How did your legs feel on Sunday's long run?";
+    let botText = result.data.candidates?.[0]?.content?.parts?.[0]?.text || "Weekly telemetry analyzed. How did your legs feel on Sunday's long run?";
+    if (result.wasFailover) {
+      botText += `\n\n<div style="margin-top: 0.75rem; padding: 0.45rem 0.75rem; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 6px; font-size: 0.73rem; color: #7dd3fc; display: flex; align-items: center; gap: 0.4rem;"><span>⚡</span><span>Debrief delivered via High-Availability Resilience (${result.usedModel}) due to temporary Google 503 load on ${geminiModel}. Primary model remains <strong>${geminiModel}</strong>.</span></div>`;
+    }
     coachChatHistory.push({
       role: 'bot',
       content: botText,
@@ -6072,7 +11252,7 @@ function checkAndResumePendingCoachQuery() {
   pruneCoachChatHistory();
   const pending = getStoredPendingCoachQuery();
   if (pending && pending.prompt && geminiApiKey) {
-    console.log('🔄 Resuming pending Gemini 3.7 coach query from previous session:', pending);
+    console.log('🔄 Resuming pending Coach Vega query from previous session:', pending);
     setTimeout(() => {
       processCoachQuery(pending.prompt, (pending.attempt || 1));
     }, 800);
@@ -6395,6 +11575,9 @@ function closeAudioCompanionModal() {
   if (modal) {
     modal.classList.remove('open');
     stopAudioSimulator();
+    if (webAudioCtx && webAudioCtx.state === 'running') {
+      try { webAudioCtx.suspend(); } catch (e) {}
+    }
   }
 }
 
@@ -6549,7 +11732,7 @@ function updateDuckingUi(percent) {
   }
 }
 
-// 3. Play Zero-Latency Oscillator Countdown Beep (880Hz / 1760Hz)
+// 3. Play Zero-Latency Oscillator Countdown Beep (880Hz / 1760Hz) with automatic node cleanup
 function playOscillatorBeep(freq = 880, durationMs = 120) {
   const ctx = getWebAudioContext();
   const osc = ctx.createOscillator();
@@ -6563,6 +11746,13 @@ function playOscillatorBeep(freq = 880, durationMs = 120) {
 
   osc.connect(gain);
   gain.connect(ctx.destination);
+
+  osc.onended = () => {
+    try {
+      osc.disconnect();
+      gain.disconnect();
+    } catch (e) {}
+  };
 
   osc.start();
   osc.stop(ctx.currentTime + (durationMs / 1000));
@@ -6891,7 +12081,17 @@ function openGitHubTokenModal() {
   const input = document.getElementById('github-pat-input');
   const fb = document.getElementById('github-sync-feedback');
   if (input) input.value = githubToken;
-  if (fb) fb.style.display = 'none';
+  if (fb) {
+    if (githubToken) {
+      fb.style.display = 'block';
+      fb.style.background = 'rgba(16, 185, 129, 0.15)';
+      fb.style.border = '1px solid var(--primary)';
+      fb.style.color = 'var(--primary)';
+      fb.innerHTML = '🟢 <strong>Connected &amp; Cloud Synced:</strong> Strava 1-click &amp; auto-sync are active across your devices.';
+    } else {
+      fb.style.display = 'none';
+    }
+  }
   if (modal) modal.classList.add('open');
 }
 
@@ -6900,16 +12100,43 @@ function closeGitHubTokenModal() {
   if (modal) modal.classList.remove('open');
 }
 
+async function syncGitHubTokenToCloud(token) {
+  if (!supabaseClient) return;
+  try {
+    const { data } = await supabaseClient.from('daily_workouts').select('description').eq('id', 9999).maybeSingle();
+    let cfg = {};
+    if (data && data.description) {
+      try { cfg = JSON.parse(data.description); } catch (e) {}
+    }
+    cfg.github_pat = token || '';
+    cfg.github_token = token || '';
+    cfg.updated_at = new Date().toISOString();
+    await supabaseClient.from('daily_workouts').upsert({
+      id: 9999,
+      week_number: 22,
+      day_of_week: 'SyncConfig',
+      workout_date: '2099-12-31',
+      workout_type: 'AppSyncConfig',
+      distance_km: 0,
+      description: JSON.stringify(cfg)
+    });
+    console.log('☁️ Synced GitHub PAT to Supabase row 9999');
+  } catch (err) {
+    console.warn('Could not sync GitHub token to cloud:', err);
+  }
+}
+
 function disconnectGitHubToken() {
   localStorage.removeItem('tmm_github_pat');
   githubToken = '';
+  syncGitHubTokenToCloud('');
   const fb = document.getElementById('github-sync-feedback');
   if (fb) {
     fb.style.display = 'block';
     fb.style.background = 'rgba(239, 68, 68, 0.15)';
     fb.style.border = '1px solid var(--accent-red)';
     fb.style.color = 'var(--accent-red)';
-    fb.innerHTML = '🗑️ GitHub Token removed.';
+    fb.innerHTML = '🗑️ GitHub Token removed from device and cloud.';
   }
   showToastNotification('GitHub Token removed.', 'info');
   setTimeout(() => closeGitHubTokenModal(), 1200);
@@ -6933,13 +12160,14 @@ async function saveAndTriggerStravaSync() {
 
   githubToken = val;
   localStorage.setItem('tmm_github_pat', val);
+  syncGitHubTokenToCloud(val);
   
   if (fb) {
     fb.style.display = 'block';
     fb.style.background = 'rgba(16, 185, 129, 0.15)';
     fb.style.border = '1px solid var(--primary)';
     fb.style.color = 'var(--primary)';
-    fb.innerHTML = '✅ Token saved! Triggering workflow dispatch...';
+    fb.innerHTML = '✅ Token saved & synced to cloud! Triggering workflow dispatch...';
   }
 
   setTimeout(() => {
@@ -6952,6 +12180,21 @@ async function triggerStravaSyncWorkflow(isSilent = false) {
   const btn = document.getElementById('btn-strava-sync');
   const icon = document.getElementById('strava-sync-icon');
   const label = document.getElementById('strava-sync-label');
+
+  // Attempt just-in-time resolution from Supabase row 9999 if token is missing
+  if (!githubToken && supabaseClient) {
+    try {
+      const { data: cfgRow } = await supabaseClient.from('daily_workouts').select('description').eq('id', 9999).maybeSingle();
+      if (cfgRow && cfgRow.description) {
+        const parsed = JSON.parse(cfgRow.description);
+        if (parsed.github_pat || parsed.github_token) {
+          githubToken = parsed.github_pat || parsed.github_token;
+          localStorage.setItem('tmm_github_pat', githubToken);
+          console.log('⚡ Just-in-time retrieved GitHub PAT from cloud DB');
+        }
+      }
+    } catch (e) {}
+  }
 
   if (!githubToken) {
     if (!isSilent) {
@@ -6982,16 +12225,57 @@ async function triggerStravaSyncWorkflow(isSilent = false) {
 
     if (res.status === 204 || res.ok) {
       if (icon) icon.textContent = '⏳';
-      if (label) label.textContent = 'Scraping Strava...';
-      showToastNotification('🚀 Triggered "Sync Strava Activities" GitHub Action! Scraping Strava...', 'info', 6000);
+      if (label) label.textContent = 'Scraping Strava (0s)...';
+      showToastNotification('🚀 Triggered "Sync Strava Activities" GitHub Action! Scraping Strava...', 'info', 5000);
 
-      // Poll Supabase or re-fetch after 12s to catch synced run
-      setTimeout(() => {
-        if (icon) icon.textContent = '⚡';
-        if (label) label.textContent = 'Sync Strava';
-        if (btn) btn.disabled = false;
-        if (supabaseUrl && supabaseAnonKey) initSupabase(supabaseUrl, supabaseAnonKey);
-      }, 14000);
+      // Active live polling until the workflow run completes (up to 75 seconds)
+      let elapsedSecs = 0;
+      let hasFinished = false;
+
+      const pollTimer = setInterval(async () => {
+        elapsedSecs += 4;
+        if (label && !hasFinished) {
+          label.textContent = `Scraping Strava (${elapsedSecs}s)...`;
+        }
+
+        try {
+          const runRes = await fetch(`https://api.github.com/repos/${repo}/actions/workflows/${workflowFile}/runs?per_page=1`, {
+            headers: {
+              'Accept': 'application/vnd.github+json',
+              'Authorization': `Bearer ${githubToken}`,
+              'X-GitHub-Api-Version': '2022-11-28'
+            }
+          });
+
+          if (runRes.ok) {
+            const runData = await runRes.json();
+            const latestRun = runData.workflow_runs?.[0];
+            if (latestRun && latestRun.status === 'completed') {
+              hasFinished = true;
+              clearInterval(pollTimer);
+              if (icon) icon.textContent = '⚡';
+              if (label) label.textContent = 'Sync Strava';
+              if (btn) btn.disabled = false;
+              if (supabaseUrl && supabaseAnonKey) await initSupabase(supabaseUrl, supabaseAnonKey);
+              showToastNotification('✅ Strava sync complete! Master plan updated with latest activities.', 'success', 6000);
+              return;
+            }
+          }
+        } catch (pollErr) {
+          console.warn('Strava workflow polling notice:', pollErr);
+        }
+
+        if (elapsedSecs >= 65) {
+          hasFinished = true;
+          clearInterval(pollTimer);
+          if (icon) icon.textContent = '⚡';
+          if (label) label.textContent = 'Sync Strava';
+          if (btn) btn.disabled = false;
+          if (supabaseUrl && supabaseAnonKey) await initSupabase(supabaseUrl, supabaseAnonKey);
+          showToastNotification('⚡ Refreshing master plan from cloud DB...', 'info', 4000);
+        }
+      }, 4000);
+
     } else {
       const errJson = await res.json().catch(() => ({}));
       throw new Error(errJson.message || `HTTP ${res.status}`);

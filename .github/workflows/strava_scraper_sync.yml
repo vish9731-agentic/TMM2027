@@ -2,8 +2,8 @@ name: Sync Strava Activities
 
 on:
   schedule:
-    # Runs automatically every 4 hours
-    - cron: '0 */4 * * *'
+    # Runs automatically every 2 hours at minute 17 (off-peak, avoiding top-of-the-hour queue drops)
+    - cron: '17 */2 * * *'
   workflow_dispatch: # Allows 1-click manual sync anytime from the Actions tab or API
   repository_dispatch: # Allows mobile app / web app to trigger instant sync upon stopping run
     types: [trigger_strava_sync, sync_strava]

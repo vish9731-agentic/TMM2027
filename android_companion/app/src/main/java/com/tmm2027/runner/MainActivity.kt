@@ -601,8 +601,40 @@ class MainActivity : AppCompatActivity() {
     private fun triggerInstantStravaSync() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val token = getSharedPreferences("tmm_prefs", Context.MODE_PRIVATE)
+                var token = getSharedPreferences("tmm_prefs", Context.MODE_PRIVATE)
                     .getString("github_pat", null)
+                
+                // If token missing from local prefs, auto-resolve from Supabase row 9999
+                if (token.isNullOrEmpty()) {
+                    try {
+                        val sbUrl = java.net.URL("https://xtdfhxczdlgyhkqsltyq.supabase.co/rest/v1/daily_workouts?id=eq.9999")
+                        val sbConn = sbUrl.openConnection() as java.net.HttpURLConnection
+                        sbConn.requestMethod = "GET"
+                        sbConn.setRequestProperty("apikey", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh0ZGZoeGN6ZGxneWhrcXNsdHlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxMzg2OTUsImV4cCI6MjEwMjcxNDY5NX0.ARI4z_eWMhBQiF66xTXKDOrspfsBQjnG81qxaBhEuww")
+                        sbConn.setRequestProperty("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh0ZGZoeGN6ZGxneWhrcXNsdHlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxMzg2OTUsImV4cCI6MjEwMjcxNDY5NX0.ARI4z_eWMhBQiF66xTXKDOrspfsBQjnG81qxaBhEuww")
+                        sbConn.setRequestProperty("Accept", "application/json")
+                        val sbCode = sbConn.responseCode
+                        if (sbCode in 200..299) {
+                            val resText = sbConn.inputStream.bufferedReader().use { it.readText() }
+                            val arr = org.json.JSONArray(resText)
+                            if (arr.length() > 0) {
+                                val desc = arr.getJSONObject(0).optString("description", "")
+                                if (desc.isNotEmpty()) {
+                                    val cfg = org.json.JSONObject(desc)
+                                    val resolved = cfg.optString("github_pat", "").ifEmpty { cfg.optString("github_token", "") }
+                                    if (resolved.isNotEmpty()) {
+                                        token = resolved
+                                        getSharedPreferences("tmm_prefs", Context.MODE_PRIVATE)
+                                            .edit().putString("github_pat", resolved).apply()
+                                    }
+                                }
+                            }
+                        }
+                        sbConn.disconnect()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
                 
                 if (!token.isNullOrEmpty()) {
                     val url = java.net.URL("https://api.github.com/repos/vish9731-agentic/TMM2027/actions/workflows/strava_scraper_sync.yml/dispatches")
