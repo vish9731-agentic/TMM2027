@@ -240,6 +240,8 @@ def fetch_strava_activity_splits_and_hr(activity_id):
                 # Check for script tags with JSON
                 scripts = re.findall(r'<script[^>]*>(.*?)</script>', html, re.DOTALL)
                 print(f"      🔎 Total script tags: {len(scripts)}")
+                if len(scripts) > 129:
+                    print(f"      🔎 SCRIPT 129:\n{scripts[129][:4000]}")
                 for s_idx, sc in enumerate(scripts):
                     if "splits" in sc.lower() or "distance" in sc.lower() and "pace" in sc.lower():
                         print(f"      🔎 Script {s_idx} preview: {repr(sc[:250])}")
