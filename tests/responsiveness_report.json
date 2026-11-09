@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-11-09T11:15:13.131Z",
+  "timestamp": "2026-11-09T12:38:50.926Z",
   "totalTests": 28,
   "passedTests": 28,
   "failedTests": 0,
@@ -42,7 +42,7 @@
           "excess": 1104
         },
         {
-          "selector": "div.day-distance",
+          "selector": "div",
           "right": 1424,
           "width": 167,
           "excess": 1104
@@ -62,10 +62,10 @@
           "height": 13
         },
         {
-          "tag": "a",
-          "text": "Create a token on Gi",
-          "width": 144,
-          "height": 13
+          "tag": "button",
+          "text": "START",
+          "width": 47,
+          "height": 15
         }
       ],
       "visibilityChecks": {
@@ -115,7 +115,7 @@
           "excess": 1064
         },
         {
-          "selector": "div.day-distance",
+          "selector": "div",
           "right": 1424,
           "width": 167,
           "excess": 1064
@@ -135,10 +135,10 @@
           "height": 13
         },
         {
-          "tag": "a",
-          "text": "Create a token on Gi",
-          "width": 144,
-          "height": 13
+          "tag": "button",
+          "text": "START",
+          "width": 47,
+          "height": 15
         }
       ],
       "visibilityChecks": {
@@ -188,7 +188,7 @@
           "excess": 1054
         },
         {
-          "selector": "div.day-distance",
+          "selector": "div",
           "right": 1429,
           "width": 167,
           "excess": 1054
@@ -208,10 +208,10 @@
           "height": 13
         },
         {
-          "tag": "a",
-          "text": "Create a token on Gi",
-          "width": 144,
-          "height": 13
+          "tag": "button",
+          "text": "START",
+          "width": 47,
+          "height": 15
         }
       ],
       "visibilityChecks": {
@@ -261,7 +261,7 @@
           "excess": 1039
         },
         {
-          "selector": "div.day-distance",
+          "selector": "div",
           "right": 1429,
           "width": 167,
           "excess": 1039
@@ -281,10 +281,10 @@
           "height": 13
         },
         {
-          "tag": "a",
-          "text": "Create a token on Gi",
-          "width": 144,
-          "height": 13
+          "tag": "button",
+          "text": "🗑️ Clear Memory",
+          "width": 102,
+          "height": 25
         }
       ],
       "visibilityChecks": {
@@ -334,7 +334,7 @@
           "excess": 1017
         },
         {
-          "selector": "div.day-distance",
+          "selector": "div",
           "right": 1429,
           "width": 167,
           "excess": 1017
@@ -407,7 +407,7 @@
           "excess": 999
         },
         {
-          "selector": "div.day-distance",
+          "selector": "div",
           "right": 1429,
           "width": 167,
           "excess": 999
@@ -480,7 +480,7 @@
           "excess": 734
         },
         {
-          "selector": "div.day-distance",
+          "selector": "div",
           "right": 1578,
           "width": 184,
           "excess": 734
@@ -534,7 +534,7 @@
           "excess": 968
         },
         {
-          "selector": "div.day-distance",
+          "selector": "div",
           "right": 1568,
           "width": 184,
           "excess": 968
@@ -554,10 +554,10 @@
           "height": 25
         },
         {
-          "tag": "a",
-          "text": "Create a token on Gi",
-          "width": 144,
-          "height": 13
+          "tag": "button",
+          "text": "START",
+          "width": 47,
+          "height": 15
         }
       ],
       "visibilityChecks": {
@@ -607,7 +607,7 @@
           "excess": 800
         },
         {
-          "selector": "div.day-distance",
+          "selector": "div",
           "right": 1568,
           "width": 184,
           "excess": 800
@@ -661,7 +661,7 @@
           "excess": 758
         },
         {
-          "selector": "div.day-distance",
+          "selector": "div",
           "right": 1578,
           "width": 184,
           "excess": 758
@@ -715,7 +715,7 @@
           "excess": 554
         },
         {
-          "selector": "div.day-distance",
+          "selector": "div",
           "right": 1578,
           "width": 184,
           "excess": 554
@@ -755,6 +755,12 @@
           "right": 1353,
           "width": 63,
           "excess": 73
+        },
+        {
+          "selector": "button.btn-icon",
+          "right": 1287,
+          "width": 222,
+          "excess": 7
         },
         {
           "selector": "button#week-jump-btn-20.week-jump-btn.milestone-btn",

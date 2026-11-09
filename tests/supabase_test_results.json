@@ -1,0 +1,98 @@
+{
+  "name": "Supabase Schema & Database Parity Suite",
+  "timestamp": "2026-11-09T12:26:17.671Z",
+  "tests": [
+    {
+      "id": "SB-01",
+      "title": "Table Accessibility (training_phases, training_weeks, daily_workouts, race_targets)",
+      "status": "PASSED",
+      "details": "All 4 core tables responded successfully with HTTP 200 via PostgREST API"
+    },
+    {
+      "id": "SB-02",
+      "title": "Column Parity for daily_workouts Table",
+      "status": "FAILED",
+      "details": "Live daily_workouts table is missing 2 expected columns: [strategy_splits, coach_script]"
+    },
+    {
+      "id": "SB-03",
+      "title": "Supabase Write Test for coach_script Column",
+      "status": "FAILED",
+      "details": "PATCH coach_script rejected by PostgREST: \"Could not find the 'coach_script' column of 'daily_workouts' in the schema cache\""
+    },
+    {
+      "id": "SB-04A",
+      "title": "RLS Permissions: Workout Completion Update (is_completed)",
+      "status": "PASSED",
+      "details": "Anon role successfully updated daily_workouts row for 2026-08-17"
+    },
+    {
+      "id": "SB-04B",
+      "title": "RLS Security Guard: training_weeks Table Immutability",
+      "status": "WARNING",
+      "details": "Anon role has unauthenticated WRITE access to training_weeks table (focus modified)"
+    },
+    {
+      "id": "SB-05",
+      "title": "AppSyncConfig (Row 9999) Cloud Config Sync",
+      "status": "PASSED",
+      "details": "Row 9999 exists with valid JSON and config keys: [gemini_api_key, elevenlabs_api_key, model, vega_icon_id, updated_at, github_pat, github_token]"
+    },
+    {
+      "id": "SB-06",
+      "title": "Data Consistency: Supabase DB vs training_data.json",
+      "status": "PASSED",
+      "details": "All 154 workouts match perfectly in date, distance, type, and target pace"
+    },
+    {
+      "id": "SB-07",
+      "title": "Weekly Total Planned Volume Math Consistency in Supabase",
+      "status": "PASSED",
+      "details": "All 22 weeks have total_planned_km exactly equal to sum of daily_workouts distance"
+    },
+    {
+      "id": "SB-08",
+      "title": "Phase Boundary Alignment (training_phases vs training_weeks)",
+      "status": "PASSED",
+      "details": "Phase ranges align with week phase assignments"
+    },
+    {
+      "id": "SB-09",
+      "title": "Procam Slam Race Targets Table Completeness",
+      "status": "PASSED",
+      "details": "race_targets contains all Procam milestones (3 races)"
+    }
+  ],
+  "bugsFound": [
+    {
+      "testId": "SB-02",
+      "testTitle": "Column Parity for daily_workouts Table",
+      "severity": "CRITICAL",
+      "category": "Database Schema Discrepancy",
+      "summary": "Missing columns in Supabase daily_workouts: strategy_splits, coach_script",
+      "impact": "When app.js syncs with Supabase, it attempts to load 'strategy_splits' and 'coach_script'. Because these columns do not exist in the database, in-memory structured strategy splits and AI coach scripts are overwritten with undefined. Furthermore, attempts by Vega Coach to save generated coach scripts fail with HTTP 400 (PGRST204).",
+      "remediation": "Execute migration in Supabase SQL editor: ALTER TABLE daily_workouts ADD COLUMN IF NOT EXISTS strategy_splits JSONB; ALTER TABLE daily_workouts ADD COLUMN IF NOT EXISTS coach_script JSONB;"
+    },
+    {
+      "testId": "SB-03",
+      "testTitle": "Supabase Write Test for coach_script Column",
+      "severity": "HIGH",
+      "category": "Database Schema Discrepancy",
+      "summary": "Column 'coach_script' rejected on write (HTTP 400)",
+      "impact": "User cannot save generated Gemini AI coach scripts to the cloud database.",
+      "remediation": "Execute: ALTER TABLE daily_workouts ADD COLUMN IF NOT EXISTS coach_script JSONB;"
+    },
+    {
+      "testId": "SB-04B",
+      "testTitle": "RLS Security Guard: training_weeks Table Immutability",
+      "severity": "MEDIUM",
+      "category": "Security / Permissions",
+      "summary": "Unauthenticated anon role can alter training_weeks plan configuration",
+      "impact": "Any visitor could alter week definitions, phase names, or planned distances in the shared database.",
+      "remediation": "Enable RLS and restrict UPDATE on training_weeks to authenticated service role only."
+    }
+  ],
+  "passed": 7,
+  "failed": 2,
+  "warnings": 1
+}

@@ -8085,12 +8085,306 @@ function generateGoogleCalendarUrl(wo, customTime = null) {
   return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodedTitle}&dates=${dates}&details=${encodedDetails}&sf=true&output=xml`;
 }
 
+// ==============================================================================
+// ATHLETE HEART RATE ZONES & BIOMETRIC STRATEGY ENGINE (TMM 2027)
+// Hardware: Samsung Galaxy Watch 4 Classic (Optical BioActive Sensor linked to Strava)
+// Target: Sub-5:00 Marathon (Goal Pace: 7:06 min/km, RPE 4-7)
+// ==============================================================================
+
+const ATHLETE_HR_ZONES = {
+  ZONE_1: {
+    id: 'zone_1',
+    name: 'Zone 1: Active Recovery',
+    shortName: 'Zone 1 (Recovery)',
+    rangeBpm: '< 130 bpm',
+    minBpm: 0,
+    maxBpm: 129,
+    ceiling: 130,
+    pctMaxHr: '< 65%',
+    rpe: '1–2',
+    color: '#38bdf8',
+    bgTint: 'rgba(56, 189, 248, 0.12)',
+    borderTint: 'rgba(56, 189, 248, 0.35)',
+    description: 'Warm-up, cool-down, dynamic mobility, and light recovery flush. Promotes microvascular capillary expansion and accelerates lactate clearance with zero cumulative fatigue.'
+  },
+  ZONE_2: {
+    id: 'zone_2',
+    name: 'Zone 2: Aerobic Base & Endurance',
+    shortName: 'Zone 2 (Aerobic Base)',
+    rangeBpm: '130 – 145 bpm',
+    minBpm: 130,
+    maxBpm: 145,
+    ceiling: 145,
+    longRunCeiling: 148,
+    pctMaxHr: '65% – 75%',
+    rpe: '3–4',
+    color: '#10b981',
+    bgTint: 'rgba(16, 185, 129, 0.12)',
+    borderTint: 'rgba(16, 185, 129, 0.35)',
+    description: 'Primary marathon engine. Stimulates mitochondrial biogenesis, enhances fatty acid oxidation, and spares calf muscle glycogen for late-race endurance at TMM 2027.'
+  },
+  ZONE_3: {
+    id: 'zone_3',
+    name: 'Zone 3: Aerobic Tempo & Marathon Pace',
+    shortName: 'Zone 3 (Marathon Pace / Tempo)',
+    rangeBpm: '146 – 158 bpm',
+    minBpm: 146,
+    maxBpm: 158,
+    ceiling: 160,
+    pctMaxHr: '75% – 82%',
+    rpe: '5–6',
+    color: '#f59e0b',
+    bgTint: 'rgba(245, 158, 11, 0.12)',
+    borderTint: 'rgba(245, 158, 11, 0.35)',
+    description: 'Steady marathon goal pace cruise (7:00 – 7:06 min/km). Sustained steady-state aerobic power with efficient lactate processing and economy of motion.'
+  },
+  ZONE_4: {
+    id: 'zone_4',
+    name: 'Zone 4: Lactate Threshold & Hill Climbs',
+    shortName: 'Zone 4 (Threshold & Hills)',
+    rangeBpm: '159 – 172 bpm',
+    minBpm: 159,
+    maxBpm: 172,
+    ceiling: 175,
+    pctMaxHr: '82% – 89%',
+    rpe: '7–8',
+    color: '#ef4444',
+    bgTint: 'rgba(239, 68, 68, 0.12)',
+    borderTint: 'rgba(239, 68, 68, 0.35)',
+    description: 'Pedder Road hill repeats and 1km/800m threshold cruise reps. Pushes speed lactate threshold. Active recoveries must drop below 135 bpm before starting next rep.'
+  },
+  ZONE_5: {
+    id: 'zone_5',
+    name: 'Zone 5: Anaerobic Peak & Neuromuscular',
+    shortName: 'Zone 5 (Anaerobic)',
+    rangeBpm: '> 172 bpm',
+    minBpm: 173,
+    maxBpm: 195,
+    ceiling: 185,
+    pctMaxHr: '> 89%',
+    rpe: '9–10',
+    color: '#ec4899',
+    bgTint: 'rgba(236, 72, 153, 0.12)',
+    borderTint: 'rgba(236, 72, 153, 0.35)',
+    description: 'Short 100m–200m turnover strides and final race kicks. High neuromuscular recruitment; kept brief to avoid heavy lactic pooling.'
+  }
+};
+
+function getWorkoutHeartRateStrategy(wo) {
+  if (!wo || typeof wo !== 'object') {
+    return {
+      zone: 'ZONE_2',
+      zoneName: 'Zone 2: Aerobic Base',
+      shortName: 'Zone 2 (Aerobic Base)',
+      targetRange: '130 – 145 bpm',
+      targetAvgHr: '136 – 142 bpm',
+      ceiling: 145,
+      rpe: '3–4/10',
+      color: '#10b981',
+      bgTint: 'rgba(16, 185, 129, 0.12)',
+      borderTint: 'rgba(16, 185, 129, 0.35)',
+      tacticalAdvice: 'Maintain comfortable aerobic discipline. Settle pulse before surging.',
+      cardiacDriftMax: '5%',
+      decouplingAlert: 'If HR creeps up > 5% at same pace, slow by 15s/km and hydrate.',
+      calfCrampShield: 'Aerobic running spares glycogen and protects soleus/Achilles.',
+      galaxyGuideline: 'Wear Galaxy Watch4 snug 1-finger above wrist bone.'
+    };
+  }
+
+  const dist = parseFloat(wo.distance_km || 0);
+  const typeLower = (wo.type || '').toLowerCase();
+  const desc = (wo.description || '').toLowerCase();
+
+  // A. Rest & Prehab
+  if (dist === 0) {
+    return {
+      zone: 'ZONE_1',
+      zoneName: 'Rest & Parasympathetic Recovery',
+      shortName: 'Zone 1 (Rest)',
+      targetRange: '< 110 bpm (Resting / Prehab)',
+      targetAvgHr: '60 – 75 bpm (Resting)',
+      ceiling: 115,
+      rpe: '1/10',
+      color: '#38bdf8',
+      bgTint: 'rgba(56, 189, 248, 0.12)',
+      borderTint: 'rgba(56, 189, 248, 0.35)',
+      tacticalAdvice: 'Zero cardiovascular stress. Focus on parasympathetic recovery, ankle mobility, and tissue restoration.',
+      cardiacDriftMax: 'N/A',
+      decouplingAlert: 'Elevate calves, stay hydrated with 2.5L fluids.',
+      calfCrampShield: 'Eccentric heel drops build tendon tensile strength with zero cardiac load.',
+      galaxyGuideline: 'Galaxy Watch4 tracks restful recovery and HRV.'
+    };
+  }
+
+  // B. Speed / Hill Repeats / Intervals
+  if (typeLower.includes('hill') || desc.includes('hill') || desc.includes('stride') || desc.includes('intervals') || /[0-9]+\s*[x×X]\s*/.test(desc)) {
+    return {
+      zone: 'ZONE_4',
+      zoneName: 'Zone 4: Threshold & Hill Climbs',
+      shortName: 'Zone 4 (Threshold & Hills)',
+      targetRange: 'Work Reps: 159 – 172 bpm | Rest: < 135 bpm',
+      targetAvgHr: '148 – 156 bpm (Session Average)',
+      ceiling: 175,
+      rpe: '7–8/10',
+      color: '#ef4444',
+      bgTint: 'rgba(239, 68, 68, 0.12)',
+      borderTint: 'rgba(239, 68, 68, 0.35)',
+      tacticalAdvice: 'Drive with glutes on uphill/fast reps to push pulse into Zone 4 (159–172 bpm). Do NOT begin the next repetition until Galaxy Watch4 drops below 135 bpm.',
+      cardiacDriftMax: '8%',
+      decouplingAlert: 'If heart rate fails to drop below 138 bpm in the allotted rest time, extend recovery by 45 seconds to prevent sudden soleus seizing.',
+      calfCrampShield: 'Controlling rest intervals prevents lactic accumulation in deep calf compartments.',
+      galaxyGuideline: 'Check Galaxy Watch4 wrist display at the end of each rep; observe rapid recovery drop.'
+    };
+  }
+
+  // C. Continuous Tempo / Threshold / Marathon Pace
+  if (typeLower.includes('tempo') || typeLower.includes('threshold') || typeLower.includes('mp') || desc.includes('continuous') || desc.includes('tempo')) {
+    return {
+      zone: 'ZONE_3',
+      zoneName: 'Zone 3: Aerobic Tempo & Marathon Pace',
+      shortName: 'Zone 3 (Marathon Pace / Tempo)',
+      targetRange: '146 – 158 bpm',
+      targetAvgHr: '148 – 154 bpm',
+      ceiling: 160,
+      rpe: '5–6/10',
+      color: '#f59e0b',
+      bgTint: 'rgba(245, 158, 11, 0.12)',
+      borderTint: 'rgba(245, 158, 11, 0.35)',
+      tacticalAdvice: 'Lock into your marathon goal pace (7:00–7:06 min/km). Steady rhythm, tall posture, Lightstrike Pro rocker roll. Settle pulse in the mid-150s.',
+      cardiacDriftMax: '5%',
+      decouplingAlert: 'If heart rate climbs past 160 bpm while maintaining 7:05 pace, you are burning excessive glycogen; ease pace by 10s/km.',
+      calfCrampShield: 'Holding Zone 3 trains lactate shuttling so calves do not fatigue prematurely at 30km.',
+      galaxyGuideline: 'Set Galaxy Watch4 HR alert ceiling at 160 bpm for gentle haptic warning.'
+    };
+  }
+
+  // D. Long Runs (7km+)
+  if (typeLower.includes('long run') || dist >= 7) {
+    return {
+      zone: 'ZONE_2',
+      zoneName: 'Zone 2: Aerobic Base & Glycogen Sparing',
+      shortName: 'Zone 2 (Aerobic Base)',
+      targetRange: '132 – 145 bpm',
+      targetAvgHr: '136 – 144 bpm',
+      ceiling: 145,
+      longRunCeiling: 148,
+      rpe: '3–4/10',
+      color: '#10b981',
+      bgTint: 'rgba(16, 185, 129, 0.12)',
+      borderTint: 'rgba(16, 185, 129, 0.35)',
+      tacticalAdvice: 'Strict Zone 2 discipline. This run builds the mitochondrial infrastructure that carries you past 30 km. Every beat over 145 bpm burns precious calf glycogen twice as fast.',
+      cardiacDriftMax: '5–8% (Allowed for Mumbai heat drift in final 4 km)',
+      decouplingAlert: 'If Galaxy Watch4 displays > 148 bpm at steady 7:35 pace, cardiac drift has begun. Take 1 salt capsule with 200ml water immediately and ease back by 15s/km.',
+      calfCrampShield: 'True Zone 2 preserves muscle glycogen, preventing the biochemical imbalance that causes calf spasms on Pedder Road.',
+      galaxyGuideline: 'Galaxy Watch4 continuous optical pulse check every kilometer; stay disciplined under 145 bpm.'
+    };
+  }
+
+  // E. Easy Recovery Shakeout
+  return {
+    zone: 'ZONE_1',
+    zoneName: 'Zone 1 / Lower Zone 2: Active Recovery',
+    shortName: 'Zone 1/2 (Recovery Shakeout)',
+    targetRange: '125 – 138 bpm',
+    targetAvgHr: '130 – 136 bpm',
+    ceiling: 142,
+    rpe: '2–3/10',
+    color: '#38bdf8',
+    bgTint: 'rgba(56, 189, 248, 0.12)',
+    borderTint: 'rgba(56, 189, 248, 0.35)',
+    tacticalAdvice: 'Ultra-gentle conversational cruise. Active vascular flushing to clear cellular waste from yesterday. If pulse rises above 142 bpm, slow to a brisk walk.',
+    cardiacDriftMax: '3%',
+    decouplingAlert: 'No drift acceptable on recovery days. Pulse must stay strictly easy.',
+    calfCrampShield: 'Gentle aerobic flow lubricates calf fascia without mechanical trauma.',
+    galaxyGuideline: 'Galaxy Watch4 glance check: you should be able to speak full sentences comfortably.'
+  };
+}
+
+function getAthleteHeartRateBaseline() {
+  const records = [];
+  if (typeof completedWorkouts === 'object' && completedWorkouts) {
+    for (const [key, w] of Object.entries(completedWorkouts)) {
+      if (w && w.done && w.avgHeartRate && Number(w.avgHeartRate) > 60) {
+        records.push({
+          key,
+          avgHr: Number(w.avgHeartRate),
+          maxHr: Number(w.maxHeartRate) || null,
+          dist: Number(w.dist) || 0,
+          date: key.split('_')[2] || ''
+        });
+      }
+    }
+  }
+
+  if (records.length === 0) {
+    return {
+      hasData: false,
+      count: 0,
+      historicalAvgHr: null,
+      message: 'Galaxy Watch4 Classic linked to Strava. Telemetry streaming active for upcoming runs.'
+    };
+  }
+
+  const sum = records.reduce((acc, r) => acc + r.avgHr, 0);
+  const avg = Math.round(sum / records.length);
+  const latest = records[records.length - 1];
+
+  return {
+    hasData: true,
+    count: records.length,
+    historicalAvgHr: avg,
+    latestAvgHr: latest.avgHr,
+    latestDate: latest.date,
+    message: `Historical Average HR: ${avg} bpm across ${records.length} logged run${records.length > 1 ? 's' : ''}`
+  };
+}
+
+function enrichSplitWithHeartRate(s, defaultHrRange, defaultZone, defaultHrDesc) {
+  if (!s || typeof s !== 'object') return s;
+  
+  if (s.target_hr && s.hr_zone) return s;
+
+  const phaseLower = (s.phase || '').toLowerCase();
+  const paceLower = (s.pace || '').toLowerCase();
+  const kmLower = (s.km || '').toLowerCase();
+
+  if (phaseLower.includes('warm') || kmLower.includes('prehab') || paceLower.includes('8:00') || paceLower.includes('8:15')) {
+    s.target_hr = '< 130 bpm';
+    s.hr_zone = 'Zone 1 (Active Recovery)';
+    s.hr_desc = s.hr_desc || 'Gentle warmup, joint lubrication & zero cardiac fatigue';
+  } else if (phaseLower.includes('cool') || phaseLower.includes('walk') || phaseLower.includes('recovery') || paceLower.includes('walk')) {
+    s.target_hr = '< 135 bpm reset';
+    s.hr_zone = 'Zone 1 / Recovery Flush';
+    s.hr_desc = s.hr_desc || 'Rapid pulse recovery drop & lactate clearance';
+  } else if (phaseLower.includes('rep') || phaseLower.includes('stride') || phaseLower.includes('hill') || paceLower.includes('sprint') || paceLower.includes('5:')) {
+    s.target_hr = '159 – 172 bpm';
+    s.hr_zone = 'Zone 4 (Threshold / Power)';
+    s.hr_desc = s.hr_desc || 'Peak cardiac output & lactate threshold stimulus';
+  } else if (phaseLower.includes('tempo') || phaseLower.includes('mp') || phaseLower.includes('marathon pace') || paceLower.includes('7:00') || paceLower.includes('7:06') || paceLower.includes('6:')) {
+    s.target_hr = '146 – 158 bpm';
+    s.hr_zone = 'Zone 3 (Marathon Pace)';
+    s.hr_desc = s.hr_desc || 'Sustained marathon race pace rhythm (Ceiling 160 bpm)';
+  } else if (phaseLower.includes('cruise') || phaseLower.includes('marathon cruise') || phaseLower.includes('lock') || phaseLower.includes('float')) {
+    s.target_hr = defaultHrRange || '132 – 145 bpm';
+    s.hr_zone = defaultZone || 'Zone 2 (Aerobic Base)';
+    s.hr_desc = s.hr_desc || 'Mitochondrial building & calf glycogen sparing';
+  } else {
+    s.target_hr = defaultHrRange || '130 – 145 bpm';
+    s.hr_zone = defaultZone || 'Zone 2 (Aerobic Base)';
+    s.hr_desc = s.hr_desc || (defaultHrDesc || 'Aerobic endurance base');
+  }
+
+  return s;
+}
+
 function generateWorkoutSplits(wo) {
   if (!wo || typeof wo !== 'object') return [];
   
+  const hrStrat = getWorkoutHeartRateStrategy(wo);
+
   // 1. Primary Source of Truth: Persisted Structured Strategy Splits (from Supabase or training_data.json)
   if (Array.isArray(wo.strategy_splits) && wo.strategy_splits.length > 0) {
-    return wo.strategy_splits;
+    return wo.strategy_splits.map(s => enrichSplitWithHeartRate({ ...s }, hrStrat.targetRange, hrStrat.shortName, hrStrat.calfCrampShield));
   }
 
   const dist = parseFloat(wo.distance_km || 0);
@@ -8101,9 +8395,9 @@ function generateWorkoutSplits(wo) {
 
   if (dist === 0) {
     return [
-      { km: 'Prehab 1', phase: 'Ankle & Foot Mobility', pace: '10 Mins', desc: 'Ankle alphabets, plantar roll with lacrosse ball', color: '#10b981' },
-      { km: 'Prehab 2', phase: 'Eccentric Calf Loading', pace: '15 Mins', desc: 'Heel drops on a step (3x15 straight leg + 3x15 bent knee)', color: '#ffcc00' },
-      { km: 'Prehab 3', phase: 'Foam Rolling & Recovery', pace: '10 Mins', desc: 'Soleus, gastrocnemius, and quads myofascial release', color: '#38bdf8' }
+      { km: 'Prehab 1', phase: 'Ankle & Foot Mobility', pace: '10 Mins', target_hr: '< 100 bpm', hr_zone: 'Zone 1 (Rest)', hr_desc: 'Deep breathing, zero cardiac stress', desc: 'Ankle alphabets, plantar roll with lacrosse ball', color: '#10b981' },
+      { km: 'Prehab 2', phase: 'Eccentric Calf Loading', pace: '15 Mins', target_hr: '< 110 bpm', hr_zone: 'Zone 1 (Tissue Prep)', hr_desc: 'Calf & Achilles tendon armor loading', desc: 'Heel drops on a step (3x15 straight leg + 3x15 bent knee)', color: '#ffcc00' },
+      { km: 'Prehab 3', phase: 'Foam Rolling & Recovery', pace: '10 Mins', target_hr: '< 95 bpm', hr_zone: 'Zone 1 (Parasympathetic)', hr_desc: 'Myofascial relaxation and parasympathetic calm', desc: 'Soleus, gastrocnemius, and quads myofascial release', color: '#38bdf8' }
     ];
   }
 
@@ -8117,6 +8411,9 @@ function generateWorkoutSplits(wo) {
       km: `Km 0 – ${warmupKm.toFixed(1)}`,
       phase: 'Phase 1: Warm-up Float',
       pace: '7:45 – 8:00 min/km',
+      target_hr: '< 130 bpm',
+      hr_zone: 'Zone 1 (Active Warmup)',
+      hr_desc: 'Gentle aerobic jog, ankles mobility, zero cardiac fatigue',
       desc: 'Easy aerobic warmup on flat ground, dynamic ankle mobility (RPE 3)',
       color: '#10b981'
     });
@@ -8131,6 +8428,9 @@ function generateWorkoutSplits(wo) {
         km: `${subSectionIdx}. ${durationStr} Hill ${i}`,
         phase: `Hill Rep ${i}/${repCount}`,
         pace: 'Uphill Sprint (RPE 8)',
+        target_hr: '160 – 172 bpm',
+        hr_zone: 'Zone 4 (Threshold Rep)',
+        hr_desc: 'Powerful glute drive, push pulse to Zone 4 (RPE 8)',
         desc: `Rep ${i} of ${repCount}: Powerful glute drive, high knees, upright torso (RPE 8)`,
         color: '#ff3b00'
       });
@@ -8140,6 +8440,9 @@ function generateWorkoutSplits(wo) {
         km: `${subSectionIdx}. Jog-Down Rest ${i}`,
         phase: `Recovery ${i}/${repCount}`,
         pace: 'Walk / Easy Jog',
+        target_hr: '< 135 bpm reset',
+        hr_zone: 'Zone 1/2 (Recovery Drop)',
+        hr_desc: 'Controlled jog down, Galaxy Watch pulse reset < 135 bpm',
         desc: `Rest ${i} of ${repCount}: Controlled jog down to hill base, reset heart rate (RPE 2)`,
         color: '#38bdf8'
       });
@@ -8156,6 +8459,9 @@ function generateWorkoutSplits(wo) {
       km: `Km ${tempoStartKm.toFixed(1)} – ${tempoEndKm.toFixed(1)}`,
       phase: 'Phase 2: Continuous Tempo Block',
       pace: tempoPace,
+      target_hr: '146 – 158 bpm',
+      hr_zone: 'Zone 3 (Aerobic Tempo)',
+      hr_desc: 'Sustained threshold lock post-hills. Lock into 172+ SPM (Ceiling 160 bpm)',
       desc: `${tempoKm.toFixed(1)} km sustained threshold lock post-hills. Lock into 172+ SPM rhythm (RPE 7)`,
       color: '#ff7700'
     });
@@ -8166,6 +8472,9 @@ function generateWorkoutSplits(wo) {
       km: `Final ${cooldownKm.toFixed(1)} km`,
       phase: 'Phase 3: Cool-down Flush',
       pace: '7:50 – 8:15 min/km',
+      target_hr: '< 130 bpm',
+      hr_zone: 'Zone 1 (Cool-down Flush)',
+      hr_desc: 'Gentle aerobic flush to clear lactate from calves and quads',
       desc: 'Easy recovery flush to clear lactate from calves and quads (RPE 2)',
       color: '#a855f7'
     });
@@ -8197,6 +8506,9 @@ function generateWorkoutSplits(wo) {
       km: `Km 0 – ${warmupKm.toFixed(1)}`,
       phase: 'Phase 1: Warm-up Float',
       pace: '7:45 – 8:00 min/km',
+      target_hr: '< 130 bpm',
+      hr_zone: 'Zone 1 (Warmup)',
+      hr_desc: 'Easy aerobic warmup, activate glutes, loosen ankles & soleus',
       desc: 'Easy aerobic warmup, activate glutes, loosen ankles & soleus (RPE 3)',
       color: '#10b981'
     });
@@ -8205,6 +8517,9 @@ function generateWorkoutSplits(wo) {
       km: `Km ${warmupKm.toFixed(1)} – ${tempoEndKm.toFixed(1)}`,
       phase: typeLower.includes('mp') || descLower.includes('marathon pace') ? 'Phase 2: Marathon Pace Block' : 'Phase 2: Continuous Tempo Block',
       pace: tempoPaceStr,
+      target_hr: '146 – 158 bpm',
+      hr_zone: 'Zone 3 (Marathon Tempo)',
+      hr_desc: 'Continuous locked-in effort, 172+ SPM, 2:2 rhythmic breathing (Ceiling 160 bpm)',
       desc: `${tempoKm.toFixed(1)} km continuous locked-in effort, 172+ SPM, 2:2 rhythmic breathing (RPE 6-7)`,
       color: '#ff7700'
     });
@@ -8213,6 +8528,9 @@ function generateWorkoutSplits(wo) {
       km: `Km ${tempoEndKm.toFixed(1)} – ${dist.toFixed(1)}`,
       phase: 'Phase 3: Cool-down Flush',
       pace: '7:50 – 8:15 min/km',
+      target_hr: '< 130 bpm',
+      hr_zone: 'Zone 1 (Cooldown Flush)',
+      hr_desc: 'Gentle aerobic flush to clear lactate from calves and quads',
       desc: `${cooldownKm.toFixed(1)} km easy flush jog and walking transition to clear lactate (RPE 2)`,
       color: '#38bdf8'
     });
@@ -8232,6 +8550,9 @@ function generateWorkoutSplits(wo) {
       km: `Km 0 – ${warmupKm.toFixed(1)}`,
       phase: 'Phase 1: Warm-up Float',
       pace: '7:45 – 8:00 min/km',
+      target_hr: '< 130 bpm',
+      hr_zone: 'Zone 1 (Warmup)',
+      hr_desc: 'Easy aerobic jog, loose shoulders, warm up Achilles & soleus',
       desc: 'Easy aerobic jog, loose shoulders, warm up Achilles & soleus (RPE 3)',
       color: '#10b981'
     });
@@ -8285,6 +8606,9 @@ function generateWorkoutSplits(wo) {
         km: `${subSectionIdx}. ${repLabel} ${i}`,
         phase: `Rep ${i}/${repCount}`,
         pace: repPace,
+        target_hr: '160 – 172 bpm',
+        hr_zone: 'Zone 4 (Threshold Rep)',
+        hr_desc: 'High-quality effort, tall posture, light foot strikes (RPE 7-8)',
         desc: isHill ? `Rep ${i} of ${repCount}: Powerful glute drive, high knees, upright torso (RPE 8)` : `Rep ${i} of ${repCount}: High-quality target effort, tall posture, light foot strikes (RPE 7-8)`,
         color: '#ff3b00'
       });
@@ -8294,6 +8618,9 @@ function generateWorkoutSplits(wo) {
         km: `${subSectionIdx}. ${restDuration} ${restType} ${i}`,
         phase: `Recovery ${i}/${repCount}`,
         pace: 'Walk / Easy Jog',
+        target_hr: '< 135 bpm reset',
+        hr_zone: 'Zone 1/2 (Recovery Drop)',
+        hr_desc: 'Deep belly breaths, let Galaxy Watch4 pulse drop below 135 bpm',
         desc: isHill ? `Rest ${i} of ${repCount}: Controlled jog down to hill base, reset heart rate (RPE 2)` : `Rest ${i} of ${repCount}: Full recovery, deep belly breaths, lower heart rate (RPE 1-2)`,
         color: '#38bdf8'
       });
@@ -8304,6 +8631,9 @@ function generateWorkoutSplits(wo) {
       km: `Final ${cooldownKm.toFixed(1)} km`,
       phase: 'Phase 3: Cool-down Flush',
       pace: '7:50 – 8:15 min/km',
+      target_hr: '< 130 bpm',
+      hr_zone: 'Zone 1 (Flush)',
+      hr_desc: 'Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)',
       desc: 'Gentle aerobic flush + walking cool-down to clear lactate (RPE 2)',
       color: '#a855f7'
     });
@@ -8321,6 +8651,9 @@ function generateWorkoutSplits(wo) {
       km: `Km 1 – ${startKm}`,
       phase: 'Controlled Start',
       pace: '7:15 – 7:25 min/km',
+      target_hr: '135 – 145 bpm',
+      hr_zone: 'Zone 2 (Controlled Start)',
+      hr_desc: 'Disciplined start, resist surging with adrenaline, settle heart rate',
       desc: 'Disciplined start, resist surging with adrenaline, settle heart rate',
       color: '#10b981'
     });
@@ -8328,6 +8661,9 @@ function generateWorkoutSplits(wo) {
       km: `Km ${cruiseKmStart} – ${cruiseKmEnd}`,
       phase: 'Target Pace Lock',
       pace: targetPace,
+      target_hr: '146 – 156 bpm',
+      hr_zone: 'Zone 3 (Race Pace Lock)',
+      hr_desc: 'Locked-in goal cadence (170+ SPM), check pulse ceiling every 2.5 km',
       desc: 'Locked-in goal cadence (170+ SPM), take sips of hydration every 2.5 km',
       color: '#00f5d4'
     });
@@ -8335,6 +8671,9 @@ function generateWorkoutSplits(wo) {
       km: `Km ${cruiseKmEnd + 1} – ${dist}`,
       phase: 'Negative Split Finish',
       pace: '7:00 – 7:06 min/km',
+      target_hr: '157 – 168 bpm',
+      hr_zone: 'Zone 3/4 (Strong Finish)',
+      hr_desc: 'Strong finish, maintain tall posture, empty the tank over final km',
       desc: 'Strong finish, maintain tall posture, empty the tank over final km',
       color: '#ff3b00'
     });
@@ -8351,6 +8690,9 @@ function generateWorkoutSplits(wo) {
       km: `Km 0 – ${warmupKm.toFixed(1)}`,
       phase: 'Phase 1: Conservative Float',
       pace: '7:45 – 8:00 min/km',
+      target_hr: '< 130 bpm',
+      hr_zone: 'Zone 1/2 (Aerobic Float)',
+      hr_desc: 'Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2',
       desc: 'Ultra-conservative aerobic float, loosen up hips & calves, stay in Zone 2',
       color: '#10b981'
     });
@@ -8358,6 +8700,9 @@ function generateWorkoutSplits(wo) {
       km: `Km ${(warmupKm + 0.1).toFixed(1)} – ${cruiseKmEnd.toFixed(1)}`,
       phase: 'Phase 2: Marathon Cruise',
       pace: targetPace,
+      target_hr: '132 – 145 bpm',
+      hr_zone: 'Zone 2 (Aerobic Base Lock)',
+      hr_desc: 'Mitochondrial engine & calf glycogen sparing. Thermal ceiling 148 bpm.',
       desc: 'Rhythmic marathon aerobic base. Take Salt Capsule @ 45m with 150ml water to protect calves.',
       color: '#00f5d4'
     });
@@ -8365,6 +8710,9 @@ function generateWorkoutSplits(wo) {
       km: `Final ${finishKm.toFixed(1)} km`,
       phase: 'Phase 3: Finish & Prehab',
       pace: '7:06 – 7:35 min/km',
+      target_hr: '140 – 148 bpm',
+      hr_zone: 'Zone 2/3 (Controlled Finish)',
+      hr_desc: 'Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.',
       desc: 'Controlled finish holding cadence under fatigue. Transition directly to calf armor protocol.',
       color: '#ff7700'
     });
@@ -8381,6 +8729,9 @@ function generateWorkoutSplits(wo) {
     km: `0.0 – ${warmupKm.toFixed(1)} km`,
     phase: 'Phase 1: Warmup',
     pace: '8:00 – 8:15 min/km',
+    target_hr: '< 128 bpm',
+    hr_zone: 'Zone 1 (Warmup)',
+    hr_desc: 'Gentle conversational jog (RPE 2). Lubricate joint capsules and ease calves into motion.',
     desc: 'Gentle conversational warm-up jog (RPE 2). Lubricate joint capsules and ease calves into motion.',
     color: '#10b981'
   });
@@ -8388,6 +8739,9 @@ function generateWorkoutSplits(wo) {
     km: `${warmupKm.toFixed(1)} – ${cruiseEnd.toFixed(1)} km`,
     phase: 'Phase 2: Main Cruise (Majority)',
     pace: targetPace !== 'N/A' ? targetPace : '7:35 - 7:50 min/km',
+    target_hr: '128 – 138 bpm',
+    hr_zone: 'Zone 2 (Capillary Flush)',
+    hr_desc: `Main aerobic base cruise (RPE 3, ${cruiseKm.toFixed(1)} km). 168 SPM cadence lock for active vascular capillary flushing.`,
     desc: `Main aerobic base cruise (RPE 3, ${cruiseKm.toFixed(1)} km). 168 SPM cadence lock for active vascular capillary flushing.`,
     color: '#00f5d4'
   });
@@ -8395,6 +8749,9 @@ function generateWorkoutSplits(wo) {
     km: `${cruiseEnd.toFixed(1)} – ${dist.toFixed(1)} km`,
     phase: 'Phase 3: Cooldown',
     pace: '8:15+ min/km / Brisk Walk',
+    target_hr: '< 125 bpm',
+    hr_zone: 'Zone 1 (Walk Transition)',
+    hr_desc: 'Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.',
     desc: 'Gradual deceleration to RPE 1–2 easing down to a brisk walk before post-run calf release.',
     color: '#38bdf8'
   });
@@ -8443,8 +8800,10 @@ function showDailyWorkoutStrategyModal(workoutDate, weekNum, dayName) {
     estDurationStr = `${minMins} – ${maxMins} mins`;
   }
 
-  // Generate Stage Pacing Progression Splits
+  // Generate Stage Pacing Progression Splits & Heart Rate Strategy
   const splits = generateWorkoutSplits(targetWo);
+  const hrStrategy = getWorkoutHeartRateStrategy(targetWo);
+  const hrBaseline = getAthleteHeartRateBaseline();
 
   const gcalUrl = generateGoogleCalendarUrl(targetWo);
 
@@ -8589,6 +8948,12 @@ function showDailyWorkoutStrategyModal(workoutDate, weekNum, dayName) {
         <div class="strategy-metric-label">Prescribed Pace</div>
         <div class="strategy-metric-val" style="font-size: 0.88rem;">${targetPace}</div>
       </div>
+      <div class="strategy-metric-pill" style="border-color: ${hrStrategy.borderTint}; background: ${hrStrategy.bgTint};">
+        <div class="strategy-metric-label" style="color: #f87171;">Target HR Zone</div>
+        <div class="strategy-metric-val" style="color: ${hrStrategy.color}; font-size: 0.84rem;" title="${hrStrategy.targetRange}">
+          ❤️ ${hrStrategy.shortName}
+        </div>
+      </div>
       <div class="strategy-metric-pill">
         <div class="strategy-metric-label">Est. Duration</div>
         <div class="strategy-metric-val" style="font-size: 0.88rem;">${estDurationStr}</div>
@@ -8602,6 +8967,65 @@ function showDailyWorkoutStrategyModal(workoutDate, weekNum, dayName) {
     <!-- Workout Description Overview -->
     <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-sm); padding: 0.75rem 0.9rem; font-size: 0.82rem; color: var(--text-main); margin-bottom: 0.85rem; line-height: 1.45;">
       <strong>🎯 Session Goal:</strong> ${targetWo.description}
+    </div>
+
+    <!-- Galaxy Watch4 Biometric Strategy & Cardiac Drift Guard Card -->
+    <div class="strategy-hr-box">
+      <div class="strategy-hr-title">
+        <div style="display: flex; align-items: center; gap: 0.4rem;">
+          <span style="font-size: 1.05rem;">⌚</span>
+          <span>Galaxy Watch4 Biometric &amp; HR Strategy</span>
+        </div>
+        <span style="font-size: 0.68rem; font-weight: 800; background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); padding: 0.15rem 0.55rem; border-radius: 9999px;">
+          OPTICAL BIOACTIVE SENSOR • STRAVA LIVE
+        </span>
+      </div>
+
+      <div class="strategy-hr-grid">
+        <div class="strategy-hr-card">
+          <div class="strategy-hr-card-title">
+            <span>🎯 Prescribed HR Range</span>
+          </div>
+          <div class="strategy-hr-card-value" style="color: ${hrStrategy.color};">
+            ${hrStrategy.targetRange}
+          </div>
+          <div class="strategy-hr-card-sub">
+            Target Workout Avg: <strong>${hrStrategy.targetAvgHr}</strong> • Ceiling: <strong>${hrStrategy.ceiling} bpm</strong>
+          </div>
+        </div>
+
+        <div class="strategy-hr-card">
+          <div class="strategy-hr-card-title">
+            <span>🛡️ Calf &amp; Glycogen Guard</span>
+          </div>
+          <div class="strategy-hr-card-value" style="font-size: 0.86rem; color: #10b981;">
+            Sub-Ceiling Discipline
+          </div>
+          <div class="strategy-hr-card-sub">
+            ${hrStrategy.calfCrampShield}
+          </div>
+        </div>
+
+        <div class="strategy-hr-card">
+          <div class="strategy-hr-card-title">
+            <span>📈 Cardiac Drift Limit</span>
+          </div>
+          <div class="strategy-hr-card-value" style="font-size: 0.86rem; color: #fbbf24;">
+            ${hrStrategy.cardiacDriftMax} Drift Cap
+          </div>
+          <div class="strategy-hr-card-sub">
+            ${hrStrategy.decouplingAlert}
+          </div>
+        </div>
+      </div>
+
+      <div class="strategy-hr-alert-strip">
+        <span style="font-size: 1rem; line-height: 1;">💡</span>
+        <div>
+          <strong>Tactical Execution:</strong> ${hrStrategy.tacticalAdvice}
+          ${hrBaseline.hasData ? `<br><span style="color: #cbd5e1; font-size: 0.72rem;">📊 <strong>Historical Baseline:</strong> Average ${hrBaseline.historicalAvgHr} bpm recorded across your recent logged workouts.</span>` : `<br><span style="color: #cbd5e1; font-size: 0.72rem;">📊 <strong>Galaxy Watch4 Setup:</strong> Wear watch snug 1-finger above the wrist bone to prevent cadence-lock artifacts.</span>`}
+        </div>
+      </div>
     </div>
 
     <!-- Stage Pacing Progression Table -->
@@ -8620,10 +9044,12 @@ function showDailyWorkoutStrategyModal(workoutDate, weekNum, dayName) {
               <span>${s.km}</span>
             </div>
             <div style="font-size: 0.72rem; color: var(--text-muted); text-align: right; flex: 1; padding: 0 0.6rem;">
-              ${s.desc}
+              <div>${s.desc}</div>
+              ${s.hr_desc ? `<div style="font-size: 0.68rem; color: #94a3b8; margin-top: 0.15rem; font-style: italic;">❤️ ${s.hr_desc}</div>` : ''}
             </div>
             <div class="strategy-split-pace">
-              ${s.pace}
+              <div>${s.pace}</div>
+              ${s.target_hr ? `<div style="font-size: 0.68rem; color: #f87171; font-weight: 700; margin-top: 0.15rem; display: flex; align-items: center; justify-content: flex-end; gap: 0.2rem;"><span style="font-size: 0.72rem;">❤️</span> ${s.target_hr}</div>` : ''}
             </div>
           </div>
         `).join('')}
@@ -8716,6 +9142,8 @@ async function generateCoachScriptForWorkout(workoutDate, weekNum, dayName) {
   }
 
   const splits = generateWorkoutSplits(targetWo);
+  const hrStrat = getWorkoutHeartRateStrategy(targetWo);
+
   const prompt = `You are the lead endurance running coach, sports philosopher, and tactical race strategist for a runner training for the Tata Mumbai Marathon 2027 (TMM 2027).
 
 Generate a complete audio coach script JSON for this workout:
@@ -8725,6 +9153,9 @@ Week: ${weekNum}
 Workout Type: ${targetWo.type}
 Distance: ${targetWo.distance_km} km
 Target Pace: ${targetWo.target_pace}
+Target Heart Rate Zone: ${hrStrat.zoneName}
+Prescribed HR Range: ${hrStrat.targetRange} (Ceiling: ${hrStrat.ceiling} bpm, Drift Cap: ${hrStrat.cardiacDriftMax})
+Tracking Hardware: Samsung Galaxy Watch4 Classic optical pulse via Strava
 RPE: ${targetWo.rpe}/10
 Description: ${targetWo.description}
 Prehab: ${targetWo.strength_prehab || 'Calf & Achilles loading'}
@@ -8735,12 +9166,16 @@ STRICT REQUIREMENTS:
 1. THEME: Select an authentic philosophical running theme (e.g. Economy of Motion, The Zen of Middle Kilometers, Weather Toughness, Gear Minimalism, Silent Work, Embracing the Monotony).
 2. GOLDEN RATIO OF SILENCE: 20-35s concise spoken thoughts followed by 180 to 360 seconds (3 to 6 minutes) of dwell silence for music.
 3. TMM INTELLIGENCE: Include specific tactical references to the Mumbai Marathon route (Sea Link crosswinds, Pedder Road Km 35 climb, Marine Drive sea breeze).
-4. DYNAMIC PACE ALERTS: Provide 6-8 distinct, non-repetitive lines for "too_slow" and 6-8 distinct lines for "too_fast".
-5. JSON ONLY: Output valid JSON adhering to this schema:
+4. HEART RATE DISCIPLINE & BIOMETRICS: Emphasize maintaining pulse inside ${hrStrat.targetRange}. In at least 2 cues, prompt a Galaxy Watch4 wrist check. On easy/long runs, enforce sub-${hrStrat.ceiling} bpm ceiling to preserve calf glycogen.
+5. DYNAMIC PACE ALERTS: Provide 6-8 distinct, non-repetitive lines for "too_slow" and 6-8 distinct lines for "too_fast".
+6. DYNAMIC HEART RATE ALERTS: Provide 5-6 distinct lines for "too_high" (alerting runner to drop shoulders, ease pace by 15s/km, and protect calves) and 4-5 lines for "too_low".
+7. JSON ONLY: Output valid JSON adhering to this schema:
 {
   "workout_date": "${targetWo.date}",
   "workout_type": "${targetWo.type}",
   "distance_km": ${targetWo.distance_km},
+  "target_hr_zone": "${hrStrat.zoneName}",
+  "target_hr_range": "${hrStrat.targetRange}",
   "theme": { "title": "string", "philosophical_insight": "string", "quote": "string" },
   "tmm_race_intelligence": { "course_landmark": "string", "tactical_simulation": "string", "mental_drill": "string" },
   "cues": [
@@ -8749,6 +9184,10 @@ STRICT REQUIREMENTS:
   "dynamic_pace_alerts": {
     "too_slow": ["string"],
     "too_fast": ["string"]
+  },
+  "dynamic_heart_rate_alerts": {
+    "too_high": ["string"],
+    "too_low": ["string"]
   },
   "dynamic_fueling_alerts": ["string"]
 }`;
@@ -12069,6 +12508,9 @@ function buildCoachContext() {
           actualPace: val.actualPace,
           targetPace: val.targetPace,
           scorePct: val.scorePct,
+          avgHeartRate: val.avgHeartRate,
+          maxHeartRate: val.maxHeartRate,
+          actualSplits: val.actualSplits,
           notes: val.notes
         });
       }
@@ -12082,7 +12524,15 @@ function buildCoachContext() {
       goal: "Sub-5:00:00 (7:06 min/km pace)",
       interim_milestone: "Vedanta Delhi Half Marathon (VDHM) Oct 18, 2026",
       current_gear: "Adidas Adizero EVO SL",
-      tracking_hardware: "Galaxy Watch / Strava Sync"
+      tracking_hardware: "Samsung Galaxy Watch4 Classic (Optical BioActive Sensor linked to Strava)",
+      heart_rate_zones: {
+        zone_1_active_recovery: "< 130 bpm (Warmup/Cooldown)",
+        zone_2_aerobic_base: "130 – 145 bpm (Ceiling 145 bpm, 148 bpm on long runs)",
+        zone_3_aerobic_tempo: "146 – 158 bpm (Marathon race pace)",
+        zone_4_threshold_hills: "159 – 172 bpm (Ceiling 175 bpm, rest below 135 bpm)",
+        zone_5_anaerobic: "> 172 bpm"
+      },
+      cardiac_drift_threshold_pct: 5
     },
     today_date: todayStr,
     current_mesocycle_weeks: upcomingWeeks,
@@ -12158,7 +12608,14 @@ YOUR CORE COACHING & DIAGNOSTIC DIRECTIVES:
 1. **Heartful, Empathetic & Clinical Interviewing:** You care deeply about the athlete's long-term health, longevity, and race-day success. When the athlete mentions pain, calf tightness, strain, unusual fatigue, or a missed workout, DO NOT immediately prescribe major changes without understanding context. First ask 1–2 sharp, empathetic diagnostic questions (e.g. pain location/nature, when it began, pace on recent runs, shoe feel in Adidas Adizero EVO SL, stretching/foam rolling, hydration/cramps).
 2. **Root Cause Analysis:** Once you have gathered the context (or if enough context is already provided in the message and Strava telemetry), explain clearly WHY this occurred (e.g., pace variance on Wednesday exceeding Zone 2 aerobic ceiling causing excessive soleus/Achilles loading, insufficient eccentric heel drops, or dehydration).
 3. **Targeted Prehab/Rehab:** Prescribe immediate physical therapy relief (e.g. eccentric single-leg heel drops on a step 3x15, soleus foam rolling, hydration/electrolytes).
-4. **Comprehensive Schedule Adjustment Authority (Single-Day, Full-Week, or Entire Month):**
+4. **Heart Rate Zone & Cardiac Drift Diagnostics (Galaxy Watch4 Telemetry):**
+   - Continuously evaluate the runner's average heart rate and split telemetry from their Samsung Galaxy Watch4:
+     * Zone 1: < 130 bpm.
+     * Zone 2: 130 – 145 bpm (Hard ceiling 145 bpm on easy runs; 148 bpm max on long runs). If average HR exceeds 145 bpm on an easy or recovery day, diagnose this as overcooking the aerobic base, depleting calf glycogen prematurely, and prescribe slowing down by 20–30s/km.
+     * Zone 3: 146 – 158 bpm (Marathon Pace effort).
+     * Zone 4: 159 – 172 bpm (Threshold / Pedder Road hills). Rest intervals must drop below 135 bpm before initiating the next rep.
+     * Cardiac Drift / Decoupling: If heart rate creeps up > 5% in the second half of a run without an increase in pace, identify it as cardiac drift (heat, dehydration, or glycogen depletion) and prescribe immediate sodium hydration and a 15s/km pace reduction to prevent calf cramping.
+5. **Comprehensive Schedule Adjustment Authority (Single-Day, Full-Week, or Entire Month):**
    - You have FULL authority to adjust:
      a) A single day (e.g. swap today with rest/cross-training).
      b) An entire 7-day week (e.g. deloading Week 1 or Week 2, reducing mileage by 25-40% with extra recovery shakeouts and eccentric prehab).

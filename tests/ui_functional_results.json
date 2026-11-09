@@ -1,0 +1,58 @@
+{
+  "name": "Browser E2E Functional & Interactive UI Suite",
+  "timestamp": "2026-11-09T12:39:08.012Z",
+  "tests": [
+    {
+      "id": "E2E-01",
+      "title": "Initial Page Load & Hero Dashboard Rendering",
+      "status": "PASSED",
+      "details": "Rendered 22 weeks cards, Countdown: 68 days, Adherence: 0%"
+    },
+    {
+      "id": "E2E-02",
+      "title": "Navigation Tabs Transition (Plan, Procam, Strength, Fueling, Calculator, Supabase)",
+      "status": "PASSED",
+      "details": "Successfully transitioned through all 6 tab panels without errors"
+    },
+    {
+      "id": "E2E-03",
+      "title": "View Mode Toggle (Cards Grid vs Agenda Table)",
+      "status": "PASSED",
+      "details": "Successfully toggled between Card Grid and Agenda Table views"
+    },
+    {
+      "id": "E2E-04",
+      "title": "Workout Strategy Modal Open & Splits Rendering",
+      "status": "PASSED",
+      "details": "Strategy modal opened successfully and rendered 3 structured pacing splits"
+    },
+    {
+      "id": "E2E-05",
+      "title": "Workout Checkbox Interaction & Metric Adherence Sync",
+      "status": "PASSED",
+      "details": "Toggling completion updated volume from 201.6 km to 197.6 km and persisted state to localStorage"
+    },
+    {
+      "id": "E2E-06",
+      "title": "Vega Coach Drawer Interactions & Event Handlers",
+      "status": "PASSED",
+      "details": "Vega Coach drawer opened and handled interactions without exceptions"
+    },
+    {
+      "id": "E2E-07",
+      "title": "Run Ingestion Modal & Drag/Drop Handlers",
+      "status": "PASSED",
+      "details": "Manual run logging calculated live pace preview (6:00 /km) accurately"
+    },
+    {
+      "id": "E2E-08",
+      "title": "Multi-Device Viewport Horizontal Overflow (0px tolerance)",
+      "status": "PASSED",
+      "details": "Tested 4 viewports (360px to 1280px) — 0px horizontal scroll overflow detected across all breakpoints"
+    }
+  ],
+  "bugsFound": [],
+  "passed": 8,
+  "failed": 0,
+  "warnings": 0
+}
