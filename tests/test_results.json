@@ -1,18 +1,18 @@
 {
   "summary": {
-    "timestamp": "2026-11-09T12:38:28.527Z",
-    "durationSeconds": 24.42,
+    "timestamp": "2026-11-09T12:47:29.934Z",
+    "durationSeconds": 21.55,
     "totalTests": 26,
-    "passed": 22,
-    "failed": 3,
+    "passed": 25,
+    "failed": 0,
     "warnings": 1,
-    "totalBugsFound": 4,
-    "overallStatus": "BUGS_DETECTED"
+    "totalBugsFound": 1,
+    "overallStatus": "PASSED"
   },
   "suites": [
     {
       "name": "Supabase Schema & Database Parity Suite",
-      "timestamp": "2026-11-09T12:38:03.661Z",
+      "timestamp": "2026-11-09T12:47:08.061Z",
       "tests": [
         {
           "id": "SB-01",
@@ -23,14 +23,14 @@
         {
           "id": "SB-02",
           "title": "Column Parity for daily_workouts Table",
-          "status": "FAILED",
-          "details": "Live daily_workouts table is missing 2 expected columns: [strategy_splits, coach_script]"
+          "status": "PASSED",
+          "details": "All 26 required columns exist in daily_workouts"
         },
         {
           "id": "SB-03",
           "title": "Supabase Write Test for coach_script Column",
-          "status": "FAILED",
-          "details": "PATCH coach_script rejected by PostgREST: \"Could not find the 'coach_script' column of 'daily_workouts' in the schema cache\""
+          "status": "PASSED",
+          "details": "Successfully patched coach_script column"
         },
         {
           "id": "SB-04A",
@@ -77,24 +77,6 @@
       ],
       "bugsFound": [
         {
-          "testId": "SB-02",
-          "testTitle": "Column Parity for daily_workouts Table",
-          "severity": "CRITICAL",
-          "category": "Database Schema Discrepancy",
-          "summary": "Missing columns in Supabase daily_workouts: strategy_splits, coach_script",
-          "impact": "When app.js syncs with Supabase, it attempts to load 'strategy_splits' and 'coach_script'. Because these columns do not exist in the database, in-memory structured strategy splits and AI coach scripts are overwritten with undefined. Furthermore, attempts by Vega Coach to save generated coach scripts fail with HTTP 400 (PGRST204).",
-          "remediation": "Execute migration in Supabase SQL editor: ALTER TABLE daily_workouts ADD COLUMN IF NOT EXISTS strategy_splits JSONB; ALTER TABLE daily_workouts ADD COLUMN IF NOT EXISTS coach_script JSONB;"
-        },
-        {
-          "testId": "SB-03",
-          "testTitle": "Supabase Write Test for coach_script Column",
-          "severity": "HIGH",
-          "category": "Database Schema Discrepancy",
-          "summary": "Column 'coach_script' rejected on write (HTTP 400)",
-          "impact": "User cannot save generated Gemini AI coach scripts to the cloud database.",
-          "remediation": "Execute: ALTER TABLE daily_workouts ADD COLUMN IF NOT EXISTS coach_script JSONB;"
-        },
-        {
           "testId": "SB-04B",
           "testTitle": "RLS Security Guard: training_weeks Table Immutability",
           "severity": "MEDIUM",
@@ -104,13 +86,13 @@
           "remediation": "Enable RLS and restrict UPDATE on training_weeks to authenticated service role only."
         }
       ],
-      "passed": 7,
-      "failed": 2,
+      "passed": 9,
+      "failed": 0,
       "warnings": 1
     },
     {
       "name": "UI & DOM Discrepancies Static Analysis Suite",
-      "timestamp": "2026-11-09T12:38:03.665Z",
+      "timestamp": "2026-11-09T12:47:08.068Z",
       "tests": [
         {
           "id": "UI-01",
@@ -152,33 +134,23 @@
           "id": "UI-07",
           "title": "Service Worker Cache Version Parity (index.html vs sw.js)",
           "status": "PASSED",
-          "details": "Versions match (v3.9.6) across index.html and sw.js ASSETS_TO_CACHE"
+          "details": "Versions match (v3.9.7) across index.html and sw.js ASSETS_TO_CACHE"
         },
         {
           "id": "UI-08",
           "title": "Dual Entrypoint Synchronization (app.js vs app_main.js)",
-          "status": "FAILED",
-          "details": "app.js and app_main.js have diverged (426 lines difference). index.html loads app_main.js while package.json references app.js."
+          "status": "PASSED",
+          "details": "app.js and app_main.js are in exact 100% parity"
         }
       ],
-      "bugsFound": [
-        {
-          "testId": "UI-08",
-          "testTitle": "Dual Entrypoint Synchronization (app.js vs app_main.js)",
-          "severity": "HIGH",
-          "category": "Code Drift / Dual Entrypoint",
-          "summary": "app.js and app_main.js are out of sync",
-          "impact": "Updates or bug fixes applied to app.js are not loaded by index.html (which loads app_main.js), leading to silent regression and ghost bugs.",
-          "remediation": "Sync app.js to app_main.js, or update index.html to load app.js directly."
-        }
-      ],
-      "passed": 7,
-      "failed": 1,
+      "bugsFound": [],
+      "passed": 8,
+      "failed": 0,
       "warnings": 0
     },
     {
       "name": "Browser E2E Functional & Interactive UI Suite",
-      "timestamp": "2026-11-09T12:38:04.109Z",
+      "timestamp": "2026-11-09T12:47:08.380Z",
       "tests": [
         {
           "id": "E2E-01",
@@ -237,24 +209,6 @@
   ],
   "bugs": [
     {
-      "testId": "SB-02",
-      "testTitle": "Column Parity for daily_workouts Table",
-      "severity": "CRITICAL",
-      "category": "Database Schema Discrepancy",
-      "summary": "Missing columns in Supabase daily_workouts: strategy_splits, coach_script",
-      "impact": "When app.js syncs with Supabase, it attempts to load 'strategy_splits' and 'coach_script'. Because these columns do not exist in the database, in-memory structured strategy splits and AI coach scripts are overwritten with undefined. Furthermore, attempts by Vega Coach to save generated coach scripts fail with HTTP 400 (PGRST204).",
-      "remediation": "Execute migration in Supabase SQL editor: ALTER TABLE daily_workouts ADD COLUMN IF NOT EXISTS strategy_splits JSONB; ALTER TABLE daily_workouts ADD COLUMN IF NOT EXISTS coach_script JSONB;"
-    },
-    {
-      "testId": "SB-03",
-      "testTitle": "Supabase Write Test for coach_script Column",
-      "severity": "HIGH",
-      "category": "Database Schema Discrepancy",
-      "summary": "Column 'coach_script' rejected on write (HTTP 400)",
-      "impact": "User cannot save generated Gemini AI coach scripts to the cloud database.",
-      "remediation": "Execute: ALTER TABLE daily_workouts ADD COLUMN IF NOT EXISTS coach_script JSONB;"
-    },
-    {
       "testId": "SB-04B",
       "testTitle": "RLS Security Guard: training_weeks Table Immutability",
       "severity": "MEDIUM",
@@ -262,15 +216,6 @@
       "summary": "Unauthenticated anon role can alter training_weeks plan configuration",
       "impact": "Any visitor could alter week definitions, phase names, or planned distances in the shared database.",
       "remediation": "Enable RLS and restrict UPDATE on training_weeks to authenticated service role only."
-    },
-    {
-      "testId": "UI-08",
-      "testTitle": "Dual Entrypoint Synchronization (app.js vs app_main.js)",
-      "severity": "HIGH",
-      "category": "Code Drift / Dual Entrypoint",
-      "summary": "app.js and app_main.js are out of sync",
-      "impact": "Updates or bug fixes applied to app.js are not loaded by index.html (which loads app_main.js), leading to silent regression and ghost bugs.",
-      "remediation": "Sync app.js to app_main.js, or update index.html to load app.js directly."
     }
   ]
 }
