@@ -224,6 +224,7 @@ def fetch_strava_activity_splits_and_hr(activity_id):
 
     req = urllib.request.Request(url, headers=headers)
     try:
+        print(f"      📡 Querying detailed activity {activity_id}...")
         with urllib.request.urlopen(req, timeout=15) as response:
             html = response.read().decode("utf-8", errors="replace")
 
@@ -284,6 +285,8 @@ def fetch_strava_activity_splits_and_hr(activity_id):
             max_hr_m = re.search(r'"max_heartrate"\s*:\s*([0-9.]+)', html)
             if max_hr_m:
                 max_hr = int(round(float(max_hr_m.group(1))))
+
+            print(f"      📊 Activity {activity_id}: found {len(formatted_splits)} splits, avg_hr={avg_hr}, max_hr={max_hr}, html_len={len(html)}")
 
             return {
                 "splits": formatted_splits,
@@ -407,6 +410,12 @@ def main():
             pace_str = "N/A"
 
         # Check heart rate telemetry from activity feed
+        if idx == 0:
+            print(f"   ℹ️ Sample raw activity keys: {list(act.keys())}")
+            # Check if heartrate exists in act
+            hr_keys = {k: act[k] for k in act if 'hr' in k.lower() or 'heart' in k.lower()}
+            print(f"   ℹ️ Sample HR fields in raw feed: {hr_keys}")
+
         raw_avg_hr = act.get("average_heartrate") or act.get("avg_hr")
         raw_max_hr = act.get("max_heartrate") or act.get("max_hr")
         avg_hr = int(round(float(raw_avg_hr))) if raw_avg_hr else None
